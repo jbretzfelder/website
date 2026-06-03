@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>bretzfelder.com</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d0b09;
+      --bg-surface: #141210;
+      --bg-card: #1a1714;
+      --border: rgba(180, 160, 120, 0.15);
+      --border-hover: rgba(180, 160, 120, 0.35);
+      --text: #d4c9b0;
+      --text-muted: #7a6f5e;
+      --text-dim: #4a4238;
+      --accent: #8a7456;
+      --accent-light: #b09060;
+      --gold: #c8a84b;
+    }
+
+    html, body {
+      min-height: 100%;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'IM Fell English', Georgia, serif;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      padding: 3rem 1rem 4rem;
+    }
+
+    #game {
+      width: 100%;
+      max-width: 580px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    h1 {
+      font-family: 'IM Fell English SC', serif;
+      font-size: 32px;
+      font-weight: 400;
+      color: var(--text);
+      letter-spacing: 0.06em;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 1.5rem 0;
+    }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 1.75rem;
+    }
+
+    .stat {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 14px 10px;
+      text-align: center;
+    }
+
+    .stat-label {
+      font-size: 10px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-family: 'IM Fell English SC', serif;
+      margin-bottom: 6px;
+    }
+
+    .stat-value {
+      font-size: 22px;
+      color: var(--text);
+      font-family: 'IM Fell English', serif;
+    }
+
+    .btn-wrap {
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
+
+    .manor-btn {
+      display: block;
+      width: 100%;
+      padding: 2.25rem 1rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: center;
+      color: inherit;
+      font-family: inherit;
+      transition: border-color 0.15s, background 0.1s;
+      user-select: none;
+    }
+
+    .manor-btn:hover {
+      border-color: var(--border-hover);
+      background: #1e1b17;
+    }
+
+    .manor-btn:active {
+      transform: scale(0.987);
+    }
+
+    .manor-icon {
+      font-size: 56px;
+      display: block;
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+
+    .manor-prompt {
+      font-size: 15px;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .ticker {
+      font-size: 12px;
+      color: var(--text-dim);
+      text-align: center;
+      font-style: italic;
+      min-height: 18px;
+      margin-bottom: 1.5rem;
+    }
+
+    .upgrades-heading {
+      font-family: 'IM Fell English SC', serif;
+      font-size: 12px;
+      color: var(--text-dim);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .upgrades {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+      margin-bottom: 1.75rem;
+      min-height: 0;
+    }
+
+    .upgrade-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 14px 16px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.1s;
+    }
+
+    .upgrade-card:hover:not(.locked) {
+      border-color: var(--border-hover);
+      background: #1e1b17;
+    }
+
+    .upgrade-card.locked {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .upgrade-name {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 4px;
+      font-family: 'IM Fell English', serif;
+    }
+
+    .upgrade-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-style: italic;
+      line-height: 1.5;
+      margin-bottom: 10px;
+      font-family: 'IM Fell English', serif;
+    }
+
+    .upgrade-cost {
+      font-size: 11px;
+      color: var(--text-dim);
+      font-family: 'IM Fell English SC', serif;
+      letter-spacing: 0.04em;
+    }
+
+    .upgrade-cost span {
+      color: var(--gold);
+    }
+
+    .log {
+      padding-bottom: 0.25rem;
+    }
+
+    .log-label {
+      font-family: 'IM Fell English SC', serif;
+      font-size: 11px;
+      color: var(--text-dim);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .log-entry {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-style: italic;
+      line-height: 1.7;
+      min-height: 24px;
+    }
+
+    .floater {
+      position: absolute;
+      pointer-events: none;
+      font-size: 14px;
+      color: var(--gold);
+      font-family: 'IM Fell English', serif;
+      opacity: 1;
+      transition: opacity 0.75s ease-out, transform 0.75s ease-out;
+      z-index: 10;
+    }
+
+    @media (max-width: 480px) {
+      h1 { font-size: 26px; }
+      .manor-icon { font-size: 44px; }
+      .stats-row { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+    }
+  </style>
+</head>
+<body>
+<div id="game">
+  <header>
+    <h1>The Bretzfelder Estate</h1>
+    <p class="subtitle">Something is being produced. That is all that is known.</p>
+  </header>
+
+  <div class="stats-row">
+    <div class="stat">
+      <div class="stat-label">On Hand</div>
+      <div class="stat-value" id="stat-total">0</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Per Click</div>
+      <div class="stat-value" id="stat-per-click">1</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Per Second</div>
+      <div class="stat-value" id="stat-per-sec">0</div>
+    </div>
+  </div>
+
+  <div class="btn-wrap">
+    <button class="manor-btn" id="manor-btn">
+      <span class="manor-icon">🏚</span>
+      <span class="manor-prompt" id="manor-prompt">The manor waits. Something expects you to click.</span>
+    </button>
+  </div>
+
+  <div class="ticker" id="ticker">All is still. Suspiciously so.</div>
+
+  <div class="log">
+    <div class="log-label">The Estate Record</div>
+    <div class="log-entry" id="log-entry">The estate has stood for centuries, producing… whatever this is.</div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="upgrades-heading">Acquisitions</div>
+  <div class="upgrades" id="upgrades"></div>
+</div>
+
+<script>
+  const state = {
+    total: 0,
+    perClick: 1,
+    perSec: 0,
+    purchased: new Set()
+  };
+
+  const upgrades = [
+    {
+      id: 'candle',
+      name: 'Guttering candelabra',
+      desc: 'Its flame reveals what shouldn\'t be there.',
+      cost: 10,
+      effect: () => { state.perClick += 1; },
+      flavor: 'The shadows rearrange themselves politely.'
+    },
+    {
+      id: 'butler',
+      name: 'The unseen butler',
+      desc: 'He precedes you into every room. You have never seen his face.',
+      cost: 40,
+      effect: () => { state.perSec += 1; },
+      flavor: 'A door opens. No one is standing there.'
+    },
+    {
+      id: 'cellar',
+      name: 'Unlocked cellar',
+      desc: 'Something has been aging down here. You decide not to look closely.',
+      cost: 120,
+      effect: () => { state.perSec += 3; },
+      flavor: 'The output increases. You feel vaguely complicit.'
+    },
+    {
+      id: 'portrait',
+      name: 'The watching portrait',
+      desc: 'The eyes track you. The production rate also tracks you.',
+      cost: 300,
+      effect: () => { state.perClick += 5; state.perSec += 2; },
+      flavor: 'It nodded at you. You nodded back. This was a mistake.'
+    },
+    {
+      id: 'east_wing',
+      name: 'East wing (reopened)',
+      desc: 'Sealed since 1887. The smell is complicated.',
+      cost: 800,
+      effect: () => { state.perSec += 10; },
+      flavor: 'Production surges. Something is pleased.'
+    },
+    {
+      id: 'heir',
+      name: 'Distant heir located',
+      desc: 'They arrived by carriage. They have your eyes. You have never had children.',
+      cost: 2000,
+      effect: () => { state.perClick += 20; state.perSec += 8; },
+      flavor: 'The heir begins to work. No questions were asked by either party.'
+    },
+    {
+      id: 'organ',
+      name: 'Restored pipe organ',
+      desc: 'It plays itself, mostly. The tune has no name.',
+      cost: 5000,
+      effect: () => { state.perSec += 30; },
+      flavor: 'The manor hums. Everything hums back.'
+    },
+    {
+      id: 'grounds',
+      name: 'The grounds, activated',
+      desc: 'The topiary moves at night. Productivity moves with it.',
+      cost: 12000,
+      effect: () => { state.perSec += 80; state.perClick += 50; },
+      flavor: 'You no longer ask what the topiary is shaped like by morning.'
+    },
+    {
+      id: 'vault',
+      name: 'The family vault',
+      desc: 'Several Bretzfelders appear to still be working.',
+      cost: 30000,
+      effect: () => { state.perSec += 200; },
+      flavor: 'They seem content. You do not disturb them.'
+    },
+    {
+      id: 'fog',
+      name: 'Permanent fog (cultivated)',
+      desc: 'It rolls in every morning. Something comes with it.',
+      cost: 80000,
+      effect: () => { state.perSec += 500; state.perClick += 200; },
+      flavor: 'You can no longer see the gate from the house. This is fine.'
+    }
+  ];
+
+  const clickPrompts = [
+    'Something is produced.',
+    'The manor obliges.',
+    'Output noted by all parties.',
+    'The production continues.',
+    'You sense approval.',
+    'The walls settle approvingly.',
+    'Something shifts below.',
+    'Contribution logged.',
+    'The estate is satisfied.',
+    'More. Always more.',
+    'The commodity accumulates.',
+    'A sound. Then more.',
+  ];
+
+  const passiveMsgs = [
+    'Something trickles in from the cellar.',
+    'The butler deposits the usual.',
+    'The east wing yields its portion.',
+    'The portrait watches the numbers rise.',
+    'The organ\'s drone accompanies the output.',
+    'The grounds are... productive.',
+    'The heir\'s work arrives, as scheduled.',
+    'A sound from upstairs. Then the numbers change.',
+    'The fog brings something with it.',
+    'The vault contributes. As agreed.',
+  ];
+
+  const milestones = [
+    [100,    'The manor acknowledges your efforts. Unsettlingly.'],
+    [500,    'A room you don\'t remember has begun producing on its own.'],
+    [1000,   'The commodity accumulates. You have stopped asking why.'],
+    [5000,   'Something in the walls has taken notice.'],
+    [10000,  'The Bretzfelder name carries weight now. Heavy weight. Inexplicably heavy.'],
+    [50000,  'The estate expands. You did not authorize this. You are grateful.'],
+    [100000, 'Visitors have begun arriving. They seem to know what it is. They do not say.'],
+    [500000, 'A second estate has appeared across the moor. The deed bears your name. You did not sign it.'],
+    [1000000,'There is no end. There was never meant to be an end. Click on.'],
+  ];
+
+  let lastMilestone = -1;
+
+  function fmt(n) {
+    return Math.floor(n).toLocaleString();
+  }
+
+  function renderUpgrades() {
+    const container = document.getElementById('upgrades');
+    container.innerHTML = '';
+    let anyVisible = false;
+    upgrades.forEach(u => {
+      if (state.purchased.has(u.id)) return;
+      anyVisible = true;
+      const card = document.createElement('div');
+      const canAfford = state.total >= u.cost;
+      card.className = 'upgrade-card' + (canAfford ? '' : ' locked');
+      card.innerHTML =
+        '<div class="upgrade-name">' + u.name + '</div>' +
+        '<div class="upgrade-desc">' + u.desc + '</div>' +
+        '<div class="upgrade-cost">Costs <span>' + fmt(u.cost) + '</span></div>';
+      if (canAfford) {
+        card.addEventListener('click', () => buyUpgrade(u));
+      }
+      container.appendChild(card);
+    });
+    if (!anyVisible) {
+      container.innerHTML = '<div style="font-size:13px;color:var(--text-dim);font-style:italic;padding:8px 0;">The estate has yielded all it will reveal.</div>';
+    }
+  }
+
+  function buyUpgrade(u) {
+    if (state.total < u.cost) return;
+    state.total -= u.cost;
+    state.purchased.add(u.id);
+    u.effect();
+    setLog(u.flavor);
+    renderUpgrades();
+    updateStats();
+  }
+
+  function setLog(msg) {
+    document.getElementById('log-entry').textContent = msg;
+  }
+
+  function doClick(e) {
+    state.total += state.perClick;
+    updateStats();
+    renderUpgrades();
+
+    const prompt = clickPrompts[Math.floor(Math.random() * clickPrompts.length)];
+    document.getElementById('manor-prompt').textContent = prompt;
+
+    const wrap = document.querySelector('.btn-wrap');
+    const wrapRect = wrap.getBoundingClientRect();
+    const floater = document.createElement('div');
+    floater.className = 'floater';
+    floater.textContent = '+' + fmt(state.perClick);
+    const x = (e.clientX - wrapRect.left - 20);
+    const y = (e.clientY - wrapRect.top - 10);
+    floater.style.left = x + 'px';
+    floater.style.top = y + 'px';
+    wrap.appendChild(floater);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        floater.style.transform = 'translateY(-38px)';
+        floater.style.opacity = '0';
+      });
+    });
+    setTimeout(() => floater.remove(), 850);
+
+    checkMilestones();
+  }
+
+  function updateStats() {
+    document.getElementById('stat-total').textContent = fmt(state.total);
+    document.getElementById('stat-per-click').textContent = fmt(state.perClick);
+    document.getElementById('stat-per-sec').textContent = fmt(state.perSec);
+  }
+
+  function checkMilestones() {
+    for (let i = milestones.length - 1; i >= 0; i--) {
+      if (state.total >= milestones[i][0] && lastMilestone < i) {
+        lastMilestone = i;
+        setLog(milestones[i][1]);
+        break;
+      }
+    }
+  }
+
+  document.getElementById('manor-btn').addEventListener('click', doClick);
+
+  setInterval(() => {
+    if (state.perSec > 0) {
+      state.total += state.perSec;
+      updateStats();
+      renderUpgrades();
+      if (Math.random() < 0.12) {
+        const msg = passiveMsgs[Math.floor(Math.random() * passiveMsgs.length)];
+        document.getElementById('ticker').textContent = msg;
+      }
+      checkMilestones();
+    }
+  }, 1000);
+
+  renderUpgrades();
+  updateStats();
+</script>
+</body>
+</html>
