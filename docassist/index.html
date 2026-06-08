@@ -195,7 +195,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   box-shadow: none;
   transform: none;
 }
-.home-card-icon { font-size: 26px; margin-bottom: 2px; }
+.home-card-icon { font-size: 26px; margin-bottom: 2px; font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif; }
 .home-card-title {
   font-size: 13px;
   font-weight: 600;
@@ -1410,11 +1410,11 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         <div class="home-card-desc">Session progress notes formatted for Remarkable, tied to ITP objectives</div>
         <div class="home-card-arrow">Open →</div>
       </div>
-      <div class="home-card coming-soon">
-        <div class="home-card-badge">Coming Soon</div>
-        <div class="home-card-icon">👥</div>
+      <div class="home-card" onclick="navigateTo('group')">
+        <div class="home-card-icon">💬</div>
         <div class="home-card-title">Group Notes</div>
         <div class="home-card-desc">Document group sessions with individual client responses from a single entry</div>
+        <div class="home-card-arrow">Open →</div>
       </div>
       <div class="home-card coming-soon">
         <div class="home-card-badge">Coming Soon</div>
@@ -1518,7 +1518,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
           <input class="form-input" placeholder="e.g. 48 hours prior to admission" oninput="state.dim1.lastUse=this.value;clearGrpError('grp-dim1-lastuse')">
         </div>
 
-        <div class="score-row">
+        <div class="score-row" id="grp-dim1-scores">
           <div class="form-group">
             <label class="form-label">CIWA-Ar Score (alcohol)</label>
             <input class="form-input" type="number" min="0" max="67" placeholder="0–67" oninput="state.dim1.ciwa=this.value">
@@ -1529,7 +1529,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
           </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" id="grp-dim1-symptoms">
           <label class="form-label">Active Withdrawal Symptoms</label>
           <div id="dim1-symptoms" class="checkbox-group"></div>
         </div>
@@ -2283,6 +2283,552 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       </div><!-- /session-tab-inner -->
   </div><!-- /view-note -->
 
+<!-- ═══ GROUP NOTE VIEW ══════════════════════════════ -->
+<style>
+/* ─── GROUP NOTE LAYOUT ───────────────────── */
+.gn-layout {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  gap: 0;
+}
+.gn-setup {
+  width: 320px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border);
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 18px 18px 24px;
+  gap: 16px;
+}
+.gn-clients-area {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.gn-clients-toolbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  gap: 12px;
+}
+.gn-clients-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.gn-section-label {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+.gn-input {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 7px 10px;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 12px;
+  color: var(--text);
+  background: white;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.gn-input:focus { border-color: var(--border-focus); }
+.gn-textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 7px 10px;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 12px;
+  color: var(--text);
+  background: white;
+  outline: none;
+  resize: vertical;
+  line-height: 1.5;
+  transition: border-color 0.15s;
+}
+.gn-textarea:focus { border-color: var(--border-focus); }
+.gn-check-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  color: var(--text);
+  cursor: pointer;
+  padding: 4px 0;
+}
+.gn-check-row input[type="checkbox"] { accent-color: var(--accent); width: 14px; height: 14px; flex-shrink: 0; }
+.gn-select {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 7px 10px;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 12px;
+  color: var(--text);
+  background: white;
+  outline: none;
+}
+.gn-divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 2px 0;
+}
+.gn-hint {
+  font-size: 11px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 6px;
+}
+.gn-challenge {
+  display: none;
+  background: var(--warning-bg);
+  border: 1px solid var(--warning-border);
+  border-radius: 5px;
+  padding: 8px 10px;
+  font-size: 11px;
+  color: var(--warning-text);
+  line-height: 1.5;
+  margin-top: 4px;
+}
+.gn-challenge.visible { display: block; }
+/* ─── CLIENT CARD ─────────────────────────── */
+.gn-client-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: border-color 0.15s;
+  flex-shrink: 0;
+}
+.gn-client-card.has-output { border-color: var(--accent); }
+.gn-client-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--bg);
+  cursor: pointer;
+  user-select: none;
+}
+.gn-client-num {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.gn-client-name-display {
+  flex: 1;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.gn-client-status {
+  font-size: 10px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+.gn-client-status.done { color: var(--accent); font-weight: 600; }
+.gn-client-toggle {
+  font-size: 11px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+.gn-client-remove {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0 2px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.gn-client-remove:hover { color: #c0392b; }
+.gn-client-body {
+  display: none;
+  padding: 14px;
+  border-top: 1px solid var(--border);
+  flex-direction: column;
+  gap: 12px;
+}
+.gn-client-body.open { display: flex; }
+/* ─── OUTPUT AREA ─────────────────────────── */
+.gn-output-box {
+  background: var(--output-bg);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 10px 12px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  line-height: 1.7;
+  color: var(--text);
+  white-space: pre-wrap;
+  min-height: 60px;
+}
+.gn-output-label {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+.gn-output-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+/* ─── BOTTOM BAR ──────────────────────────── */
+.gn-generate-bar {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  gap: 12px;
+}
+.gn-generate-hint {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+.gn-ratio-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+/* ─── PROGNOSIS PILLS ─────────────────────── */
+.gn-prog-pills {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.gn-prog-pill {
+  flex: 1;
+  padding: 6px 4px;
+  border-radius: 5px;
+  border: 1px solid var(--border);
+  background: white;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s;
+  color: var(--text-secondary);
+}
+.gn-prog-pill:hover { border-color: var(--accent); color: var(--accent); }
+.gn-prog-pill.selected-poor  { background: #fff0f0; border-color: #c0392b; color: #c0392b; }
+.gn-prog-pill.selected-fair  { background: var(--warning-bg); border-color: #d97706; color: #92400e; }
+.gn-prog-pill.selected-good  { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+.gn-prog-challenge {
+  display: none;
+  background: var(--warning-bg);
+  border: 1px solid var(--warning-border);
+  border-radius: 5px;
+  padding: 7px 9px;
+  font-size: 11px;
+  color: var(--warning-text);
+  line-height: 1.5;
+  margin-bottom: 6px;
+}
+.gn-prog-challenge.visible { display: block; }
+/* ─── RESPONSE ACTIVITY FIELDS ───────────── */
+.gn-resp-activity {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.gn-resp-activity-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.gn-ratio-input {
+  width: 52px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 5px 8px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  color: var(--text);
+  background: white;
+  outline: none;
+  text-align: center;
+}
+.gn-ratio-input:focus { border-color: var(--border-focus); }
+/* ─── OUTPUT VIEW ─────────────────────────── */
+.gn-out-intervention {
+  background: var(--header);
+  border-radius: 8px;
+  padding: 16px 18px;
+  flex-shrink: 0;
+}
+.gn-out-intervention-label {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: #7ec8a0;
+  margin-bottom: 8px;
+}
+.gn-out-intervention-copy {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.gn-out-intervention-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #ffffff;
+}
+.gn-out-int-box {
+  background: rgba(255,255,255,0.07);
+  border-radius: 5px;
+  padding: 10px 12px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  line-height: 1.7;
+  color: #c8ddd2;
+  white-space: pre-wrap;
+}
+.gn-out-divider {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--text-secondary);
+  padding: 4px 0 8px;
+  flex-shrink: 0;
+}
+.gn-out-client {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 16px;
+  flex-shrink: 0;
+}
+.gn-out-client-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.gn-out-client-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.gn-out-client-box {
+  background: var(--output-bg);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 10px 12px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  line-height: 1.7;
+  color: var(--text);
+  white-space: pre-wrap;
+}
+.gn-out-copy-btn {
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 6px 16px;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.gn-out-copy-btn:hover { background: var(--accent-hover); }
+.gn-out-copy-btn.copied { background: var(--primary-badge); }
+/* ─── SENTENCE PREFIX INPUT ───────────────── */
+.gn-sent-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  overflow: hidden;
+  background: white;
+  transition: border-color 0.15s;
+}
+.gn-sent-wrap:focus-within { border-color: var(--border-focus); }
+.gn-sent-prefix {
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  padding: 6px 10px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  user-select: none;
+}
+.gn-sent-input {
+  border: none;
+  outline: none;
+  padding: 6px 10px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--text);
+  line-height: 1.5;
+  resize: vertical;
+  min-height: 52px;
+  background: white;
+  width: 100%;
+  box-sizing: border-box;
+}
+</style>
+
+<div id="view-group" class="tool-view">
+  <div class="tool-nav">
+    <button class="tool-nav-back" onclick="navigateTo('home')">← Back</button>
+    <span class="tool-nav-divider">|</span>
+    <span class="tool-nav-title">Group Notes</span>
+  </div>
+
+  <div class="gn-layout">
+
+    <!-- LEFT: GROUP SETUP -->
+    <div class="gn-setup">
+
+      <div>
+        <div class="gn-section-label">Session Info</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div>
+            <div class="gn-hint" style="margin-bottom:3px">Date</div>
+            <input class="gn-input" type="date" id="gn-date" oninput="gnState.date=this.value">
+          </div>
+          <div>
+            <div class="gn-hint" style="margin-bottom:3px">Counselor Name</div>
+            <input class="gn-input" id="gn-counselor" placeholder="e.g. Sarah M." oninput="gnState.counselor=this.value">
+          </div>
+          <div>
+            <div class="gn-hint" style="margin-bottom:3px">Group Ratio (Clients:Staff)</div>
+            <div class="gn-ratio-box">
+              <input class="gn-ratio-input" id="gn-ratio-clients" type="number" min="1" placeholder="12" oninput="gnState.ratioClients=this.value;gnSyncClientSlots()">
+              <span style="font-size:13px;color:var(--text-secondary)">:</span>
+              <input class="gn-ratio-input" id="gn-ratio-staff" type="number" min="1" placeholder="2" oninput="gnState.ratioStaff=this.value;gnCheckRatio()">
+            </div>
+            <div id="gn-ratio-warning" class="gn-challenge" style="margin-top:6px">⚠ This ratio exceeds 12:1. Group sessions above a 12:1 client-to-staff ratio cannot be billed. Adjust staffing or split the group before documenting.</div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="gn-divider">
+
+      <!-- What happened in group -->
+      <div>
+        <div class="gn-section-label">Group Activities</div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <label class="gn-check-row"><input type="checkbox" id="gn-act-rules" checked onchange="gnState.actRules=this.checked"> Group rules reviewed</label>
+          <label class="gn-check-row"><input type="checkbox" id="gn-act-topic" onchange="gnState.actTopic=this.checked;gnToggleTopic()"> Topic discussion</label>
+          <div id="gn-topic-wrap" style="display:none;padding-left:22px">
+            <input class="gn-input" id="gn-topic" placeholder="Topic of discussion…" oninput="gnState.topic=this.value" style="font-size:11px">
+          </div>
+          <label class="gn-check-row"><input type="checkbox" id="gn-act-reading" onchange="gnState.actReading=this.checked;gnRenderClients()"> Daily reading / reflection</label>
+          <label class="gn-check-row"><input type="checkbox" id="gn-act-mindfulness" onchange="gnState.actMindfulness=this.checked;gnToggleMindfulness()"> Activity</label>
+          <div id="gn-mindfulness-wrap" style="display:none;padding-left:22px;flex-direction:column;gap:5px">
+            <input class="gn-input" id="gn-mindfulness-activity" placeholder="Activity name / description…" oninput="gnState.mindfulnessActivity=this.value" style="font-size:11px">
+            <input class="gn-input" id="gn-mindfulness-benefit" placeholder="Clinical benefit / purpose…" oninput="gnState.mindfulnessBenefit=this.value" style="font-size:11px">
+          </div>
+        </div>
+      </div>
+
+      <hr class="gn-divider">
+
+      <!-- Techniques -->
+      <div>
+        <div class="gn-section-label">Techniques Used</div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <label class="gn-check-row"><input type="checkbox" id="gn-tech-mi" onchange="gnState.techMI=this.checked"> Motivational Interviewing (MI)</label>
+          <label class="gn-check-row"><input type="checkbox" id="gn-tech-cbt" onchange="gnState.techCBT=this.checked"> CBT — Cognitive Restructuring</label>
+        </div>
+      </div>
+
+      <hr class="gn-divider">
+
+      <!-- Clinical Judgement defaults note -->
+      <div>
+        <div class="gn-section-label">Clinical Judgement</div>
+        <div class="gn-hint">Set prognosis per client using the Poor / Fair / Good selector in each client card. The text auto-fills based on selection and can be edited before generating.</div>
+        <div class="gn-challenge visible" style="margin-top:0">⚠ Avoid selecting "Good" unless clinically justified — payers use it to argue the client no longer needs this LOC.</div>
+      </div>
+
+    </div><!-- /gn-setup -->
+
+    <!-- RIGHT: CLIENT INPUT AREA -->
+    <div class="gn-clients-area" id="gn-clients-area">
+      <div class="gn-clients-toolbar">
+        <div style="font-size:12px;font-weight:600;color:var(--text)" id="gn-client-count-label">12 clients</div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="btn btn-ghost" style="font-size:11px;padding:5px 12px" onclick="gnAddClient()">+ Add Client</button>
+          <button class="btn btn-primary" style="font-size:11px;padding:5px 14px" onclick="gnGenerateAll()">Generate All Notes</button>
+        </div>
+      </div>
+
+      <div class="gn-clients-list" id="gn-clients-list">
+        <!-- Client cards rendered by JS -->
+      </div>
+
+      <div class="gn-generate-bar">
+        <div class="gn-generate-hint">Fill in each client card, then generate to produce copy-ready outputs.</div>
+        <button class="btn btn-primary" onclick="gnGenerateAll()">Generate All Notes</button>
+      </div>
+    </div><!-- /gn-clients-area -->
+
+    <!-- RIGHT: OUTPUT VIEW (shown after generating) -->
+    <div class="gn-clients-area" id="gn-output-area" style="display:none;">
+      <div class="gn-clients-toolbar">
+        <button class="tool-nav-back" style="font-size:12px" onclick="gnShowInputs()">← Back to editing</button>
+        <button class="btn btn-primary" style="font-size:11px;padding:5px 14px" onclick="gnGenerateAll()">Regenerate</button>
+      </div>
+
+      <div class="gn-clients-list" id="gn-output-list">
+        <!-- Output blocks rendered by JS -->
+      </div>
+    </div><!-- /gn-output-area -->
+
+  </div><!-- /gn-layout -->
+</div><!-- /view-group -->
+
 <script>
 // ═══════════════════════════════════════════════════
 // LOC CONFIGURATION
@@ -2714,6 +3260,20 @@ function updateDimBadges() {
       ? `<div class="primary-badge">★ Primary Driver — ${shortName}</div>`
       : '';
   }
+  updateLocFields();
+}
+
+function updateLocFields() {
+  const loc = state.loc;
+  // CIWA/COWS scores and active withdrawal symptom checkboxes are only
+  // relevant at 3.7WM. At all other LOCs these fields are hidden.
+  const wmOnly = loc === '3.7WM';
+  const toggle = (id, visible) => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = visible ? '' : 'none';
+  };
+  toggle('grp-dim1-scores', wmOnly);
+  toggle('grp-dim1-symptoms', wmOnly);
 }
 
 // ═══════════════════════════════════════════════════
@@ -4717,6 +5277,590 @@ function confirmReset() {
   document.getElementById('resetModal').style.display = 'flex';
 }
 
+// ═══════════════════════════════════════════════════
+// GROUP NOTE STATE & FUNCTIONS
+// ═══════════════════════════════════════════════════
+
+let gnState = {
+  date: new Date().toISOString().split('T')[0],
+  counselor: '',
+  ratioClients: '',
+  ratioStaff: '',
+  actRules: true,
+  actTopic: false,
+  topic: '',
+  actReading: false,
+  actMindfulness: false,
+  mindfulnessActivity: '',
+  mindfulnessBenefit: '',
+  techMI: false,
+  techCBT: false,
+  interventionOutput: '',
+};
+
+let gnClients = [];
+let gnClientIdCounter = 0;
+
+function gnInitClients(count) {
+  gnClients = [];
+  gnClientIdCounter = 0;
+  for (let i = 0; i < count; i++) {
+    gnClients.push(gnMakeClient());
+  }
+  gnRenderClients();
+}
+
+function gnMakeClient() {
+  return {
+    id: ++gnClientIdCounter,
+    name: '',
+    responseTopic: '',
+    responseReading: '',
+    responseMindfulness: '',
+    cjPrognosis: '',
+    cjText: '',
+    hasOutput: false,
+    interventionOutput: '',
+    responseOutput: '',
+    isOpen: true,
+  };
+}
+
+function gnAddClient() {
+  gnClients.push(gnMakeClient());
+  gnRenderClients();
+  // Scroll to bottom of list
+  const list = document.getElementById('gn-clients-list');
+  setTimeout(() => { list.scrollTop = list.scrollHeight; }, 50);
+}
+
+function gnRemoveClient(id) {
+  if (gnClients.length <= 1) return;
+  gnClients = gnClients.filter(c => c.id !== id);
+  gnRenderClients();
+}
+
+function gnUpdateCountLabel() {
+  const n = gnClients.length;
+  document.getElementById('gn-client-count-label').textContent = n + ' client' + (n === 1 ? '' : 's');
+}
+
+function gnCheckRatio() {
+  const clients = parseInt(gnState.ratioClients, 10) || 0;
+  const staff = parseInt(gnState.ratioStaff, 10) || 1;
+  const warning = document.getElementById('gn-ratio-warning');
+  if (warning) warning.classList.toggle('visible', clients / staff > 12);
+}
+
+function gnSyncClientSlots() {
+  gnCheckRatio();
+  const n = parseInt(gnState.ratioClients, 10);
+  if (!n || n < 1) return;
+  const current = gnClients.length;
+  if (n === current) return;
+  if (n > current) {
+    for (let i = current; i < n; i++) gnClients.push(gnMakeClient());
+  } else {
+    gnClients = gnClients.slice(0, n);
+  }
+  gnRenderClients();
+}
+
+function gnToggleTopic() {
+  const wrap = document.getElementById('gn-topic-wrap');
+  wrap.style.display = gnState.actTopic ? 'block' : 'none';
+  gnRenderClients();
+}
+
+function gnToggleMindfulness() {
+  const wrap = document.getElementById('gn-mindfulness-wrap');
+  wrap.style.display = gnState.actMindfulness ? 'flex' : 'none';
+  gnRenderClients();
+}
+
+function gnRenderClients() {
+  gnUpdateCountLabel();
+  const list = document.getElementById('gn-clients-list');
+  list.innerHTML = '';
+
+  gnClients.forEach((client, idx) => {
+    const card = document.createElement('div');
+    card.className = 'gn-client-card' + (client.hasOutput ? ' has-output' : '');
+    card.id = 'gn-card-' + client.id;
+
+    // Header
+    const hdr = document.createElement('div');
+    hdr.className = 'gn-client-header';
+    hdr.onclick = (e) => {
+      if (e.target.classList.contains('gn-client-remove')) return;
+      client.isOpen = !client.isOpen;
+      body.classList.toggle('open', client.isOpen);
+      toggle.textContent = client.isOpen ? '▴ collapse' : '▾ expand';
+    };
+
+    const num = document.createElement('div');
+    num.className = 'gn-client-num';
+    num.textContent = idx + 1;
+
+    const nameDisplay = document.createElement('div');
+    nameDisplay.className = 'gn-client-name-display';
+    nameDisplay.id = 'gn-name-display-' + client.id;
+    nameDisplay.textContent = client.name || 'Client ' + (idx + 1);
+
+    const status = document.createElement('div');
+    status.className = 'gn-client-status' + (client.hasOutput ? ' done' : '');
+    status.id = 'gn-status-' + client.id;
+    status.textContent = client.hasOutput ? '✓ Generated' : '';
+
+    const toggle = document.createElement('div');
+    toggle.className = 'gn-client-toggle';
+    toggle.textContent = client.isOpen ? '▴ collapse' : '▾ expand';
+
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'gn-client-remove';
+    removeBtn.title = 'Remove client';
+    removeBtn.textContent = '✕';
+    removeBtn.onclick = (e) => { e.stopPropagation(); gnRemoveClient(client.id); };
+
+    hdr.appendChild(num);
+    hdr.appendChild(nameDisplay);
+    hdr.appendChild(status);
+    hdr.appendChild(toggle);
+    hdr.appendChild(removeBtn);
+    card.appendChild(hdr);
+
+    // Body
+    const body = document.createElement('div');
+    body.className = 'gn-client-body' + (client.isOpen ? ' open' : '');
+
+    // Name input
+    const nameLabel = document.createElement('div');
+    nameLabel.className = 'gn-section-label';
+    nameLabel.textContent = 'Client First Name';
+    body.appendChild(nameLabel);
+
+    const nameInput = document.createElement('input');
+    nameInput.className = 'gn-input';
+    nameInput.placeholder = 'e.g. Marcus';
+    nameInput.value = client.name;
+    nameInput.oninput = () => {
+      client.name = nameInput.value;
+      nameDisplay.textContent = client.name || 'Client ' + (idx + 1);
+    };
+    body.appendChild(nameInput);
+
+    // ── Context-aware response fields ──────────────────
+    const hasAnyActivity = gnState.actTopic || gnState.actReading || gnState.actMindfulness;
+
+    if (hasAnyActivity) {
+      const respSectionLabel = document.createElement('div');
+      respSectionLabel.className = 'gn-section-label';
+      respSectionLabel.style.marginTop = '8px';
+      respSectionLabel.textContent = 'Client Responses';
+      body.appendChild(respSectionLabel);
+
+      const respHintGlobal = document.createElement('div');
+      respHintGlobal.className = 'gn-hint';
+      respHintGlobal.textContent = 'Write in complete sentences — pasted verbatim into output.';
+      body.appendChild(respHintGlobal);
+
+      const respWrap = document.createElement('div');
+      respWrap.style.cssText = 'display:flex;flex-direction:column;gap:10px;';
+
+      if (gnState.actTopic) {
+        const topicLabel = gnState.topic && gnState.topic.trim()
+          ? `Topic discussion — "${gnState.topic.trim()}"`
+          : 'Topic discussion';
+        const name = client.name && client.name.trim() ? client.name.trim() : '[Client]';
+        const topic = gnState.topic && gnState.topic.trim() ? gnState.topic.trim() : '[topic]';
+        const topicPrefix = `- ${name} was engaged in topic discussion of "${topic}" AEB answering the questions when prompted and responding to group discussion. ${name} shared that`;
+        const topicField = gnMakeRespField(topicLabel, topicPrefix, client.responseTopic, v => { client.responseTopic = v; });
+        respWrap.appendChild(topicField);
+      }
+
+      if (gnState.actReading) {
+        const name = client.name && client.name.trim() ? client.name.trim() : '[Client]';
+        const readingPrefix = `- ${name} was receptive to the daily reading and participated in group reflection on their sobriety. ${name} shared that`;
+        const readingField = gnMakeRespField('Daily reading / reflection', readingPrefix, client.responseReading, v => { client.responseReading = v; });
+        respWrap.appendChild(readingField);
+      }
+
+      if (gnState.actMindfulness) {
+        const name = client.name && client.name.trim() ? client.name.trim() : '[Client]';
+        const actText = gnState.mindfulnessActivity && gnState.mindfulnessActivity.trim() ? gnState.mindfulnessActivity.trim() : 'activity';
+        const mLabel = gnState.mindfulnessActivity && gnState.mindfulnessActivity.trim()
+          ? `Activity — ${gnState.mindfulnessActivity.trim()}`
+          : 'Activity';
+        const mindfulPrefix = `- ${name} participated in the ${actText} and demonstrated willingness to practice skills to manage stress related to addiction and recovery. ${name} shared that`;
+        const mindfulField = gnMakeRespField(mLabel, mindfulPrefix, client.responseMindfulness, v => { client.responseMindfulness = v; });
+        respWrap.appendChild(mindfulField);
+      }
+
+      body.appendChild(respWrap);
+    }
+
+    // ── Clinical Judgement ─────────────────────────────
+    const cjSectionLabel = document.createElement('div');
+    cjSectionLabel.className = 'gn-section-label';
+    cjSectionLabel.style.marginTop = '8px';
+    cjSectionLabel.textContent = 'Clinical Judgement';
+    body.appendChild(cjSectionLabel);
+
+    // Prognosis pills
+    const progPills = document.createElement('div');
+    progPills.className = 'gn-prog-pills';
+
+    const progOptions = [
+      { key: 'poor',  label: 'Poor' },
+      { key: 'fair',  label: 'Fair' },
+      { key: 'good',  label: 'Good' },
+    ];
+
+    const cjChallenge = document.createElement('div');
+    cjChallenge.className = 'gn-prog-challenge' + (client.cjPrognosis === 'good' ? ' visible' : '');
+    cjChallenge.textContent = '⚠ "Good" prognosis is difficult to defend on payer review — insurers use it to argue the client no longer needs this LOC. If selected, be specific in the text below about why continued treatment is still clinically necessary.';
+
+    const cjTA = document.createElement('textarea');
+    cjTA.className = 'gn-textarea';
+    cjTA.rows = 3;
+    cjTA.style.fontSize = '11px';
+    cjTA.placeholder = 'Select a prognosis above to auto-fill, then edit as needed…';
+    cjTA.value = client.cjText;
+    cjTA.oninput = () => { client.cjText = cjTA.value; };
+
+    progOptions.forEach(opt => {
+      const pill = document.createElement('button');
+      pill.className = 'gn-prog-pill' + (client.cjPrognosis === opt.key ? ` selected-${opt.key}` : '');
+      pill.textContent = opt.label;
+      pill.onclick = () => {
+        client.cjPrognosis = opt.key;
+        progPills.querySelectorAll('.gn-prog-pill').forEach(p => p.className = 'gn-prog-pill');
+        pill.className = `gn-prog-pill selected-${opt.key}`;
+        cjChallenge.classList.toggle('visible', opt.key === 'good');
+        // Auto-fill text if not already customized
+        const name = client.name && client.name.trim() ? client.name.trim() : 'Client';
+        cjTA.value = gnCJDefaults(opt.key, name);
+        client.cjText = cjTA.value;
+      };
+      progPills.appendChild(pill);
+    });
+
+    body.appendChild(progPills);
+    body.appendChild(cjChallenge);
+    body.appendChild(cjTA);
+
+    card.appendChild(body);
+    list.appendChild(card);
+  });
+}
+
+function gnMakeRespField(activityLabel, prefix, value, onInput) {
+  const wrap = document.createElement('div');
+  wrap.className = 'gn-resp-activity';
+
+  const lbl = document.createElement('div');
+  lbl.className = 'gn-resp-activity-label';
+  lbl.textContent = activityLabel;
+  wrap.appendChild(lbl);
+
+  const sentWrap = document.createElement('div');
+  sentWrap.className = 'gn-sent-wrap';
+
+  const prefixEl = document.createElement('div');
+  prefixEl.className = 'gn-sent-prefix';
+  prefixEl.textContent = prefix;
+  sentWrap.appendChild(prefixEl);
+
+  const ta = document.createElement('textarea');
+  ta.className = 'gn-sent-input';
+  ta.value = value || '';
+  ta.placeholder = '…continue the sentence here';
+  ta.oninput = () => onInput(ta.value);
+  sentWrap.appendChild(ta);
+
+  wrap.appendChild(sentWrap);
+  return wrap;
+}
+
+const GN_CJ_TEXT = {
+  poor: (name) => `Based on participation in group and individual counseling sessions, ${name}'s prognosis is poor. ${name} continues to demonstrate significant barriers to engagement and has not yet made substantive progress toward treatment goals. ${name} would benefit from continuing at this LOC to address behaviors that could lead back to unmanageability, develop relapse prevention skills, and build motivation for sustained recovery.`,
+  fair: (name) => `Based on participation in group and individual counseling sessions, ${name}'s prognosis is fair. ${name} is demonstrating gradual progress but continues to present with clinical needs that require the current level of care. ${name} would benefit from continuing at this LOC to further address and change behaviors that could lead back to unmanageability, utilizing a relapse prevention plan, developing coping and stress management skills, and expanding their sober support network.`,
+  good: (name) => `Based on participation in group and individual counseling sessions, ${name}'s prognosis is good. ${name} continues to benefit from the structure and clinical support of this LOC as they consolidate recovery skills and prepare for step-down. Continued treatment at this level is clinically indicated to reinforce gains and reduce risk of relapse prior to transition.`,
+};
+
+function gnCJDefaults(prognosis, name) {
+  const fn = GN_CJ_TEXT[prognosis];
+  return fn ? fn(name) : '';
+}
+
+function gnBuildIntervention() {
+  const s = gnState;
+  const ratio = `${s.ratioClients || '?'}:${s.ratioStaff || '?'}`;
+  const lines = [];
+
+  lines.push(`- Group Ratio (Clients:Staff): ${ratio}`);
+
+  if (s.actRules) {
+    lines.push('- Counselor reviewed group rules to set foundation for group session and set expectations for group members.');
+  }
+
+  if (s.actTopic && s.topic && s.topic.trim()) {
+    lines.push(`- Counselor facilitated discussion based on the topic of ${s.topic.trim()}.`);
+  } else if (s.actTopic) {
+    lines.push('- Counselor facilitated discussion based on the topic of [topic not specified].');
+  }
+
+  if (s.actReading) {
+    lines.push('- Counselor facilitated discussion based on a daily reading used to reflect on the client\'s sobriety.');
+  }
+
+  if (s.actMindfulness) {
+    const actText = (s.mindfulnessActivity && s.mindfulnessActivity.trim()) ? s.mindfulnessActivity.trim() : 'activity';
+    const benefitText = (s.mindfulnessBenefit && s.mindfulnessBenefit.trim()) ? s.mindfulnessBenefit.trim() : 'help the client manage stress related to addiction and recovery';
+    lines.push(`- Counselor facilitated interactive ${actText} to ${benefitText}.`);
+  }
+
+  if (s.techMI || s.techCBT) {
+    let techLine = '- Counselor ';
+    if (s.techMI && s.techCBT) {
+      techLine += 'utilized MI techniques by working with clients on reframing strengths and weaknesses and how those strengths can be used in relapse prevention and utilized CBT techniques by assisting clients in identifying unhealthy thought patterns and how these affect their behavior.';
+    } else if (s.techMI) {
+      techLine += 'utilized MI techniques by working with clients on reframing strengths and weaknesses and how those strengths can be used in relapse prevention.';
+    } else {
+      techLine += 'utilized CBT techniques by assisting clients in identifying unhealthy thought patterns and how these affect their behavior.';
+    }
+    lines.push(techLine);
+  }
+
+  return lines.join('\n');
+}
+
+function gnBuildResponse(client) {
+  const s = gnState;
+  const name = client.name && client.name.trim() ? client.name.trim() : 'Client';
+  const lines = [];
+
+  if (s.actRules) {
+    lines.push(`- ${name} reviewed group rules.`);
+  }
+
+  if (s.actTopic) {
+    const topic = s.topic && s.topic.trim() ? s.topic.trim() : '[topic]';
+    const shared = client.responseTopic && client.responseTopic.trim()
+      ? client.responseTopic.trim()
+      : '[client response not documented]';
+    lines.push(`- ${name} was engaged in topic discussion of "${topic}" AEB answering the questions when prompted and responding to group discussion. ${name} shared that ${shared}`);
+  }
+
+  if (s.actReading) {
+    const readingResp = client.responseReading && client.responseReading.trim()
+      ? ` ${name} shared that ${client.responseReading.trim()}`
+      : '';
+    lines.push(`- ${name} was receptive to the daily reading and participated in group reflection on their sobriety.${readingResp}`);
+  }
+
+  if (s.actMindfulness) {
+    const actText = (s.mindfulnessActivity && s.mindfulnessActivity.trim()) ? s.mindfulnessActivity.trim() : 'activity';
+    const mindfulResp = client.responseMindfulness && client.responseMindfulness.trim()
+      ? ` ${name} shared that ${client.responseMindfulness.trim()}`
+      : '';
+    lines.push(`- ${name} participated in the ${actText} and demonstrated willingness to practice skills to manage stress related to addiction and recovery.${mindfulResp}`);
+  }
+
+  if (s.techMI || s.techCBT) {
+    let techLine = `- ${name} was receptive to `;
+    if (s.techMI && s.techCBT) {
+      techLine += 'MI and CBT techniques AEB identifying how they can stay motivated to change their behavior and recognizing unhealthy thought patterns that contribute to addictive behaviors.';
+    } else if (s.techMI) {
+      techLine += 'MI techniques AEB identifying how they can stay motivated to change their behavior.';
+    } else {
+      techLine += 'CBT techniques AEB identifying unhealthy thought patterns and how these affect their behavior.';
+    }
+    lines.push(techLine);
+  }
+
+  const cj = client.cjText && client.cjText.trim()
+    ? client.cjText.trim()
+    : gnCJDefaults('fair', name);
+
+  lines.push(`- Clinical Judgement: ${cj}`);
+
+  return lines.join('\n');
+}
+
+function gnCopyIntervention(btn) {
+  doCopy(gnState.interventionOutput || '', btn);
+}
+
+function gnShowInputs() {
+  document.getElementById('gn-output-area').style.display = 'none';
+  document.getElementById('gn-clients-area').style.display = 'flex';
+}
+
+function gnRenderOutputView() {
+  const list = document.getElementById('gn-output-list');
+  list.innerHTML = '';
+
+  // ── Intervention block ──────────────────────────
+  const intBlock = document.createElement('div');
+  intBlock.className = 'gn-out-intervention';
+
+  const intLabelRow = document.createElement('div');
+  intLabelRow.className = 'gn-out-intervention-copy';
+  const intTitle = document.createElement('div');
+  intTitle.style.cssText = 'display:flex;flex-direction:column;gap:2px;';
+  const intTopLabel = document.createElement('div');
+  intTopLabel.className = 'gn-out-intervention-label';
+  intTopLabel.textContent = 'Intervention';
+  const intSub = document.createElement('div');
+  intSub.style.cssText = 'font-size:11px;color:#7ec8a0;';
+  intSub.textContent = 'Copy once — same for every client';
+  intTitle.appendChild(intTopLabel);
+  intTitle.appendChild(intSub);
+  const intCopyBtn = document.createElement('button');
+  intCopyBtn.className = 'gn-out-copy-btn';
+  intCopyBtn.style.cssText = 'background:#2a5c42;color:#7ec8a0;border:1px solid #2a5c42;';
+  intCopyBtn.textContent = 'Copy';
+  intCopyBtn.onmouseover = () => { intCopyBtn.style.background = '#1e4d38'; };
+  intCopyBtn.onmouseout = () => { intCopyBtn.style.background = '#2a5c42'; };
+  intCopyBtn.onclick = () => {
+    doCopy(gnState.interventionOutput, intCopyBtn);
+  };
+  intLabelRow.appendChild(intTitle);
+  intLabelRow.appendChild(intCopyBtn);
+  intBlock.appendChild(intLabelRow);
+
+  const intBox = document.createElement('div');
+  intBox.className = 'gn-out-int-box';
+  intBox.textContent = gnState.interventionOutput;
+  intBlock.appendChild(intBox);
+  list.appendChild(intBlock);
+
+  // ── Divider ─────────────────────────────────────
+  const divider = document.createElement('div');
+  divider.className = 'gn-out-divider';
+  divider.textContent = `${gnClients.length} client response${gnClients.length === 1 ? '' : 's'} — copy one at a time`;
+  list.appendChild(divider);
+
+  // ── Per-client response blocks ───────────────────
+  gnClients.forEach((client, idx) => {
+    const block = document.createElement('div');
+    block.className = 'gn-out-client';
+
+    const hdr = document.createElement('div');
+    hdr.className = 'gn-out-client-header';
+
+    const nameWrap = document.createElement('div');
+    nameWrap.className = 'gn-out-client-name';
+
+    const num = document.createElement('div');
+    num.className = 'gn-client-num';
+    num.textContent = idx + 1;
+
+    const nameEl = document.createElement('div');
+    nameEl.style.cssText = 'font-size:13px;font-weight:600;color:var(--text);';
+    nameEl.textContent = client.name && client.name.trim() ? client.name.trim() : 'Client ' + (idx + 1);
+
+    const progBadge = document.createElement('div');
+    if (client.cjPrognosis) {
+      const colors = { poor: '#c0392b', fair: '#d97706', good: '#2d6a4f' };
+      progBadge.style.cssText = `font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;padding:2px 7px;border-radius:3px;background:${client.cjPrognosis === 'poor' ? '#fff0f0' : client.cjPrognosis === 'good' ? 'var(--accent-light)' : 'var(--warning-bg)'};color:${colors[client.cjPrognosis]};border:1px solid ${colors[client.cjPrognosis]}30;`;
+      progBadge.textContent = client.cjPrognosis.charAt(0).toUpperCase() + client.cjPrognosis.slice(1);
+    }
+
+    nameWrap.appendChild(num);
+    nameWrap.appendChild(nameEl);
+    if (client.cjPrognosis) nameWrap.appendChild(progBadge);
+
+    const copyBtn = document.createElement('button');
+    copyBtn.className = 'gn-out-copy-btn';
+    copyBtn.textContent = 'Copy Response';
+    copyBtn.onclick = () => doCopy(client.responseOutput, copyBtn);
+
+    hdr.appendChild(nameWrap);
+    hdr.appendChild(copyBtn);
+    block.appendChild(hdr);
+
+    const resBox = document.createElement('div');
+    resBox.className = 'gn-out-client-box';
+    resBox.textContent = client.responseOutput;
+    block.appendChild(resBox);
+
+    list.appendChild(block);
+  });
+}
+
+function gnGenerateAll() {
+  gnState.interventionOutput = gnBuildIntervention();
+  gnClients.forEach(client => {
+    client.responseOutput = gnBuildResponse(client);
+    client.hasOutput = true;
+  });
+
+  gnRenderOutputView();
+
+  // Switch to output view
+  document.getElementById('gn-clients-area').style.display = 'none';
+  document.getElementById('gn-output-area').style.display = 'flex';
+}
+
+function gnReset() {
+  gnState = {
+    date: new Date().toISOString().split('T')[0],
+    counselor: '',
+    ratioClients: '',
+    ratioStaff: '',
+    actRules: true,
+    actTopic: false,
+    topic: '',
+    actReading: false,
+    actMindfulness: false,
+    mindfulnessActivity: '',
+    mindfulnessBenefit: '',
+    techMI: false,
+    techCBT: false,
+    interventionOutput: '',
+  };
+  const intPanel = document.getElementById('gn-intervention-panel');
+  if (intPanel) intPanel.style.display = 'none';
+  const intBox = document.getElementById('gn-intervention-output');
+  if (intBox) intBox.textContent = '';
+  document.getElementById('gn-output-area').style.display = 'none';
+  document.getElementById('gn-clients-area').style.display = 'flex';
+  // Reset setup panel inputs
+  const dateEl = document.getElementById('gn-date');
+  if (dateEl) dateEl.value = gnState.date;
+  const counselorEl = document.getElementById('gn-counselor');
+  if (counselorEl) counselorEl.value = '';
+  const rcEl = document.getElementById('gn-ratio-clients');
+  if (rcEl) rcEl.value = '';
+  const rsEl = document.getElementById('gn-ratio-staff');
+  if (rsEl) rsEl.value = '';
+  const ratioWarn = document.getElementById('gn-ratio-warning');
+  if (ratioWarn) ratioWarn.classList.remove('visible');
+  ['gn-act-rules','gn-act-topic','gn-act-reading','gn-act-mindfulness','gn-tech-mi','gn-tech-cbt'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.checked = id === 'gn-act-rules';
+  });
+  document.getElementById('gn-topic-wrap').style.display = 'none';
+  document.getElementById('gn-mindfulness-wrap').style.display = 'none';
+  const topicEl = document.getElementById('gn-topic');
+  if (topicEl) topicEl.value = '';
+  const maEl = document.getElementById('gn-mindfulness-activity');
+  if (maEl) maEl.value = '';
+  const mbEl = document.getElementById('gn-mindfulness-benefit');
+  if (mbEl) mbEl.value = '';
+  gnInitClients(0);
+}
+
+// Initialize group note on load
+document.addEventListener('DOMContentLoaded', function() {
+  const dateEl = document.getElementById('gn-date');
+  if (dateEl) dateEl.value = gnState.date;
+  gnInitClients(0);
+});
+
+// ═══════════════════════════════════════════════════
 function doReset() {
   document.getElementById('resetModal').style.display = 'none';
 
@@ -4780,6 +5924,9 @@ function doReset() {
 
   // Reset session note
   snClear();
+
+  // Reset group notes
+  gnReset();
 
   // Go back to tab 1
   switchTab(1);
@@ -4964,6 +6111,54 @@ function fillSampleClient() {
   snState.siDenied = true;
   document.getElementById('sn-hi').checked = true;
   snState.hiDenied = true;
+
+  // ── GROUP NOTE ──
+  document.getElementById('gn-date').value = today;
+  gnState.date = today;
+  document.getElementById('gn-counselor').value = 'Sarah M.';
+  gnState.counselor = 'Sarah M.';
+  document.getElementById('gn-ratio-clients').value = 4;
+  gnState.ratioClients = 4;
+  document.getElementById('gn-ratio-staff').value = 2;
+  gnState.ratioStaff = 2;
+  document.getElementById('gn-act-rules').checked = true;
+  gnState.actRules = true;
+  document.getElementById('gn-act-topic').checked = true;
+  gnState.actTopic = true;
+  document.getElementById('gn-topic-wrap').style.display = 'block';
+  document.getElementById('gn-topic').value = 'Anxiety and Recovery';
+  gnState.topic = 'Anxiety and Recovery';
+  document.getElementById('gn-act-reading').checked = true;
+  gnState.actReading = true;
+  document.getElementById('gn-act-mindfulness').checked = true;
+  gnState.actMindfulness = true;
+  document.getElementById('gn-mindfulness-wrap').style.display = 'flex';
+  document.getElementById('gn-mindfulness-activity').value = 'box breathing exercise';
+  gnState.mindfulnessActivity = 'box breathing exercise';
+  document.getElementById('gn-mindfulness-benefit').value = 'help clients manage anxiety and cravings in the moment';
+  gnState.mindfulnessBenefit = 'help clients manage anxiety and cravings in the moment';
+  document.getElementById('gn-tech-mi').checked = true;
+  gnState.techMI = true;
+  document.getElementById('gn-tech-cbt').checked = true;
+  gnState.techCBT = true;
+  gnInitClients(4);
+  const gnSampleResponses = [
+    { name: 'Marcus', responseTopic: 'he experiences significant anxiety when facing occupational stress and has historically used alcohol to cope. He identified three alternative coping strategies he plans to practice this week.', responseReading: 'the reading resonated with him and he shared that he has used substances to "quiet" his thoughts for years.', responseMindfulness: 'he found the box breathing exercise helpful and reported feeling calmer after practicing it.', cjPrognosis: 'fair' },
+    { name: 'James', responseTopic: 'he struggles with anxiety in social situations and tends to isolate, which increases his risk of relapse. He acknowledged the connection between isolation and substance use.', responseReading: 'he was engaged and shared that the reading reminded him of the importance of staying connected to support.', responseMindfulness: 'he was receptive to the activity and stated he would use it when feeling overwhelmed.', cjPrognosis: 'fair' },
+    { name: 'Lisa', responseTopic: 'anxiety has been a primary driver of her substance use and she expressed a desire to develop healthier coping mechanisms before discharge.', responseReading: 'she appreciated the reading and shared a personal connection to the material regarding acceptance.', responseMindfulness: 'she actively participated and expressed interest in continuing to practice the technique independently.', cjPrognosis: 'good' },
+    { name: 'Devon', responseTopic: 'he was reluctant to engage initially but shared that anxiety around family relationships is a significant trigger for his use.', responseReading: 'he was minimally engaged during the reading portion of group and required redirection on one occasion.', responseMindfulness: 'he participated with prompting and acknowledged the technique could be useful though expressed skepticism.', cjPrognosis: 'poor' },
+  ];
+  gnSampleResponses.forEach((data, i) => {
+    if (gnClients[i]) {
+      gnClients[i].name = data.name;
+      gnClients[i].responseTopic = data.responseTopic;
+      gnClients[i].responseReading = data.responseReading;
+      gnClients[i].responseMindfulness = data.responseMindfulness;
+      gnClients[i].cjPrognosis = data.cjPrognosis;
+      gnClients[i].cjText = gnCJDefaults(data.cjPrognosis, data.name);
+    }
+  });
+  gnRenderClients();
 
   // ── Flash badge ──
   const badge = document.getElementById('clinicalBadge');
