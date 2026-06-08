@@ -2117,16 +2117,15 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 
     <!-- RIGHT: Formatted output -->
     <div style="display:flex;flex-direction:column;background:var(--output-bg);overflow:hidden;">
-      <div style="padding:12px 20px;border-bottom:1px solid var(--border);background:var(--surface);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+      <div style="padding:12px 20px;border-bottom:1px solid var(--border);background:var(--surface);display:flex;align-items:center;flex-shrink:0;">
         <span style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-secondary);">Formatted Output</span>
-        <button class="tab-copy-btn" id="itpCopyBtn" onclick="copyITPOutput(this)" style="display:none">Copy ITP Text</button>
       </div>
       <div style="flex:1;overflow-y:auto;min-height:0;padding:20px;">
         <div id="itpOutputPlaceholder" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:10px;color:var(--text-secondary);text-align:center;">
           <div style="font-size:28px;opacity:0.2">📋</div>
           <div style="font-size:13px;line-height:1.6;">Add goals and click <strong>Format for ITP</strong><br>to generate formatted output.</div>
         </div>
-        <div class="itp-output-box" id="itpOutputBox" style="display:none;background:white;border:1px solid var(--border);border-radius:6px;padding:20px 24px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;line-height:1.75;color:var(--text);white-space:pre-wrap;min-height:200px;"></div>
+        <div id="itpOutputBoxes" style="display:none;display:flex;flex-direction:column;gap:20px;"></div>
       </div>
     </div><!-- /right panel -->
 
@@ -4567,30 +4566,27 @@ function rebuildSection(section) {
 
 function formatITPOutput(btn) {
   const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  let output = '';
   const unchanged = [];
   const today = new Date();
   const todayStr = (today.getMonth()+1) + '/' + today.getDate() + '/' + today.getFullYear();
+
+  // Build structured output: array of { sectionLabel, goalLetter, goalText, objectives:[], interventions:[] }
+  const goals = [];
 
   ['A','B','C'].forEach(section => {
     const cats = GOALS_DATA.filter(c => c.section === section && itpSelected[section].has(c.id));
     const customs = itpCustomGoals[section] || [];
     if (!cats.length && !customs.length) return;
-    output += `${ITP_SECTION_LABELS[section].toUpperCase()}\n${'─'.repeat(48)}\n\n`;
     let letterIdx = 0;
 
-    cats.forEach((cat, idx) => {
-      const letter = letters[letterIdx];
-      letterIdx++;
+    cats.forEach(cat => {
+      const letter = letters[letterIdx++];
       const gta = document.getElementById(`itp-goal-${cat.id}`);
       const goalText = gta ? gta.value.trim() : cat.goals[0];
-
       if (gta && gta.classList.contains('unchanged')) {
         unchanged.push(`${ITP_SECTION_LABELS[section].split('—')[0].trim()} — Goal ${letter} (${cat.name})`);
       }
-
-      output += `Goal ${letter}: ${goalText} (START DATE ${todayStr})\n\n`;
-
+      const objectives = [], interventions = [];
       cat.pairs.forEach((pair, i) => {
         const cb = document.getElementById(`itp-pair-${cat.id}-${i}`);
         if (!cb || !cb.checked) return;
@@ -4598,33 +4594,30 @@ function formatITPOutput(btn) {
         const targetDate = targetInput && targetInput.value
           ? (() => { const d = new Date(targetInput.value + 'T12:00:00'); return (d.getMonth()+1)+'/'+d.getDate()+'/'+d.getFullYear(); })()
           : '__/__/____';
-        output += `   Objective ${i+1}${letter}: ${pair.o} (ESTABLISHED ${todayStr}) (TARGET DATE ${targetDate})\n`;
-        output += `   Intervention ${i+1}${letter}: ${pair.i}\n\n`;
+        objectives.push(`Objective ${i+1}${letter}: ${pair.o} (ESTABLISHED ${todayStr}) (TARGET DATE ${targetDate})`);
+        interventions.push(`Intervention ${i+1}${letter}: ${pair.i}`);
       });
+      goals.push({ sectionLabel: ITP_SECTION_LABELS[section], goalLetter: letter, catName: cat.name, goalText, objectives, interventions });
     });
 
     customs.forEach((customCat, customIdx) => {
-      const letter = letters[letterIdx];
-      letterIdx++;
+      const letter = letters[letterIdx++];
       const catId = `__custom_${section}_${customIdx}`;
       const goalText = customCat.goalText || '[Custom goal text]';
-
-      output += `Goal ${letter}: ${goalText} (START DATE ${todayStr})\n\n`;
-
+      const objectives = [], interventions = [];
       customCat.pairs.forEach((pair, pi) => {
         if (pair.include === false) return;
         const targetDate = pair.targetDate
           ? (() => { const d = new Date(pair.targetDate + 'T12:00:00'); return (d.getMonth()+1)+'/'+d.getDate()+'/'+d.getFullYear(); })()
           : '__/__/____';
-        output += `   Objective ${pi+1}${letter}: ${pair.o} (ESTABLISHED ${todayStr}) (TARGET DATE ${targetDate})\n`;
-        output += `   Intervention ${pi+1}${letter}: ${pair.i}\n\n`;
+        objectives.push(`Objective ${pi+1}${letter}: ${pair.o} (ESTABLISHED ${todayStr}) (TARGET DATE ${targetDate})`);
+        interventions.push(`Intervention ${pi+1}${letter}: ${pair.i}`);
       });
+      goals.push({ sectionLabel: ITP_SECTION_LABELS[section], goalLetter: letter, catName: customCat.name || 'Custom', goalText, objectives, interventions });
     });
-
-    output += '\n';
   });
 
-  // Show or hide SMART warning
+  // Handle SMART warning
   const warning = document.getElementById('itpSmartWarning');
   const list = document.getElementById('itpSmartWarningList');
   if (unchanged.length) {
@@ -4635,19 +4628,82 @@ function formatITPOutput(btn) {
     warning.classList.remove('visible');
   }
 
-  const box = document.getElementById('itpOutputBox');
   const placeholder = document.getElementById('itpOutputPlaceholder');
-  const copyBtn = document.getElementById('itpCopyBtn');
-  box.textContent = output.trim();
-  box.style.display = output.trim() ? 'block' : 'none';
-  if (placeholder) placeholder.style.display = output.trim() ? 'none' : 'flex';
-  if (copyBtn) copyBtn.style.display = output.trim() ? 'inline-flex' : 'none';
+  const boxesContainer = document.getElementById('itpOutputBoxes');
+
+  if (!goals.length) {
+    if (placeholder) placeholder.style.display = 'flex';
+    boxesContainer.style.display = 'none';
+    boxesContainer.innerHTML = '';
+    return;
+  }
+
+  placeholder.style.display = 'none';
+  boxesContainer.style.display = 'flex';
+  boxesContainer.innerHTML = '';
+
+  // Group goals by section for headers
+  let lastSection = null;
+  goals.forEach(g => {
+    // Section header
+    if (g.sectionLabel !== lastSection) {
+      lastSection = g.sectionLabel;
+      const secHdr = document.createElement('div');
+      secHdr.style.cssText = 'font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--accent);padding-bottom:6px;border-bottom:1px solid var(--accent-light);margin-top:4px;';
+      secHdr.textContent = g.sectionLabel;
+      boxesContainer.appendChild(secHdr);
+    }
+
+    // Goal label
+    const goalLabel = document.createElement('div');
+    goalLabel.style.cssText = 'font-size:11px;font-weight:600;color:var(--text-secondary);margin-bottom:6px;';
+    goalLabel.textContent = `Goal ${g.goalLetter} — ${g.catName}`;
+    boxesContainer.appendChild(goalLabel);
+
+    // Goal box
+    makeOutputBox(boxesContainer, 'Goal', `Goal ${g.goalLetter}: ${g.goalText} (START DATE ${todayStr})`);
+
+    // Objectives box (only if any selected)
+    if (g.objectives.length) {
+      makeOutputBox(boxesContainer, 'Objectives', g.objectives.join('\n'));
+    }
+
+    // Interventions box (only if any selected)
+    if (g.interventions.length) {
+      makeOutputBox(boxesContainer, 'Interventions', g.interventions.join('\n'));
+    }
+
+    // Spacer between goals
+    const spacer = document.createElement('div');
+    spacer.style.height = '4px';
+    boxesContainer.appendChild(spacer);
+  });
+
   if (btn) { const orig = btn.textContent; btn.textContent = '✓ Formatted'; btn.classList.add('copied'); setTimeout(()=>{btn.textContent=orig;btn.classList.remove('copied');},1800); }
 }
 
-function copyITPOutput(btn) {
-  const text = document.getElementById('itpOutputBox').textContent;
-  if (text) doCopy(text, btn);
+function makeOutputBox(container, label, text) {
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'margin-bottom:8px;';
+
+  const header = document.createElement('div');
+  header.style.cssText = 'display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;';
+  const lbl = document.createElement('span');
+  lbl.style.cssText = 'font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--accent);';
+  lbl.textContent = label;
+  const copyBtn = document.createElement('button');
+  copyBtn.className = 'section-copy-btn';
+  copyBtn.textContent = 'Copy';
+  copyBtn.onclick = () => doCopy(text, copyBtn);
+  header.appendChild(lbl);
+  header.appendChild(copyBtn);
+  wrap.appendChild(header);
+
+  const box = document.createElement('div');
+  box.style.cssText = 'background:white;border:1px solid var(--border);border-radius:5px;padding:10px 12px;font-family:"IBM Plex Mono",monospace;font-size:11px;line-height:1.7;color:var(--text);white-space:pre-wrap;';
+  box.textContent = text;
+  wrap.appendChild(box);
+  container.appendChild(wrap);
 }
 
 // ═══════════════════════════════════════════════════
@@ -4716,8 +4772,8 @@ function doReset() {
   // Reset ITP
   ['A','B','C'].forEach(s => { itpSelected[s].clear(); itpCustomGoals[s] = []; });
   renderITPGoals();
-  const itpBox = document.getElementById('itpOutputBox');
-  if (itpBox) { itpBox.textContent = ''; itpBox.style.display = 'none'; }
+  const itpBox = document.getElementById('itpOutputBoxes');
+  if (itpBox) { itpBox.innerHTML = ''; itpBox.style.display = 'none'; }
   const itpPlaceholder = document.getElementById('itpOutputPlaceholder');
   if (itpPlaceholder) itpPlaceholder.style.display = 'flex';
   const itpCopyBtn = document.getElementById('itpCopyBtn');
