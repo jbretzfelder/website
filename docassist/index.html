@@ -195,6 +195,106 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   box-shadow: none;
   transform: none;
 }
+
+/* ─── DISCHARGE TOOL ──────────────────────── */
+.ds-pill {
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-secondary);
+  font-size: 12px;
+  cursor: pointer;
+  font-family: 'IBM Plex Sans', sans-serif;
+  transition: all .15s;
+}
+.ds-pill:hover { border-color: var(--accent); color: var(--accent); }
+.ds-pill.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.ds-output-block {
+  background: var(--output-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-bottom: 10px;
+  position: relative;
+}
+.ds-out-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+.ds-out-text {
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--text);
+  white-space: pre-wrap;
+  font-family: 'IBM Plex Mono', monospace;
+  min-height: 32px;
+}
+.ds-out-empty {
+  color: var(--text-secondary);
+  font-style: italic;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 12px;
+}
+.ds-copy-btn {
+  margin-top: 8px;
+  padding: 4px 12px;
+  font-size: 11px;
+  background: var(--accent-light);
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: 'IBM Plex Sans', sans-serif;
+}
+.ds-copy-btn:hover { background: var(--accent); color: #fff; }
+.ds-phase-entry {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px 12px;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+.ds-phase-entry select, .ds-phase-entry input {
+  font-size: 12px;
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface);
+  color: var(--text);
+  font-family: 'IBM Plex Sans', sans-serif;
+}
+.ds-phase-entry select:focus, .ds-phase-entry input:focus {
+  outline: none;
+  border-color: var(--border-focus);
+}
+.ds-phase-remove {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 2px 4px;
+  line-height: 1;
+  margin-left: auto;
+}
+.ds-phase-remove:hover { color: #c0392b; }
+.ds-skill-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text);
+  cursor: pointer;
+}
+.ds-skill-row input[type=checkbox] { accent-color: var(--accent); cursor: pointer; }
 .home-card-icon { font-size: 26px; margin-bottom: 2px; font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif; }
 .home-card-title {
   font-size: 13px;
@@ -1416,11 +1516,11 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         <div class="home-card-desc">Document group sessions with individual client responses from a single entry</div>
         <div class="home-card-arrow">Open →</div>
       </div>
-      <div class="home-card coming-soon">
-        <div class="home-card-badge">Coming Soon</div>
+      <div class="home-card" onclick="navigateTo('discharge')">
         <div class="home-card-icon">📤</div>
         <div class="home-card-title">Discharge Summary</div>
         <div class="home-card-desc">Structured discharge documentation covering treatment progress, goals, and aftercare plan</div>
+        <div class="home-card-arrow">Open →</div>
       </div>
       <div class="home-card coming-soon">
         <div class="home-card-badge">Coming Soon?</div>
@@ -2829,6 +2929,259 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   </div><!-- /gn-layout -->
 </div><!-- /view-group -->
 
+<!-- ═══ DISCHARGE SUMMARY VIEW ══════════════════════ -->
+<div id="view-discharge" class="tool-view">
+  <div class="tool-nav">
+    <button class="tool-nav-back" onclick="navigateTo('home')">← Back</button>
+    <span class="tool-nav-divider">|</span>
+    <span class="tool-nav-title">Discharge Summary</span>
+  </div>
+  <div style="display:flex;gap:16px;flex:1;min-height:0;padding:16px 16px 0 16px;">
+
+    <!-- LEFT PANEL: INPUTS -->
+    <div style="width:420px;min-width:340px;display:flex;flex-direction:column;gap:0;overflow-y:auto;padding-right:6px;">
+
+      <!-- Discharge Context -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:12px;">Discharge Context</div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+          <div>
+            <label class="form-label">Client First Name</label>
+            <input class="form-input" id="ds-client-name" type="text" placeholder="First name" oninput="dsState.clientName=this.value;dsRenderOutput()">
+          </div>
+          <div>
+            <label class="form-label">Date of Last Contact</label>
+            <input class="form-input" id="ds-last-contact-date" type="date" oninput="dsState.lastContactDate=this.value;dsRenderOutput();dsCalcDosageHours()">
+          </div>
+        </div>
+
+        <div style="margin-bottom:10px;">
+          <label class="form-label">Discharge Type</label>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
+            <button class="ds-pill" onclick="dsSetDischargeType('successful')" id="ds-dt-successful">Successful</button>
+            <button class="ds-pill" onclick="dsSetDischargeType('unsuccessful')" id="ds-dt-unsuccessful">Unsuccessful</button>
+          </div>
+          <div id="ds-subtype-wrap" style="display:none;margin-left:12px;padding-left:10px;border-left:2px solid var(--border);">
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:5px;">Reason</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;">
+              <button class="ds-pill ds-subpill" onclick="dsSetSubtype('admin')" id="ds-sub-admin">Administrative</button>
+              <button class="ds-pill ds-subpill" onclick="dsSetSubtype('asa')" id="ds-sub-asa">Left ASA</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-bottom:10px;">
+          <label class="form-label">Admission LOC <span style="font-size:10px;color:var(--text-secondary);font-weight:400;">(first LOC on admission)</span></label>
+          <select class="form-select" id="ds-admission-loc" onchange="dsState.admissionLoc=this.value;dsRenderOutput()">
+            <option value="">Select LOC</option>
+            <option value="3.7WM">3.7WM — Medically Monitored Inpatient WM</option>
+            <option value="3.7">3.7 — Medically Monitored Intensive Inpatient</option>
+            <option value="3.5">3.5 — Clinically Managed High-Intensity Residential</option>
+            <option value="2.5">2.5 — Partial Hospitalization Services</option>
+            <option value="2.1">2.1 — Intensive Outpatient Services</option>
+            <option value="1.0">1.0 — Standard Outpatient Services</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="form-label">Days in Treatment</label>
+          <input class="form-input" id="ds-days-tx" type="number" min="1" placeholder="e.g. 55" oninput="dsState.daysTx=this.value;dsRenderOutput()" style="width:120px;">
+        </div>
+      </div>
+
+      <!-- Dosage Hours Calculator -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:4px;">Dosage Hours</div>
+        <div style="font-size:11px;color:var(--text-secondary);margin-bottom:12px;">Calculated automatically from phase history. For Sublocade / Vivitrol field in Remarkable.</div>
+
+        <div id="ds-dh-breakdown" style="display:none;margin-bottom:10px;display:flex;flex-direction:column;gap:4px;"></div>
+
+        <div style="background:var(--accent-light);border:1px solid var(--accent);border-radius:6px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;">
+          <div>
+            <div style="font-size:10px;color:var(--accent);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px;">Total Dosage Hours</div>
+            <div id="ds-dh-result" style="font-size:22px;font-weight:600;color:var(--accent);font-family:'IBM Plex Mono',monospace;">—</div>
+            <div id="ds-dh-individual" style="font-size:10px;color:var(--text-secondary);margin-top:2px;font-family:'IBM Plex Mono',monospace;"></div>
+          </div>
+          <button class="ds-copy-btn" id="ds-dh-copy-btn" onclick="dscopyDosageHours()" style="display:none;">Copy</button>
+        </div>
+        <div id="ds-dh-op-note" style="display:none;margin-top:8px;font-size:11px;color:var(--warning-text);background:var(--warning-bg);border:1px solid var(--warning-border);border-radius:4px;padding:6px 10px;">⚠ 1.0 Standard Outpatient phase detected — additional time must be added manually.</div>
+      </div>
+
+      <!-- Phase History -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:4px;">Phase History</div>
+        <div style="font-size:11px;color:var(--text-secondary);margin-bottom:12px;">Add each phase in chronological order</div>
+
+        <div id="ds-phase-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px;"></div>
+
+        <button class="btn" onclick="dsAddPhase()" style="font-size:11px;padding:5px 12px;background:var(--accent-light);color:var(--accent);border:1px solid var(--accent);border-radius:5px;cursor:pointer;">+ Add Phase</button>
+      </div>
+
+      <!-- Status at Last Contact -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:12px;">Status at Last Contact</div>
+        <textarea class="form-textarea" id="ds-status-last-contact" rows="3" placeholder="Describe how the client presented and what they expressed at last contact…" oninput="dsState.statusLastContact=this.value;dsRenderOutput()" style="min-height:70px;"></textarea>
+      </div>
+
+      <!-- Eligibility to Return -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:12px;">Eligibility to Return</div>
+        <div style="display:flex;gap:6px;margin-bottom:10px;">
+          <button class="ds-pill" onclick="dsSetEligibility('eligible')" id="ds-elig-eligible">Eligible</button>
+          <button class="ds-pill" onclick="dsSetEligibility('ineligible')" id="ds-elig-ineligible">Ineligible</button>
+        </div>
+        <div id="ds-elig-comments-wrap" style="display:none;">
+          <label class="form-label">Eligibility Comments <span style="font-size:10px;color:var(--text-secondary);font-weight:400;">(required if ineligible)</span></label>
+          <textarea class="form-textarea" id="ds-elig-comments" rows="2" placeholder="Explain circumstances…" oninput="dsState.eligibilityComments=this.value;dsRenderOutput()" style="min-height:55px;"></textarea>
+        </div>
+      </div>
+
+      <!-- Treatment Response -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:12px;">Treatment Response</div>
+
+        <div style="margin-bottom:12px;">
+          <label class="form-label">Level of Success</label>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <button class="ds-pill" onclick="dsSetSuccessLevel('significant')" id="ds-sl-significant">Significant</button>
+            <button class="ds-pill" onclick="dsSetSuccessLevel('moderate')" id="ds-sl-moderate">Moderate</button>
+            <button class="ds-pill" onclick="dsSetSuccessLevel('marginal')" id="ds-sl-marginal">Marginal</button>
+            <button class="ds-pill" onclick="dsSetSuccessLevel('minimal')" id="ds-sl-minimal">Minimal</button>
+          </div>
+        </div>
+
+        <div style="margin-bottom:12px;">
+          <label class="form-label" style="margin-bottom:6px;">Skill Areas Addressed</label>
+          <div style="display:flex;flex-direction:column;gap:4px;" id="ds-skill-checkboxes">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <div>
+          <label class="form-label">Individualized Clinical Observations</label>
+          <textarea class="form-textarea" id="ds-clinical-obs" rows="3" placeholder="Client-specific behavioral observations, engagement patterns, notable progress or barriers…" oninput="dsState.clinicalObs=this.value;dsRenderOutput()" style="min-height:70px;"></textarea>
+        </div>
+      </div>
+
+      <!-- Aftercare -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:16px;">
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:12px;">Aftercare & Referral</div>
+
+        <div style="margin-bottom:10px;">
+          <label class="form-label">Recommended Step-Down LOC</label>
+          <select class="form-select" id="ds-stepdown-loc" onchange="dsState.stepdownLoc=this.value;dsRenderOutput()">
+            <option value="">Select LOC</option>
+            <option value="3.7WM">3.7WM — Medically Monitored Inpatient WM</option>
+            <option value="3.7">3.7 — Medically Monitored Intensive Inpatient</option>
+            <option value="3.5">3.5 — Clinically Managed High-Intensity Residential</option>
+            <option value="2.5">2.5 — Partial Hospitalization Services</option>
+            <option value="2.1">2.1 — Intensive Outpatient Services</option>
+            <option value="1.0">1.0 — Standard Outpatient Services</option>
+            <option value="none">No step-down recommended</option>
+          </select>
+        </div>
+
+        <div style="margin-bottom:10px;">
+          <label class="form-label">Transitioning To <span style="font-size:10px;color:var(--text-secondary);font-weight:400;">(facility name, address, phone)</span></label>
+          <textarea class="form-textarea" id="ds-transition-to" rows="2" placeholder="e.g. Light House, 5000 Sunbury Rd, Columbus, OH 43230, (614) 337-1986" oninput="dsState.transitionTo=this.value;dsRenderOutput()" style="min-height:55px;"></textarea>
+        </div>
+
+        <div style="margin-bottom:10px;">
+          <label class="form-label" style="margin-bottom:6px;">Aftercare Plan Elements</label>
+          <div style="display:flex;flex-direction:column;gap:4px;" id="ds-aftercare-checkboxes">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <div>
+          <label class="form-label">Additional Aftercare Notes</label>
+          <textarea class="form-textarea" id="ds-aftercare-notes" rows="2" placeholder="Any additional context for continuity of care or aftercare options…" oninput="dsState.aftercareNotes=this.value;dsRenderOutput()" style="min-height:55px;"></textarea>
+        </div>
+      </div>
+
+    </div><!-- /left panel -->
+
+    <!-- RIGHT PANEL: OUTPUT -->
+    <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:0;overflow-y:auto;">
+
+      <div style="background:var(--warning-bg);border:1px solid var(--warning-border);border-radius:6px;padding:8px 12px;margin-bottom:12px;font-size:11px;color:var(--warning-text);">
+        ⚠ Proofread all generated text before copying to Remarkable. Verify dates, names, and clinical details are accurate.
+      </div>
+
+      <!-- Status at Last Contact output -->
+      <div class="ds-output-block" id="ds-out-status">
+        <div class="ds-out-label">Status of the Client at Last Contact</div>
+        <div class="ds-out-text" id="ds-out-status-text"></div>
+        <button class="ds-copy-btn" onclick="dsCopyBlock('ds-out-status-text')">Copy</button>
+      </div>
+
+      <!-- Progress Summary output -->
+      <div class="ds-output-block" id="ds-out-progress">
+        <div class="ds-out-label">Progress Summary</div>
+        <div class="ds-out-text" id="ds-out-progress-text"></div>
+        <button class="ds-copy-btn" onclick="dsCopyBlock('ds-out-progress-text')">Copy</button>
+      </div>
+
+      <!-- Client Response output -->
+      <div class="ds-output-block" id="ds-out-response">
+        <div class="ds-out-label">Client's Response to Treatment and Transfer/Termination/Discharge</div>
+        <div class="ds-out-text" id="ds-out-response-text"></div>
+        <button class="ds-copy-btn" onclick="dsCopyBlock('ds-out-response-text')">Copy</button>
+      </div>
+
+      <!-- Continuity of Care output -->
+      <div class="ds-output-block" id="ds-out-coc">
+        <div class="ds-out-label">Continuity of Care / Referral Information</div>
+        <div class="ds-out-text" id="ds-out-coc-text"></div>
+        <button class="ds-copy-btn" onclick="dsCopyBlock('ds-out-coc-text')">Copy</button>
+      </div>
+
+      <!-- Aftercare Options output -->
+      <div class="ds-output-block" id="ds-out-aftercare">
+        <div class="ds-out-label">Aftercare Options</div>
+        <div class="ds-out-text" id="ds-out-aftercare-text"></div>
+        <button class="ds-copy-btn" onclick="dsCopyBlock('ds-out-aftercare-text')">Copy</button>
+      </div>
+
+      <!-- Eligibility to Return output -->
+      <div class="ds-output-block" id="ds-out-eligibility">
+        <div class="ds-out-label">Eligibility to Return Comments</div>
+        <div class="ds-out-text" id="ds-out-eligibility-text"></div>
+        <button class="ds-copy-btn" onclick="dsCopyBlock('ds-out-eligibility-text')">Copy</button>
+      </div>
+
+      <!-- Medication line output -->
+      <div class="ds-output-block" id="ds-out-meds">
+        <div class="ds-out-label">Client Given List of Medications</div>
+        <div class="ds-out-text" id="ds-out-meds-text">For medical questions please contact the Nursing Coordinator, Ashley Worley, at 937-813-1737 Ext 357.</div>
+        <button class="ds-copy-btn" onclick="dsCopyBlock('ds-out-meds-text')">Copy</button>
+      </div>
+
+      <!-- Complete in Remarkable reference card -->
+      <div style="background:#f3f4f3;border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:16px;">
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-secondary);margin-bottom:10px;">Complete Directly in Remarkable</div>
+        <div style="font-size:12px;color:var(--text-secondary);display:flex;flex-direction:column;gap:5px;">
+          <div style="display:flex;align-items:center;gap:8px;"><span style="width:6px;height:6px;border-radius:50%;background:var(--text-secondary);display:inline-block;flex-shrink:0;"></span>Admission ASAM LOC — check all LOCs client was admitted at</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span style="width:6px;height:6px;border-radius:50%;background:var(--text-secondary);display:inline-block;flex-shrink:0;"></span>Type of Discharge — Successful / Unsuccessful / Neutral / Referral / Assessment Only</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span style="width:6px;height:6px;border-radius:50%;background:var(--text-secondary);display:inline-block;flex-shrink:0;"></span>Voluntary and Involuntary Termination Status</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span style="width:6px;height:6px;border-radius:50%;background:var(--text-secondary);display:inline-block;flex-shrink:0;"></span>Eligibility to Return — select Eligible or Ineligible</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span style="width:6px;height:6px;border-radius:50%;background:var(--text-secondary);display:inline-block;flex-shrink:0;"></span>Presenting Problem — carries over automatically from ITP</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span style="width:6px;height:6px;border-radius:50%;background:var(--text-secondary);display:inline-block;flex-shrink:0;"></span>Copy of Transfer/Discharge Summary — Given to Client / Mailed / Neither</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span style="width:6px;height:6px;border-radius:50%;background:var(--text-secondary);display:inline-block;flex-shrink:0;"></span>Goals Addressed A/B/C — carry over automatically from ITP</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span style="width:6px;height:6px;border-radius:50%;background:var(--text-secondary);display:inline-block;flex-shrink:0;"></span>SNAP and Stages of Change</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span style="width:6px;height:6px;border-radius:50%;background:var(--text-secondary);display:inline-block;flex-shrink:0;"></span>Diagnosis — confirm or update; check "Author did not change the diagnosis" if unchanged</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span style="width:6px;height:6px;border-radius:50%;background:var(--text-secondary);display:inline-block;flex-shrink:0;"></span>ASAM Level of Care at Discharge</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span style="width:6px;height:6px;border-radius:50%;background:var(--text-secondary);display:inline-block;flex-shrink:0;"></span>Medication Reconciliation — verify and check each medication</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span style="width:6px;height:6px;border-radius:50%;background:var(--text-secondary);display:inline-block;flex-shrink:0;"></span>Client on Vivitrol / MAT — Yes / No / N/A</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span style="width:6px;height:6px;border-radius:50%;background:var(--text-secondary);display:inline-block;flex-shrink:0;"></span>Sublocade Dosage and Vivitrol / Dosage Hours (if applicable)</div>
+        </div>
+      </div>
+
+    </div><!-- /right panel -->
+  </div><!-- /layout -->
+</div><!-- /view-discharge -->
+
 <script>
 // ═══════════════════════════════════════════════════
 // LOC CONFIGURATION
@@ -3906,6 +4259,7 @@ function navigateTo(view) {
   document.querySelectorAll('.tool-view').forEach(v => v.classList.remove('active'));
   document.getElementById('view-' + view).classList.add('active');
   if (view === 'itp') renderAsamRef();
+  if (view === 'discharge') dsInit();
 }
 
 function switchTab(n) {
@@ -5861,6 +6215,587 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ═══════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════
+// DISCHARGE SUMMARY TOOL
+// ═══════════════════════════════════════════════════
+
+const DS_LOC_LABELS = {
+  '3.7WM': 'Woodhaven phase I Medically Monitored Intensive Inpatient Services WM',
+  '3.7':   'Woodhaven Medically Monitored Intensive Inpatient Services',
+  '3.5':   'Woodhaven phase II Clinically Managed High-Intensity Residential Services',
+  '2.5':   'Woodhaven phase III Partial Hospitalization Services',
+  '2.1':   'Woodhaven phase IV Intensive Outpatient Services',
+  '1.0':   'Woodhaven Standard Outpatient Services',
+};
+
+const DS_LOC_SHORT = {
+  '3.7WM': '3.7WM Medically Monitored Intensive Inpatient Services WM',
+  '3.7':   '3.7 Medically Monitored Intensive Inpatient Services',
+  '3.5':   '3.5 Clinically Managed High-Intensity Residential Services',
+  '2.5':   '2.5 Partial Hospitalization Services',
+  '2.1':   '2.1 Intensive Outpatient Services',
+  '1.0':   '1.0 Standard Outpatient Services',
+};
+
+const DS_SKILLS = [
+  'Conflict resolution skills',
+  'Prosocial skills',
+  'Anger management',
+  'Relapse prevention',
+  'CBT skills',
+  'Understanding the disease concept',
+  '12-step program integration/support',
+];
+
+const DS_AFTERCARE_ELEMENTS = [
+  'Attend 12-step meetings',
+  'Obtain a sponsor',
+  'Work the steps',
+  'Outpatient treatment',
+  'Individual counseling',
+  'Case management services',
+  'Sober living',
+  'Build sober support network',
+];
+
+let dsState = {
+  clientName: '',
+  lastContactDate: '',
+  dischargeType: '',
+  dischargeSubtype: '',
+  admissionLoc: '',
+  daysTx: '',
+  phases: [],
+  statusLastContact: '',
+  eligibility: '',
+  eligibilityComments: '',
+  successLevel: '',
+  skills: new Set(),
+  clinicalObs: '',
+  stepdownLoc: '',
+  transitionTo: '',
+  aftercareElements: new Set(),
+  aftercareNotes: '',
+};
+
+let dsPhaseCounter = 0;
+
+function dsInit() {
+  // Render skill checkboxes
+  const skillBox = document.getElementById('ds-skill-checkboxes');
+  skillBox.innerHTML = DS_SKILLS.map((s, i) => `
+    <label class="ds-skill-row">
+      <input type="checkbox" id="ds-skill-${i}" onchange="dsToggleSkill('${s}', this.checked)">
+      ${s}
+    </label>`).join('');
+
+  // Render aftercare checkboxes
+  const aftercareBox = document.getElementById('ds-aftercare-checkboxes');
+  aftercareBox.innerHTML = DS_AFTERCARE_ELEMENTS.map((s, i) => `
+    <label class="ds-skill-row">
+      <input type="checkbox" id="ds-ac-${i}" onchange="dsToggleAftercare('${s}', this.checked)">
+      ${s}
+    </label>`).join('');
+
+  dsRenderOutput();
+}
+
+function dsSetDischargeType(val) {
+  dsState.dischargeType = val;
+  dsState.dischargeSubtype = '';
+  ['successful','unsuccessful'].forEach(v => {
+    document.getElementById('ds-dt-' + v).classList.toggle('active', v === val);
+  });
+  const subtypeWrap = document.getElementById('ds-subtype-wrap');
+  subtypeWrap.style.display = val === 'unsuccessful' ? 'block' : 'none';
+  ['admin','asa'].forEach(v => document.getElementById('ds-sub-' + v).classList.remove('active'));
+  dsRenderOutput();
+}
+
+function dsSetSubtype(val) {
+  dsState.dischargeSubtype = val;
+  ['admin','asa'].forEach(v => {
+    document.getElementById('ds-sub-' + v).classList.toggle('active', v === val);
+  });
+  dsRenderOutput();
+}
+
+function dsSetEligibility(val) {
+  dsState.eligibility = val;
+  ['eligible','ineligible'].forEach(v => {
+    document.getElementById('ds-elig-' + v).classList.toggle('active', v === val);
+  });
+  document.getElementById('ds-elig-comments-wrap').style.display = val === 'ineligible' ? 'block' : 'none';
+  dsRenderOutput();
+}
+
+function dsSetSuccessLevel(val) {
+  dsState.successLevel = val;
+  ['significant','moderate','marginal','minimal'].forEach(v => {
+    document.getElementById('ds-sl-' + v).classList.toggle('active', v === val);
+  });
+  dsRenderOutput();
+}
+
+function dsToggleSkill(skill, checked) {
+  if (checked) dsState.skills.add(skill);
+  else dsState.skills.delete(skill);
+  dsRenderOutput();
+}
+
+function dsToggleAftercare(item, checked) {
+  if (checked) dsState.aftercareElements.add(item);
+  else dsState.aftercareElements.delete(item);
+  dsRenderOutput();
+}
+
+function dsAddPhase() {
+  const id = dsPhaseCounter++;
+  dsState.phases.push({ id, loc: '', entryDate: '', iopType: 'external' });
+  dsRenderPhases();
+  dsRenderOutput();
+}
+
+function dsRemovePhase(id) {
+  dsState.phases = dsState.phases.filter(p => p.id !== id);
+  dsRenderPhases();
+  dsRenderOutput();
+}
+
+function dsUpdatePhase(id, field, value) {
+  const phase = dsState.phases.find(p => p.id === id);
+  if (phase) { phase[field] = value; dsRenderOutput(); dsCalcDosageHours(); }
+}
+
+function dsRenderPhases() {
+  const list = document.getElementById('ds-phase-list');
+  if (dsState.phases.length === 0) {
+    list.innerHTML = '<div style="font-size:11px;color:var(--text-secondary);font-style:italic;">No phases added yet</div>';
+    dsCalcDosageHours();
+    return;
+  }
+  list.innerHTML = dsState.phases.map((p, i) => {
+    const iopSubtype = p.loc === '2.1' ? `
+      <div style="width:100%;margin-top:6px;display:flex;align-items:center;gap:6px;">
+        <span style="font-size:10px;color:var(--text-secondary);">IOP type:</span>
+        <button class="ds-pill ds-subpill" style="font-size:10px;padding:2px 10px;" onclick="dsUpdatePhase(${p.id},'iopType','external');dsRenderPhases();" id="ds-iop-ext-${p.id}" class="${p.iopType!=='internal'?'active':''}">External</button>
+        <button class="ds-pill ds-subpill" style="font-size:10px;padding:2px 10px;" onclick="dsUpdatePhase(${p.id},'iopType','internal');dsRenderPhases();" id="ds-iop-int-${p.id}" class="${p.iopType==='internal'?'active':''}">Supportive Housing</button>
+      </div>` : '';
+    return `
+    <div class="ds-phase-entry" id="ds-phase-entry-${p.id}">
+      <div style="font-size:10px;color:var(--text-secondary);font-weight:600;width:100%;margin-bottom:2px;">Phase ${i + 1}</div>
+      <select onchange="dsUpdatePhase(${p.id}, 'loc', this.value);dsRenderPhases();" style="flex:1;min-width:160px;">
+        <option value="">Select LOC</option>
+        <option value="3.7WM" ${p.loc==='3.7WM'?'selected':''}>3.7WM — WM Inpatient</option>
+        <option value="3.7"   ${p.loc==='3.7'?'selected':''}>3.7 — Intensive Inpatient</option>
+        <option value="3.5"   ${p.loc==='3.5'?'selected':''}>3.5 — Residential</option>
+        <option value="2.5"   ${p.loc==='2.5'?'selected':''}>2.5 — Partial Hospitalization</option>
+        <option value="2.1"   ${p.loc==='2.1'?'selected':''}>2.1 — Intensive Outpatient</option>
+        <option value="1.0"   ${p.loc==='1.0'?'selected':''}>1.0 — Standard Outpatient</option>
+      </select>
+      <input type="date" value="${p.entryDate}" onchange="dsUpdatePhase(${p.id}, 'entryDate', this.value)" style="width:140px;">
+      <button class="ds-phase-remove" onclick="dsRemovePhase(${p.id})" title="Remove">✕</button>
+      ${iopSubtype}
+    </div>`;
+  }).join('');
+
+  // Apply active styles to IOP type buttons after render
+  dsState.phases.forEach(p => {
+    if (p.loc === '2.1') {
+      const extBtn = document.getElementById('ds-iop-ext-' + p.id);
+      const intBtn = document.getElementById('ds-iop-int-' + p.id);
+      if (extBtn && intBtn) {
+        const isInternal = p.iopType === 'internal';
+        extBtn.classList.toggle('active', !isInternal);
+        intBtn.classList.toggle('active', isInternal);
+      }
+    }
+  });
+
+  dsCalcDosageHours();
+}
+
+function dsFmtDate(dateStr) {
+  if (!dateStr) return '';
+  const [y, m, d] = dateStr.split('-');
+  return `${parseInt(m)}/${parseInt(d)}/${y}`;
+}
+
+function dsBuildProgressSummary() {
+  const C = dsState.clientName || 'Client';
+  const dt = dsState.dischargeType;
+  const sub = dsState.dischargeSubtype;
+  const phases = dsState.phases.filter(p => p.loc && p.entryDate);
+
+  if (phases.length === 0) return '';
+
+  let text = '';
+  const firstPhase = phases[0];
+  const lastPhase = phases[phases.length - 1];
+  const lastDate = dsFmtDate(dsState.lastContactDate);
+
+  if (dt === 'successful') {
+    text = `${C} has successfully completed treatment`;
+    if (lastDate) text += ` on ${lastDate}`;
+    text += `. `;
+    text += `${C} entered ${DS_LOC_LABELS[firstPhase.loc] || firstPhase.loc} unit on ${dsFmtDate(firstPhase.entryDate)}`;
+    if (phases.length > 1) {
+      for (let i = 1; i < phases.length; i++) {
+        const p = phases[i];
+        text += ` and after completing the requirements of that unit, transitioned to ${DS_LOC_LABELS[p.loc] || p.loc} unit on ${dsFmtDate(p.entryDate)}`;
+      }
+    }
+    text += `. ${C} has successfully completed all requirements and criteria for `;
+    text += phases.map(p => DS_LOC_LABELS[p.loc] || p.loc).join(', ');
+    text += `. ${C} has successfully completed treatment.`;
+  } else if (dt === 'unsuccessful') {
+    text = `${C} entered ${DS_LOC_LABELS[firstPhase.loc] || firstPhase.loc} unit on ${dsFmtDate(firstPhase.entryDate)}`;
+    if (phases.length > 1) {
+      for (let i = 1; i < phases.length; i++) {
+        const p = phases[i];
+        text += ` and after completing the requirements of that unit, transitioned to ${DS_LOC_LABELS[p.loc] || p.loc} unit on ${dsFmtDate(p.entryDate)}`;
+      }
+    }
+    text += '. ';
+    if (sub === 'asa') {
+      text += `${C} left Against Staff Advice (ASA)`;
+      if (lastDate) text += ` on ${lastDate}`;
+      text += '.';
+    } else if (sub === 'admin') {
+      text += `${C} was administratively discharged`;
+      if (lastDate) text += ` on ${lastDate}`;
+      text += '.';
+    } else {
+      text += `${C} was an UNSUCCESSFUL discharge`;
+      if (lastPhase.loc) text += ` from ${DS_LOC_SHORT[lastPhase.loc] || lastPhase.loc}`;
+      if (lastDate) text += ` on ${lastDate}`;
+      text += '.';
+    }
+  }
+  return text;
+}
+
+function dsBuildClientResponse() {
+  const C = dsState.clientName || 'Client';
+  const days = dsState.daysTx;
+  const sl = dsState.successLevel;
+  const skills = Array.from(dsState.skills);
+  const obs = dsState.clinicalObs;
+  const dt = dsState.dischargeType;
+  const sub = dsState.dischargeSubtype;
+
+  if (!sl && skills.length === 0 && !obs) return '';
+
+  let text = `${C} was in treatment`;
+  if (days) text += ` for ${days} day${days == 1 ? '' : 's'}`;
+  text += '. ';
+
+  if (sl) {
+    text += `During this time, ${C} had ${sl} success`;
+    if (skills.length > 0) {
+      text += ` with the following areas: ${skills.join(', ')}.`;
+    } else {
+      text += ' in treatment.';
+    }
+    text += ' ';
+  }
+
+  if (obs) {
+    text += obs.trim();
+    if (!obs.trim().endsWith('.')) text += '.';
+    text += ' ';
+  }
+
+  const phases = dsState.phases.filter(p => p.loc);
+  const lastDate = dsFmtDate(dsState.lastContactDate);
+  if (dt === 'successful' && phases.length > 0) {
+    const lastPhase = phases[phases.length - 1];
+    text += `${C} was a SUCCESSFUL discharge`;
+    if (phases.length === 1) {
+      text += ` from ${DS_LOC_LABELS[lastPhase.loc] || lastPhase.loc}.`;
+    } else {
+      text += ` from ${phases.map(p => DS_LOC_LABELS[p.loc] || p.loc).join(' & ')}.`;
+    }
+  } else if (dt === 'unsuccessful') {
+    const lastPhase = phases.length > 0 ? phases[phases.length - 1] : null;
+    if (sub === 'asa') {
+      text += `${C} was an UNSUCCESSFUL discharge. ${C} left Against Staff Advice (ASA)`;
+      if (lastDate) text += ` on ${lastDate}`;
+      text += '.';
+    } else if (sub === 'admin') {
+      text += `${C} was an UNSUCCESSFUL discharge.`;
+      if (lastPhase) text += ` ${C} was administratively discharged from ${DS_LOC_SHORT[lastPhase.loc] || lastPhase.loc}.`;
+    } else {
+      text += `${C} was an UNSUCCESSFUL discharge`;
+      if (lastPhase) text += ` from ${DS_LOC_SHORT[lastPhase.loc] || lastPhase.loc}`;
+      text += '.';
+    }
+  }
+
+  return text.trim();
+}
+
+function dsBuildAftercare() {
+  const C = dsState.clientName || 'Client';
+  const loc = dsState.stepdownLoc;
+  const to = dsState.transitionTo ? dsState.transitionTo.trim() : '';
+  const elements = Array.from(dsState.aftercareElements);
+  const notes = dsState.aftercareNotes ? dsState.aftercareNotes.trim() : '';
+
+  let text = '';
+
+  if (loc && loc !== 'none') {
+    text += `It is recommended that ${C} participate in ASAM LOC ${DS_LOC_SHORT[loc] || loc}.`;
+  }
+
+  if (to) {
+    text += (text ? ' ' : '') + `${C} will be transitioning to ${to}.`;
+  }
+
+  if (elements.length > 0) {
+    text += (text ? ' ' : '') + `${C} plans to ${elements.join(', ')} in order to continue in their recovery.`;
+  }
+
+  if (notes) {
+    text += (text ? ' ' : '') + notes;
+    if (!notes.endsWith('.')) text += '.';
+  }
+
+  return text.trim();
+}
+
+function dsBuildCOC() {
+  const to = dsState.transitionTo ? dsState.transitionTo.trim() : '';
+  let text = 'CM addressed client\'s legal, personal, and discharge planning needs.';
+  if (to) text += ` Client will be transitioning to ${to}.`;
+  return text;
+}
+
+function dsSetOutput(id, text) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (!text || !text.trim()) {
+    el.innerHTML = '<span class="ds-out-empty">Complete fields on the left to generate this section.</span>';
+  } else {
+    el.textContent = text;
+  }
+}
+
+function dsRenderOutput() {
+  const C = dsState.clientName || 'Client';
+
+  // Status at last contact
+  dsSetOutput('ds-out-status-text', dsState.statusLastContact);
+
+  // Progress summary
+  dsSetOutput('ds-out-progress-text', dsBuildProgressSummary());
+
+  // Client response
+  dsSetOutput('ds-out-response-text', dsBuildClientResponse());
+
+  // COC
+  dsSetOutput('ds-out-coc-text', dsBuildCOC());
+
+  // Aftercare
+  dsSetOutput('ds-out-aftercare-text', dsBuildAftercare());
+
+  // Eligibility comments
+  if (dsState.eligibility === 'eligible') {
+    dsSetOutput('ds-out-eligibility-text', `${C} is eligible to return should treatment services be requested upon admission availability.`);
+  } else if (dsState.eligibility === 'ineligible') {
+    const comments = dsState.eligibilityComments ? dsState.eligibilityComments.trim() : '';
+    dsSetOutput('ds-out-eligibility-text', comments || '');
+  } else {
+    dsSetOutput('ds-out-eligibility-text', '');
+  }
+}
+
+function dsCopyBlock(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const text = el.textContent.trim();
+  if (!text || el.querySelector('.ds-out-empty')) return;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = el.parentElement.querySelector('.ds-copy-btn');
+    if (btn) { btn.textContent = 'Copied!'; setTimeout(() => btn.textContent = 'Copy', 1800); }
+  });
+}
+
+// Count weekdays and weekend days in a date range [startStr, endStr)
+function dsCountDayTypes(startStr, endStr) {
+  const start = new Date(startStr + 'T00:00:00');
+  const end   = new Date(endStr   + 'T00:00:00');
+  let weekdays = 0, weekendDays = 0;
+  const cur = new Date(start);
+  while (cur < end) {
+    const dow = cur.getDay(); // 0=Sun, 6=Sat
+    if (dow === 0 || dow === 6) weekendDays++;
+    else weekdays++;
+    cur.setDate(cur.getDate() + 1);
+  }
+  return { weekdays, weekendDays, total: weekdays + weekendDays };
+}
+
+function dsFmt(n) {
+  return n % 1 === 0 ? String(n) : n.toFixed(1);
+}
+
+function dsCalcDosageHours() {
+  const resultEl    = document.getElementById('ds-dh-result');
+  const indivEl     = document.getElementById('ds-dh-individual');
+  const breakdownEl = document.getElementById('ds-dh-breakdown');
+  const copyBtn     = document.getElementById('ds-dh-copy-btn');
+  const opNoteEl    = document.getElementById('ds-dh-op-note');
+
+  const phases = dsState.phases.filter(p => p.loc && p.entryDate);
+  const lastDate = dsState.lastContactDate;
+
+  if (phases.length === 0 || !lastDate) {
+    resultEl.textContent = '—';
+    indivEl.textContent = '';
+    breakdownEl.innerHTML = '';
+    breakdownEl.style.display = 'none';
+    copyBtn.style.display = 'none';
+    if (opNoteEl) opNoteEl.style.display = 'none';
+    return;
+  }
+
+  let totalDays = 0;
+  let groupHours = 0;
+  let hasOP = false;
+  const lines = [];
+
+  phases.forEach((p, i) => {
+    const endDate = i < phases.length - 1 ? phases[i + 1].entryDate : lastDate;
+    if (!endDate || endDate <= p.entryDate) return;
+
+    const { weekdays, weekendDays, total } = dsCountDayTypes(p.entryDate, endDate);
+    totalDays += total;
+
+    let phaseHours = 0;
+    let desc = '';
+
+    if (p.loc === '3.7WM' || p.loc === '3.7' || p.loc === '3.5') {
+      phaseHours = total * 5;
+      desc = `${total}d × 5 = ${dsFmt(phaseHours)} hrs`;
+    } else if (p.loc === '2.5') {
+      phaseHours = total * 3.5;
+      desc = `${total}d × 3.5 = ${dsFmt(phaseHours)} hrs`;
+    } else if (p.loc === '2.1') {
+      if (p.iopType === 'internal') {
+        // Supportive housing: weekdays=3hrs, weekends=2hrs
+        phaseHours = (weekdays * 3) + (weekendDays * 2);
+        desc = `${weekdays}d × 3 + ${weekendDays}d × 2 = ${dsFmt(phaseHours)} hrs (supportive housing)`;
+      } else {
+        // External IOP: 9 group hrs/wk + 1 individual/wk counted separately
+        // Group only here; individual handled globally below
+        phaseHours = (total / 7) * 9;
+        desc = `${total}d ÷ 7 × 9 = ${dsFmt(phaseHours)} hrs (external IOP group)`;
+      }
+    } else if (p.loc === '1.0') {
+      hasOP = true;
+      phaseHours = 0;
+      desc = `${total}d — manual entry required`;
+    }
+
+    groupHours += phaseHours;
+
+    const locLabel = { '3.7WM':'3.7WM','3.7':'3.7','3.5':'3.5','2.5':'2.5 PHP','2.1':'2.1 IOP','1.0':'1.0 OP' }[p.loc] || p.loc;
+    lines.push({ loc: locLabel, desc });
+  });
+
+  // Individual session component: 1 hr/week for entire duration
+  const indivHours = Math.floor(totalDays / 7);
+  const total = groupHours + indivHours;
+
+  // Render breakdown
+  if (lines.length > 0) {
+    breakdownEl.style.display = 'flex';
+    breakdownEl.innerHTML = lines.map(l => `
+      <div style="display:flex;justify-content:space-between;font-size:11px;padding:3px 0;border-bottom:1px solid var(--border);">
+        <span style="color:var(--accent);font-weight:600;min-width:60px;">${l.loc}</span>
+        <span style="color:var(--text-secondary);font-family:'IBM Plex Mono',monospace;">${l.desc}</span>
+      </div>`).join('') + `
+      <div style="display:flex;justify-content:space-between;font-size:11px;padding:3px 0;">
+        <span style="color:var(--text-secondary);font-style:italic;">Individual sessions</span>
+        <span style="color:var(--text-secondary);font-family:'IBM Plex Mono',monospace;">${totalDays}d ÷ 7 = ${dsFmt(indivHours)} hrs</span>
+      </div>`;
+  } else {
+    breakdownEl.style.display = 'none';
+    breakdownEl.innerHTML = '';
+  }
+
+  resultEl.textContent = dsFmt(total);
+  indivEl.textContent = '';
+  copyBtn.style.display = 'inline-block';
+  copyBtn.dataset.value = dsFmt(total);
+  if (opNoteEl) opNoteEl.style.display = hasOP ? 'block' : 'none';
+}
+
+function dscopyDosageHours() {
+  const btn = document.getElementById('ds-dh-copy-btn');
+  const val = btn.dataset.value;
+  if (!val) return;
+  navigator.clipboard.writeText(val).then(() => {
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy', 1800);
+  });
+}
+
+function dsReset() {
+  dsState = {
+    clientName: '',
+    lastContactDate: '',
+    dischargeType: '',
+    dischargeSubtype: '',
+    admissionLoc: '',
+    daysTx: '',
+    phases: [],
+    statusLastContact: '',
+    eligibility: '',
+    eligibilityComments: '',
+    successLevel: '',
+    skills: new Set(),
+    clinicalObs: '',
+    stepdownLoc: '',
+    transitionTo: '',
+    aftercareElements: new Set(),
+    aftercareNotes: '',
+  };
+  dsPhaseCounter = 0;
+
+  // Clear input fields
+  ['ds-client-name','ds-last-contact-date','ds-days-tx','ds-status-last-contact',
+   'ds-elig-comments','ds-clinical-obs','ds-transition-to','ds-aftercare-notes'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('ds-admission-loc').value = '';
+  document.getElementById('ds-stepdown-loc').value = '';
+
+  ['successful','unsuccessful'].forEach(v => document.getElementById('ds-dt-'+v).classList.remove('active'));
+  ['admin','asa'].forEach(v => document.getElementById('ds-sub-'+v).classList.remove('active'));
+  document.getElementById('ds-subtype-wrap').style.display = 'none';
+  ['eligible','ineligible'].forEach(v => document.getElementById('ds-elig-'+v).classList.remove('active'));
+  ['significant','moderate','marginal','minimal'].forEach(v => document.getElementById('ds-sl-'+v).classList.remove('active'));
+
+  document.getElementById('ds-elig-comments-wrap').style.display = 'none';
+  document.querySelectorAll('#ds-skill-checkboxes input').forEach(cb => cb.checked = false);
+  document.querySelectorAll('#ds-aftercare-checkboxes input').forEach(cb => cb.checked = false);
+
+  document.getElementById('ds-phase-list').innerHTML = '<div style="font-size:11px;color:var(--text-secondary);font-style:italic;">No phases added yet</div>';
+  document.getElementById('ds-dh-result').textContent = '—';
+  document.getElementById('ds-dh-individual').textContent = '';
+  document.getElementById('ds-dh-breakdown').innerHTML = '';
+  document.getElementById('ds-dh-breakdown').style.display = 'none';
+  document.getElementById('ds-dh-copy-btn').style.display = 'none';
+  const opNote = document.getElementById('ds-dh-op-note');
+  if (opNote) opNote.style.display = 'none';
+  dsRenderOutput();
+}
+
+// ─── END DISCHARGE TOOL ────────────────────────────
+
 function doReset() {
   document.getElementById('resetModal').style.display = 'none';
 
@@ -5927,6 +6862,9 @@ function doReset() {
 
   // Reset group notes
   gnReset();
+
+  // Reset discharge summary
+  dsReset();
 
   // Go back to tab 1
   switchTab(1);
@@ -6159,6 +7097,59 @@ function fillSampleClient() {
     }
   });
   gnRenderClients();
+
+  // ── DISCHARGE SUMMARY ──
+  document.getElementById('ds-client-name').value = 'Marcus';
+  dsState.clientName = 'Marcus';
+  const dsToday = new Date();
+  const dsDateStr = dsToday.toISOString().split('T')[0];
+  document.getElementById('ds-last-contact-date').value = dsDateStr;
+  dsState.lastContactDate = dsDateStr;
+  dsSetDischargeType('successful');
+  document.getElementById('ds-admission-loc').value = '3.7WM';
+  dsState.admissionLoc = '3.7WM';
+  document.getElementById('ds-days-tx').value = '55';
+  dsState.daysTx = '55';
+
+  // Phase history
+  dsState.phases = [
+    { id: dsPhaseCounter++, loc: '3.7WM', entryDate: '2026-09-06', iopType: 'external' },
+    { id: dsPhaseCounter++, loc: '3.5',   entryDate: '2026-09-22', iopType: 'external' },
+  ];
+  dsRenderPhases();
+
+  document.getElementById('ds-status-last-contact').value = 'Marcus expressed cautious optimism about transitioning to a lower level of care. He acknowledged ongoing anxiety about returning to his home environment but stated he feels more prepared than in prior treatment episodes.';
+  dsState.statusLastContact = document.getElementById('ds-status-last-contact').value;
+
+  dsSetEligibility('eligible');
+
+  dsSetSuccessLevel('moderate');
+  const sampleSkills = ['Conflict resolution skills','Relapse prevention','CBT skills','Understanding the disease concept'];
+  document.querySelectorAll('#ds-skill-checkboxes input').forEach(cb => {
+    if (sampleSkills.includes(cb.closest('label').textContent.trim())) {
+      cb.checked = true;
+      dsState.skills.add(cb.closest('label').textContent.trim());
+    }
+  });
+
+  document.getElementById('ds-clinical-obs').value = 'Marcus demonstrated increased willingness to examine consequences of alcohol use across the episode of care. Engagement with individual sessions was consistent. He continues to require ongoing motivational work and relapse prevention skill building at a lower level of care.';
+  dsState.clinicalObs = document.getElementById('ds-clinical-obs').value;
+
+  document.getElementById('ds-stepdown-loc').value = '3.5';
+  dsState.stepdownLoc = '3.5';
+  document.getElementById('ds-transition-to').value = 'Light House, 5000 Sunbury Rd, Columbus, OH 43230, (614) 337-1986';
+  dsState.transitionTo = document.getElementById('ds-transition-to').value;
+
+  const sampleAftercare = ['Attend 12-step meetings','Obtain a sponsor','Outpatient treatment','Build sober support network'];
+  document.querySelectorAll('#ds-aftercare-checkboxes input').forEach(cb => {
+    if (sampleAftercare.includes(cb.closest('label').textContent.trim())) {
+      cb.checked = true;
+      dsState.aftercareElements.add(cb.closest('label').textContent.trim());
+    }
+  });
+
+  dsRenderOutput();
+  dsCalcDosageHours();
 
   // ── Flash badge ──
   const badge = document.getElementById('clinicalBadge');
