@@ -5509,7 +5509,7 @@ function formatITPOutput(btn) {
         const targetDate = targetInput && targetInput.value
           ? (() => { const d = new Date(targetInput.value + 'T12:00:00'); return (d.getMonth()+1)+'/'+d.getDate()+'/'+d.getFullYear(); })()
           : '__/__/____';
-        objectives.push(`Objective ${i+1}${letter}: ${pair.o} (ESTABLISHED ${todayStr}) (TARGET DATE ${targetDate})`);
+        objectives.push(`Objective ${i+1}${letter}: ${pair.o} (START DATE ${todayStr}) (TARGET DATE ${targetDate})`);
         interventions.push(`Intervention ${i+1}${letter}: ${pair.i}`);
       });
       goals.push({ sectionLabel: ITP_SECTION_LABELS[section], goalLetter: letter, catName: cat.name, goalText, objectives, interventions });
@@ -5525,7 +5525,7 @@ function formatITPOutput(btn) {
         const targetDate = pair.targetDate
           ? (() => { const d = new Date(pair.targetDate + 'T12:00:00'); return (d.getMonth()+1)+'/'+d.getDate()+'/'+d.getFullYear(); })()
           : '__/__/____';
-        objectives.push(`Objective ${pi+1}${letter}: ${pair.o} (ESTABLISHED ${todayStr}) (TARGET DATE ${targetDate})`);
+        objectives.push(`Objective ${pi+1}${letter}: ${pair.o} (START DATE ${todayStr}) (TARGET DATE ${targetDate})`);
         interventions.push(`Intervention ${pi+1}${letter}: ${pair.i}`);
       });
       goals.push({ sectionLabel: ITP_SECTION_LABELS[section], goalLetter: letter, catName: customCat.name || 'Custom', goalText, objectives, interventions });
@@ -5576,7 +5576,7 @@ function formatITPOutput(btn) {
     boxesContainer.appendChild(goalLabel);
 
     // Goal box
-    makeOutputBox(boxesContainer, 'Goal', `Goal ${g.goalLetter}: ${g.goalText} (START DATE ${todayStr})`);
+    makeOutputBox(boxesContainer, 'Goal', `Goal ${g.goalLetter}: ${g.goalText} (ESTABLISHED ${todayStr})`);
 
     // Objectives box (only if any selected)
     if (g.objectives.length) {
