@@ -2994,7 +2994,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       <!-- Phase History -->
       <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
         <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:4px;">Phase History</div>
-        <div style="font-size:11px;color:var(--text-secondary);margin-bottom:12px;">Add each phase in chronological order</div>
+        <div style="font-size:11px;color:var(--text-secondary);margin-bottom:12px;">Add phases in order. Each phase ends when the next one begins; the last phase ends at date of last contact.</div>
 
         <div id="ds-phase-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px;"></div>
 
@@ -6394,7 +6394,10 @@ function dsRenderPhases() {
         <option value="2.1"   ${p.loc==='2.1'?'selected':''}>2.1 — Intensive Outpatient</option>
         <option value="1.0"   ${p.loc==='1.0'?'selected':''}>1.0 — Standard Outpatient</option>
       </select>
-      <input type="date" value="${p.entryDate}" onchange="dsUpdatePhase(${p.id}, 'entryDate', this.value)" style="width:140px;">
+      <div style="display:flex;flex-direction:column;gap:2px;">
+        <span style="font-size:9px;color:var(--text-secondary);font-weight:600;text-transform:uppercase;letter-spacing:.05em;">Date Entered</span>
+        <input type="date" value="${p.entryDate}" onchange="dsUpdatePhase(${p.id}, 'entryDate', this.value)" style="width:140px;">
+      </div>
       <button class="ds-phase-remove" onclick="dsRemovePhase(${p.id})" title="Remove">✕</button>
       ${iopSubtype}
     </div>`;
