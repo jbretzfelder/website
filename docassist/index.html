@@ -1452,6 +1452,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 <div class="app-header">
   <div class="header-left">
     <div class="app-title">DocAssist</div>
+    <div style="font-size:9px;font-weight:600;padding:1px 6px;border-radius:8px;background:#1a3d22;color:#7ec8a0;border:1px solid #2d6a4f;letter-spacing:.07em;display:inline-block;margin:1px 0 2px;">BETA</div>
     <div class="app-subtitle">Built by Joseph</div>
   </div>
   <div style="display:flex;align-items:center;gap:14px">
@@ -2990,6 +2991,16 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
       </div>
 
+      <!-- Phase History -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:4px;">Phase History</div>
+        <div style="font-size:11px;color:var(--text-secondary);margin-bottom:12px;">Add each phase in chronological order</div>
+
+        <div id="ds-phase-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px;"></div>
+
+        <button class="btn" onclick="dsAddPhase()" style="font-size:11px;padding:5px 12px;background:var(--accent-light);color:var(--accent);border:1px solid var(--accent);border-radius:5px;cursor:pointer;">+ Add Phase</button>
+      </div>
+
       <!-- Dosage Hours Calculator -->
       <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
         <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:4px;">Dosage Hours</div>
@@ -3006,16 +3017,6 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
           <button class="ds-copy-btn" id="ds-dh-copy-btn" onclick="dscopyDosageHours()" style="display:none;">Copy</button>
         </div>
         <div id="ds-dh-op-note" style="display:none;margin-top:8px;font-size:11px;color:var(--warning-text);background:var(--warning-bg);border:1px solid var(--warning-border);border-radius:4px;padding:6px 10px;">⚠ 1.0 Standard Outpatient phase detected — additional time must be added manually.</div>
-      </div>
-
-      <!-- Phase History -->
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
-        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:4px;">Phase History</div>
-        <div style="font-size:11px;color:var(--text-secondary);margin-bottom:12px;">Add each phase in chronological order</div>
-
-        <div id="ds-phase-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px;"></div>
-
-        <button class="btn" onclick="dsAddPhase()" style="font-size:11px;padding:5px 12px;background:var(--accent-light);color:var(--accent);border:1px solid var(--accent);border-radius:5px;cursor:pointer;">+ Add Phase</button>
       </div>
 
       <!-- Status at Last Contact -->
