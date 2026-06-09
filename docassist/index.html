@@ -5081,6 +5081,73 @@ const itpSelected = { A: new Set(), B: new Set(), C: new Set() };
 // custom goals per section
 const itpCustomGoals = { A: [], B: [], C: [] };
 
+// Section C — Standard CM objectives/interventions
+// itpCMEnabled: master toggle; itpCMSelected: Set of indices to include
+let itpCMEnabled = true;
+const CM_ALWAYS_ON = new Set([0,3,4,7,8,9,10]);
+const itpCMSelected = new Set([0,3,4,7,8,9,10]); // default: always-on items only
+
+const CM_ITEM_LABELS = [
+  { short: 'Medicaid / insurance',            always: true  },  // 0
+  { short: 'SNAP / food assistance',           always: false },  // 1
+  { short: 'Sober living placement',           always: false },  // 2
+  { short: 'AOD aftercare services',           always: true  },  // 3
+  { short: '12-step / support meetings',       always: true  },  // 4
+  { short: 'MAT follow-up appointment',        always: false },  // 5
+  { short: 'Probation / legal obligations',    always: false },  // 6
+  { short: 'ROIs (family / agencies)',         always: true  },  // 7
+  { short: 'Random drug screens (UDS)',        always: true  },  // 8
+  { short: 'Life skills / independent living', always: true  },  // 9
+  { short: 'Peer support specialist',          always: true  },  // 10
+];
+
+const CM_STANDARD_PAIRS = [
+  {
+    o: 'Client will contact Ohio Medicaid Shared Services at 1-844-640-6446 to obtain insurance case number and renewal date; and create an online account through insurance provider to locate medical providers in area of residence.',
+    i: 'CM will educate client on Ohio Medicaid Shared Services to assist with Medicaid benefits. CM will assist client in creating an online account through insurance provider, if needed, and educate on Find a Provider tool to locate medical providers in his desired area. CM will educate client on how to call member services to inquire about covered providers.'
+  },
+  {
+    o: 'Client will complete application for Ohio Food Assistance benefits.',
+    i: 'CM will provide education and assistance with application for Ohio Food Assistance benefits.'
+  },
+  {
+    o: 'Client will identify up to 3 sober living options and sign appropriate ROIs. Client will comply with the intake and application process to the sober livings identified.',
+    i: 'CM will research and obtain information on sober living facilities identified by client. CM will prepare an ROI for sober living facilities and assist client with application process, if needed. CM will advocate for client and provided necessary documentation to sober living facility, as requested.'
+  },
+  {
+    o: 'Client will complete release of information and obtain AOD aftercare services.',
+    i: 'CM will prepare an ROI and assist client in complying with the application process to the aftercare of client\'s choice.'
+  },
+  {
+    o: 'Client will identify 12-step meetings in area of residence.',
+    i: 'CM will educate client on how to search online for meetings in area of residence and alternative methods to locate support meetings.'
+  },
+  {
+    o: 'Client will identify and obtain follow-up medical appointment to receive medicated-assisted treatment, if applicable.',
+    i: 'CM will provide client resources and service providers for MAT and assist client with scheduling appointments to receive MAT.'
+  },
+  {
+    o: 'Client will maintain contact with probation officer/court personnel/child protective services. Client will utilize online record search function, if available, or obtain the phone numbers of courts to inquire about open legal cases.',
+    i: 'CM will prepare an ROI for probation officer/court personnel/child protective services, if needed. CM will provide documentation per request. CM will assist and advocate on client\'s behalf for upcoming legal obligations.'
+  },
+  {
+    o: 'Client will complete any ROIs for all community agency and or family member within 30 days.',
+    i: 'CM will assist client in completing ROIs for family or other individuals or entities that he may need to contact during treatment.'
+  },
+  {
+    o: 'The client will perform random drug screens weekly and discuss results with his counselor.',
+    i: 'Counselor will review results with client in individual session. Counselor will educate client on the benefits of drug testing in a therapeutic environment. Counselor will use expected results to validate and encourage continued abstinence. Counselor will use expected results to motivate client in continuing with treatment goals and objectives. Counselor will use MI techniques to encourage client to identify discrepancies between UDS results and client\'s goals/values. Counselor will use CBT techniques to problem-solve barriers to continued abstinence.'
+  },
+  {
+    o: 'The client will work with clinical and case management staff to learn basic skills to support responsible and independent living in recovery.',
+    i: 'Clinical and case management teams will educate client on basic living skills and work with client to identify strengths and weaknesses to form a plan that can help client grow confidence in his ability to live successfully as an independent adult.'
+  },
+  {
+    o: 'Identify 1 certified peer support specialist that will help facilitate the implementation of new skills.',
+    i: 'Encourage the client to discuss and/or use his/her new skills with trusted peers, family, or others to support his/her change during individual or group sessions with peer supporters.'
+  },
+];
+
 function removeCustomGoal(section, idx) {
   itpCustomGoals[section].splice(idx, 1);
   rebuildSection(section);
@@ -5100,6 +5167,75 @@ function renderITPGoals() {
     label.className = 'itp-section-label';
     label.textContent = ITP_SECTION_LABELS[section];
     div.appendChild(label);
+
+    // Section C — CM standard objectives panel
+    if (section === 'C') {
+      const cmRow = document.createElement('div');
+      cmRow.style.cssText = 'background:#f0f7f2;border:1px solid #b6d9c3;border-radius:6px;padding:10px 14px;margin-bottom:10px;';
+
+      // Outer toggle row
+      const cmToggleRow = document.createElement('div');
+      cmToggleRow.style.cssText = 'display:flex;align-items:center;gap:8px;';
+      const cmMasterCb = document.createElement('input');
+      cmMasterCb.type = 'checkbox';
+      cmMasterCb.id = 'itp-cm-master-cb';
+      cmMasterCb.checked = itpCMEnabled;
+      cmMasterCb.style.cssText = 'accent-color:var(--accent);width:14px;height:14px;flex-shrink:0;cursor:pointer;';
+      const cmMasterLabel = document.createElement('label');
+      cmMasterLabel.htmlFor = 'itp-cm-master-cb';
+      cmMasterLabel.style.cssText = 'font-size:12px;font-weight:600;color:var(--accent);cursor:pointer;';
+      cmMasterLabel.textContent = 'Include Standard CM Objectives';
+      cmToggleRow.appendChild(cmMasterCb);
+      cmToggleRow.appendChild(cmMasterLabel);
+      cmRow.appendChild(cmToggleRow);
+
+      // Collapsible body
+      const cmBody = document.createElement('div');
+      cmBody.id = 'itp-cm-body';
+      cmBody.style.cssText = 'margin-top:10px;' + (itpCMEnabled ? '' : 'display:none;');
+
+      const cmNote = document.createElement('div');
+      cmNote.style.cssText = 'font-size:11px;color:var(--text-secondary);margin-bottom:10px;line-height:1.5;';
+      cmNote.textContent = 'Select only what applies to this client. Checked items will be numbered sequentially in the output.';
+      cmBody.appendChild(cmNote);
+
+      const cmGrid = document.createElement('div');
+      cmGrid.style.cssText = 'display:flex;flex-direction:column;gap:5px;margin-bottom:10px;';
+
+      CM_ITEM_LABELS.forEach((item, idx) => {
+        const row = document.createElement('label');
+        row.style.cssText = 'display:flex;align-items:center;gap:8px;cursor:pointer;padding:4px 6px;border-radius:4px;' + (item.always ? '' : 'background:#fff;border:1px solid #d0e8da;');
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.checked = itpCMSelected.has(idx);
+        cb.style.cssText = 'accent-color:var(--accent);width:13px;height:13px;flex-shrink:0;';
+        if (item.always) cb.disabled = true;
+        cb.addEventListener('change', () => {
+          if (cb.checked) itpCMSelected.add(idx); else itpCMSelected.delete(idx);
+        });
+        const lbl = document.createElement('span');
+        lbl.style.cssText = 'font-size:11px;' + (item.always ? 'color:var(--text-secondary);' : 'color:var(--text);font-weight:500;');
+        lbl.textContent = item.short + (item.always ? '' : ' — include?');
+        row.appendChild(cb);
+        row.appendChild(lbl);
+        cmGrid.appendChild(row);
+      });
+      cmBody.appendChild(cmGrid);
+
+      const cmDateLabel = document.createElement('label');
+      cmDateLabel.style.cssText = 'display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-secondary);padding-top:8px;border-top:1px solid #b6d9c3;white-space:nowrap;';
+      cmDateLabel.innerHTML = 'Target Date for CM objectives: <input type="date" id="itp-cm-target-date" style="border:1px solid var(--border);border-radius:4px;padding:3px 7px;font-family:inherit;font-size:11px;color:var(--text);background:white;outline:none;" />';
+      cmBody.appendChild(cmDateLabel);
+
+      cmRow.appendChild(cmBody);
+
+      cmMasterCb.addEventListener('change', () => {
+        itpCMEnabled = cmMasterCb.checked;
+        cmBody.style.display = itpCMEnabled ? '' : 'none';
+      });
+
+      div.appendChild(cmRow);
+    }
 
     // chips row
     const chips = document.createElement('div');
@@ -5491,8 +5627,34 @@ function formatITPOutput(btn) {
   ['A','B','C'].forEach(section => {
     const cats = GOALS_DATA.filter(c => c.section === section && itpSelected[section].has(c.id));
     const customs = itpCustomGoals[section] || [];
-    if (!cats.length && !customs.length) return;
+    const hasCM = section === 'C' && itpCMEnabled && itpCMSelected.size > 0;
+    if (!cats.length && !customs.length && !hasCM) return;
     let letterIdx = 0;
+
+    // Section C — inject selected CM objectives as the first goal entry
+    if (hasCM) {
+      const letter = letters[letterIdx++];
+      const cmTargetInput = document.getElementById('itp-cm-target-date');
+      const cmTargetDate = cmTargetInput && cmTargetInput.value
+        ? (() => { const d = new Date(cmTargetInput.value + 'T12:00:00'); return (d.getMonth()+1)+'/'+d.getDate()+'/'+d.getFullYear(); })()
+        : '__/__/____';
+      // Only include selected pairs, renumbered sequentially
+      const selectedPairs = CM_STANDARD_PAIRS.map((pair, i) => ({ pair, i })).filter(({ i }) => itpCMSelected.has(i));
+      const cmObjectives = selectedPairs.map(({ pair }, seq) =>
+        `Objective ${seq+1}${letter}: ${pair.o} (START DATE ${todayStr}) (TARGET DATE ${cmTargetDate})`
+      );
+      const cmInterventions = selectedPairs.map(({ pair }, seq) =>
+        `Intervention ${seq+1}${letter}: ${pair.i}`
+      );
+      goals.push({
+        sectionLabel: ITP_SECTION_LABELS[section],
+        goalLetter: letter,
+        catName: 'Case Management — Recovery & Community Integration',
+        goalText: 'Client will successfully transition to community-based recovery supports by engaging with identified resources, services, and support systems prior to discharge.',
+        objectives: cmObjectives,
+        interventions: cmInterventions,
+      });
+    }
 
     cats.forEach(cat => {
       const letter = letters[letterIdx++];
@@ -6857,6 +7019,7 @@ function doReset() {
 
   // Reset ITP
   ['A','B','C'].forEach(s => { itpSelected[s].clear(); itpCustomGoals[s] = []; });
+  itpCMEnabled = true; itpCMSelected.clear(); CM_ALWAYS_ON.forEach(i => itpCMSelected.add(i));
   renderITPGoals();
   const itpBox = document.getElementById('itpOutputBoxes');
   if (itpBox) { itpBox.innerHTML = ''; itpBox.style.display = 'none'; }
