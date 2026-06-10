@@ -6359,7 +6359,7 @@ function submitFeedback() {
 
   const subject = encodeURIComponent('DocAssist Feedback');
   const encodedBody = encodeURIComponent(body);
-  const outlookUrl = 'https://outlook.office.com/mail/deeplink/compose?to=joseph.bretzfelder%40woodhavenohio.com&subject=' + subject + '&body=' + encodedBody;
+  const outlookUrl = 'https://outlook.office.com/mail/action/compose?to=joseph.bretzfelder%40woodhavenohio.com&subject=' + subject + '&body=' + encodedBody;
 
   document.getElementById('feedbackOutlookLink').href = outlookUrl;
   document.getElementById('feedbackCopyBox').value = body;
