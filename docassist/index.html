@@ -73,6 +73,38 @@ body {
   transition: all 0.15s;
 }
 .reset-btn:hover { background: #1a3a25; border-color: #7ec8a0; }
+.feedback-btn {
+  background: #e8f5ee;
+  border: 1.5px solid #2d6a4f;
+  color: #2d6a4f;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 14px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  letter-spacing: 0.01em;
+}
+.feedback-btn:hover { background: #2d6a4f; color: white; }
+.feedback-type-pill {
+  background: none;
+  border: 1px solid #ccc;
+  color: #555;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.feedback-type-pill:hover { border-color: #2d6a4f; color: #2d6a4f; }
+.feedback-type-pill.active { background: #2d6a4f; border-color: #2d6a4f; color: white; }
 .header-badge {
   background: #143322;
   border: 1px solid #235c3a;
@@ -1179,6 +1211,130 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   border-radius: 4px; padding: 7px 10px; white-space: pre-wrap;
 }
 
+/* ── Transition Justification Panel ── */
+.tj-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+.tj-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  user-select: none;
+}
+.tj-header-left { display: flex; flex-direction: column; gap: 1px; }
+.tj-header-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--accent);
+}
+.tj-header-sub { font-size: 10px; color: var(--text-secondary); }
+.tj-toggle { font-size: 11px; color: var(--text-secondary); flex-shrink: 0; }
+.tj-body { padding: 14px; display: flex; flex-direction: column; gap: 14px; }
+.tj-field { display: flex; flex-direction: column; gap: 5px; }
+.tj-field-label {
+  font-size: 9px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  color: var(--text-secondary);
+}
+.tj-input {
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 7px 10px;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 12px;
+  color: var(--text);
+  background: white;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+}
+.tj-input:focus { border-color: var(--border-focus); }
+.tj-textarea {
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 7px 10px;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 12px;
+  color: var(--text);
+  background: white;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+  resize: vertical;
+  min-height: 70px;
+  line-height: 1.5;
+}
+.tj-textarea:focus { border-color: var(--border-focus); }
+.tj-pills { display: flex; gap: 5px; flex-wrap: nowrap; }
+.tj-pill {
+  padding: 4px 9px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: white;
+  font-size: 10px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: 'IBM Plex Sans', sans-serif;
+  color: var(--text-secondary);
+  transition: all 0.12s;
+  white-space: nowrap;
+}
+.tj-pill:hover { border-color: var(--accent); color: var(--accent); }
+.tj-pill.active { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+.tj-select {
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 7px 10px;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 12px;
+  color: var(--text);
+  background: white;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+.tj-select:focus { border-color: var(--border-focus); }
+.tj-output-area { display: none; flex-direction: column; gap: 8px; margin-top: 4px; }
+.tj-output-area.visible { display: flex; }
+.tj-output-header { display: flex; align-items: center; justify-content: space-between; }
+.tj-output-label {
+  font-size: 9px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  color: var(--text-secondary);
+}
+.tj-output-text {
+  font-size: 12px;
+  color: var(--text);
+  line-height: 1.7;
+  background: var(--output-bg);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 10px 12px;
+  white-space: pre-wrap;
+  font-family: 'IBM Plex Mono', monospace;
+}
+.tj-divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 4px 0;
+}
+.tj-generate-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+
 .itp-block {
   display: none;
   margin-top: 28px;
@@ -1454,8 +1610,54 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       <button class="sn-timer-btn sn-timer-btn-reset" onclick="snTimerReset()" style="height:26px;padding:0 8px;font-size:10px">↺</button>
     </div>
     <div style="width:1px;height:20px;background:#1e3352"></div>
+    <button class="feedback-btn" onclick="openFeedbackModal()">💬 Give Feedback</button>
     <button class="reset-btn" onclick="confirmReset()">↺ Reset</button>
     <div class="header-badge" id="clinicalBadge" onclick="demoClick()" style="cursor:default;user-select:none">Clinical Use Only</div>
+  </div>
+</div>
+
+<!-- Feedback modal -->
+<div id="feedbackModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;align-items:center;justify-content:center">
+  <div style="background:white;border-radius:10px;padding:28px 32px;max-width:480px;width:92%;box-shadow:0 20px 60px rgba(0,0,0,0.2)">
+    <div style="font-size:15px;font-weight:700;color:#1a1a1a;margin-bottom:6px">Send Feedback</div>
+    <div style="font-size:12px;color:#666;margin-bottom:18px;line-height:1.5">Your feedback goes directly to Joseph. Tell him what's working, what isn't, or what you wish the tool could do.</div>
+
+    <div style="margin-bottom:14px">
+      <label style="font-size:11px;font-weight:600;color:#555;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.04em">Which tool does this relate to?</label>
+      <select id="feedbackTool" style="width:100%;box-sizing:border-box;padding:8px 11px;border:1px solid #ccc;border-radius:5px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;color:#1a1a1a;background:white;outline:none;cursor:pointer;transition:border 0.15s" onfocus="this.style.borderColor='#2d6a4f'" onblur="this.style.borderColor='#ccc'">
+        <option value="">General / All tools</option>
+        <option value="ASAM Documentation">ASAM Documentation</option>
+        <option value="ITP Development">ITP Development</option>
+        <option value="Individual Note">Individual Note</option>
+        <option value="Group Notes">Group Notes</option>
+        <option value="Discharge Summary">Discharge Summary</option>
+      </select>
+    </div>
+
+    <div style="margin-bottom:14px">
+      <label style="font-size:11px;font-weight:600;color:#555;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.04em">Feedback type</label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap" id="feedbackTypeGroup">
+        <button type="button" class="feedback-type-pill active" data-value="General feedback" onclick="selectFeedbackType(this)">General</button>
+        <button type="button" class="feedback-type-pill" data-value="Something isn't working" onclick="selectFeedbackType(this)">Something's broken</button>
+        <button type="button" class="feedback-type-pill" data-value="Feature request" onclick="selectFeedbackType(this)">Feature request</button>
+        <button type="button" class="feedback-type-pill" data-value="Workflow suggestion" onclick="selectFeedbackType(this)">Workflow suggestion</button>
+      </div>
+    </div>
+
+    <div style="margin-bottom:20px">
+      <label style="font-size:11px;font-weight:600;color:#555;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.04em">Your feedback</label>
+      <textarea id="feedbackText" rows="5" placeholder="Describe what you experienced, what you'd like to see, or anything that would make the tool work better for you…" style="width:100%;box-sizing:border-box;padding:9px 11px;border:1px solid #ccc;border-radius:5px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;color:#1a1a1a;resize:vertical;outline:none;line-height:1.5;transition:border 0.15s" onfocus="this.style.borderColor='#2d6a4f'" onblur="this.style.borderColor='#ccc'"></textarea>
+    </div>
+
+    <div style="font-size:11px;color:#888;margin-bottom:18px;display:flex;align-items:flex-start;gap:7px">
+      <span style="font-size:14px;line-height:1">ℹ️</span>
+      <span>This will open Outlook with a pre-filled message. Just hit Send — you're done.</span>
+    </div>
+
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button class="btn btn-ghost" onclick="closeFeedbackModal()">Cancel</button>
+      <button class="btn" style="background:#2d6a4f;color:white;font-weight:600" onclick="submitFeedback()">Open in Outlook →</button>
+    </div>
   </div>
 </div>
 
@@ -2177,6 +2379,44 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
           </div>
           <div class="asam-ref-body" id="asamRefBody" style="display:none">
             <div class="asam-ref-empty" id="asamRefEmpty">No ASAM goals have been entered yet. Complete the continued stay or primary dimension fields in ASAM Documentation to see reference content here.</div>
+          </div>
+        </div>
+
+        <!-- TRANSITION JUSTIFICATION PANEL -->
+        <div class="tj-panel" id="tjPanel">
+          <div class="tj-header" onclick="toggleTJ()">
+            <div class="tj-header-left">
+              <div class="tj-header-title">Justification for Transition</div>
+              <div class="tj-header-sub" id="tjHeaderSub">Select a transition type to begin</div>
+            </div>
+            <div class="tj-toggle" id="tjToggle">▾ expand</div>
+          </div>
+          <div class="tj-body" id="tjBody" style="display:none">
+            <!-- always-visible: transition selector -->
+            <div class="tj-field">
+              <div class="tj-field-label">Transition Type</div>
+              <div class="tj-pills" id="tjTypePills">
+                <button class="tj-pill" onclick="tjSelectType('37wm-35',this)">3.7WM → 3.5</button>
+                <button class="tj-pill" onclick="tjSelectType('37-35',this)">3.7 → 3.5</button>
+                <button class="tj-pill" onclick="tjSelectType('35-25',this)">3.5 → 2.5</button>
+                <button class="tj-pill" onclick="tjSelectType('25-21',this)">2.5 → 2.1</button>
+                <button class="tj-pill" onclick="tjSelectType('21-1',this)">2.1 → 1.0</button>
+              </div>
+            </div>
+
+            <hr class="tj-divider" id="tjDivider" style="display:none;">
+
+            <!-- dynamic fields injected here -->
+            <div id="tjFields"></div>
+
+            <!-- output -->
+            <div class="tj-output-area" id="tjOutputArea">
+              <div class="tj-output-header">
+                <div class="tj-output-label">Justification for Transition</div>
+                <button class="section-copy-btn" onclick="tjCopy(this)">Copy</button>
+              </div>
+              <div class="tj-output-text" id="tjOutputText"></div>
+            </div>
           </div>
         </div>
 
@@ -4238,6 +4478,347 @@ function switchTab(n) {
   document.getElementById('tabCopyBtn').textContent = TAB_COPY_LABELS[n] || 'Copy';
 }
 
+// ─── TRANSITION JUSTIFICATION ──────────────────────
+
+const tjState = {
+  type: null,
+  open: false
+};
+
+// Phase labels by LOC
+const TJ_PHASES = {
+  '37wm': 'phase I Medically Monitored Intensive Inpatient Services WM unit',
+  '37':   'phase I Medically Monitored Intensive Inpatient Services unit',
+  '35':   'phase II Clinically Managed High-Intensity Residential Services unit',
+  '25':   'phase III Partial Hospitalization Services unit',
+  '21':   'phase IV'
+};
+
+// Field configurations per transition type
+const TJ_CONFIGS = {
+  '37wm-35': {
+    subLabel: '3.7WM → 3.5',
+    dates: [
+      { id: 'admitDate', label: 'Admission Date (3.7WM)' }
+    ],
+    fields: [
+      { id: 'goalCompleted', label: 'Goal Completed (e.g., Goal A)', type: 'text', placeholder: 'e.g., Goal A' },
+      { id: 'goalDate', label: 'Goal Completion Date', type: 'date' },
+      { id: 'copingLevel', label: 'Coping Skills Development', type: 'select',
+        options: ['Developed coping skills', 'Partially developed coping skills', 'Beginning to develop coping skills'] },
+      { id: 'withdrawalStatus', label: 'Withdrawal Status', type: 'select',
+        options: ['No signs or symptoms of withdrawal', 'Withdrawal needs can be safely managed in a 3.5 setting'] },
+      { id: 'needsWork', label: 'Needs to Work On', type: 'textarea', placeholder: 'Describe what the client needs to continue working on...' }
+    ]
+  },
+  '37-35': {
+    subLabel: '3.7 → 3.5',
+    dates: [
+      { id: 'admitDate', label: 'Admission Date (3.7)' }
+    ],
+    fields: [
+      { id: 'focusDim', label: 'Focus Dimension', type: 'select',
+        options: ['Dimension 2: Biomedical Conditions and Complications', 'Dimension 3: Emotional, Behavioral, or Cognitive Conditions and Complications'] },
+      { id: 'goalCompleted', label: 'Goal/Objective Completed (e.g., Goal B)', type: 'text', placeholder: 'e.g., Goal B' },
+      { id: 'goalDate', label: 'Goal Completion Date', type: 'date' },
+      { id: 'biomedStatus', label: 'Biomedical Status', type: 'select',
+        options: ['Biomedical conditions are stable and do not warrant 24-hour medical monitoring', 'Biomedical conditions are improving and can be managed in a 3.5 setting'] },
+      { id: 'mentalStatus', label: 'Mental Status', type: 'select',
+        options: ['Mental status is assessed as sufficiently stable to permit participation in therapeutic interventions in a 3.5 setting', 'Mental status has improved and therapeutic participation in a 3.5 setting is appropriate'] },
+      { id: 'needsWork', label: 'Needs to Work On', type: 'textarea', placeholder: 'Describe what the client needs to continue working on...' }
+    ]
+  },
+  '35-25': {
+    subLabel: '3.5 → 2.5',
+    dates: [
+      { id: 'admitDate37wm', label: 'Admission Date (3.7WM/3.7)' },
+      { id: 'transDate35', label: 'Transition Date to 3.5' }
+    ],
+    fields: [
+      { id: 'objectivesCompleted', label: 'Objectives Completed (e.g., objectives 1D, 2D, 3D of Goal D)', type: 'text', placeholder: 'e.g., objectives 1D, 2D, 3D of Goal D' },
+      { id: 'psych', label: 'Psychiatric Condition', type: 'select',
+        options: ['Psychiatric condition is stabilizing', 'Psychiatric condition is stable', 'Psychiatric condition remains a significant concern'] },
+      { id: 'relapseRisk', label: 'Relapse Risk', type: 'select',
+        options: ['Unable to control drug use without imminent danger', 'At high risk to relapse with limited ability to interrupt the relapse process', 'Demonstrates some relapse prevention skills but remains at elevated risk'] },
+      { id: 'skillLevel', label: 'Skill Development Level', type: 'select',
+        options: ['Developed minimal', 'Developed moderate', 'Demonstrated emerging'] },
+      { id: 'needsWork', label: 'Needs to Work On', type: 'textarea', placeholder: 'Describe what the client needs to continue working on...' }
+    ]
+  },
+  '25-21': {
+    subLabel: '2.5 → 2.1',
+    dates: [
+      { id: 'admitDate37wm', label: 'Admission Date (3.7WM/3.7)' },
+      { id: 'transDate35', label: 'Transition Date to 3.5' },
+      { id: 'transDate25', label: 'Transition Date to 2.5' }
+    ],
+    fields: [
+      { id: 'dim3obj', label: 'Dim 3 Objectives Completed', type: 'text', placeholder: 'e.g., 1C, 2C, 3C, 4C of Goal C' },
+      { id: 'dim4obj', label: 'Dim 4 Objectives Completed', type: 'text', placeholder: 'e.g., 1D, 2D, 3D, 4D of Goal D' },
+      { id: 'dim5obj', label: 'Dim 5 Objectives Completed', type: 'text', placeholder: 'e.g., 1E, 2E, 3E of Goal E' },
+      { id: 'dim6obj', label: 'Dim 6 Objectives Completed', type: 'text', placeholder: 'e.g., 1F, 2F, 3F of Goal F' },
+      { id: 'marginalAreas', label: 'Areas of Marginal Success', type: 'text', placeholder: 'e.g., relapse prevention, 12-step integration, insight on factors that led to use' },
+      { id: 'needsWork', label: 'Needs to Work On', type: 'textarea', placeholder: 'Describe what the client needs to continue working on...' }
+    ]
+  },
+  '21-1': {
+    subLabel: '2.1 → 1.0',
+    dates: [
+      { id: 'admitDate37wm', label: 'Admission Date (3.7WM/3.7)' },
+      { id: 'transDate35', label: 'Transition Date to 3.5' },
+      { id: 'transDate25', label: 'Transition Date to 2.5' },
+      { id: 'transDate21', label: 'Transition Date to 2.1' }
+    ],
+    fields: [
+      { id: 'successAreas', label: 'Areas of Marginal Success', type: 'text', placeholder: 'e.g., conflict resolution, relapse prevention, CBT skills, 12-step integration' },
+      { id: 'engagement', label: 'Client Engagement', type: 'select',
+        options: ['Was engaged in treatment, completing assignments and participating in group and individual sessions', 'Showed variable engagement in treatment activities', 'Demonstrated consistent engagement throughout treatment'] },
+      { id: 'needsWork', label: 'Needs to Work On', type: 'textarea', placeholder: 'Describe what the client needs to continue working on...' }
+    ]
+  }
+};
+
+function tjReset() {
+  tjState.type = null;
+  tjState.open = false;
+  tjSampleClientLoaded = false;
+  document.getElementById('tjFields').innerHTML = '';
+  document.getElementById('tjBody').style.display = 'none';
+  document.getElementById('tjToggle').textContent = '▾ expand';
+  document.getElementById('tjDivider').style.display = 'none';
+  document.getElementById('tjHeaderSub').textContent = 'Select a transition type to begin';
+  document.getElementById('tjOutputArea').classList.remove('visible');
+  document.getElementById('tjOutputText').textContent = '';
+  document.querySelectorAll('#tjTypePills .tj-pill').forEach(p => p.classList.remove('active'));
+}
+
+function toggleTJ() {
+  tjState.open = !tjState.open;
+  document.getElementById('tjBody').style.display = tjState.open ? 'flex' : 'none';
+  document.getElementById('tjToggle').textContent = tjState.open ? '▴ collapse' : '▾ expand';
+}
+
+function tjSelectType(type, btn) {
+  tjState.type = type;
+  document.querySelectorAll('#tjTypePills .tj-pill').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  const cfg = TJ_CONFIGS[type];
+  document.getElementById('tjHeaderSub').textContent = cfg.subLabel;
+  document.getElementById('tjDivider').style.display = 'block';
+  document.getElementById('tjOutputArea').classList.remove('visible');
+  document.getElementById('tjOutputText').textContent = '';
+  tjRenderFields(cfg);
+  if (tjSampleClientLoaded) tjFillSample(type);
+}
+
+let tjSampleClientLoaded = false;
+
+const TJ_SAMPLE = {
+  '37wm-35': {
+    clientName: 'Marcus',
+    admitDate: '2025-09-06',
+    goalCompleted: 'Goal A',
+    goalDate: '2025-09-18',
+    copingLevel: 'Developed coping skills',
+    withdrawalStatus: 'No signs or symptoms of withdrawal',
+    needsWork: 'developing emotional regulation skills and engaging consistently with group programming'
+  },
+  '37-35': {
+    clientName: 'Marcus',
+    admitDate: '2025-09-06',
+    focusDim: 'Dimension 3: Emotional, Behavioral, or Cognitive Conditions and Complications',
+    goalCompleted: 'Goal C',
+    goalDate: '2025-09-20',
+    biomedStatus: 'Biomedical conditions are stable and do not warrant 24-hour medical monitoring',
+    mentalStatus: 'Mental status is assessed as sufficiently stable to permit participation in therapeutic interventions in a 3.5 setting',
+    needsWork: 'mood stabilization, affect regulation, and developing coping strategies for interpersonal stressors'
+  },
+  '35-25': {
+    clientName: 'Marcus',
+    admitDate37wm: '2025-09-06',
+    transDate35: '2025-09-22',
+    objectivesCompleted: 'objectives 1D, 2D, and 3D of Goal D',
+    psych: 'Psychiatric condition is stabilizing',
+    relapseRisk: 'At high risk to relapse with limited ability to interrupt the relapse process',
+    skillLevel: 'Developed minimal',
+    needsWork: 'relapse prevention skill application, consistent engagement in programming, and building prosocial support'
+  },
+  '25-21': {
+    clientName: 'Marcus',
+    admitDate37wm: '2025-09-06',
+    transDate35: '2025-09-22',
+    transDate25: '2025-10-18',
+    dim3obj: '1C, 2C, 3C of Goal C',
+    dim4obj: '1D, 2D, 3D, 4D of Goal D',
+    dim5obj: '1E, 2E, 3E of Goal E',
+    dim6obj: '1F, 2F of Goal F',
+    marginalAreas: 'relapse prevention, 12-step program integration, and gaining insight on factors that led to substance use',
+    needsWork: 'patience, tolerance, and acceptance, as well as continued development of interpersonal communication skills'
+  },
+  '21-1': {
+    clientName: 'Marcus',
+    admitDate37wm: '2025-09-06',
+    transDate35: '2025-09-22',
+    transDate25: '2025-10-18',
+    transDate21: '2025-11-15',
+    successAreas: 'conflict resolution skills, relapse prevention, CBT skills, understanding the disease concept, and 12-step program integration',
+    engagement: 'Was engaged in treatment, completing assignments and participating in group and individual sessions',
+    needsWork: 'sustained application of relapse prevention skills and continued development of a sober support network in his home community'
+  }
+};
+
+function tjFillSample(type) {
+  const data = TJ_SAMPLE[type];
+  if (!data) return;
+  Object.entries(data).forEach(([key, val]) => {
+    const el = document.getElementById('tj-' + key);
+    if (el) el.value = val;
+  });
+}
+
+function tjRenderFields(cfg) {
+  const container = document.getElementById('tjFields');
+  let html = '';
+
+  // Client name (shared across all types)
+  html += `
+    <div class="tj-field">
+      <div class="tj-field-label">Client First Name</div>
+      <input class="tj-input" id="tj-clientName" type="text" placeholder="First name" />
+    </div>`;
+
+  // Date fields
+  cfg.dates.forEach(d => {
+    html += `
+      <div class="tj-field">
+        <div class="tj-field-label">${d.label}</div>
+        <input class="tj-input" id="tj-${d.id}" type="date" />
+      </div>`;
+  });
+
+  // Other fields
+  cfg.fields.forEach(f => {
+    html += `<div class="tj-field"><div class="tj-field-label">${f.label}</div>`;
+    if (f.type === 'text') {
+      html += `<input class="tj-input" id="tj-${f.id}" type="text" placeholder="${f.placeholder||''}" />`;
+    } else if (f.type === 'date') {
+      html += `<input class="tj-input" id="tj-${f.id}" type="date" />`;
+    } else if (f.type === 'textarea') {
+      html += `<textarea class="tj-textarea" id="tj-${f.id}" placeholder="${f.placeholder||''}"></textarea>`;
+    } else if (f.type === 'select') {
+      html += `<select class="tj-select" id="tj-${f.id}">`;
+      html += `<option value="">— select —</option>`;
+      f.options.forEach(opt => {
+        html += `<option value="${opt.replace(/"/g,'&quot;')}">${opt}</option>`;
+      });
+      html += `</select>`;
+    }
+    html += `</div>`;
+  });
+
+  // Generate button
+  html += `
+    <div class="tj-generate-row">
+      <button class="btn btn-primary" style="font-size:12px;padding:7px 18px;" onclick="tjGenerate()">Generate Justification</button>
+    </div>`;
+
+  container.innerHTML = html;
+}
+
+function tjFmtDate(val) {
+  if (!val) return '[date]';
+  const [y,m,d] = val.split('-');
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  return `${months[parseInt(m)-1]} ${parseInt(d)}, ${y}`;
+}
+
+function tjVal(id) {
+  const el = document.getElementById('tj-' + id);
+  return el ? el.value.trim() : '';
+}
+
+function tjGenerate() {
+  const type = tjState.type;
+  if (!type) return;
+  const cfg = TJ_CONFIGS[type];
+  const name = tjVal('clientName') || '[client name]';
+  let text = '';
+
+  if (type === '37wm-35') {
+    const admitDate = tjFmtDate(tjVal('admitDate'));
+    const goalCompleted = tjVal('goalCompleted') || '[goal]';
+    const goalDate = tjFmtDate(tjVal('goalDate'));
+    const coping = tjVal('copingLevel') || '[coping level]';
+    const withdrawal = tjVal('withdrawalStatus') || '[withdrawal status]';
+    const needsWork = tjVal('needsWork') || '[individualize this section]';
+    text = `${name} entered Woodhaven ${TJ_PHASES['37wm']} on ${admitDate}. During this time, the client had marginal success with the following areas: Dimension 1: Acute Intoxication and/or Withdrawal Potential. ${name} completed ${goalCompleted} on ${goalDate}. The client has ${coping} to successfully deal with withdrawal symptoms. The client has ${withdrawal}. The client needs to work on ${needsWork}.`;
+
+  } else if (type === '37-35') {
+    const admitDate = tjFmtDate(tjVal('admitDate'));
+    const dim = tjVal('focusDim') || '[dimension]';
+    const goalCompleted = tjVal('goalCompleted') || '[goal]';
+    const goalDate = tjFmtDate(tjVal('goalDate'));
+    const biomed = tjVal('biomedStatus') || '[biomedical status]';
+    const mental = tjVal('mentalStatus') || '[mental status]';
+    const needsWork = tjVal('needsWork') || '[individualize this section]';
+    text = `${name} entered Woodhaven ${TJ_PHASES['37']} on ${admitDate}. During this time, the client had marginal success with the following areas: ${dim} AEB completing ${goalCompleted} on ${goalDate}. ${biomed}. ${mental}. The client needs to work on ${needsWork}.`;
+
+  } else if (type === '35-25') {
+    const admitDate37 = tjFmtDate(tjVal('admitDate37wm'));
+    const transDate35 = tjFmtDate(tjVal('transDate35'));
+    const objectives = tjVal('objectivesCompleted') || '[objectives]';
+    const psych = tjVal('psych') || '[psychiatric condition]';
+    const relapse = tjVal('relapseRisk') || '[relapse risk]';
+    const skillLevel = tjVal('skillLevel') || '[skill level]';
+    const needsWork = tjVal('needsWork') || '[individualize this section]';
+    text = `${name} entered Woodhaven ${TJ_PHASES['37wm']} on ${admitDate37} and after completing the requirements of that unit, transitioned to Woodhaven ${TJ_PHASES['35']} on ${transDate35}. During this time, the client had marginal success with the following areas: Dimension 4: Readiness to Change. Client completed ${objectives}. The client's ${psych.toLowerCase()} however the client ${relapse.toLowerCase()}. The client ${skillLevel.toLowerCase()} conflict resolution skills, prosocial skills, anger management, understanding the disease concept, and CBT skills. The client requires structured therapy to promote treatment progress. The client's perspective inhibits ability to make behavior changes and the client is at high risk to relapse with limited ability to interrupt the relapse process or utilize support without motivational interventions. The client needs to work on ${needsWork}.`;
+
+  } else if (type === '25-21') {
+    const admitDate37 = tjFmtDate(tjVal('admitDate37wm'));
+    const transDate35 = tjFmtDate(tjVal('transDate35'));
+    const transDate25 = tjFmtDate(tjVal('transDate25'));
+    const dim3 = tjVal('dim3obj');
+    const dim4 = tjVal('dim4obj');
+    const dim5 = tjVal('dim5obj');
+    const dim6 = tjVal('dim6obj');
+    const marginal = tjVal('marginalAreas') || '[areas of marginal success]';
+    const needsWork = tjVal('needsWork') || '[individualize this section]';
+
+    let dimLines = '';
+    if (dim3) dimLines += `Dimension 3: Emotional, Behavioral, or Cognitive Conditions and Complications. Client completed objectives ${dim3}. `;
+    if (dim4) dimLines += `Dimension 4: Readiness to Change. Client completed objectives ${dim4}. `;
+    if (dim5) dimLines += `Dimension 5: Relapse, Continued Use, or Continued Problem Potential. Client completed objectives ${dim5}. `;
+    if (dim6) dimLines += `Dimension 6: Recovery/Living Environment. The client completed objectives ${dim6}. `;
+    if (!dimLines) dimLines = '[completed objectives by dimension]. ';
+
+    text = `${name} entered Woodhaven ${TJ_PHASES['37wm']} on ${admitDate37} and after completing the requirements of that unit, transitioned to Woodhaven ${TJ_PHASES['35']} on ${transDate35} and after completing the requirements of that unit, transitioned to Woodhaven ${TJ_PHASES['25']} on ${transDate25}. During this time, the client had marginal success with the following areas: ${dimLines}The client had marginal success with the following areas: ${marginal}. The client needs to work on ${needsWork}.`;
+
+  } else if (type === '21-1') {
+    const admitDate37 = tjFmtDate(tjVal('admitDate37wm'));
+    const transDate35 = tjFmtDate(tjVal('transDate35'));
+    const transDate25 = tjFmtDate(tjVal('transDate25'));
+    const transDate21 = tjFmtDate(tjVal('transDate21'));
+    const successAreas = tjVal('successAreas') || '[areas of marginal success]';
+    const engagement = tjVal('engagement') || '[engagement level]';
+    const needsWork = tjVal('needsWork') || '[individualize this section]';
+    text = `${name} entered Woodhaven ${TJ_PHASES['37wm']} on ${admitDate37} and after completing the requirements of that unit, transitioned to Woodhaven ${TJ_PHASES['35']} on ${transDate35} and after completing the requirements of that unit, transitioned to Woodhaven ${TJ_PHASES['25']} on ${transDate25} and after completing the requirements of that unit, transitioned to Woodhaven ${TJ_PHASES['21']} on ${transDate21}. The client had marginal success in the following areas: ${successAreas}. The client ${engagement.toLowerCase()}. The client needs to work on ${needsWork}.`;
+  }
+
+  document.getElementById('tjOutputText').textContent = text;
+  document.getElementById('tjOutputArea').classList.add('visible');
+  document.getElementById('tjOutputText').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function tjCopy(btn) {
+  const text = document.getElementById('tjOutputText').textContent;
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1800);
+  });
+}
+
 // ─── ASAM REFERENCE FOR ITP TAB ───────────────────
 let asamRefOpen = false;
 
@@ -5730,6 +6311,52 @@ function confirmReset() {
   document.getElementById('resetModal').style.display = 'flex';
 }
 
+function openFeedbackModal() {
+  document.getElementById('feedbackModal').style.display = 'flex';
+}
+
+function closeFeedbackModal() {
+  document.getElementById('feedbackModal').style.display = 'none';
+}
+
+function selectFeedbackType(pill) {
+  document.querySelectorAll('.feedback-type-pill').forEach(p => p.classList.remove('active'));
+  pill.classList.add('active');
+}
+
+function submitFeedback() {
+  const tool = document.getElementById('feedbackTool').value;
+  const typeEl = document.querySelector('.feedback-type-pill.active');
+  const type = typeEl ? typeEl.dataset.value : 'General feedback';
+  const text = document.getElementById('feedbackText').value.trim();
+
+  if (!text) {
+    const ta = document.getElementById('feedbackText');
+    ta.style.borderColor = '#c0392b';
+    ta.placeholder = 'Please enter your feedback before sending.';
+    ta.focus();
+    return;
+  }
+
+  let body = 'Tool: ' + (tool || 'General / All tools') + '\n';
+  body += 'Type: ' + type + '\n';
+  body += '\n' + text + '\n';
+  body += '\n—\nSent from DocAssist';
+
+  const subject = encodeURIComponent('DocAssist Feedback');
+  const encodedBody = encodeURIComponent(body);
+  window.location.href = 'mailto:joseph.bretzfelder@woodhavenohio.com?subject=' + subject + '&body=' + encodedBody;
+
+  setTimeout(() => {
+    document.getElementById('feedbackTool').value = '';
+    document.getElementById('feedbackText').value = '';
+    document.querySelectorAll('.feedback-type-pill').forEach((p, i) => {
+      p.classList.toggle('active', i === 0);
+    });
+    closeFeedbackModal();
+  }, 500);
+}
+
 // ═══════════════════════════════════════════════════
 // GROUP NOTE STATE & FUNCTIONS
 // ═══════════════════════════════════════════════════
@@ -6972,6 +7599,10 @@ function doReset() {
   document.getElementById('asamRefBody').style.display = 'none';
   document.getElementById('asamRefToggle').textContent = '▾ expand';
 
+  // Reset transition justification panel
+  const tjPanel = document.getElementById('tjPanel');
+  if (tjPanel) { tjReset(); }
+
   // Reset session note
   snClear();
 
@@ -7265,6 +7896,8 @@ function fillSampleClient() {
 
   dsRenderOutput();
   dsCalcDosageHours();
+
+  tjSampleClientLoaded = true;
 
   // ── Flash badge ──
   const badge = document.getElementById('clinicalBadge');
