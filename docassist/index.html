@@ -1619,45 +1619,63 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 <!-- Feedback modal -->
 <div id="feedbackModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;align-items:center;justify-content:center">
   <div style="background:white;border-radius:10px;padding:28px 32px;max-width:480px;width:92%;box-shadow:0 20px 60px rgba(0,0,0,0.2)">
-    <div style="font-size:15px;font-weight:700;color:#1a1a1a;margin-bottom:6px">Send Feedback</div>
-    <div style="font-size:12px;color:#666;margin-bottom:18px;line-height:1.5">Your feedback goes directly to Joseph. Tell him what's working, what isn't, or what you wish the tool could do.</div>
 
-    <div style="margin-bottom:14px">
-      <label style="font-size:11px;font-weight:600;color:#555;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.04em">Which tool does this relate to?</label>
-      <select id="feedbackTool" style="width:100%;box-sizing:border-box;padding:8px 11px;border:1px solid #ccc;border-radius:5px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;color:#1a1a1a;background:white;outline:none;cursor:pointer;transition:border 0.15s" onfocus="this.style.borderColor='#2d6a4f'" onblur="this.style.borderColor='#ccc'">
-        <option value="">General / All tools</option>
-        <option value="ASAM Documentation">ASAM Documentation</option>
-        <option value="ITP Development">ITP Development</option>
-        <option value="Individual Note">Individual Note</option>
-        <option value="Group Notes">Group Notes</option>
-        <option value="Discharge Summary">Discharge Summary</option>
-      </select>
-    </div>
+    <!-- Screen 1: input form -->
+    <div id="feedbackScreen1">
+      <div style="font-size:15px;font-weight:700;color:#1a1a1a;margin-bottom:6px">Send Feedback</div>
+      <div style="font-size:12px;color:#666;margin-bottom:18px;line-height:1.5">Your feedback goes directly to Joseph. Tell him what's working, what isn't, or what you wish the tool could do.</div>
 
-    <div style="margin-bottom:14px">
-      <label style="font-size:11px;font-weight:600;color:#555;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.04em">Feedback type</label>
-      <div style="display:flex;gap:8px;flex-wrap:wrap" id="feedbackTypeGroup">
-        <button type="button" class="feedback-type-pill active" data-value="General feedback" onclick="selectFeedbackType(this)">General</button>
-        <button type="button" class="feedback-type-pill" data-value="Something isn't working" onclick="selectFeedbackType(this)">Something's broken</button>
-        <button type="button" class="feedback-type-pill" data-value="Feature request" onclick="selectFeedbackType(this)">Feature request</button>
-        <button type="button" class="feedback-type-pill" data-value="Workflow suggestion" onclick="selectFeedbackType(this)">Workflow suggestion</button>
+      <div style="margin-bottom:14px">
+        <label style="font-size:11px;font-weight:600;color:#555;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.04em">Which tool does this relate to?</label>
+        <select id="feedbackTool" style="width:100%;box-sizing:border-box;padding:8px 11px;border:1px solid #ccc;border-radius:5px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;color:#1a1a1a;background:white;outline:none;cursor:pointer;transition:border 0.15s" onfocus="this.style.borderColor='#2d6a4f'" onblur="this.style.borderColor='#ccc'">
+          <option value="">General / All tools</option>
+          <option value="ASAM Documentation">ASAM Documentation</option>
+          <option value="ITP Development">ITP Development</option>
+          <option value="Individual Note">Individual Note</option>
+          <option value="Group Notes">Group Notes</option>
+          <option value="Discharge Summary">Discharge Summary</option>
+        </select>
+      </div>
+
+      <div style="margin-bottom:14px">
+        <label style="font-size:11px;font-weight:600;color:#555;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.04em">Feedback type</label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap" id="feedbackTypeGroup">
+          <button type="button" class="feedback-type-pill active" data-value="General feedback" onclick="selectFeedbackType(this)">General</button>
+          <button type="button" class="feedback-type-pill" data-value="Something isn't working" onclick="selectFeedbackType(this)">Something's broken</button>
+          <button type="button" class="feedback-type-pill" data-value="Feature request" onclick="selectFeedbackType(this)">Feature request</button>
+          <button type="button" class="feedback-type-pill" data-value="Workflow suggestion" onclick="selectFeedbackType(this)">Workflow suggestion</button>
+        </div>
+      </div>
+
+      <div style="margin-bottom:20px">
+        <label style="font-size:11px;font-weight:600;color:#555;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.04em">Your feedback</label>
+        <textarea id="feedbackText" rows="5" placeholder="Describe what you experienced, what you'd like to see, or anything that would make the tool work better for you…" style="width:100%;box-sizing:border-box;padding:9px 11px;border:1px solid #ccc;border-radius:5px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;color:#1a1a1a;resize:vertical;outline:none;line-height:1.5;transition:border 0.15s" onfocus="this.style.borderColor='#2d6a4f'" onblur="this.style.borderColor='#ccc'"></textarea>
+      </div>
+
+      <div style="display:flex;gap:10px;justify-content:flex-end">
+        <button class="btn btn-ghost" onclick="closeFeedbackModal()">Cancel</button>
+        <button class="btn" style="background:#2d6a4f;color:white;font-weight:600" onclick="submitFeedback()">Open in Outlook →</button>
       </div>
     </div>
 
-    <div style="margin-bottom:20px">
-      <label style="font-size:11px;font-weight:600;color:#555;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.04em">Your feedback</label>
-      <textarea id="feedbackText" rows="5" placeholder="Describe what you experienced, what you'd like to see, or anything that would make the tool work better for you…" style="width:100%;box-sizing:border-box;padding:9px 11px;border:1px solid #ccc;border-radius:5px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;color:#1a1a1a;resize:vertical;outline:none;line-height:1.5;transition:border 0.15s" onfocus="this.style.borderColor='#2d6a4f'" onblur="this.style.borderColor='#ccc'"></textarea>
+    <!-- Screen 2: fallback copy panel -->
+    <div id="feedbackScreen2" style="display:none">
+      <div style="font-size:15px;font-weight:700;color:#1a1a1a;margin-bottom:6px">Send your feedback</div>
+      <div style="font-size:12px;color:#666;margin-bottom:16px;line-height:1.5">Click the button below to open Outlook. If it asks you to sign in or doesn't open, copy the message below and paste it into a new email to <strong>joseph.bretzfelder@woodhavenohio.com</strong>.</div>
+
+      <a id="feedbackOutlookLink" href="#" target="_blank" style="display:block;text-align:center;background:#2d6a4f;color:white;font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:700;padding:10px;border-radius:6px;text-decoration:none;margin-bottom:16px">Open Outlook →</a>
+
+      <div style="font-size:11px;font-weight:600;color:#555;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px">Or copy and paste this message</div>
+      <div style="position:relative">
+        <textarea id="feedbackCopyBox" readonly rows="7" style="width:100%;box-sizing:border-box;padding:9px 11px;border:1px solid #ddd;border-radius:5px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#333;background:#f8f8f8;resize:none;outline:none;line-height:1.5"></textarea>
+        <button onclick="copyFeedbackText(this)" style="position:absolute;top:8px;right:8px;background:#2d6a4f;color:white;border:none;border-radius:4px;font-family:'IBM Plex Sans',sans-serif;font-size:11px;font-weight:600;padding:3px 10px;cursor:pointer">Copy</button>
+      </div>
+
+      <div style="display:flex;justify-content:flex-end;margin-top:16px">
+        <button class="btn btn-ghost" onclick="closeFeedbackModal()">Done</button>
+      </div>
     </div>
 
-    <div style="font-size:11px;color:#888;margin-bottom:18px;display:flex;align-items:flex-start;gap:7px">
-      <span style="font-size:14px;line-height:1">ℹ️</span>
-      <span>This will open Outlook with a pre-filled message. Just hit Send — you're done.</span>
-    </div>
-
-    <div style="display:flex;gap:10px;justify-content:flex-end">
-      <button class="btn btn-ghost" onclick="closeFeedbackModal()">Cancel</button>
-      <button class="btn" style="background:#2d6a4f;color:white;font-weight:600" onclick="submitFeedback()">Open in Outlook →</button>
-    </div>
   </div>
 </div>
 
@@ -6315,10 +6333,6 @@ function openFeedbackModal() {
   document.getElementById('feedbackModal').style.display = 'flex';
 }
 
-function closeFeedbackModal() {
-  document.getElementById('feedbackModal').style.display = 'none';
-}
-
 function selectFeedbackType(pill) {
   document.querySelectorAll('.feedback-type-pill').forEach(p => p.classList.remove('active'));
   pill.classList.add('active');
@@ -6345,20 +6359,31 @@ function submitFeedback() {
 
   const subject = encodeURIComponent('DocAssist Feedback');
   const encodedBody = encodeURIComponent(body);
-  const a = document.createElement('a');
-  a.href = 'mailto:joseph.bretzfelder@woodhavenohio.com?subject=' + subject + '&body=' + encodedBody;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+  const outlookUrl = 'https://outlook.office.com/mail/deeplink/compose?to=joseph.bretzfelder%40woodhavenohio.com&subject=' + subject + '&body=' + encodedBody;
 
-  setTimeout(() => {
-    document.getElementById('feedbackTool').value = '';
-    document.getElementById('feedbackText').value = '';
-    document.querySelectorAll('.feedback-type-pill').forEach((p, i) => {
-      p.classList.toggle('active', i === 0);
-    });
-    closeFeedbackModal();
-  }, 500);
+  document.getElementById('feedbackOutlookLink').href = outlookUrl;
+  document.getElementById('feedbackCopyBox').value = body;
+  document.getElementById('feedbackScreen1').style.display = 'none';
+  document.getElementById('feedbackScreen2').style.display = 'block';
+}
+
+function copyFeedbackText(btn) {
+  const box = document.getElementById('feedbackCopyBox');
+  navigator.clipboard.writeText(box.value).then(() => {
+    btn.textContent = '✓ Copied';
+    setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+  });
+}
+
+function closeFeedbackModal() {
+  document.getElementById('feedbackModal').style.display = 'none';
+  document.getElementById('feedbackScreen1').style.display = 'block';
+  document.getElementById('feedbackScreen2').style.display = 'none';
+  document.getElementById('feedbackTool').value = '';
+  document.getElementById('feedbackText').value = '';
+  document.querySelectorAll('.feedback-type-pill').forEach((p, i) => {
+    p.classList.toggle('active', i === 0);
+  });
 }
 
 // ═══════════════════════════════════════════════════
