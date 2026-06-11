@@ -3305,6 +3305,40 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
       </div>
 
+      <!-- Continuity of Care -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:12px;">Continuity of Care / Referral</div>
+
+        <div style="margin-bottom:10px;">
+          <label class="form-label">Transitioning To <span style="font-size:10px;color:var(--text-secondary);font-weight:400;">(facility name, address, phone)</span></label>
+          <textarea class="form-textarea" id="ds-transition-to" rows="2" placeholder="e.g. Light House, 5000 Sunbury Rd, Columbus, OH 43230, (614) 337-1986" oninput="dsState.transitionTo=this.value;dsRenderOutput()" style="min-height:55px;"></textarea>
+        </div>
+
+        <!-- Successful discharge: referral checkboxes -->
+        <div id="ds-coc-successful-block" style="display:none;">
+          <label class="form-label" style="margin-bottom:6px;">Referrals Made</label>
+          <div style="display:flex;flex-direction:column;gap:4px;" id="ds-referral-checkboxes">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- ASA / Admin discharge: resource sheet -->
+        <div id="ds-coc-asa-block" style="display:none;">
+          <label class="form-label" style="margin-bottom:6px;">Community Resource Sheet Provided?</label>
+          <div style="display:flex;gap:6px;margin-bottom:8px;">
+            <button class="ds-pill" onclick="dsSetResourceSheet('yes')" id="ds-rs-yes">Yes</button>
+            <button class="ds-pill" onclick="dsSetResourceSheet('no')" id="ds-rs-no">No</button>
+          </div>
+          <div id="ds-rs-reason-wrap" style="display:none;">
+            <label class="form-label">Reason Not Provided</label>
+            <textarea class="form-textarea" id="ds-rs-reason" rows="2" placeholder="Explain why the resource sheet was not provided…" oninput="dsState.resourceSheetReason=this.value;dsRenderOutput()" style="min-height:55px;"></textarea>
+          </div>
+        </div>
+
+        <!-- Placeholder when no discharge type selected -->
+        <div id="ds-coc-empty-block" style="font-size:12px;color:var(--text-secondary);">Select a discharge type above to see continuity of care options.</div>
+      </div>
+
       <!-- Aftercare -->
       <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:16px;">
         <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:12px;">Aftercare & Referral</div>
@@ -3321,11 +3355,6 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
             <option value="1.0">1.0 — Standard Outpatient Services</option>
             <option value="none">No step-down recommended</option>
           </select>
-        </div>
-
-        <div style="margin-bottom:10px;">
-          <label class="form-label">Transitioning To <span style="font-size:10px;color:var(--text-secondary);font-weight:400;">(facility name, address, phone)</span></label>
-          <textarea class="form-textarea" id="ds-transition-to" rows="2" placeholder="e.g. Light House, 5000 Sunbury Rd, Columbus, OH 43230, (614) 337-1986" oninput="dsState.transitionTo=this.value;dsRenderOutput()" style="min-height:55px;"></textarea>
         </div>
 
         <div style="margin-bottom:10px;">
@@ -7063,9 +7092,21 @@ let dsState = {
   transitionTo: '',
   aftercareElements: new Set(),
   aftercareNotes: '',
+  resourceSheet: '',
+  resourceSheetReason: '',
+  referrals: new Set(),
 };
 
 let dsPhaseCounter = 0;
+
+const DS_REFERRAL_OPTIONS = [
+  'Woodhaven IOP',
+  'MAT provider',
+  'Mental health counseling',
+  'Primary care physician',
+  'Sober living / recovery housing',
+  'Other community services',
+];
 
 function dsInit() {
   // Render skill checkboxes
@@ -7073,6 +7114,14 @@ function dsInit() {
   skillBox.innerHTML = DS_SKILLS.map((s, i) => `
     <label class="ds-skill-row">
       <input type="checkbox" id="ds-skill-${i}" onchange="dsToggleSkill('${s}', this.checked)">
+      ${s}
+    </label>`).join('');
+
+  // Render referral checkboxes
+  const referralBox = document.getElementById('ds-referral-checkboxes');
+  referralBox.innerHTML = DS_REFERRAL_OPTIONS.map((s, i) => `
+    <label class="ds-skill-row">
+      <input type="checkbox" id="ds-ref-${i}" onchange="dsToggleReferral('${s}', this.checked)">
       ${s}
     </label>`).join('');
 
@@ -7096,6 +7145,7 @@ function dsSetDischargeType(val) {
   const subtypeWrap = document.getElementById('ds-subtype-wrap');
   subtypeWrap.style.display = val === 'unsuccessful' ? 'block' : 'none';
   ['admin','asa'].forEach(v => document.getElementById('ds-sub-' + v).classList.remove('active'));
+  dsUpdateCOCVisibility();
   dsRenderOutput();
 }
 
@@ -7104,6 +7154,7 @@ function dsSetSubtype(val) {
   ['admin','asa'].forEach(v => {
     document.getElementById('ds-sub-' + v).classList.toggle('active', v === val);
   });
+  dsUpdateCOCVisibility();
   dsRenderOutput();
 }
 
@@ -7331,7 +7382,6 @@ function dsBuildClientResponse() {
 function dsBuildAftercare() {
   const C = dsState.clientName || 'Client';
   const loc = dsState.stepdownLoc;
-  const to = dsState.transitionTo ? dsState.transitionTo.trim() : '';
   const elements = Array.from(dsState.aftercareElements);
   const notes = dsState.aftercareNotes ? dsState.aftercareNotes.trim() : '';
 
@@ -7339,10 +7389,6 @@ function dsBuildAftercare() {
 
   if (loc && loc !== 'none') {
     text += `It is recommended that ${C} participate in ASAM LOC ${DS_LOC_SHORT[loc] || loc}.`;
-  }
-
-  if (to) {
-    text += (text ? ' ' : '') + `${C} will be transitioning to ${to}.`;
   }
 
   if (elements.length > 0) {
@@ -7357,10 +7403,61 @@ function dsBuildAftercare() {
   return text.trim();
 }
 
+function dsUpdateCOCVisibility() {
+  const dt = dsState.dischargeType;
+  const sub = dsState.dischargeSubtype;
+  const isSuccessful = dt === 'successful';
+  const isAsaOrAdmin = dt === 'unsuccessful' && (sub === 'asa' || sub === 'admin');
+
+  document.getElementById('ds-coc-successful-block').style.display = isSuccessful ? 'block' : 'none';
+  document.getElementById('ds-coc-asa-block').style.display = isAsaOrAdmin ? 'block' : 'none';
+  document.getElementById('ds-coc-empty-block').style.display = (!isSuccessful && !isAsaOrAdmin) ? 'block' : 'none';
+}
+
+function dsSetResourceSheet(val) {
+  dsState.resourceSheet = val;
+  ['yes','no'].forEach(v => {
+    document.getElementById('ds-rs-' + v).classList.toggle('active', v === val);
+  });
+  document.getElementById('ds-rs-reason-wrap').style.display = val === 'no' ? 'block' : 'none';
+  dsRenderOutput();
+}
+
+function dsToggleReferral(item, checked) {
+  if (checked) dsState.referrals.add(item);
+  else dsState.referrals.delete(item);
+  dsRenderOutput();
+}
+
 function dsBuildCOC() {
+  const C = dsState.clientName || 'Client';
+  const dt = dsState.dischargeType;
+  const sub = dsState.dischargeSubtype;
   const to = dsState.transitionTo ? dsState.transitionTo.trim() : '';
-  let text = 'CM addressed client\'s legal, personal, and discharge planning needs.';
-  if (to) text += ` Client will be transitioning to ${to}.`;
+  const referrals = Array.from(dsState.referrals);
+
+  let text = '';
+
+  if (to) text += `${C} will be transitioning to ${to}.`;
+
+  if (dt === 'successful') {
+    if (referrals.length > 0) {
+      text += (text ? ' ' : '') + `Referrals were made to the following services: ${referrals.join(', ')}.`;
+    }
+    return text;
+  }
+
+  if (dt === 'unsuccessful' && (sub === 'asa' || sub === 'admin')) {
+    if (dsState.resourceSheet === 'yes') {
+      text += (text ? ' ' : '') + `${C} was provided a community resource sheet at the time of discharge, which includes access to emergency medical services, crisis support (988 Suicide and Crisis Lifeline), local AA/NA recovery community resources, emergency housing options, and information on outpatient services available through Woodhaven.`;
+    } else if (dsState.resourceSheet === 'no') {
+      const reason = dsState.resourceSheetReason ? dsState.resourceSheetReason.trim() : '';
+      text += (text ? ' ' : '') + `A community resource sheet was not provided at the time of discharge.`;
+      if (reason) text += ` ${reason}${reason.endsWith('.') ? '' : '.'}`;
+    }
+    return text;
+  }
+
   return text;
 }
 
@@ -7554,12 +7651,15 @@ function dsReset() {
     transitionTo: '',
     aftercareElements: new Set(),
     aftercareNotes: '',
+    resourceSheet: '',
+    resourceSheetReason: '',
+    referrals: new Set(),
   };
   dsPhaseCounter = 0;
 
   // Clear input fields
   ['ds-client-name','ds-last-contact-date','ds-days-tx','ds-status-last-contact',
-   'ds-elig-comments','ds-clinical-obs','ds-transition-to','ds-aftercare-notes'].forEach(id => {
+   'ds-elig-comments','ds-clinical-obs','ds-transition-to','ds-aftercare-notes','ds-rs-reason'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
@@ -7575,6 +7675,10 @@ function dsReset() {
   document.getElementById('ds-elig-comments-wrap').style.display = 'none';
   document.querySelectorAll('#ds-skill-checkboxes input').forEach(cb => cb.checked = false);
   document.querySelectorAll('#ds-aftercare-checkboxes input').forEach(cb => cb.checked = false);
+  document.querySelectorAll('#ds-referral-checkboxes input').forEach(cb => cb.checked = false);
+  ['yes','no'].forEach(v => { const el = document.getElementById('ds-rs-'+v); if (el) el.classList.remove('active'); });
+  document.getElementById('ds-rs-reason-wrap').style.display = 'none';
+  dsUpdateCOCVisibility();
 
   document.getElementById('ds-phase-list').innerHTML = '<div style="font-size:11px;color:var(--text-secondary);font-style:italic;">No phases added yet</div>';
   document.getElementById('ds-dh-result').textContent = '—';
