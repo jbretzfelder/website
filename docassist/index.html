@@ -559,6 +559,21 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 }
 .challenge-msg.visible { display: block; }
 
+.consult-alert {
+  display: none;
+  margin-top: 8px;
+  padding: 10px 12px;
+  background: #fff0f0;
+  border: 1px solid #e74c3c;
+  border-left: 3px solid #c0392b;
+  border-radius: 4px;
+  font-size: 11px;
+  color: #7b1a1a;
+  line-height: 1.55;
+}
+.consult-alert.visible { display: block; }
+.consult-alert-title { font-weight: 700; margin-bottom: 3px; }
+
 .sentence-hint {
   display: flex;
   align-items: center;
@@ -655,6 +670,23 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   color: var(--accent);
   margin-bottom: 10px;
 }
+.discharge-section {
+  background: #f4f7f9;
+  border: 1px solid #c8d8e4;
+  border-radius: 6px;
+  padding: 12px;
+  margin-top: 14px;
+}
+.discharge-section-title {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #3a7ca5;
+  margin-bottom: 10px;
+}
+.discharge-mode .challenge-msg { display: none !important; }
+.discharge-mode .consult-alert { display: none !important; }
 
 /* ─── RIGHT PANEL ─────────────────────────── */
 .right-panel {
@@ -1773,6 +1805,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <div class="toggle-group">
       <button class="toggle-btn active" id="btnInitial" onclick="setAdmissionType('initial')">Initial Admission</button>
       <button class="toggle-btn" id="btnContinued" onclick="setAdmissionType('continued')">Continued Stay</button>
+      <button class="toggle-btn" id="btnDischarge" onclick="setAdmissionType('discharge')">Discharge</button>
     </div>
   </div>
   <div class="toolbar-group">
@@ -1801,7 +1834,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       <button class="dim-tab" data-dim="6" onclick="showDim(6,this)">Dim 6</button>
     </div>
 
-    <div class="dim-content">
+    <div class="dim-content" id="dim-content">
 
       <!-- ── DIM 1 ── -->
       <div class="dim-panel active" id="dim-1">
@@ -1860,7 +1893,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
           </select>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" id="grp-dim1-notes">
           <label class="form-label">Additional Clinical Observations</label>
           <textarea class="form-textarea" placeholder="Any other relevant withdrawal or intoxication details…" oninput="state.dim1.notes=this.value"></textarea>
         </div>
@@ -1881,6 +1914,15 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
             <label class="form-label">Response to Treatment / Progress<span class="req-star">*</span></label>
             <div class="sentence-hint">✎ Write in complete sentences — pasted verbatim into output</div>
             <textarea class="form-textarea" placeholder="e.g. Client has responded well to Librium taper protocol with CIWA scores declining from 18 at admission to 4 as of today. Tremor and diaphoresis have resolved; mild anxiety persists." oninput="state.dim1.csProgress=this.value;clearGrpError('grp-dim1-cs-progress')"></textarea>
+          </div>
+        </div>
+
+        <div class="discharge-section" id="dim1-dc" style="display:none">
+          <div class="discharge-section-title">Discharge — Dimension 1</div>
+          <div class="form-group">
+            <label class="form-label">Withdrawal Status at Discharge</label>
+            <div class="sentence-hint">✎ Write in complete sentences — pasted verbatim into output</div>
+            <textarea class="form-textarea" rows="3" placeholder="e.g. Withdrawal resolved without significant complication. CIWA scores trended to 0 prior to discharge. No acute withdrawal concerns at time of transition." oninput="state.dim1.dcStatus=this.value"></textarea>
           </div>
         </div>
       </div>
@@ -1915,12 +1957,12 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
           <textarea class="form-textarea" placeholder="e.g. Client's unmanaged hypertension and COPD require daily monitoring and increase the risk of medical complication during early sobriety, necessitating a level of care with 24-hour nursing oversight." oninput="state.dim2.impact=this.value;clearGrpError('grp-dim2-impact')"></textarea>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" id="grp-dim2-medications">
           <label class="form-label">Medications Requiring Clinical Management</label>
           <input class="form-input" placeholder="e.g. MAT induction, insulin management, cardiac medications…" oninput="state.dim2.medications=this.value">
         </div>
 
-        <div class="form-group">
+        <div class="form-group" id="grp-dim2-notes">
           <label class="form-label">Additional Clinical Observations</label>
           <textarea class="form-textarea" placeholder="Other relevant biomedical details…" oninput="state.dim2.notes=this.value"></textarea>
         </div>
@@ -1942,6 +1984,15 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
             <textarea class="form-textarea" placeholder="e.g. Client's blood pressure has stabilized with medication compliance; daily vitals monitoring continues. COPD has not required acute intervention during this episode of care." oninput="state.dim2.csProgress=this.value;clearGrpError('grp-dim2-cs-progress')"></textarea>
           </div>
         </div>
+
+        <div class="discharge-section" id="dim2-dc" style="display:none">
+          <div class="discharge-section-title">Discharge — Dimension 2</div>
+          <div class="form-group">
+            <label class="form-label">Medical Status at Discharge</label>
+            <div class="sentence-hint">✎ Write in complete sentences — pasted verbatim into output</div>
+            <textarea class="form-textarea" rows="3" placeholder="e.g. Hypertension stable on current medications at time of discharge. No acute medical concerns. Client discharged with instructions to follow up with primary care within two weeks." oninput="state.dim2.dcStatus=this.value"></textarea>
+          </div>
+        </div>
       </div>
 
       <!-- ── DIM 3 ── -->
@@ -1961,6 +2012,10 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
             <button class="severity-pill" onclick="setSeverity('dim3','severity','severe',this)">Severe</button>
           </div>
           <div class="challenge-msg" id="chal-dim3-sev">⚠ Stable psychiatric status is a step-down indicator for Dimension 3. If accurate, document in Additional Clinical Observations what emotional or behavioral factors still require clinical intervention at this LOC — "stable" alone will not justify continued authorization.</div>
+          <div class="consult-alert" id="dim3-consult-alert">
+            <div class="consult-alert-title">⚠ Supervisor Consultation Required</div>
+            Severe psychiatric/cognitive severity indicates this client may have difficulty engaging in or benefiting from treatment at this LOC. Before proceeding, consult with your supervisor to confirm the client is appropriate for treatment and that this level of care can address their needs. Document the outcome of that conversation in the ASAM narrative.
+          </div>
         </div>
 
         <div class="form-group" id="grp-dim3-diagnoses">
@@ -1973,9 +2028,13 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
           <input class="form-input" id="dim3-dx-input" placeholder="e.g. MDD, PTSD, Bipolar I, GAD, Schizoaffective Disorder…" oninput="state.dim3.diagnoses=this.value;clearGrpError('grp-dim3-diagnoses')">
         </div>
 
-        <div class="form-group">
+        <div class="form-group" id="grp-dim3-symptoms">
           <label class="form-label">Active Symptoms</label>
           <div id="dim3-symptoms" class="checkbox-group"></div>
+          <div class="consult-alert" id="dim3-symptom-consult-alert" style="margin-top:8px;">
+            <div class="consult-alert-title">⚠ Supervisor Consultation Required</div>
+            One or more active symptoms may indicate this client is not appropriate for treatment at this LOC or requires a higher level of care. Consult with your supervisor before proceeding and document the outcome in the ASAM narrative.
+          </div>
         </div>
 
         <div class="form-group" id="grp-dim3-impact">
@@ -1984,7 +2043,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
           <textarea class="form-textarea" placeholder="e.g. Client's active depressive symptoms and passive suicidal ideation significantly impair her capacity to engage in structured programming and require daily clinical monitoring that cannot be provided at a lower level of care." oninput="state.dim3.impact=this.value;clearGrpError('grp-dim3-impact')"></textarea>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" id="grp-dim3-notes">
           <label class="form-label">Additional Clinical Observations</label>
           <textarea class="form-textarea" placeholder="Other relevant psychiatric or cognitive observations…" oninput="state.dim3.notes=this.value"></textarea>
         </div>
@@ -2004,6 +2063,15 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
             <label class="form-label">Remaining Psychiatric Treatment Goals<span class="req-star">*</span></label>
             <div class="sentence-hint">✎ Write in complete sentences — pasted verbatim into output</div>
             <textarea class="form-textarea" placeholder="e.g. Client continues to experience passive suicidal ideation requiring daily safety assessments. Mood stabilization has not yet been achieved, and a step-down to outpatient services at this time would present significant clinical risk." oninput="state.dim3.csGoals=this.value;clearGrpError('grp-dim3-cs-goals')"></textarea>
+          </div>
+        </div>
+
+        <div class="discharge-section" id="dim3-dc" style="display:none">
+          <div class="discharge-section-title">Discharge — Dimension 3</div>
+          <div class="form-group">
+            <label class="form-label">Psychiatric Status at Discharge</label>
+            <div class="sentence-hint">✎ Write in complete sentences — pasted verbatim into output</div>
+            <textarea class="form-textarea" rows="3" placeholder="e.g. Psychiatric symptoms were stable at time of discharge. No active suicidal or homicidal ideation. Client reported improved mood and denied acute distress. Will continue outpatient psychiatric follow-up as part of aftercare plan." oninput="state.dim3.dcStatus=this.value"></textarea>
           </div>
         </div>
       </div>
@@ -2079,6 +2147,15 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
             <textarea class="form-textarea" placeholder="e.g. Client has not yet demonstrated sufficient internalization of recovery goals to sustain engagement without the daily structure of this level of care. Continued motivational interviewing and goal-setting work is required prior to step-down." oninput="state.dim4.csGoals=this.value;clearGrpError('grp-dim4-cs-goals')"></textarea>
           </div>
         </div>
+
+        <div class="discharge-section" id="dim4-dc" style="display:none">
+          <div class="discharge-section-title">Discharge — Dimension 4</div>
+          <div class="form-group">
+            <label class="form-label">Readiness to Change at Discharge</label>
+            <div class="sentence-hint">✎ Write in complete sentences — pasted verbatim into output</div>
+            <textarea class="form-textarea" rows="3" placeholder="e.g. Client demonstrated consistent engagement throughout the episode of care and expressed genuine commitment to maintaining sobriety. Stage of change at discharge assessed as action, with improved insight into the nature of the substance use disorder." oninput="state.dim4.dcStatus=this.value"></textarea>
+          </div>
+        </div>
       </div>
 
       <!-- ── DIM 5 ── -->
@@ -2111,7 +2188,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
           </select>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" id="grp-dim5-triggers">
           <label class="form-label">Identified Relapse Triggers</label>
           <div id="dim5-triggers" class="checkbox-group"></div>
         </div>
@@ -2126,7 +2203,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
           <div class="challenge-msg" id="chal-dim5-coping">⚠ Adequate coping skills suggest step-down readiness. Document in Additional Relapse Risk Factors what specific skill gaps or generalization deficits still require the structure of this LOC — "adequate" with no clinical context will not support authorization.</div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" id="grp-dim5-notes">
           <label class="form-label">Additional Relapse Risk Factors</label>
           <textarea class="form-textarea" placeholder="Overdose history, pattern of use escalation, harm reduction concerns, craving severity…" oninput="state.dim5.notes=this.value"></textarea>
         </div>
@@ -2146,6 +2223,15 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
             <label class="form-label">Relapse Prevention Progress / Remaining Goals<span class="req-star">*</span></label>
             <div class="sentence-hint">✎ Write in complete sentences — pasted verbatim into output</div>
             <textarea class="form-textarea" placeholder="e.g. Client has begun identifying primary relapse triggers but has not yet developed or practiced the coping strategies needed to manage them independently. Step-down is not appropriate until these skills are consolidated." oninput="state.dim5.csProgress=this.value;clearGrpError('grp-dim5-cs-progress')"></textarea>
+          </div>
+        </div>
+
+        <div class="discharge-section" id="dim5-dc" style="display:none">
+          <div class="discharge-section-title">Discharge — Dimension 5</div>
+          <div class="form-group">
+            <label class="form-label">Relapse Risk and Coping Skills at Discharge</label>
+            <div class="sentence-hint">✎ Write in complete sentences — pasted verbatim into output</div>
+            <textarea class="form-textarea" rows="3" placeholder="e.g. Relapse risk at discharge is assessed as moderate. Client developed foundational relapse prevention skills during this episode of care, including trigger identification and coping strategies. Client identified primary support contacts and has a discharge plan in place." oninput="state.dim5.dcStatus=this.value"></textarea>
           </div>
         </div>
       </div>
@@ -2196,12 +2282,12 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
           <div class="challenge-msg" id="chal-dim6-support">⚠ A strong support system is a step-down indicator. Document in Additional Environmental Observations how the client is utilizing this support and what — despite it — still requires the current level of care. Reviewers will question authorization when the environment is fully supportive.</div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" id="grp-dim6-risks">
           <label class="form-label">Environmental Risk Factors</label>
           <div id="dim6-risks" class="checkbox-group"></div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" id="grp-dim6-notes">
           <label class="form-label">Additional Environmental Observations</label>
           <textarea class="form-textarea" placeholder="Other contextual factors affecting the client's recovery environment…" oninput="state.dim6.notes=this.value"></textarea>
         </div>
@@ -2221,6 +2307,15 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
             <label class="form-label">Discharge / Step-Down Planning Progress<span class="req-star">*</span></label>
             <div class="sentence-hint">✎ Write in complete sentences — pasted verbatim into output</div>
             <textarea class="form-textarea" placeholder="e.g. Client is being assessed for sober living placement; two options have been identified and are pending availability. Discharge to the current home environment remains clinically contraindicated due to the presence of active substance users in the household." oninput="state.dim6.csProgress=this.value;clearGrpError('grp-dim6-cs-progress')"></textarea>
+          </div>
+        </div>
+
+        <div class="discharge-section" id="dim6-dc" style="display:none">
+          <div class="discharge-section-title">Discharge — Dimension 6</div>
+          <div class="form-group">
+            <label class="form-label">Recovery Environment at Discharge</label>
+            <div class="sentence-hint">✎ Write in complete sentences — pasted verbatim into output</div>
+            <textarea class="form-textarea" rows="3" placeholder="e.g. Client discharged to sober living housing. Recovery support system includes family involvement and engagement with a sponsor identified during treatment. Environmental risks have been reviewed and an aftercare plan has been established to address ongoing concerns." oninput="state.dim6.dcStatus=this.value"></textarea>
           </div>
         </div>
       </div><!-- /dim-6 -->
@@ -2425,14 +2520,27 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
           <div class="tj-body" id="tjBody" style="display:none">
             <!-- always-visible: transition selector -->
             <div class="tj-field">
-              <div class="tj-field-label">Transition Type</div>
-              <div class="tj-pills" id="tjTypePills">
-                <button class="tj-pill" onclick="tjSelectType('37wm-35',this)">3.7WM → 3.5</button>
-                <button class="tj-pill" onclick="tjSelectType('37-35',this)">3.7 → 3.5</button>
-                <button class="tj-pill" onclick="tjSelectType('35-25',this)">3.5 → 2.5</button>
-                <button class="tj-pill" onclick="tjSelectType('25-21',this)">2.5 → 2.1</button>
-                <button class="tj-pill" onclick="tjSelectType('21-1',this)">2.1 → 1.0</button>
+              <div class="tj-field-label">Transition</div>
+              <div style="display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;">
+                <select class="form-select" id="tj-from-loc" onchange="tjFromTo()" style="font-size:12px;">
+                  <option value="">From LOC…</option>
+                  <option value="3.7WM">3.7WM</option>
+                  <option value="3.7">3.7</option>
+                  <option value="3.5">3.5</option>
+                  <option value="2.5">2.5</option>
+                  <option value="2.1">2.1</option>
+                </select>
+                <span style="font-size:13px;color:var(--text-secondary);">→</span>
+                <select class="form-select" id="tj-to-loc" onchange="tjFromTo()" style="font-size:12px;">
+                  <option value="">To LOC…</option>
+                  <option value="3.7">3.7</option>
+                  <option value="3.5">3.5</option>
+                  <option value="2.5">2.5</option>
+                  <option value="2.1">2.1</option>
+                  <option value="1.0">1.0</option>
+                </select>
               </div>
+              <div id="tj-loc-error" style="display:none;font-size:11px;color:#c0392b;margin-top:5px;"></div>
             </div>
 
             <hr class="tj-divider" id="tjDivider" style="display:none;">
@@ -3194,8 +3302,20 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
             <input class="form-input" id="ds-client-name" type="text" placeholder="First name" oninput="dsState.clientName=this.value;dsRenderOutput()">
           </div>
           <div>
+            <label class="form-label">Admission Date</label>
+            <input class="form-input" id="ds-admission-date" type="date" oninput="dsState.admissionDate=this.value;dsCalcDaysTx();dsRenderOutput();dsCalcDosageHours()">
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+          <div>
             <label class="form-label">Date of Last Contact</label>
-            <input class="form-input" id="ds-last-contact-date" type="date" oninput="dsState.lastContactDate=this.value;dsRenderOutput();dsCalcDosageHours()">
+            <input class="form-input" id="ds-last-contact-date" type="date" oninput="dsState.lastContactDate=this.value;dsCalcDaysTx();dsRenderOutput();dsCalcDosageHours()">
+          </div>
+          <div>
+            <label class="form-label">Days in Treatment <span style="font-size:10px;font-weight:400;color:var(--text-secondary);">(auto-calculated)</span></label>
+            <div id="ds-days-display" style="height:34px;display:flex;align-items:center;padding:0 10px;background:var(--output-bg);border:1px solid var(--border);border-radius:5px;font-size:13px;color:var(--text-secondary);font-family:'IBM Plex Mono',monospace;">—</div>
+            <input type="hidden" id="ds-days-tx">
           </div>
         </div>
 
@@ -3227,10 +3347,6 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
           </select>
         </div>
 
-        <div>
-          <label class="form-label">Days in Treatment</label>
-          <input class="form-input" id="ds-days-tx" type="number" min="1" placeholder="e.g. 55" oninput="dsState.daysTx=this.value;dsRenderOutput()" style="width:120px;">
-        </div>
       </div>
 
       <!-- Phase History -->
@@ -3758,18 +3874,18 @@ function copyCriteria(btn) {
 // ═══════════════════════════════════════════════════
 const state = {
   loc: '', admissionType: 'initial', clientName: '', date: '',
-  dim1: { severity:'', substances:'', lastUse:'', ciwa:'', cows:'', symptoms:[], complicatedHistory:'', notes:'', csStatus:'', csProgress:'' },
-  dim2: { severity:'', conditions:'', impact:'', medications:'', notes:'', csStatus:'', csProgress:'' },
-  dim3: { severity:'', diagnoses:'', noDx:false, symptoms:[], impact:'', notes:'', csStatus:'', csGoals:'' },
-  dim4: { stage:'', insight:'', engagement:'', barriers:'', locRationale:'', csStatus:'', csGoals:'' },
-  dim5: { risk:'', priorTx:'', triggers:[], coping:'', notes:'', csStatus:'', csProgress:'' },
-  dim6: { envRisk:'', living:'', support:'', risks:[], notes:'', csStatus:'', csProgress:'' },
+  dim1: { severity:'', substances:'', lastUse:'', ciwa:'', cows:'', symptoms:[], complicatedHistory:'', notes:'', csStatus:'', csProgress:'', dcStatus:'' },
+  dim2: { severity:'', conditions:'', impact:'', medications:'', notes:'', csStatus:'', csProgress:'', dcStatus:'' },
+  dim3: { severity:'', diagnoses:'', noDx:false, symptoms:[], impact:'', notes:'', csStatus:'', csGoals:'', dcStatus:'' },
+  dim4: { stage:'', insight:'', engagement:'', barriers:'', locRationale:'', csStatus:'', csGoals:'', dcStatus:'' },
+  dim5: { risk:'', priorTx:'', triggers:[], coping:'', notes:'', csStatus:'', csProgress:'', dcStatus:'' },
+  dim6: { envRisk:'', living:'', support:'', risks:[], notes:'', csStatus:'', csProgress:'', dcStatus:'' },
 };
 
 // ═══════════════════════════════════════════════════
 // CHECKBOX INIT
 // ═══════════════════════════════════════════════════
-function buildCheckboxes(containerId, dim, field, items) {
+function buildCheckboxes(containerId, dim, field, items, onChange) {
   const el = document.getElementById(containerId);
   items.forEach(item => {
     const lbl = document.createElement('label');
@@ -3779,6 +3895,7 @@ function buildCheckboxes(containerId, dim, field, items) {
     cb.addEventListener('change', function() {
       if (this.checked) { if (!state[dim][field].includes(item)) state[dim][field].push(item); }
       else { state[dim][field] = state[dim][field].filter(v => v !== item); }
+      if (onChange) onChange();
     });
     const sp = document.createElement('span'); sp.textContent = item;
     lbl.appendChild(cb); lbl.appendChild(sp); el.appendChild(lbl);
@@ -3791,13 +3908,29 @@ buildCheckboxes('dim1-symptoms', 'dim1', 'symptoms', [
   'Lacrimation / rhinorrhea','Seizure risk (current)','Hallucinations (auditory or visual)','Delirium tremens risk'
 ]);
 
+const DIM3_CONSULT_SYMPTOMS = new Set([
+  'Passive suicidal ideation','Active suicidal ideation','Homicidal ideation',
+  'Auditory hallucinations','Visual hallucinations','Paranoia / persecutory beliefs',
+  'Mood instability / manic symptoms','Non-suicidal self-injury (NSSI)',
+  'Recent aggressive or violent behavior','Inability to communicate coherently'
+]);
+
+function checkDim3ConsultFlag() {
+  // Called from symptom checkboxes — drives the alert below the symptoms list only
+  const symptomAlert = document.getElementById('dim3-symptom-consult-alert');
+  if (!symptomAlert) return;
+  const bySymptom = state.dim3.symptoms.some(s => DIM3_CONSULT_SYMPTOMS.has(s));
+  symptomAlert.classList.toggle('visible', bySymptom);
+}
+
 buildCheckboxes('dim3-symptoms', 'dim3', 'symptoms', [
   'Depressed mood / anhedonia','Anxiety / panic','PTSD symptoms / trauma responses',
   'Passive suicidal ideation','Active suicidal ideation','Homicidal ideation',
   'Auditory hallucinations','Visual hallucinations','Paranoia / persecutory beliefs',
   'Mood instability / manic symptoms','Impulsivity / poor behavioral control',
-  'Cognitive impairment','Disorganized thinking','Dissociation'
-]);
+  'Non-suicidal self-injury (NSSI)','Recent aggressive or violent behavior',
+  'Inability to communicate coherently','Cognitive impairment','Disorganized thinking','Dissociation'
+], checkDim3ConsultFlag);
 
 buildCheckboxes('dim5-triggers', 'dim5', 'triggers', [
   'Social pressure / using peers','Environmental cues / drug-associated locations',
@@ -3832,6 +3965,11 @@ function setSeverity(dim, field, value, el) {
   const chalId = pills.dataset.challengeId;
   const chalVals = (pills.dataset.challengeValues || '').split(',');
   if (chalId) toggleChallenge(chalId, chalVals.includes(value));
+  // dim3 consultation flag — severity alert only
+  if (dim === 'dim3' && field === 'severity') {
+    const severityAlert = document.getElementById('dim3-consult-alert');
+    if (severityAlert) severityAlert.classList.toggle('visible', value === 'severe');
+  }
 }
 
 function toggleNoDx(checked) {
@@ -3855,11 +3993,36 @@ function setAdmissionType(type) {
   state.admissionType = type;
   document.getElementById('btnInitial').classList.toggle('active', type === 'initial');
   document.getElementById('btnContinued').classList.toggle('active', type === 'continued');
-  const show = type === 'continued';
+  document.getElementById('btnDischarge').classList.toggle('active', type === 'discharge');
+
+  const showCS = type === 'continued';
+  const showDC = type === 'discharge';
+
   [1,2,3,4,5,6].forEach(i => {
-    const el = document.getElementById(`dim${i}-cs`);
-    if (el) el.style.display = show ? 'block' : 'none';
+    const csEl = document.getElementById(`dim${i}-cs`);
+    if (csEl) csEl.style.display = showCS ? 'block' : 'none';
+    const dcEl = document.getElementById(`dim${i}-dc`);
+    if (dcEl) dcEl.style.display = showDC ? 'block' : 'none';
   });
+
+  // Fields irrelevant in discharge mode
+  const DISCHARGE_HIDE = [
+    'grp-dim1-substances','grp-dim1-lastuse','grp-dim1-scores',
+    'grp-dim1-symptoms','grp-dim1-complicated','grp-dim1-notes',
+    'grp-dim2-conditions','grp-dim2-impact','grp-dim2-medications','grp-dim2-notes',
+    'grp-dim3-impact','grp-dim3-notes',
+    'grp-dim4-barriers','grp-dim4-rationale',
+    'grp-dim5-priortx','grp-dim5-triggers','grp-dim5-notes',
+    'grp-dim6-envrisk','grp-dim6-risks','grp-dim6-notes',
+  ];
+  DISCHARGE_HIDE.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = showDC ? 'none' : '';
+  });
+
+  // Suppress challenge messages and consult alerts in discharge mode
+  const dimContent = document.getElementById('dim-content');
+  if (dimContent) dimContent.classList.toggle('discharge-mode', showDC);
 }
 
 function showDim(num, el) {
@@ -4004,6 +4167,12 @@ function genDim1() {
     if (d.csProgress) p.push(d.csProgress);
   }
 
+  if (type === 'discharge') {
+    const sevMap = { none: 'resolved without significant complication', mild: 'largely resolved prior to discharge', moderate: 'managed and stable at time of discharge', severe: 'actively managed throughout the episode of care and stable at discharge' };
+    if (!d.dcStatus && d.severity) p.push(`${C()}'s withdrawal was ${sevMap[d.severity] || 'addressed during this episode of care'}.`);
+    if (d.dcStatus) p.push(d.dcStatus);
+  }
+
   return p.filter(Boolean).join(' ');
 }
 
@@ -4044,6 +4213,12 @@ function genDim2() {
     };
     if (d.csStatus && sm[d.csStatus]) p.push(sm[d.csStatus]);
     if (d.csProgress) p.push(d.csProgress);
+  }
+
+  if (type === 'discharge') {
+    if (!d.dcStatus && d.severity === 'none') p.push(`No significant biomedical conditions were identified during this episode of care.`);
+    else if (!d.dcStatus && d.severity) p.push(`${C()}'s biomedical conditions were addressed and are stable at time of discharge.`);
+    if (d.dcStatus) p.push(d.dcStatus);
   }
 
   return p.filter(Boolean).join(' ');
@@ -4111,6 +4286,12 @@ function genDim3() {
     if (d.csGoals) p.push(`Remaining psychiatric treatment goals include: ${d.csGoals}`);
   }
 
+  if (type === 'discharge') {
+    if (!d.dcStatus && d.severity === 'none') p.push(`No significant psychiatric or cognitive concerns were present at time of discharge.`);
+    else if (!d.dcStatus && d.severity) p.push(`${C()}'s psychiatric status was addressed during treatment and is stable at time of discharge.`);
+    if (d.dcStatus) p.push(d.dcStatus);
+  }
+
   return p.filter(Boolean).join(' ');
 }
 
@@ -4168,6 +4349,13 @@ function genDim4() {
     if (d.csGoals) p.push(d.csGoals);
   }
 
+  if (type === 'discharge') {
+    if (d.dcStatus) p.push(d.dcStatus);
+    else if (d.stage || d.insight || d.engagement) {
+      p.push(`At time of discharge, ${C()}'s readiness to change and treatment engagement are documented above.`);
+    }
+  }
+
   return p.filter(Boolean).join(' ');
 }
 
@@ -4213,6 +4401,14 @@ function genDim5() {
     };
     if (d.csStatus && sm[d.csStatus]) p.push(sm[d.csStatus]);
     if (d.csProgress) p.push(d.csProgress);
+  }
+
+  if (type === 'discharge') {
+    if (!d.dcStatus && d.risk) {
+      const riskDC = { low: 'low', moderate: 'moderate', high: 'elevated', imminent: 'significant' };
+      p.push(`Relapse risk at time of discharge is assessed as ${riskDC[d.risk] || d.risk}.`);
+    }
+    if (d.dcStatus) p.push(d.dcStatus);
   }
 
   return p.filter(Boolean).join(' ');
@@ -4270,6 +4466,11 @@ function genDim6() {
     if (d.csProgress) p.push(d.csProgress);
   }
 
+  if (type === 'discharge') {
+    if (d.dcStatus) p.push(d.dcStatus);
+    else if (d.living || d.support) p.push(`${C()}'s recovery environment and discharge plan at time of transition are documented above.`);
+  }
+
   return p.filter(Boolean).join(' ');
 }
 
@@ -4281,6 +4482,8 @@ function genSummary(dims) {
 
   if (type === 'initial') {
     return `${C_} meets medical necessity criteria for ${cfg.full} based on clinical need across the following ASAM dimensions: ${names.join('; ')}. The clinical presentation documented below supports this level of care as the most appropriate and least restrictive setting capable of safely and effectively addressing ${C_}'s current treatment needs.`;
+  } else if (type === 'discharge') {
+    return `This document reflects the clinical status of ${C_} at time of discharge from ${cfg.full}. The following dimensional summary records the clinical picture across assessed ASAM dimensions at the conclusion of this episode of care.`;
   } else {
     return `${C_} continues to meet medical necessity criteria for ${cfg.full}. The clinical indicators documented below support continued authorization at this level of care. A step-down to a less intensive setting is not clinically appropriate at this time.`;
   }
@@ -4297,6 +4500,8 @@ function genDetermination() {
     }
     t += `Treatment at this level of care is medically necessary and clinically indicated to achieve the stabilization, skill development, and recovery capital required for ${C_} to safely transition to a less intensive level of care.`;
     return t;
+  } else if (type === 'discharge') {
+    return `${C_} has been discharged from ${cfg.full}. The dimensional status documented above reflects clinical findings at the time of discharge and is provided for continuity of care and clinical record purposes.`;
   } else {
     const sdName = stepDown || 'a less intensive level of care';
     return `${C_} continues to require the clinical intensity of ${cfg.full}. Step-down to ${sdName} is not clinically appropriate at this time, as ${C_} has not yet achieved sufficient stabilization, skill development, or environmental readiness to sustain recovery gains in a less intensive setting. Continued authorization at this level of care is medically necessary and consistent with evidence-based standards for the treatment of substance use disorder.`;
@@ -4390,20 +4595,23 @@ function validate() {
     }
   }
 
-  // Primary driver dimensions — always required regardless of admission type
-  cfg.primary.forEach(dimNum => {
-    (DIM_REQUIRED[dimNum] || []).forEach(item => check(item, dimNum));
-  });
+  // Discharge mode — no required fields, status fields are optional
+  if (type !== 'discharge') {
+    // Primary driver dimensions — always required for initial and continued
+    cfg.primary.forEach(dimNum => {
+      (DIM_REQUIRED[dimNum] || []).forEach(item => check(item, dimNum));
+    });
 
-  // Dim 4 barriers + rationale are always required (even when dim 4 isn't primary)
-  if (!cfg.primary.includes(4)) {
-    check({ get: () => state.dim4.barriers,     grp: 'grp-dim4-barriers',  label: 'Dim 4 — Engagement Barriers / Resistance Factors' }, 4);
-    check({ get: () => state.dim4.locRationale, grp: 'grp-dim4-rationale', label: 'Dim 4 — Why This LOC Is Necessary for Engagement' }, 4);
-  }
+    // Dim 4 barriers + rationale are always required (even when dim 4 isn't primary)
+    if (!cfg.primary.includes(4)) {
+      check({ get: () => state.dim4.barriers,     grp: 'grp-dim4-barriers',  label: 'Dim 4 — Engagement Barriers / Resistance Factors' }, 4);
+      check({ get: () => state.dim4.locRationale, grp: 'grp-dim4-rationale', label: 'Dim 4 — Why This LOC Is Necessary for Engagement' }, 4);
+    }
 
-  // Continued stay — all CS fields required
-  if (type === 'continued') {
-    CS_REQUIRED.forEach(item => check(item, item.dim));
+    // Continued stay — all CS fields required
+    if (type === 'continued') {
+      CS_REQUIRED.forEach(item => check(item, item.dim));
+    }
   }
 
   return errors;
@@ -4455,7 +4663,7 @@ function generate() {
   const metaItems = [];
   if (state.clientName) metaItems.push(state.clientName);
   if (state.date) metaItems.push(fmtDate(state.date));
-  metaItems.push(state.admissionType === 'initial' ? 'Initial Admission' : 'Continued Stay');
+  metaItems.push(state.admissionType === 'initial' ? 'Initial Admission' : state.admissionType === 'discharge' ? 'Discharge' : 'Continued Stay');
 
   document.getElementById('outMeta').innerHTML = metaItems.map(t => `<span>${t}</span>`).join('');
   document.getElementById('outSummary').textContent = genSummary(dims);
@@ -4559,6 +4767,9 @@ function switchTab(n) {
 
 const tjState = {
   type: null,
+  fromLoc: '',
+  toLoc: '',
+  isSkip: false,
   open: false
 };
 
@@ -4657,16 +4868,24 @@ const TJ_CONFIGS = {
 
 function tjReset() {
   tjState.type = null;
+  tjState.fromLoc = '';
+  tjState.toLoc = '';
+  tjState.isSkip = false;
   tjState.open = false;
   tjSampleClientLoaded = false;
   document.getElementById('tjFields').innerHTML = '';
   document.getElementById('tjBody').style.display = 'none';
   document.getElementById('tjToggle').textContent = '▾ expand';
   document.getElementById('tjDivider').style.display = 'none';
-  document.getElementById('tjHeaderSub').textContent = 'Select a transition type to begin';
+  document.getElementById('tjHeaderSub').textContent = 'Select a transition to begin';
   document.getElementById('tjOutputArea').classList.remove('visible');
   document.getElementById('tjOutputText').textContent = '';
-  document.querySelectorAll('#tjTypePills .tj-pill').forEach(p => p.classList.remove('active'));
+  const fromEl = document.getElementById('tj-from-loc');
+  const toEl = document.getElementById('tj-to-loc');
+  if (fromEl) fromEl.value = '';
+  if (toEl) toEl.value = '';
+  const errEl = document.getElementById('tj-loc-error');
+  if (errEl) errEl.style.display = 'none';
 }
 
 function toggleTJ() {
@@ -4675,18 +4894,109 @@ function toggleTJ() {
   document.getElementById('tjToggle').textContent = tjState.open ? '▴ collapse' : '▾ expand';
 }
 
-function tjSelectType(type, btn) {
-  tjState.type = type;
-  document.querySelectorAll('#tjTypePills .tj-pill').forEach(p => p.classList.remove('active'));
-  btn.classList.add('active');
-  const cfg = TJ_CONFIGS[type];
-  document.getElementById('tjHeaderSub').textContent = cfg.subLabel;
-  document.getElementById('tjDivider').style.display = 'block';
+const TJ_LOC_ORDER = ['3.7WM', '3.7', '3.5', '2.5', '2.1', '1.0'];
+const TJ_LOC_KEY = { '3.7WM': '37wm', '3.7': '37', '3.5': '35', '2.5': '25', '2.1': '21', '1.0': '1' };
+
+function tjFromTo() {
+  const from = document.getElementById('tj-from-loc').value;
+  const to = document.getElementById('tj-to-loc').value;
+  const errEl = document.getElementById('tj-loc-error');
+  if (!from || !to) { errEl.style.display = 'none'; return; }
+  const fromIdx = TJ_LOC_ORDER.indexOf(from);
+  const toIdx = TJ_LOC_ORDER.indexOf(to);
+  if (toIdx <= fromIdx) {
+    errEl.textContent = 'To LOC must be lower than From LOC.';
+    errEl.style.display = 'block';
+    document.getElementById('tjFields').innerHTML = '';
+    document.getElementById('tjDivider').style.display = 'none';
+    return;
+  }
+  errEl.style.display = 'none';
+  const key = TJ_LOC_KEY[from] + '-' + TJ_LOC_KEY[to];
+  const skippedLocs = TJ_LOC_ORDER.slice(fromIdx + 1, toIdx);
+  const isSkip = skippedLocs.length > 0 && !TJ_CONFIGS[key];
+  tjState.fromLoc = from;
+  tjState.toLoc = to;
+  tjState.isSkip = isSkip;
+  tjState.type = key;
   document.getElementById('tjOutputArea').classList.remove('visible');
   document.getElementById('tjOutputText').textContent = '';
-  tjRenderFields(cfg);
-  if (tjSampleClientLoaded) tjFillSample(type);
+  document.getElementById('tjDivider').style.display = 'block';
+  if (TJ_CONFIGS[key]) {
+    document.getElementById('tjHeaderSub').textContent = TJ_CONFIGS[key].subLabel;
+    tjRenderFields(TJ_CONFIGS[key]);
+    if (tjSampleClientLoaded) tjFillSample(key);
+  } else {
+    document.getElementById('tjHeaderSub').textContent = `${from} → ${to}`;
+    tjRenderSkipFields(from, to, skippedLocs);
+  }
 }
+
+function tjRenderSkipFields(from, to, skipped) {
+  const container = document.getElementById('tjFields');
+  const skippedLabel = skipped.length === 1 ? skipped[0] : skipped.join(' and ');
+  container.innerHTML = `
+    <div class="tj-field">
+      <div style="background:#fff8e7;border:1px solid #f0b429;border-radius:6px;padding:10px 12px;margin-bottom:2px;">
+        <div style="font-size:11px;font-weight:600;color:#b45309;margin-bottom:3px;">⚠ LOC Skip — ${skippedLabel} bypassed</div>
+        <div style="font-size:11px;color:#78350f;line-height:1.5;">Client is declining the recommended intermediate level of care. This must be clearly documented. The generated output will note the skip and include your explanation.</div>
+      </div>
+    </div>
+    <div class="tj-field">
+      <label class="tj-field-label">Client First Name</label>
+      <input class="tj-input" id="tj-skip-client" type="text" placeholder="First name">
+    </div>
+    <div class="tj-field">
+      <label class="tj-field-label">Admission Date (${from})</label>
+      <input class="tj-input" id="tj-skip-admit" type="date">
+    </div>
+    <div class="tj-field">
+      <label class="tj-field-label">Why is ${skippedLabel} being bypassed? <span style="color:#c0392b">*</span></label>
+      <textarea class="tj-textarea" id="tj-skip-reason" rows="3" placeholder="e.g. Client declined recommendation for ${skippedLabel}. This clinician discussed the clinical rationale for the intermediate level of care, including the benefits of continued structure and support. Client acknowledged the discussion and elected to proceed to ${to} against clinical recommendation. Client denied active SI/HI and was able to safety plan for the transition."></textarea>
+    </div>
+    <div class="tj-field">
+      <label class="tj-field-label">What the client needs to continue working on</label>
+      <textarea class="tj-textarea" id="tj-skip-needs" rows="3" placeholder="Describe continued clinical needs and treatment goals…"></textarea>
+    </div>
+    <div class="tj-field">
+      <button class="btn btn-primary" style="font-size:12px;padding:7px 18px;" onclick="tjGenerateSkip()">Generate Justification</button>
+    </div>
+  `;
+}
+
+function tjGenerateSkip() {
+  const reason = (document.getElementById('tj-skip-reason') || {}).value || '';
+  if (!reason.trim()) {
+    const el = document.getElementById('tj-skip-reason');
+    if (el) { el.style.borderColor = '#c0392b'; setTimeout(() => { el.style.borderColor = ''; }, 2000); }
+    return;
+  }
+  const client = (document.getElementById('tj-skip-client') || {}).value || 'Client';
+  const admitRaw = (document.getElementById('tj-skip-admit') || {}).value || '';
+  const admit = admitRaw ? tjFmtDate(admitRaw) : null;
+  const needs = (document.getElementById('tj-skip-needs') || {}).value || '';
+  const from = tjState.fromLoc;
+  const to = tjState.toLoc;
+  const fromIdx = TJ_LOC_ORDER.indexOf(from);
+  const toIdx = TJ_LOC_ORDER.indexOf(to);
+  const skipped = TJ_LOC_ORDER.slice(fromIdx + 1, toIdx);
+  const skippedLabel = skipped.length === 1 ? skipped[0] : skipped.join(' and ');
+
+  let text = `On ${admit ? admit : 'the date of transition'}, ${client} transitioned from ${TJ_PHASES[TJ_LOC_KEY[from]] || from} to ${to}.`;
+  text += ` ${client} was clinically recommended for ${skippedLabel} as the next level of care.`;
+  text += ` ${reason.trim()}`;
+  if (needs.trim()) {
+    text += ` Upon transition to ${to}, ${client} will continue to work on ${needs.trim()}.`;
+  }
+  document.getElementById('tjOutputText').textContent = text;
+  document.getElementById('tjOutputArea').classList.add('visible');
+  document.getElementById('tjOutputText').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function tjSelectType(type, btn) {
+  // Legacy — no-op (pills replaced by dropdowns)
+}
+
 
 let tjSampleClientLoaded = false;
 
@@ -5678,21 +5988,21 @@ const itpCustomGoals = { A: [], B: [], C: [] };
 // Section C — Standard CM objectives/interventions
 // itpCMEnabled: master toggle; itpCMSelected: Set of indices to include
 let itpCMEnabled = true;
-const CM_ALWAYS_ON = new Set([0,3,4,7,8,9,10]);
-const itpCMSelected = new Set([0,3,4,7,8,9,10]); // default: always-on items only
+const CM_ALWAYS_ON = new Set(); // no forced selections
+const itpCMSelected = new Set(); // start empty — counselor opts in
 
 const CM_ITEM_LABELS = [
-  { short: 'Medicaid / insurance',            always: true  },  // 0
-  { short: 'SNAP / food assistance',           always: false },  // 1
-  { short: 'Sober living placement',           always: false },  // 2
-  { short: 'AOD aftercare services',           always: true  },  // 3
-  { short: '12-step / support meetings',       always: true  },  // 4
-  { short: 'MAT follow-up appointment',        always: false },  // 5
-  { short: 'Probation / legal obligations',    always: false },  // 6
-  { short: 'ROIs (family / agencies)',         always: true  },  // 7
-  { short: 'Random drug screens (UDS)',        always: true  },  // 8
-  { short: 'Life skills / independent living', always: true  },  // 9
-  { short: 'Peer support specialist',          always: true  },  // 10
+  { short: 'Medicaid / insurance'            },  // 0
+  { short: 'SNAP / food assistance'          },  // 1
+  { short: 'Sober living placement'          },  // 2
+  { short: 'AOD aftercare services'          },  // 3
+  { short: '12-step / support meetings'      },  // 4
+  { short: 'MAT follow-up appointment'       },  // 5
+  { short: 'Probation / legal obligations'   },  // 6
+  { short: 'ROIs (family / agencies)'        },  // 7
+  { short: 'Random drug screens (UDS)'       },  // 8
+  { short: 'Life skills / independent living'},  // 9
+  { short: 'Peer support specialist'         },  // 10
 ];
 
 const CM_STANDARD_PAIRS = [
@@ -5798,18 +6108,17 @@ function renderITPGoals() {
 
       CM_ITEM_LABELS.forEach((item, idx) => {
         const row = document.createElement('label');
-        row.style.cssText = 'display:flex;align-items:center;gap:8px;cursor:pointer;padding:4px 6px;border-radius:4px;' + (item.always ? '' : 'background:#fff;border:1px solid #d0e8da;');
+        row.style.cssText = 'display:flex;align-items:center;gap:8px;cursor:pointer;padding:4px 6px;border-radius:4px;background:#fff;border:1px solid #d0e8da;';
         const cb = document.createElement('input');
         cb.type = 'checkbox';
         cb.checked = itpCMSelected.has(idx);
         cb.style.cssText = 'accent-color:var(--accent);width:13px;height:13px;flex-shrink:0;';
-        if (item.always) cb.disabled = true;
         cb.addEventListener('change', () => {
           if (cb.checked) itpCMSelected.add(idx); else itpCMSelected.delete(idx);
         });
         const lbl = document.createElement('span');
-        lbl.style.cssText = 'font-size:11px;' + (item.always ? 'color:var(--text-secondary);' : 'color:var(--text);font-weight:500;');
-        lbl.textContent = item.short + (item.always ? '' : ' — include?');
+        lbl.style.cssText = 'font-size:11px;color:var(--text);font-weight:500;';
+        lbl.textContent = item.short;
         row.appendChild(cb);
         row.appendChild(lbl);
         cmGrid.appendChild(row);
@@ -6486,6 +6795,7 @@ function gnMakeClient() {
   return {
     id: ++gnClientIdCounter,
     name: '',
+    disengaged: false,
     responseTopic: '',
     responseReading: '',
     responseMindfulness: '',
@@ -6631,10 +6941,42 @@ function gnRenderClients() {
     };
     body.appendChild(nameInput);
 
+    // ── Disengagement checkbox ─────────────────────────
+    const disengageWrap = document.createElement('div');
+    disengageWrap.style.cssText = 'margin-top:8px;';
+
+    const disengageLabel = document.createElement('label');
+    disengageLabel.style.cssText = 'display:flex;align-items:flex-start;gap:7px;cursor:pointer;font-size:11px;color:var(--text);line-height:1.45;';
+
+    const disengageCb = document.createElement('input');
+    disengageCb.type = 'checkbox';
+    disengageCb.checked = client.disengaged;
+    disengageCb.style.cssText = 'margin-top:1px;accent-color:var(--accent);flex-shrink:0;';
+    disengageCb.onchange = () => {
+      client.disengaged = disengageCb.checked;
+      gnRenderClients();
+    };
+
+    const disengageText = document.createElement('span');
+    disengageText.textContent = 'Client was disengaged and did not participate';
+    disengageLabel.appendChild(disengageCb);
+    disengageLabel.appendChild(disengageText);
+    disengageWrap.appendChild(disengageLabel);
+    body.appendChild(disengageWrap);
+
+    // Disengagement follow-up flag
+    if (client.disengaged) {
+      const disengageFlag = document.createElement('div');
+      const clientDisplayName = client.name && client.name.trim() ? client.name.trim() : 'this client';
+      disengageFlag.style.cssText = 'margin-top:7px;padding:8px 11px;background:#fff0f0;border:1px solid #e74c3c;border-left:3px solid #c0392b;border-radius:4px;font-size:11px;color:#7b1a1a;line-height:1.5;';
+      disengageFlag.innerHTML = `<strong>Follow up individually with ${clientDisplayName} after group</strong> to assess current status and barriers to engagement.`;
+      body.appendChild(disengageFlag);
+    }
+
     // ── Context-aware response fields ──────────────────
     const hasAnyActivity = gnState.actTopic || gnState.actReading || gnState.actMindfulness;
 
-    if (hasAnyActivity) {
+    if (hasAnyActivity && !client.disengaged) {
       const respSectionLabel = document.createElement('div');
       respSectionLabel.className = 'gn-section-label';
       respSectionLabel.style.marginTop = '8px';
@@ -6688,48 +7030,60 @@ function gnRenderClients() {
     cjSectionLabel.textContent = 'Clinical Judgement';
     body.appendChild(cjSectionLabel);
 
-    // Prognosis pills
-    const progPills = document.createElement('div');
-    progPills.className = 'gn-prog-pills';
+    if (client.disengaged) {
+      // Disengaged: fixed poor prognosis, specific note
+      const name = client.name && client.name.trim() ? client.name.trim() : 'Client';
+      const disengagedNote = document.createElement('div');
+      disengagedNote.style.cssText = 'font-size:11px;color:var(--text-secondary);font-style:italic;padding:6px 0 2px;';
+      disengagedNote.textContent = 'Prognosis auto-set to Poor. Output will document disengagement and note the required follow-up.';
+      body.appendChild(disengagedNote);
+      // Sync client state
+      client.cjPrognosis = 'poor';
+      client.cjText = gnCJDisengaged(name);
+    } else {
+      // Normal prognosis pills
+      const progPills = document.createElement('div');
+      progPills.className = 'gn-prog-pills';
 
-    const progOptions = [
-      { key: 'poor',  label: 'Poor' },
-      { key: 'fair',  label: 'Fair' },
-      { key: 'good',  label: 'Good' },
-    ];
+      const progOptions = [
+        { key: 'poor',  label: 'Poor' },
+        { key: 'fair',  label: 'Fair' },
+        { key: 'good',  label: 'Good' },
+      ];
 
-    const cjChallenge = document.createElement('div');
-    cjChallenge.className = 'gn-prog-challenge' + (client.cjPrognosis === 'good' ? ' visible' : '');
-    cjChallenge.textContent = '⚠ "Good" prognosis is difficult to defend on payer review — insurers use it to argue the client no longer needs this LOC. If selected, be specific in the text below about why continued treatment is still clinically necessary.';
+      const cjChallenge = document.createElement('div');
+      cjChallenge.className = 'gn-prog-challenge' + (client.cjPrognosis === 'good' ? ' visible' : '');
+      cjChallenge.textContent = '⚠ "Good" prognosis is difficult to defend on payer review — insurers use it to argue the client no longer needs this LOC. If selected, be specific in the text below about why continued treatment is still clinically necessary.';
 
-    const cjTA = document.createElement('textarea');
-    cjTA.className = 'gn-textarea';
-    cjTA.rows = 3;
-    cjTA.style.fontSize = '11px';
-    cjTA.placeholder = 'Select a prognosis above to auto-fill, then edit as needed…';
-    cjTA.value = client.cjText;
-    cjTA.oninput = () => { client.cjText = cjTA.value; };
+      const cjTA = document.createElement('textarea');
+      cjTA.className = 'gn-textarea';
+      cjTA.rows = 3;
+      cjTA.style.fontSize = '11px';
+      cjTA.placeholder = 'Select a prognosis above to auto-fill, then edit as needed…';
+      cjTA.value = client.cjText;
+      cjTA.oninput = () => { client.cjText = cjTA.value; };
 
-    progOptions.forEach(opt => {
-      const pill = document.createElement('button');
-      pill.className = 'gn-prog-pill' + (client.cjPrognosis === opt.key ? ` selected-${opt.key}` : '');
-      pill.textContent = opt.label;
-      pill.onclick = () => {
-        client.cjPrognosis = opt.key;
-        progPills.querySelectorAll('.gn-prog-pill').forEach(p => p.className = 'gn-prog-pill');
-        pill.className = `gn-prog-pill selected-${opt.key}`;
-        cjChallenge.classList.toggle('visible', opt.key === 'good');
-        // Auto-fill text if not already customized
-        const name = client.name && client.name.trim() ? client.name.trim() : 'Client';
-        cjTA.value = gnCJDefaults(opt.key, name);
-        client.cjText = cjTA.value;
-      };
-      progPills.appendChild(pill);
-    });
+      progOptions.forEach(opt => {
+        const pill = document.createElement('button');
+        pill.className = 'gn-prog-pill' + (client.cjPrognosis === opt.key ? ` selected-${opt.key}` : '');
+        pill.textContent = opt.label;
+        pill.onclick = () => {
+          client.cjPrognosis = opt.key;
+          progPills.querySelectorAll('.gn-prog-pill').forEach(p => p.className = 'gn-prog-pill');
+          pill.className = `gn-prog-pill selected-${opt.key}`;
+          cjChallenge.classList.toggle('visible', opt.key === 'good');
+          // Auto-fill text if not already customized
+          const name = client.name && client.name.trim() ? client.name.trim() : 'Client';
+          cjTA.value = gnCJDefaults(opt.key, name);
+          client.cjText = cjTA.value;
+        };
+        progPills.appendChild(pill);
+      });
 
-    body.appendChild(progPills);
-    body.appendChild(cjChallenge);
-    body.appendChild(cjTA);
+      body.appendChild(progPills);
+      body.appendChild(cjChallenge);
+      body.appendChild(cjTA);
+    }
 
     card.appendChild(body);
     list.appendChild(card);
@@ -6769,6 +7123,10 @@ const GN_CJ_TEXT = {
   fair: (name) => `Based on participation in group and individual counseling sessions, ${name}'s prognosis is fair. ${name} is demonstrating gradual progress but continues to present with clinical needs that require the current level of care. ${name} would benefit from continuing at this LOC to further address and change behaviors that could lead back to unmanageability, utilizing a relapse prevention plan, developing coping and stress management skills, and expanding their sober support network.`,
   good: (name) => `Based on participation in group and individual counseling sessions, ${name}'s prognosis is good. ${name} continues to benefit from the structure and clinical support of this LOC as they consolidate recovery skills and prepare for step-down. Continued treatment at this level is clinically indicated to reinforce gains and reduce risk of relapse prior to transition.`,
 };
+
+function gnCJDisengaged(name) {
+  return `Based on participation in group, ${name}'s prognosis is poor. ${name} was disengaged during today's group session and did not meaningfully participate in group activities. This clinician will follow up individually with ${name} to assess current status, identify barriers to engagement, and ensure client safety.`;
+}
 
 function gnCJDefaults(prognosis, name) {
   const fn = GN_CJ_TEXT[prognosis];
@@ -6821,6 +7179,14 @@ function gnBuildResponse(client) {
   const s = gnState;
   const name = client.name && client.name.trim() ? client.name.trim() : 'Client';
   const lines = [];
+
+  // Disengaged path — simplified note
+  if (client.disengaged) {
+    lines.push(`- ${name} was disengaged during group and did not meaningfully participate in group activities.`);
+    const cj = gnCJDisengaged(name);
+    lines.push(`- Clinical Judgement: ${cj}`);
+    return lines.join('\n');
+  }
 
   if (s.actRules) {
     lines.push(`- ${name} reviewed group rules.`);
@@ -7088,6 +7454,7 @@ const DS_AFTERCARE_ELEMENTS = [
 
 let dsState = {
   clientName: '',
+  admissionDate: '',
   lastContactDate: '',
   dischargeType: '',
   dischargeSubtype: '',
@@ -7110,6 +7477,34 @@ let dsState = {
 };
 
 let dsPhaseCounter = 0;
+
+function dsCalcDaysTx() {
+  const admit = dsState.admissionDate;
+  const last = dsState.lastContactDate;
+  const display = document.getElementById('ds-days-display');
+  if (!display) return;
+  if (admit && last) {
+    const a = new Date(admit + 'T12:00:00');
+    const l = new Date(last + 'T12:00:00');
+    const diff = Math.round((l - a) / (1000 * 60 * 60 * 24));
+    if (diff >= 0) {
+      const days = diff + 1;
+      dsState.daysTx = String(days);
+      display.textContent = days + (days === 1 ? ' day' : ' days');
+      display.style.color = 'var(--text)';
+    } else {
+      dsState.daysTx = '';
+      display.textContent = 'Last contact must be after admission';
+      display.style.color = '#c0392b';
+    }
+  } else {
+    dsState.daysTx = '';
+    display.textContent = (admit || last) ? 'Enter both dates to calculate' : '—';
+    display.style.color = 'var(--text-secondary)';
+  }
+  const hidden = document.getElementById('ds-days-tx');
+  if (hidden) hidden.value = dsState.daysTx;
+}
 
 const DS_REFERRAL_OPTIONS = [
   'Woodhaven IOP',
@@ -7647,6 +8042,7 @@ function dscopyDosageHours() {
 function dsReset() {
   dsState = {
     clientName: '',
+    admissionDate: '',
     lastContactDate: '',
     dischargeType: '',
     dischargeSubtype: '',
@@ -7670,11 +8066,13 @@ function dsReset() {
   dsPhaseCounter = 0;
 
   // Clear input fields
-  ['ds-client-name','ds-last-contact-date','ds-days-tx','ds-status-last-contact',
+  ['ds-client-name','ds-admission-date','ds-last-contact-date','ds-days-tx','ds-status-last-contact',
    'ds-elig-comments','ds-clinical-obs','ds-transition-to','ds-aftercare-notes','ds-rs-reason'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
+  const daysDisplay = document.getElementById('ds-days-display');
+  if (daysDisplay) { daysDisplay.textContent = '—'; daysDisplay.style.color = 'var(--text-secondary)'; }
   document.getElementById('ds-admission-loc').value = '';
   document.getElementById('ds-stepdown-loc').value = '';
 
@@ -7758,7 +8156,7 @@ function doReset() {
 
   // Reset ITP
   ['A','B','C'].forEach(s => { itpSelected[s].clear(); itpCustomGoals[s] = []; });
-  itpCMEnabled = true; itpCMSelected.clear(); CM_ALWAYS_ON.forEach(i => itpCMSelected.add(i));
+  itpCMEnabled = true; itpCMSelected.clear();
   renderITPGoals();
   const itpBox = document.getElementById('itpOutputBoxes');
   if (itpBox) { itpBox.innerHTML = ''; itpBox.style.display = 'none'; }
@@ -8028,13 +8426,16 @@ function fillSampleClient() {
   const dsDateStr = dsToday.toISOString().split('T')[0];
   document.getElementById('ds-last-contact-date').value = dsDateStr;
   dsState.lastContactDate = dsDateStr;
+  // Set admission date 54 days before last contact (= 55 days inclusive)
+  const dsAdmitDate = new Date(dsToday);
+  dsAdmitDate.setDate(dsAdmitDate.getDate() - 54);
+  const dsAdmitStr = dsAdmitDate.toISOString().split('T')[0];
+  document.getElementById('ds-admission-date').value = dsAdmitStr;
+  dsState.admissionDate = dsAdmitStr;
+  dsCalcDaysTx();
   dsSetDischargeType('successful');
   document.getElementById('ds-admission-loc').value = '3.7WM';
   dsState.admissionLoc = '3.7WM';
-  document.getElementById('ds-days-tx').value = '55';
-  dsState.daysTx = '55';
-
-  // Phase history
   dsState.phases = [
     { id: dsPhaseCounter++, loc: '3.7WM', entryDate: '2026-09-06', iopType: 'external' },
     { id: dsPhaseCounter++, loc: '3.5',   entryDate: '2026-09-22', iopType: 'external' },
