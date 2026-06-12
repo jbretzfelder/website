@@ -6102,9 +6102,9 @@ const itpCustomGoals = { A: [], B: [], C: [] };
 
 // Section C — Standard CM objectives/interventions
 // itpCMEnabled: master toggle; itpCMSelected: Set of indices to include
-let itpCMEnabled = true;
-const CM_ALWAYS_ON = new Set(); // no forced selections
-const itpCMSelected = new Set(); // start empty — counselor opts in
+let itpCMEnabled = false;
+const CM_ALWAYS_ON = new Set([0,3,4,7,8,9,10]);
+const itpCMSelected = new Set([0,3,4,7,8,9,10]); // pre-checked when section is enabled
 
 const CM_ITEM_LABELS = [
   { short: 'Medicaid / insurance'            },  // 0
@@ -8297,7 +8297,7 @@ function doReset() {
 
   // Reset ITP
   ['A','B','C'].forEach(s => { itpSelected[s].clear(); itpCustomGoals[s] = []; });
-  itpCMEnabled = true; itpCMSelected.clear();
+  itpCMEnabled = false; itpCMSelected.clear(); CM_ALWAYS_ON.forEach(i => itpCMSelected.add(i));
   renderITPGoals();
   const itpBox = document.getElementById('itpOutputBoxes');
   if (itpBox) { itpBox.innerHTML = ''; itpBox.style.display = 'none'; }
