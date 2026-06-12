@@ -5342,13 +5342,8 @@ function renderAsamRef() {
   // Fields to pull: label, value, only show if non-empty
   const fields = [
     { label: 'Dim 3 — Remaining Psychiatric Treatment Goals', val: state.dim3.csGoals },
-    { label: 'Dim 3 — How Symptoms Impair Treatment / Safety', val: state.dim3.impact },
-    { label: 'Dim 4 — Engagement Barriers / Resistance Factors', val: state.dim4.barriers },
-    { label: 'Dim 4 — Why This LOC Is Necessary for Engagement', val: state.dim4.locRationale },
     { label: 'Dim 4 — Remaining Readiness / Engagement Goals', val: state.dim4.csGoals },
     { label: 'Dim 5 — Relapse Prevention Progress / Remaining Goals', val: state.dim5.csProgress },
-    { label: 'Dim 5 — Additional Relapse Risk Factors', val: state.dim5.notes },
-    { label: 'Dim 6 — Discharge / Step-Down Planning Progress', val: state.dim6.csProgress },
   ].filter(f => f.val && f.val.trim());
 
   // Clear old items (keep empty msg)
