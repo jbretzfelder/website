@@ -1650,7 +1650,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 <div class="app-header">
   <div class="header-left">
     <div class="app-title">DocAssist</div>
-    <div style="font-size:9px;font-weight:600;padding:1px 6px;border-radius:8px;background:#1a3d22;color:#7ec8a0;border:1px solid #2d6a4f;letter-spacing:.07em;display:inline-block;margin:1px 0 2px;">BETA</div>
+    <div onclick="navigateTo('changelog')" style="font-size:9px;font-weight:600;padding:1px 6px;border-radius:8px;background:#1a3d22;color:#7ec8a0;border:1px solid #2d6a4f;letter-spacing:.07em;display:inline-block;margin:1px 0 2px;cursor:pointer;" onmouseover="this.style.background='#2d6a4f'" onmouseout="this.style.background='#1a3d22'">v1.3</div>
     <div class="app-subtitle">Woodhaven Clinical Documentation</div>
   </div>
   <div style="display:flex;align-items:center;gap:14px">
@@ -1774,6 +1774,9 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         <div class="home-card-desc">Structured discharge documentation covering treatment progress, goals, and aftercare plan</div>
         <div class="home-card-arrow">Open →</div>
       </div>
+    </div>
+    <div style="text-align:center;margin-top:28px;">
+      <button onclick="navigateTo('changelog')" style="background:none;border:none;font-family:'IBM Plex Sans',sans-serif;font-size:12px;color:#5a826a;cursor:pointer;padding:4px 8px;border-radius:4px;transition:color .15s;" onmouseover="this.style.color='#2d6a4f'" onmouseout="this.style.color='#5a826a'">v1.3 · What's new in DocAssist →</button>
     </div>
   </div>
 </div>
@@ -3569,6 +3572,110 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     </div><!-- /right panel -->
   </div><!-- /layout -->
 </div><!-- /view-discharge -->
+
+<!-- ═══ CHANGELOG VIEW ════════════════════════════════════ -->
+<div id="view-changelog" class="tool-view">
+  <div style="overflow-y:auto;flex:1;min-height:0;width:100%;">
+  <div style="max-width:700px;margin:0 auto;padding:32px 24px 80px;">
+    <button class="tool-nav-back" onclick="navigateTo('home')" style="margin-bottom:28px;">← Back</button>
+    <div style="font-size:20px;font-weight:600;color:#1b4332;margin-bottom:4px;">Changelog</div>
+    <div style="font-size:13px;color:#5a6a62;margin-bottom:36px;">Clinical and workflow changes to DocAssist — most recent first.</div>
+
+    <!-- v1.3 -->
+    <div style="margin-bottom:28px;">
+      <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px;">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;background:var(--accent);color:#fff;padding:2px 8px;border-radius:4px;">v1.3</span>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5a6a62;">June 11, 2026</span>
+        <span style="font-size:14px;font-weight:600;color:#1b4332;">Clinical flags, consultation prompts, discharge refinements</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:7px;">
+        <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 13px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;">
+          <span style="font-size:9px;font-weight:600;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">ASAM</span>
+          <span style="font-size:13px;line-height:1.55;">Discharge added as a third document type alongside Initial Admission and Continued Stay. Each of the six ASAM dimensions now has discharge-specific fields capturing clinical status at the time of discharge, generating a narrative structured for discharge documentation rather than continued stay justification.</span>
+        </div>
+        <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 13px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;">
+          <span style="font-size:9px;font-weight:600;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">ASAM</span>
+          <span style="font-size:13px;line-height:1.55;">Severe Dimension 3 concerns now trigger a consultation flag, prompting supervisor review to confirm the client is appropriate for the current level of care before documentation is finalized.</span>
+        </div>
+        <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 13px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;">
+          <span style="font-size:9px;font-weight:600;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">Group Notes</span>
+          <span style="font-size:13px;line-height:1.55;">Non-participation checkbox added for individual clients. When checked, the note reflects poor prognosis and includes a prompt to follow up personally with the client after group.</span>
+        </div>
+        <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 13px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;">
+          <span style="font-size:9px;font-weight:600;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">Discharge</span>
+          <span style="font-size:13px;line-height:1.55;">Days in treatment now calculates automatically from admission date and date of last contact. Resource sheet documentation added — records whether the client received a sheet at discharge, and requires an explanation if not.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- v1.2 -->
+    <div style="margin-bottom:28px;">
+      <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px;">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;background:var(--accent);color:#fff;padding:2px 8px;border-radius:4px;">v1.2</span>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5a6a62;">June 10, 2026</span>
+        <span style="font-size:14px;font-weight:600;color:#1b4332;">ITP enhancements; ASAM LOC-conditional fields</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:7px;">
+        <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 13px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;">
+          <span style="font-size:9px;font-weight:600;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">ITP</span>
+          <span style="font-size:13px;line-height:1.55;">Section C now includes standard Case Management objectives. Select which apply via a checkbox panel; a master toggle collapses the entire CM block for clients with these already established in Remarkable.</span>
+        </div>
+        <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 13px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;">
+          <span style="font-size:9px;font-weight:600;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">ITP</span>
+          <span style="font-size:13px;line-height:1.55;">Justification for Transition added for five LOC transitions: 3.7WM→3.5, 3.7→3.5, 3.5→2.5, 2.5→2.1, and 2.1→1.0. Supports documenting skipped levels when a client declines the recommended next LOC.</span>
+        </div>
+        <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 13px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;">
+          <span style="font-size:9px;font-weight:600;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">ASAM</span>
+          <span style="font-size:13px;line-height:1.55;">CIWA-Ar, COWS, and withdrawal symptom fields now only appear when 3.7WM is selected. They are hidden for all other levels of care.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- v1.1 -->
+    <div style="margin-bottom:28px;">
+      <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px;">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;background:var(--accent);color:#fff;padding:2px 8px;border-radius:4px;">v1.1</span>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5a6a62;">June 9, 2026</span>
+        <span style="font-size:14px;font-weight:600;color:#1b4332;">Group Notes and Discharge Summary launched</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:7px;">
+        <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 13px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;">
+          <span style="font-size:9px;font-weight:600;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">Group Notes</span>
+          <span style="font-size:13px;line-height:1.55;">Group Notes tool launched. Set up a session once and generate individual notes for each client. Includes prognosis selection (Poor/Fair/Good), a shared intervention block copied once for all clients, and billing warnings for Good prognosis and ratios over 12:1.</span>
+        </div>
+        <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 13px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;">
+          <span style="font-size:9px;font-weight:600;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">Discharge</span>
+          <span style="font-size:13px;line-height:1.55;">Discharge Summary tool launched. Generates the free-text fields in Remarkable not auto-populated from the ITP, including progress summary, continuity of care, and aftercare plan. Includes a phase history builder with auto-calculated Dosage Hours for Sublocade/Vivitrol documentation.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- v1.0 -->
+    <div style="margin-bottom:28px;">
+      <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px;">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;background:var(--accent);color:#fff;padding:2px 8px;border-radius:4px;">v1.0</span>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5a6a62;">June 8, 2026</span>
+        <span style="font-size:14px;font-weight:600;color:#1b4332;">Initial launch</span>
+        <span style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:#7a4f00;background:#fff4d6;border:1px solid #e8c96a;padding:2px 8px;border-radius:3px;">Launch</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:7px;">
+        <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 13px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;">
+          <span style="font-size:9px;font-weight:600;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">ASAM</span>
+          <span style="font-size:13px;line-height:1.55;">ASAM Documentation tool with six dimension tabs, severity selectors, LOC and document type selection, required field validation, and two output tabs: Narrative and Criteria &amp; Risk Ratings.</span>
+        </div>
+        <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 13px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;">
+          <span style="font-size:9px;font-weight:600;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">ITP</span>
+          <span style="font-size:13px;line-height:1.55;">ITP Development tool with 29 goal categories across Sections A, B, and C, preset goal templates with SMART warnings, and opt-in objectives and interventions.</span>
+        </div>
+        <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 13px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;">
+          <span style="font-size:9px;font-weight:600;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">Ind. Notes</span>
+          <span style="font-size:13px;line-height:1.55;">Individual Session Notes tool with two output blocks matching Remarkable's note fields. Supports four session types: Working off ITP, Updating ITP, First Meeting, and Crisis Intervention.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+</div><!-- /view-changelog -->
 
 <script>
 // ═══════════════════════════════════════════════════
