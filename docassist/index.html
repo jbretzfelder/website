@@ -3545,6 +3545,12 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       </div>
 
       <!-- Medication line output -->
+      <div class="ds-output-block" id="ds-out-dc-copy" style="display:none">
+        <div class="ds-out-label">Copy of Transfer/Discharge Summary (If Neither, Explain)</div>
+        <div class="ds-out-text" id="ds-out-dc-copy-text"></div>
+        <button class="ds-copy-btn" onclick="dsCopyBlock('ds-out-dc-copy-text')">Copy</button>
+      </div>
+
       <div class="ds-output-block" id="ds-out-meds">
         <div class="ds-out-label">Client Given List of Medications</div>
         <div class="ds-out-text" id="ds-out-meds-text">For medical questions please contact the Nursing Coordinator, Ashley Worley, at 937-813-1737 Ext 357.</div>
@@ -8014,6 +8020,23 @@ function dsRenderOutput() {
   } else {
     dsSetOutput('ds-out-eligibility-text', '');
   }
+
+  // Copy of discharge summary — only shown for unsuccessful discharges
+  const dcCopyBlock = document.getElementById('ds-out-dc-copy');
+  if (dsState.dischargeType === 'unsuccessful') {
+    const sub = dsState.dischargeSubtype;
+    const date = dsState.lastContactDate ? fmtDate(dsState.lastContactDate) : '[date]';
+    const reason = sub === 'asa'
+      ? `${C} left treatment Against Staff Advice (ASA) on ${date} prior to the completion of the discharge summary. A copy was therefore not able to be provided at the time of discharge.`
+      : sub === 'admin'
+        ? `${C} was administratively discharged on ${date} prior to the completion of the discharge summary. A copy was therefore not able to be provided at the time of discharge.`
+        : `${C} was discharged on ${date} prior to the completion of the discharge summary. A copy was therefore not able to be provided at the time of discharge.`;
+    const text = `${reason} A copy of the discharge summary may be retrieved by written request from the Records department. Contact the Records department at WoodhavenRecordsDepartment@woodhavenohio.com or 937-813-1737.`;
+    dsSetOutput('ds-out-dc-copy-text', text);
+    if (dcCopyBlock) dcCopyBlock.style.display = '';
+  } else {
+    if (dcCopyBlock) dcCopyBlock.style.display = 'none';
+  }
 }
 
 function dsCopyBlock(id) {
@@ -8531,16 +8554,12 @@ function fillSampleClient() {
   // ── DISCHARGE SUMMARY ──
   document.getElementById('ds-client-name').value = 'Marcus';
   dsState.clientName = 'Marcus';
-  const dsToday = new Date();
-  const dsDateStr = dsToday.toISOString().split('T')[0];
-  document.getElementById('ds-last-contact-date').value = dsDateStr;
-  dsState.lastContactDate = dsDateStr;
-  // Set admission date 54 days before last contact (= 55 days inclusive)
-  const dsAdmitDate = new Date(dsToday);
-  dsAdmitDate.setDate(dsAdmitDate.getDate() - 54);
-  const dsAdmitStr = dsAdmitDate.toISOString().split('T')[0];
+  const dsAdmitStr = '2026-09-06';
+  const dsLastStr = '2026-10-01';
   document.getElementById('ds-admission-date').value = dsAdmitStr;
   dsState.admissionDate = dsAdmitStr;
+  document.getElementById('ds-last-contact-date').value = dsLastStr;
+  dsState.lastContactDate = dsLastStr;
   dsCalcDaysTx();
   dsSetDischargeType('successful');
   document.getElementById('ds-admission-loc').value = '3.7WM';
