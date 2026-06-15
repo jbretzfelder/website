@@ -1074,6 +1074,43 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 }
 .sn-checkbox-row input { accent-color: var(--accent); }
 
+.sn-obj-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 8px;
+  align-items: end;
+}
+.sn-obj-row-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  justify-content: flex-end;
+}
+.sn-obj-remove {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-size: 11px;
+  color: var(--text-secondary);
+  text-decoration: underline;
+  text-align: left;
+}
+.sn-obj-remove:hover { color: var(--accent); }
+.sn-add-obj-btn {
+  margin-top: 6px;
+  background: none;
+  border: 1px dashed var(--border);
+  border-radius: 5px;
+  padding: 5px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+  cursor: pointer;
+  font-family: 'IBM Plex Sans', sans-serif;
+}
+.sn-add-obj-btn:hover { border-color: var(--accent); background: var(--accent-light); }
+
 /* Preview */
 .sn-preview-placeholder {
   display: flex;
@@ -2643,36 +2680,18 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
             <div class="sn-section-title">ITP Reference</div>
             <div style="background:var(--output-bg);border:1px solid var(--border);border-radius:6px;padding:12px;display:flex;flex-direction:column;gap:10px">
 
-              <!-- Reviewed row -->
-              <div id="sn-reviewed-row" style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-                <div>
-                  <label class="sn-label">Goal Letter Reviewed</label>
-                  <input class="sn-input" id="sn-goal-letter" placeholder="e.g. D" style="text-transform:uppercase" oninput="snState.goalLetter=this.value.toUpperCase()">
-                </div>
-                <div>
-                  <label class="sn-label">Objective # Reviewed</label>
-                  <input class="sn-input" id="sn-obj-reviewed" placeholder="e.g. 3" oninput="snState.objReviewed=this.value">
-                </div>
+              <!-- Reviewed objective(s) -->
+              <div id="sn-reviewed-block">
+                <label class="sn-label">Objective(s) Reviewed</label>
+                <div id="sn-reviewed-rows" style="display:flex;flex-direction:column;gap:8px"></div>
+                <button type="button" class="sn-add-obj-btn" onclick="snAddReviewed()">+ Add Objective</button>
               </div>
 
-              <!-- Completed checkbox -->
-              <div id="sn-completed-row">
-                <label class="sn-checkbox-row" style="margin:0;font-size:12px">
-                  <input type="checkbox" id="sn-obj-complete" onchange="snState.objCompleted=this.checked">
-                  Objective completed this session
-                </label>
-              </div>
-
-              <!-- Assigned row -->
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-                <div>
-                  <label class="sn-label">Goal Letter Assigned Next</label>
-                  <input class="sn-input" id="sn-goal-letter-next" placeholder="e.g. D" style="text-transform:uppercase" oninput="snState.goalLetterNext=this.value.toUpperCase()">
-                </div>
-                <div>
-                  <label class="sn-label">Objective # Assigned Next</label>
-                  <input class="sn-input" id="sn-obj-next" placeholder="e.g. 4" oninput="snState.objNext=this.value">
-                </div>
+              <!-- Assigned objective(s) -->
+              <div id="sn-next-block">
+                <label class="sn-label">Objective(s) Assigned Next</label>
+                <div id="sn-next-rows" style="display:flex;flex-direction:column;gap:8px"></div>
+                <button type="button" class="sn-add-obj-btn" onclick="snAddNext()">+ Add Objective</button>
               </div>
 
             </div>
@@ -6919,7 +6938,10 @@ function gnMakeClient() {
   return {
     id: ++gnClientIdCounter,
     name: '',
-    disengaged: false,
+    participation: 'normal', // 'normal' | 'engaged_no_discussion' | 'disengaged'
+    noResponseTopic: false,
+    noResponseReading: false,
+    noResponseMindfulness: false,
     responseTopic: '',
     responseReading: '',
     responseMindfulness: '',
@@ -6931,6 +6953,7 @@ function gnMakeClient() {
     isOpen: true,
   };
 }
+
 
 function gnAddClient() {
   gnClients.push(gnMakeClient());
@@ -7065,31 +7088,41 @@ function gnRenderClients() {
     };
     body.appendChild(nameInput);
 
-    // ── Disengagement checkbox ─────────────────────────
-    const disengageWrap = document.createElement('div');
-    disengageWrap.style.cssText = 'margin-top:8px;';
+    // ── Participation status ───────────────────────────
+    const participationWrap = document.createElement('div');
+    participationWrap.style.cssText = 'margin-top:8px;display:flex;flex-direction:column;gap:5px;';
 
-    const disengageLabel = document.createElement('label');
-    disengageLabel.style.cssText = 'display:flex;align-items:flex-start;gap:7px;cursor:pointer;font-size:11px;color:var(--text);line-height:1.45;';
+    const participationOptions = [
+      { key: 'normal', label: 'Participated normally' },
+      { key: 'engaged_no_discussion', label: 'Engaged in group, but did not participate in the discussion' },
+      { key: 'disengaged', label: 'Disengaged — did not participate' },
+    ];
 
-    const disengageCb = document.createElement('input');
-    disengageCb.type = 'checkbox';
-    disengageCb.checked = client.disengaged;
-    disengageCb.style.cssText = 'margin-top:1px;accent-color:var(--accent);flex-shrink:0;';
-    disengageCb.onchange = () => {
-      client.disengaged = disengageCb.checked;
-      gnRenderClients();
-    };
+    participationOptions.forEach(opt => {
+      const optLabel = document.createElement('label');
+      optLabel.style.cssText = 'display:flex;align-items:flex-start;gap:7px;cursor:pointer;font-size:11px;color:var(--text);line-height:1.45;';
 
-    const disengageText = document.createElement('span');
-    disengageText.textContent = 'Client was disengaged and did not participate';
-    disengageLabel.appendChild(disengageCb);
-    disengageLabel.appendChild(disengageText);
-    disengageWrap.appendChild(disengageLabel);
-    body.appendChild(disengageWrap);
+      const radio = document.createElement('input');
+      radio.type = 'radio';
+      radio.name = 'gn-participation-' + client.id;
+      radio.checked = (client.participation || 'normal') === opt.key;
+      radio.style.cssText = 'margin-top:1px;accent-color:var(--accent);flex-shrink:0;';
+      radio.onchange = () => {
+        client.participation = opt.key;
+        gnRenderClients();
+      };
+
+      const optText = document.createElement('span');
+      optText.textContent = opt.label;
+      optLabel.appendChild(radio);
+      optLabel.appendChild(optText);
+      participationWrap.appendChild(optLabel);
+    });
+
+    body.appendChild(participationWrap);
 
     // Disengagement follow-up flag
-    if (client.disengaged) {
+    if (client.participation === 'disengaged') {
       const disengageFlag = document.createElement('div');
       const clientDisplayName = client.name && client.name.trim() ? client.name.trim() : 'this client';
       disengageFlag.style.cssText = 'margin-top:7px;padding:8px 11px;background:#fff0f0;border:1px solid #e74c3c;border-left:3px solid #c0392b;border-radius:4px;font-size:11px;color:#7b1a1a;line-height:1.5;';
@@ -7099,8 +7132,10 @@ function gnRenderClients() {
 
     // ── Context-aware response fields ──────────────────
     const hasAnyActivity = gnState.actTopic || gnState.actReading || gnState.actMindfulness;
+    const showRespSection = client.participation !== 'disengaged'
+      && (hasAnyActivity || client.participation === 'engaged_no_discussion');
 
-    if (hasAnyActivity && !client.disengaged) {
+    if (showRespSection) {
       const respSectionLabel = document.createElement('div');
       respSectionLabel.className = 'gn-section-label';
       respSectionLabel.style.marginTop = '8px';
@@ -7112,24 +7147,31 @@ function gnRenderClients() {
       respHintGlobal.textContent = 'Write in complete sentences — pasted verbatim into output.';
       body.appendChild(respHintGlobal);
 
+      if (client.participation === 'engaged_no_discussion') {
+        const engagedNote = document.createElement('div');
+        engagedNote.style.cssText = 'font-size:11px;color:var(--text-secondary);font-style:italic;padding:2px 0 6px;';
+        engagedNote.textContent = 'Output will note that the client was engaged (AEB maintaining eye contact with facilitators and peers) but did not participate in the discussion.';
+        body.appendChild(engagedNote);
+      }
+
       const respWrap = document.createElement('div');
       respWrap.style.cssText = 'display:flex;flex-direction:column;gap:10px;';
 
-      if (gnState.actTopic) {
+      if (gnState.actTopic && client.participation === 'normal') {
         const topicLabel = gnState.topic && gnState.topic.trim()
           ? `Topic discussion — "${gnState.topic.trim()}"`
           : 'Topic discussion';
         const name = client.name && client.name.trim() ? client.name.trim() : '[Client]';
         const topic = gnState.topic && gnState.topic.trim() ? gnState.topic.trim() : '[topic]';
         const topicPrefix = `- ${name} was engaged in topic discussion of "${topic}" AEB answering the questions when prompted and responding to group discussion. ${name} shared that`;
-        const topicField = gnMakeRespField(topicLabel, topicPrefix, client.responseTopic, v => { client.responseTopic = v; });
+        const topicField = gnMakeRespField(topicLabel, topicPrefix, client.responseTopic, v => { client.responseTopic = v; }, client.noResponseTopic, checked => { client.noResponseTopic = checked; });
         respWrap.appendChild(topicField);
       }
 
       if (gnState.actReading) {
         const name = client.name && client.name.trim() ? client.name.trim() : '[Client]';
         const readingPrefix = `- ${name} was receptive to the daily reading and participated in group reflection on their sobriety. ${name} shared that`;
-        const readingField = gnMakeRespField('Daily reading / reflection', readingPrefix, client.responseReading, v => { client.responseReading = v; });
+        const readingField = gnMakeRespField('Daily reading / reflection', readingPrefix, client.responseReading, v => { client.responseReading = v; }, client.noResponseReading, checked => { client.noResponseReading = checked; });
         respWrap.appendChild(readingField);
       }
 
@@ -7140,11 +7182,11 @@ function gnRenderClients() {
           ? `Activity — ${gnState.mindfulnessActivity.trim()}`
           : 'Activity';
         const mindfulPrefix = `- ${name} participated in the ${actText} and demonstrated willingness to practice skills to manage stress related to addiction and recovery. ${name} shared that`;
-        const mindfulField = gnMakeRespField(mLabel, mindfulPrefix, client.responseMindfulness, v => { client.responseMindfulness = v; });
+        const mindfulField = gnMakeRespField(mLabel, mindfulPrefix, client.responseMindfulness, v => { client.responseMindfulness = v; }, client.noResponseMindfulness, checked => { client.noResponseMindfulness = checked; });
         respWrap.appendChild(mindfulField);
       }
 
-      body.appendChild(respWrap);
+      if (respWrap.children.length) body.appendChild(respWrap);
     }
 
     // ── Clinical Judgement ─────────────────────────────
@@ -7154,7 +7196,7 @@ function gnRenderClients() {
     cjSectionLabel.textContent = 'Clinical Judgement';
     body.appendChild(cjSectionLabel);
 
-    if (client.disengaged) {
+    if (client.participation === 'disengaged') {
       // Disengaged: fixed poor prognosis, specific note
       const name = client.name && client.name.trim() ? client.name.trim() : 'Client';
       const disengagedNote = document.createElement('div');
@@ -7214,7 +7256,7 @@ function gnRenderClients() {
   });
 }
 
-function gnMakeRespField(activityLabel, prefix, value, onInput) {
+function gnMakeRespField(activityLabel, prefix, value, onInput, noResponseChecked, onNoResponseChange) {
   const wrap = document.createElement('div');
   wrap.className = 'gn-resp-activity';
 
@@ -7236,9 +7278,34 @@ function gnMakeRespField(activityLabel, prefix, value, onInput) {
   ta.value = value || '';
   ta.placeholder = '…continue the sentence here';
   ta.oninput = () => onInput(ta.value);
+  if (noResponseChecked) {
+    ta.disabled = true;
+    ta.style.opacity = '0.5';
+  }
   sentWrap.appendChild(ta);
 
   wrap.appendChild(sentWrap);
+
+  if (onNoResponseChange) {
+    const noRespLabel = document.createElement('label');
+    noRespLabel.style.cssText = 'display:flex;align-items:center;gap:6px;cursor:pointer;font-size:11px;color:var(--text-secondary);margin-top:5px;';
+
+    const noRespCb = document.createElement('input');
+    noRespCb.type = 'checkbox';
+    noRespCb.checked = !!noResponseChecked;
+    noRespCb.style.cssText = 'accent-color:var(--accent);';
+    noRespCb.onchange = () => {
+      onNoResponseChange(noRespCb.checked);
+      gnRenderClients();
+    };
+
+    const noRespText = document.createElement('span');
+    noRespText.textContent = 'No response provided for this section';
+    noRespLabel.appendChild(noRespCb);
+    noRespLabel.appendChild(noRespText);
+    wrap.appendChild(noRespLabel);
+  }
+
   return wrap;
 }
 
@@ -7305,7 +7372,7 @@ function gnBuildResponse(client) {
   const lines = [];
 
   // Disengaged path — simplified note
-  if (client.disengaged) {
+  if (client.participation === 'disengaged') {
     lines.push(`- ${name} was disengaged during group and did not meaningfully participate in group activities.`);
     const cj = gnCJDisengaged(name);
     lines.push(`- Clinical Judgement: ${cj}`);
@@ -7316,27 +7383,41 @@ function gnBuildResponse(client) {
     lines.push(`- ${name} reviewed group rules.`);
   }
 
-  if (s.actTopic) {
+  if (client.participation === 'engaged_no_discussion') {
+    lines.push(`- ${name} was engaged in group AEB maintaining eye contact with facilitators and peers. However, ${name} did not participate in the discussion.`);
+  } else if (s.actTopic) {
     const topic = s.topic && s.topic.trim() ? s.topic.trim() : '[topic]';
-    const shared = client.responseTopic && client.responseTopic.trim()
-      ? client.responseTopic.trim()
-      : '[client response not documented]';
-    lines.push(`- ${name} was engaged in topic discussion of "${topic}" AEB answering the questions when prompted and responding to group discussion. ${name} shared that ${shared}`);
+    if (client.noResponseTopic) {
+      lines.push(`- ${name} was present for topic discussion of "${topic}" but did not provide a response.`);
+    } else {
+      const shared = client.responseTopic && client.responseTopic.trim()
+        ? client.responseTopic.trim()
+        : '[client response not documented]';
+      lines.push(`- ${name} was engaged in topic discussion of "${topic}" AEB answering the questions when prompted and responding to group discussion. ${name} shared that ${shared}`);
+    }
   }
 
   if (s.actReading) {
-    const readingResp = client.responseReading && client.responseReading.trim()
-      ? ` ${name} shared that ${client.responseReading.trim()}`
-      : '';
-    lines.push(`- ${name} was receptive to the daily reading and participated in group reflection on their sobriety.${readingResp}`);
+    if (client.noResponseReading) {
+      lines.push(`- ${name} was present during the daily reading and reflection but did not provide a response.`);
+    } else {
+      const readingResp = client.responseReading && client.responseReading.trim()
+        ? ` ${name} shared that ${client.responseReading.trim()}`
+        : '';
+      lines.push(`- ${name} was receptive to the daily reading and participated in group reflection on their sobriety.${readingResp}`);
+    }
   }
 
   if (s.actMindfulness) {
     const actText = (s.mindfulnessActivity && s.mindfulnessActivity.trim()) ? s.mindfulnessActivity.trim() : 'activity';
-    const mindfulResp = client.responseMindfulness && client.responseMindfulness.trim()
-      ? ` ${name} shared that ${client.responseMindfulness.trim()}`
-      : '';
-    lines.push(`- ${name} participated in the ${actText} and demonstrated willingness to practice skills to manage stress related to addiction and recovery.${mindfulResp}`);
+    if (client.noResponseMindfulness) {
+      lines.push(`- ${name} participated in the ${actText} but did not provide a response.`);
+    } else {
+      const mindfulResp = client.responseMindfulness && client.responseMindfulness.trim()
+        ? ` ${name} shared that ${client.responseMindfulness.trim()}`
+        : '';
+      lines.push(`- ${name} participated in the ${actText} and demonstrated willingness to practice skills to manage stress related to addiction and recovery.${mindfulResp}`);
+    }
   }
 
   if (s.techMI || s.techCBT) {
@@ -8487,16 +8568,10 @@ function fillSampleClient() {
   document.getElementById('sn-type').value = 'itp_review';
   snState.sessionType = 'itp_review';
   snUpdateSessionType();
-  document.getElementById('sn-goal-letter').value = 'D';
-  snState.goalLetter = 'D';
-  document.getElementById('sn-obj-reviewed').value = '3';
-  snState.objReviewed = '3';
-  document.getElementById('sn-goal-letter-next').value = 'D';
-  snState.goalLetterNext = 'D';
-  document.getElementById('sn-obj-next').value = '4';
-  snState.objNext = '4';
-  document.getElementById('sn-obj-complete').checked = true;
-  snState.objCompleted = true;
+  snState.reviewed = [{ goalLetter: 'D', objNum: '3', completed: true }];
+  snState.next = [{ goalLetter: 'D', objNum: '4' }];
+  snRenderReviewed();
+  snRenderNext();
   snState.interventions = ['Motivational Interviewing','CBT — Cognitive Restructuring','Relapse Prevention Planning'];
   document.querySelectorAll('#sn-intervention-chips .sn-chip').forEach(btn => {
     btn.classList.toggle('active', snState.interventions.includes(btn.textContent));
@@ -8626,7 +8701,8 @@ function fillSampleClient() {
 const snState = {
   clientName:'', date: new Date().toISOString().split('T')[0],
   sessionType:'itp_review',
-  goalLetter:'', objReviewed:'', goalLetterNext:'', objNext:'', objCompleted:false,
+  reviewed: [{ goalLetter:'', objNum:'', completed:false }],
+  next: [{ goalLetter:'', objNum:'' }],
   interventions:[],
   describe:'', progress:'',
   siDenied:false, hiDenied:false, safetyPlan:false,
@@ -8719,11 +8795,9 @@ function snUpdateSessionType() {
   const isCrisis = type === 'crisis';
   const isFirst = type === 'itp_first';
   document.getElementById('sn-itp-fields').style.display = isCrisis ? 'none' : 'block';
-  // Hide "reviewed" row for first meeting — they haven't worked an objective yet
-  const reviewedRow = document.getElementById('sn-reviewed-row');
-  const completedRow = document.getElementById('sn-completed-row');
-  if (reviewedRow) reviewedRow.style.display = isFirst ? 'none' : 'grid';
-  if (completedRow) completedRow.style.display = isFirst ? 'none' : 'block';
+  // Hide "reviewed" block for first meeting — they haven't worked an objective yet
+  const reviewedBlock = document.getElementById('sn-reviewed-block');
+  if (reviewedBlock) reviewedBlock.style.display = isFirst ? 'none' : 'block';
 }
 
 function snBuildInterventionChips() {
@@ -8745,13 +8819,151 @@ function snBuildInterventionChips() {
   });
 }
 
+function snRenderReviewed() {
+  const wrap = document.getElementById('sn-reviewed-rows');
+  wrap.innerHTML = '';
+  snState.reviewed.forEach((o, idx) => {
+    const row = document.createElement('div');
+    row.className = 'sn-obj-row';
+
+    const glWrap = document.createElement('div');
+    glWrap.innerHTML = '<label class="sn-label">Goal Letter</label>';
+    const glInput = document.createElement('input');
+    glInput.className = 'sn-input';
+    glInput.placeholder = 'e.g. D';
+    glInput.style.textTransform = 'uppercase';
+    glInput.value = o.goalLetter;
+    glInput.oninput = () => { snState.reviewed[idx].goalLetter = glInput.value.toUpperCase(); };
+    glWrap.appendChild(glInput);
+
+    const obWrap = document.createElement('div');
+    obWrap.innerHTML = '<label class="sn-label">Objective #</label>';
+    const obInput = document.createElement('input');
+    obInput.className = 'sn-input';
+    obInput.placeholder = 'e.g. 3';
+    obInput.value = o.objNum;
+    obInput.oninput = () => { snState.reviewed[idx].objNum = obInput.value; };
+    obWrap.appendChild(obInput);
+
+    const ctrlWrap = document.createElement('div');
+    ctrlWrap.className = 'sn-obj-row-controls';
+    const completeLabel = document.createElement('label');
+    completeLabel.className = 'sn-checkbox-row';
+    completeLabel.style.cssText = 'margin:0;font-size:11px;white-space:nowrap';
+    const completeCb = document.createElement('input');
+    completeCb.type = 'checkbox';
+    completeCb.checked = o.completed;
+    completeCb.onchange = () => { snState.reviewed[idx].completed = completeCb.checked; };
+    completeLabel.appendChild(completeCb);
+    completeLabel.appendChild(document.createTextNode('Completed'));
+    ctrlWrap.appendChild(completeLabel);
+    if (snState.reviewed.length > 1) {
+      const removeBtn = document.createElement('button');
+      removeBtn.type = 'button';
+      removeBtn.className = 'sn-obj-remove';
+      removeBtn.textContent = 'Remove';
+      removeBtn.onclick = () => snRemoveReviewed(idx);
+      ctrlWrap.appendChild(removeBtn);
+    }
+
+    row.appendChild(glWrap);
+    row.appendChild(obWrap);
+    row.appendChild(ctrlWrap);
+    wrap.appendChild(row);
+  });
+}
+
+function snAddReviewed() {
+  snState.reviewed.push({ goalLetter:'', objNum:'', completed:false });
+  snRenderReviewed();
+}
+
+function snRemoveReviewed(idx) {
+  if (snState.reviewed.length <= 1) return;
+  snState.reviewed.splice(idx, 1);
+  snRenderReviewed();
+}
+
+function snRenderNext() {
+  const wrap = document.getElementById('sn-next-rows');
+  wrap.innerHTML = '';
+  snState.next.forEach((o, idx) => {
+    const row = document.createElement('div');
+    row.className = 'sn-obj-row';
+
+    const glWrap = document.createElement('div');
+    glWrap.innerHTML = '<label class="sn-label">Goal Letter</label>';
+    const glInput = document.createElement('input');
+    glInput.className = 'sn-input';
+    glInput.placeholder = 'e.g. D';
+    glInput.style.textTransform = 'uppercase';
+    glInput.value = o.goalLetter;
+    glInput.oninput = () => { snState.next[idx].goalLetter = glInput.value.toUpperCase(); };
+    glWrap.appendChild(glInput);
+
+    const obWrap = document.createElement('div');
+    obWrap.innerHTML = '<label class="sn-label">Objective #</label>';
+    const obInput = document.createElement('input');
+    obInput.className = 'sn-input';
+    obInput.placeholder = 'e.g. 4';
+    obInput.value = o.objNum;
+    obInput.oninput = () => { snState.next[idx].objNum = obInput.value; };
+    obWrap.appendChild(obInput);
+
+    const ctrlWrap = document.createElement('div');
+    ctrlWrap.className = 'sn-obj-row-controls';
+    if (snState.next.length > 1) {
+      const removeBtn = document.createElement('button');
+      removeBtn.type = 'button';
+      removeBtn.className = 'sn-obj-remove';
+      removeBtn.textContent = 'Remove';
+      removeBtn.onclick = () => snRemoveNext(idx);
+      ctrlWrap.appendChild(removeBtn);
+    }
+
+    row.appendChild(glWrap);
+    row.appendChild(obWrap);
+    row.appendChild(ctrlWrap);
+    wrap.appendChild(row);
+  });
+}
+
+function snAddNext() {
+  snState.next.push({ goalLetter:'', objNum:'' });
+  snRenderNext();
+}
+
+function snRemoveNext(idx) {
+  if (snState.next.length <= 1) return;
+  snState.next.splice(idx, 1);
+  snRenderNext();
+}
+
+function snFmtObjRef(o) {
+  const gl = o.goalLetter || '[Goal]';
+  const ob = o.objNum || '[#]';
+  return `${ob}${gl} of Goal ${gl}`;
+}
+
+function snJoinList(items) {
+  if (items.length === 0) return '';
+  if (items.length === 1) return items[0];
+  if (items.length === 2) return `${items[0]} and ${items[1]}`;
+  return `${items.slice(0, -1).join(', ')}, and ${items[items.length - 1]}`;
+}
+
 function snFormatDescribe() {
   const c = snState.clientName || '[Client]';
-  const gl = snState.goalLetter || '[Goal]';
-  const ob = snState.objReviewed || '[#]';
-  const glNext = snState.goalLetterNext || gl;
-  const obNext = snState.objNext || '[#]';
   const type = snState.sessionType;
+
+  const reviewedRefs = snState.reviewed
+    .filter(o => o.goalLetter && o.objNum)
+    .map(snFmtObjRef);
+  const nextRefs = snState.next
+    .filter(o => o.goalLetter && o.objNum)
+    .map(snFmtObjRef);
+  const reviewedWord = reviewedRefs.length > 1 ? 'objectives' : 'objective';
+  const nextWord = nextRefs.length > 1 ? 'objectives' : 'objective';
 
   let lines = [];
 
@@ -8762,28 +8974,28 @@ function snFormatDescribe() {
     lines.push(`This clinician met with ${c} to establish rapport and develop trust in the therapeutic process. Prompted identification of client's wants and needs in treatment. Discussed treatment rules, expectations, requirements, and informed consent.`);
     lines.push(`This clinician met with ${c} for individual session to complete the initial individual treatment plan to meet treatment needs. This clinician used solution-focused therapy techniques to look at what client wants to achieve and what is necessary to achieve these goals. This clinician asked ${c} questions to uncover strengths and resources to achieve these goals. ${c} expressed willingness to move forward with their AOD recovery and to complete all goals and objectives.`);
     if (snState.describe) lines.push(snState.describe);
-    if (snState.objNext && snState.goalLetterNext) {
-      lines.push(`${c} was assigned objective ${obNext}${glNext} of Goal ${glNext} from their ITP due next week.`);
+    if (nextRefs.length) {
+      lines.push(`${c} was assigned ${nextWord} ${snJoinList(nextRefs)} from their ITP due next week.`);
     }
   } else if (type === 'itp_update') {
     lines.push(`This clinician met with ${c} to update their ITP.`);
-    if (snState.objReviewed && snState.goalLetter) {
-      lines.push(`This clinician met with ${c} to review objective ${ob}${gl} of Goal ${gl} from their ITP.`);
+    if (reviewedRefs.length) {
+      lines.push(`This clinician met with ${c} to review ${reviewedWord} ${snJoinList(reviewedRefs)} from their ITP.`);
     }
     if (snState.describe) lines.push(snState.describe);
-    if (snState.objNext && snState.goalLetterNext) {
-      lines.push(`This clinician assigned ${c} objective ${obNext}${glNext} of Goal ${glNext} from their ITP.`);
+    if (nextRefs.length) {
+      lines.push(`This clinician assigned ${c} ${nextWord} ${snJoinList(nextRefs)} from their ITP.`);
     }
   } else {
     // itp_review
-    if (snState.objReviewed && snState.goalLetter) {
-      lines.push(`This clinician met with ${c} to review objective ${ob}${gl} of Goal ${gl} from their ITP.`);
+    if (reviewedRefs.length) {
+      lines.push(`This clinician met with ${c} to review ${reviewedWord} ${snJoinList(reviewedRefs)} from their ITP.`);
     } else {
       lines.push(`This clinician met with ${c} for individual counseling session.`);
     }
     if (snState.describe) lines.push(snState.describe);
-    if (snState.objNext && snState.goalLetterNext) {
-      lines.push(`This clinician assigned ${c} objective ${obNext}${glNext} of Goal ${glNext} from their ITP.`);
+    if (nextRefs.length) {
+      lines.push(`This clinician assigned ${c} ${nextWord} ${snJoinList(nextRefs)} from their ITP.`);
     }
   }
 
@@ -8792,24 +9004,27 @@ function snFormatDescribe() {
 
 function snFormatResponse() {
   const c = snState.clientName || '[Client]';
-  const gl = snState.goalLetter || '[Goal]';
-  const ob = snState.objReviewed || '[#]';
-  const glNext = snState.goalLetterNext || gl;
-  const obNext = snState.objNext || '[#]';
   const type = snState.sessionType;
+
+  const completedRefs = snState.reviewed
+    .filter(o => o.completed && o.goalLetter && o.objNum)
+    .map(snFmtObjRef);
+  const nextRefs = snState.next
+    .filter(o => o.goalLetter && o.objNum)
+    .map(snFmtObjRef);
+  const completedWord = completedRefs.length > 1 ? 'objectives' : 'objective';
+  const nextWord = nextRefs.length > 1 ? 'objectives' : 'objective';
 
   let lines = [];
 
-  if (type !== 'crisis') {
-    if (snState.objCompleted && snState.objReviewed && snState.goalLetter) {
-      lines.push(`${c} completed objective ${ob}${gl} of Goal ${gl} from their ITP.`);
-    }
+  if (type !== 'crisis' && completedRefs.length) {
+    lines.push(`${c} completed ${completedWord} ${snJoinList(completedRefs)} from their ITP.`);
   }
 
   if (snState.progress) lines.push(snState.progress);
 
-  if (type !== 'crisis' && snState.objNext && snState.goalLetterNext) {
-    lines.push(`${c} will work on objective ${obNext}${glNext} of Goal ${glNext} from their ITP due next week.`);
+  if (type !== 'crisis' && nextRefs.length) {
+    lines.push(`${c} will work on ${nextWord} ${snJoinList(nextRefs)} from their ITP due next week.`);
   }
 
   // Risk
@@ -8856,25 +9071,27 @@ function snClear() {
   Object.assign(snState, {
     clientName:'', clinician:'', date: new Date().toISOString().split('T')[0],
     sessionType:'itp_review',
-    goalLetter:'', objReviewed:'', goalLetterNext:'', objNext:'', objCompleted:false,
+    reviewed: [{ goalLetter:'', objNum:'', completed:false }],
+    next: [{ goalLetter:'', objNum:'' }],
     interventions:[],
     describe:'', progress:'',
     siDenied:false, hiDenied:false, safetyPlan:false,
     riskFlag:false, riskDetails:'',
   });
-  ['sn-client','sn-goal-letter','sn-obj-reviewed',
-   'sn-goal-letter-next','sn-obj-next','sn-describe','sn-progress','sn-risk-details'].forEach(id => {
+  ['sn-client','sn-describe','sn-progress','sn-risk-details'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
   document.getElementById('sn-date').value = snState.date;
   document.getElementById('sn-type').value = 'itp_review';
-  ['sn-obj-complete','sn-si','sn-hi','sn-sp','sn-risk-flag'].forEach(id => {
+  ['sn-si','sn-hi','sn-sp','sn-risk-flag'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.checked = false;
   });
   document.getElementById('sn-risk-detail-wrap').style.display = 'none';
   document.querySelectorAll('.sn-chip').forEach(c => c.classList.remove('active'));
+  snRenderReviewed();
+  snRenderNext();
   snUpdateSessionType();
   snTimerReset();
   document.getElementById('snPlaceholder').style.display = 'flex';
@@ -8887,6 +9104,8 @@ function snClear() {
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('sn-date').value = snState.date;
   snBuildInterventionChips();
+  snRenderReviewed();
+  snRenderNext();
   renderITPGoals();
   setHomeGreeting();
 });
