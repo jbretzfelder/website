@@ -1950,6 +1950,17 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   </div>
 </div>
 
+<div id="tutorialConfirmModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;align-items:center;justify-content:center">
+  <div style="background:white;border-radius:10px;padding:28px 32px;max-width:400px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.2)">
+    <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:10px">Start walkthrough?</div>
+    <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;margin-bottom:24px">This will load a sample client and replace any entries you have already made. Your current work will be cleared.</div>
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button class="btn btn-ghost" onclick="document.getElementById('tutorialConfirmModal').style.display='none'">Cancel</button>
+      <button class="btn" style="background:var(--accent);color:white" onclick="tutorialConfirmProceed()">Start Walkthrough</button>
+    </div>
+  </div>
+</div>
+
 <!-- ═══ HOME SCREEN ════════════════════════════════ -->
 <div id="view-home" class="tool-view active">
   <div class="home-screen">
@@ -1990,8 +2001,8 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       </div>
     </div>
     <div style="text-align:center;margin-top:28px;display:flex;gap:8px;justify-content:center;align-items:center;flex-wrap:wrap;">
-      <button onclick="startTutorial()" style="font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:600;color:#2d6a4f;cursor:pointer;padding:6px 16px;border-radius:20px;border:1px solid #b8d9c4;background:var(--accent-light);transition:background .15s,border-color .15s;" onmouseover="this.style.background='#c8e6d4';this.style.borderColor='#2d6a4f'" onmouseout="this.style.background='var(--accent-light)';this.style.borderColor='#b8d9c4'">▶ How to Use DocAssist</button>
-      <button onclick="openChangelogModal()" style="font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:600;color:#5a826a;cursor:pointer;padding:6px 16px;border-radius:20px;border:1px solid var(--border);background:none;transition:background .15s,border-color .15s,color .15s;" onmouseover="this.style.background='var(--output-bg)';this.style.color='#2d6a4f'" onmouseout="this.style.background='none';this.style.color='#5a826a'">v1.4 · What's New</button>
+      <button onclick="confirmStartTutorial()" style="font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:600;color:#2d6a4f;cursor:pointer;padding:6px 16px;border-radius:20px;border:1px solid #b8d9c4;background:var(--accent-light);line-height:1;transition:background .15s,border-color .15s;" onmouseover="this.style.background='#c8e6d4';this.style.borderColor='#2d6a4f'" onmouseout="this.style.background='var(--accent-light)';this.style.borderColor='#b8d9c4'">▶ How to Use DocAssist</button>
+      <button onclick="openChangelogModal()" style="font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:600;color:#2d6a4f;cursor:pointer;padding:6px 16px;border-radius:20px;border:1px solid #b8d9c4;background:var(--accent-light);line-height:1;transition:background .15s,border-color .15s;" onmouseover="this.style.background='#c8e6d4';this.style.borderColor='#2d6a4f'" onmouseout="this.style.background='var(--accent-light)';this.style.borderColor='#b8d9c4'">What's New in DocAssist</button>
     </div>
   </div>
 </div>
@@ -2002,7 +2013,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <button class="tool-nav-back" onclick="navigateTo('home')">← Back</button>
     <span class="tool-nav-divider">|</span>
     <span class="tool-nav-title">ASAM Documentation</span>
-    <button class="tool-help-btn" onclick="startToolTutorial('ASAM Documentation')">Walkthrough</button>
+    <button class="tool-help-btn" onclick="confirmToolTutorial('ASAM Documentation')">Walkthrough</button>
   </div>
 
 <!-- ═══ TOOLBAR ═══════════════════════════════════════ -->
@@ -2704,7 +2715,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <button class="tool-nav-back" onclick="navigateTo('home')">← Back</button>
     <span class="tool-nav-divider">|</span>
     <span class="tool-nav-title">ITP Development</span>
-    <button class="tool-help-btn" onclick="startToolTutorial('ITP Development')">Walkthrough</button>
+    <button class="tool-help-btn" onclick="confirmToolTutorial('ITP Development')">Walkthrough</button>
   </div>
   <!-- Two-column layout matching other tools -->
   <div style="display:grid;grid-template-columns:480px 1fr;flex:1;min-height:0;overflow:hidden;">
@@ -2825,7 +2836,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <button class="tool-nav-back" onclick="navigateTo('home')">← Back</button>
     <span class="tool-nav-divider">|</span>
     <span class="tool-nav-title">Individual Note</span>
-    <button class="tool-help-btn" onclick="startToolTutorial('Individual Note')">Walkthrough</button>
+    <button class="tool-help-btn" onclick="confirmToolTutorial('Individual Note')">Walkthrough</button>
   </div>
   <div class="session-tab-inner" style="flex:1;min-height:0">
 
@@ -3376,7 +3387,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <button class="tool-nav-back" onclick="navigateTo('home')">← Back</button>
     <span class="tool-nav-divider">|</span>
     <span class="tool-nav-title">Group Notes</span>
-    <button class="tool-help-btn" onclick="startToolTutorial('Group Notes')">Walkthrough</button>
+    <button class="tool-help-btn" onclick="confirmToolTutorial('Group Notes')">Walkthrough</button>
   </div>
 
   <div class="gn-layout">
@@ -3482,7 +3493,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <button class="tool-nav-back" onclick="navigateTo('home')">← Back</button>
     <span class="tool-nav-divider">|</span>
     <span class="tool-nav-title">Discharge Summary</span>
-    <button class="tool-help-btn" onclick="startToolTutorial('Discharge Summary')">Walkthrough</button>
+    <button class="tool-help-btn" onclick="confirmToolTutorial('Discharge Summary')">Walkthrough</button>
   </div>
   <div style="display:flex;gap:16px;flex:1;min-height:0;padding:16px 16px 0 16px;">
 
@@ -9309,7 +9320,7 @@ const TUT_STEPS = [
   // ── WELCOME ───────────────────────────────────────────────────────────────
   { view:'home', sel:null, section:null,
     title:'Welcome to DocAssist',
-    body:'Documentation takes real time away from the work that matters most — your face-to-face moments with clients. I built this tool because I wanted you to be able to focus on those moments, not on paperwork. DocAssist is designed to make your documentation faster, more thorough, and built to hold up when it counts. Please take a few minutes with this walkthrough — the better you know this tool, the more it works for you.' },
+    body:'Documentation takes real time away from the work that matters most — your face-to-face moments with clients. I built this tool because I wanted you to be able to focus on those moments, not on paperwork. It also replaces the collection of Word documents we have been using for templates, instructions, and documentation guidance — all of that is built into DocAssist now. I made the tool I would have wanted when I was counseling. Please take a few minutes with this walkthrough — the better you know this tool, the more it works for you.' },
 
   { view:'home', sel:null, section:null,
     title:'How DocAssist works',
@@ -9398,9 +9409,13 @@ const TUT_STEPS = [
     title:'Risk Ratings',
     body:'The Risk Ratings panel shows a 0 to 4 score for each dimension, auto-suggested based on your inputs. Each rating has a plain-language description so you know what that score represents. These are starting points — adjust any rating that does not match your clinical judgment. The "Auto-suggested" label tells you which scores the tool calculated; treat each as a recommendation to evaluate, not a final answer.' },
 
-  { view:'asam', sel:'#tab-btn-2', section:'ASAM Documentation', navigate:'asam',
+  { view:'asam', sel:'#criteriaBlock', section:'ASAM Documentation', navigate:'asam',
     title:'Criteria checklist',
     body:'The criteria checklist below the ratings shows ASAM criteria letters pre-checked based on your documentation. These letters map to specific authorization criteria that the insurance company uses to evaluate whether this level of care is clinically justified. Checking the right criteria is not just administrative — these are the specific pathways that determine whether authorization is approved. Use "Copy Summary" to get the formatted list for entering into Remarkable.' },
+
+  { view:'asam', sel:null, section:'ASAM Documentation', navigate:'asam',
+    title:'ASAM walkthrough complete',
+    body:'That covers the ASAM Documentation tool. The structure is here — LOC, dimensions, generate, proofread, copy. The quality comes from what you bring to the free-text fields. If you have questions about a specific client or documentation situation, reach out to your supervisor. The Walkthrough button at the top of the screen is here anytime you need it.' },
 
   // ── ITP DEVELOPMENT ───────────────────────────────────────────────────────
   { view:'itp', sel:'#view-itp .tool-nav', section:'ITP Development', navigate:'itp',
@@ -9424,6 +9439,10 @@ const TUT_STEPS = [
     },
     title:'Section structure: A, B, and C',
     body:'Section A covers primary substance use disorders. Section B covers co-occurring conditions and behavioral issues — depression, anxiety, trauma, impulsivity, and similar clinical presentations. Section C covers recovery support and community integration. Use the dropdown in each section to add the goal categories that correspond to what you documented in the ASAM.' },
+
+  { view:'itp', sel:'.itp-add-row', section:'ITP Development', navigate:'itp', side:'right',
+    title:'Where the goals come from',
+    body:'All of the goals, objectives, and interventions in this tool are drawn from the Wiley Treatment Planner. You no longer need to reference the separate Wiley document we have had on file — it is all built in here. Select a category, and the template language that appears is directly from the Planner. Your job is to take that starting point and make it specific to this client.' },
 
   { view:'itp', sel:'.itp-add-row', section:'ITP Development', navigate:'itp', side:'right',
     title:'Select only what applies',
@@ -9451,6 +9470,10 @@ const TUT_STEPS = [
     action: function() { formatITPOutput(null); },
     title:'Generated ITP output',
     body:'After clicking Generate, the right panel shows a separate output box for each goal — Goal text, Objectives, and Interventions — each with its own Copy button, matching Remarkable\'s ITP field structure. Before copying, read each output box once. If a goal still sounds generic or like template language even after you edited it, go back and revise it before it goes into Remarkable.' },
+
+  { view:'itp', sel:null, section:'ITP Development', navigate:'itp',
+    title:'ITP walkthrough complete',
+    body:'That covers the ITP Development tool. The Wiley goals and objectives are built in — select what fits, make it specific to your client, and the tool handles the formatting. An ITP that aligns with your ASAM and gets referenced in your session notes is the documentation backbone for your client\'s continued care. The Walkthrough button is here whenever you need a refresher.' },
 
   // ── INDIVIDUAL NOTE ───────────────────────────────────────────────────────
   { view:'note', sel:'#view-note .tool-nav', section:'Individual Note', navigate:'note',
@@ -9481,11 +9504,11 @@ const TUT_STEPS = [
     title:'Be accurate with your objective references',
     body:'Enter the Goal Letter and Objective Number for what you actually reviewed — not the objective that sounds most relevant, but the one you genuinely worked on. If you worked on Objective 2B, document 2B. You can add multiple reviewed or assigned objectives with the + buttons if the session covered more than one. Accuracy here protects both the client\'s record and your clinical accountability.' },
 
-  { view:'note', sel:'#sn-intervention-chips', section:'Individual Note', navigate:'note',
+  { view:'note', sel:'#sn-intervention-chips', section:'Individual Note', navigate:'note', side:'right',
     title:'Therapeutic interventions',
     body:'Select the therapeutic approach you used. If the session centered on what the client wants from recovery, what is holding them back, or building their motivation to change — that is Motivational Interviewing. If the session centered on examining how the client thinks about their use, identifying thought patterns that drive behavior, or challenging distorted thinking — that is CBT. When in doubt, think about what the conversation was actually about.' },
 
-  { view:'note', sel:'#sn-intervention-chips', section:'Individual Note', navigate:'note',
+  { view:'note', sel:'#sn-intervention-chips', section:'Individual Note', navigate:'note', side:'right',
     title:'A second step in Remarkable',
     body:'These selections map to a separate field in Remarkable — not the narrative DocAssist generates. After pasting your DocAssist output into Remarkable, find the interventions or technique field in the session note form and complete it there. This is a second required step that is easy to overlook. The intervention field is part of the required session note structure — do not skip it.' },
 
@@ -9518,6 +9541,10 @@ const TUT_STEPS = [
     title:'Read before you paste',
     body:'If either section contains placeholder text like "[Client]" where the name should appear, or if something reads as inaccurate or unclear, go back, correct the input, and generate again. The note that goes into Remarkable is the permanent record. A small correction now prevents a documentation problem later.' },
 
+  { view:'note', sel:null, section:'Individual Note', navigate:'note',
+    title:'Individual Note walkthrough complete',
+    body:'That covers the Individual Note tool. The tool builds the structure — you provide the clinical substance. Specific, treatment-plan-referenced, judgment-forward documentation in the response and progress field is what keeps authorizations moving and what demonstrates that your sessions are making a difference. The Walkthrough button is here anytime you need it.' },
+
   // ── GROUP NOTES ───────────────────────────────────────────────────────────
   { view:'group', sel:'#view-group .tool-nav', section:'Group Notes', navigate:'group',
     title:'Group Notes',
@@ -9525,7 +9552,7 @@ const TUT_STEPS = [
 
   { view:'group', sel:'#view-group .tool-nav', section:'Group Notes', navigate:'group',
     title:'The copy workflow',
-    body:'Each client still gets their own separate note in Remarkable. The shared intervention block — which describes what happened in group — goes into each client\'s note. Then each client\'s individual response card is unique to that client. When copying: paste the shared block into every client\'s note first, then go back and copy each individual response card into the correct client\'s note.' },
+    body:'In Remarkable, there is a Group Note template that is filled in once for the entire group session. The shared intervention block from DocAssist gets pasted into that template — Remarkable then carries it into each individual client\'s group note automatically as those notes are completed. You do not paste the shared block into each client\'s note separately.' },
 
   { view:'group', sel:'#gn-ratio-clients', section:'Group Notes', navigate:'group',
     title:'Group ratio',
@@ -9559,7 +9586,11 @@ const TUT_STEPS = [
     action: function() { gnGenerateAll(); },
     side:'left',
     title:'The generated output',
-    body:'The shared intervention block at the top gets pasted into every client\'s Remarkable session note. Below it, each client has their own response card with their name, prognosis, clinical judgment line, and individual activity responses. Copy each client\'s card into that client\'s note in Remarkable — do not mix up cards between clients.' },
+    body:'The shared intervention block at the top gets pasted once into the Group Note template in Remarkable — it auto-populates into each client\'s individual group note from there. Each client\'s individual response card below it gets copied into that specific client\'s note in Remarkable. Do not mix up cards between clients.' },
+
+  { view:'group', sel:null, section:'Group Notes', navigate:'group',
+    title:'Group Notes walkthrough complete',
+    body:'That covers the Group Notes tool. Set up the session once, document each client\'s individual response, generate, and copy. The shared block goes into the Group Note template, each client card into their individual note. If you ever lose track of the sequence, the Walkthrough button at the top of the screen will walk you through it again.' },
 
   // ── DISCHARGE SUMMARY ─────────────────────────────────────────────────────
   { view:'discharge', sel:'#view-discharge .tool-nav', section:'Discharge Summary', navigate:'discharge',
@@ -9594,8 +9625,12 @@ const TUT_STEPS = [
     title:'Fields to complete in Remarkable directly',
     body:'This reference card lists the fields you complete directly in Remarkable — they do not have DocAssist output. These include discharge-specific checkboxes, dropdowns, and fields that require your direct input in Remarkable\'s form. Keep this card visible while finishing the Discharge Summary in Remarkable. If you are unsure what any of these fields mean or how to complete them, ask your supervisor before submitting.' },
 
+  { view:'discharge', sel:null, section:'Discharge Summary', navigate:'discharge',
+    title:'Discharge Summary walkthrough complete',
+    body:'That covers the Discharge Summary tool. Fill in the left panel, review each output block on the right before copying, and use the reference card at the bottom for the fields that go directly into Remarkable. If anything looks off in the output, check your inputs first — the generated text reflects exactly what you put in. The Walkthrough button is here whenever you need it.' },
+
   // ── FINISH ────────────────────────────────────────────────────────────────
-  { view:'discharge', sel:null, section:null,
+  { view:'home', sel:null, section:null, navigate:'home',
     action: function() { tutConfetti(); },
     title:'You\'re all set',
     body:'You made it through. You now know this tool well enough to use it — the rest builds with practice. Return to this walkthrough anytime from the home screen, or use the Walkthrough button inside any individual tool for a focused review. If you have questions about a specific situation or anything in the tool, reach out to your supervisor. This was built to give you more time with your clients. That is what this was built to protect.',
@@ -9619,6 +9654,23 @@ function tutPreload(callback) {
       callback();
     }, 150);
   }, 150);
+}
+
+let _tutorialPendingCallback = null;
+
+function tutorialConfirmProceed() {
+  document.getElementById('tutorialConfirmModal').style.display = 'none';
+  if (_tutorialPendingCallback) { _tutorialPendingCallback(); _tutorialPendingCallback = null; }
+}
+
+function confirmStartTutorial() {
+  _tutorialPendingCallback = startTutorial;
+  document.getElementById('tutorialConfirmModal').style.display = 'flex';
+}
+
+function confirmToolTutorial(sectionName) {
+  _tutorialPendingCallback = function() { startToolTutorial(sectionName); };
+  document.getElementById('tutorialConfirmModal').style.display = 'flex';
 }
 
 function startTutorial() {
@@ -9647,6 +9699,7 @@ function startToolTutorial(sectionName) {
 
 function tutExit() {
   document.getElementById('tut-overlay').style.display = 'none';
+  doReset();
 }
 
 function tutNext() {
@@ -9655,7 +9708,6 @@ function tutNext() {
     tutShowStep(tutStep);
   } else {
     tutExit();
-    doReset();
     navigateTo(tutMode === 'tool' ? tutToolView : 'home');
   }
 }
