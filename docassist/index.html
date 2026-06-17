@@ -384,6 +384,51 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   font-weight: 600;
 }
 
+/* ─── RESPONSIVE ──────────────────────────── */
+@media (max-width: 1100px) {
+  .home-grid {
+    grid-template-columns: repeat(3, 200px);
+    gap: 12px;
+    max-width: 640px;
+  }
+  .home-greeting { margin-bottom: 40px; }
+  .home-greeting-title { font-size: 22px; }
+  #tut-tooltip {
+    position: fixed !important;
+    bottom: 16px !important;
+    top: auto !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+    width: min(400px, calc(100vw - 32px)) !important;
+    max-height: 50vh;
+    overflow-y: auto;
+  }
+}
+@media (max-width: 950px) {
+  .home-grid {
+    grid-template-columns: repeat(2, minmax(190px, 260px));
+    gap: 12px;
+    max-width: 560px;
+  }
+  .home-screen { padding: 28px 20px; }
+  .home-greeting { margin-bottom: 28px; }
+  .home-greeting-title { font-size: 20px; }
+  .home-greeting-sub { font-size: 13px; }
+  .home-card { padding: 16px 16px 16px 14px; }
+}
+@media (max-width: 680px) {
+  .home-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    max-width: 100%;
+  }
+  .home-screen { padding: 18px 14px; }
+  .home-greeting { margin-bottom: 18px; }
+  .home-greeting-title { font-size: 18px; }
+  .home-card-desc { font-size: 10px; }
+}
+
 /* ─── TOOL NAV ────────────────────────────── */
 .tool-nav {
   display: flex;
@@ -1957,7 +2002,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <button class="tool-nav-back" onclick="navigateTo('home')">← Back</button>
     <span class="tool-nav-divider">|</span>
     <span class="tool-nav-title">ASAM Documentation</span>
-    <button class="tool-help-btn" onclick="startToolTutorial('ASAM Documentation')">? Guide</button>
+    <button class="tool-help-btn" onclick="startToolTutorial('ASAM Documentation')">Walkthrough</button>
   </div>
 
 <!-- ═══ TOOLBAR ═══════════════════════════════════════ -->
@@ -2659,7 +2704,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <button class="tool-nav-back" onclick="navigateTo('home')">← Back</button>
     <span class="tool-nav-divider">|</span>
     <span class="tool-nav-title">ITP Development</span>
-    <button class="tool-help-btn" onclick="startToolTutorial('ITP Development')">? Guide</button>
+    <button class="tool-help-btn" onclick="startToolTutorial('ITP Development')">Walkthrough</button>
   </div>
   <!-- Two-column layout matching other tools -->
   <div style="display:grid;grid-template-columns:480px 1fr;flex:1;min-height:0;overflow:hidden;">
@@ -2780,7 +2825,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <button class="tool-nav-back" onclick="navigateTo('home')">← Back</button>
     <span class="tool-nav-divider">|</span>
     <span class="tool-nav-title">Individual Note</span>
-    <button class="tool-help-btn" onclick="startToolTutorial('Individual Note')">? Guide</button>
+    <button class="tool-help-btn" onclick="startToolTutorial('Individual Note')">Walkthrough</button>
   </div>
   <div class="session-tab-inner" style="flex:1;min-height:0">
 
@@ -3331,7 +3376,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <button class="tool-nav-back" onclick="navigateTo('home')">← Back</button>
     <span class="tool-nav-divider">|</span>
     <span class="tool-nav-title">Group Notes</span>
-    <button class="tool-help-btn" onclick="startToolTutorial('Group Notes')">? Guide</button>
+    <button class="tool-help-btn" onclick="startToolTutorial('Group Notes')">Walkthrough</button>
   </div>
 
   <div class="gn-layout">
@@ -3340,16 +3385,8 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <div class="gn-setup">
 
       <div>
-        <div class="gn-section-label">Session Info</div>
+        <div class="gn-section-label">Group Ratio</div>
         <div style="display:flex;flex-direction:column;gap:8px">
-          <div>
-            <div class="gn-hint" style="margin-bottom:3px">Date</div>
-            <input class="gn-input" type="date" id="gn-date" oninput="gnState.date=this.value">
-          </div>
-          <div>
-            <div class="gn-hint" style="margin-bottom:3px">Counselor Name</div>
-            <input class="gn-input" id="gn-counselor" placeholder="e.g. Sarah M." oninput="gnState.counselor=this.value">
-          </div>
           <div>
             <div class="gn-hint" style="margin-bottom:3px">Group Ratio (Clients:Staff)</div>
             <div class="gn-ratio-box">
@@ -3413,7 +3450,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 
       <div id="gn-placeholder" style="display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:12px;color:var(--text-secondary);text-align:center;padding:40px">
           <div><svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.45"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
-          <div style="font-size:13px;line-height:1.6;">Enter a session date and counselor name,<br>then set your group ratio to populate client cards.</div>
+          <div style="font-size:13px;line-height:1.6;">Set your group ratio to populate client cards.</div>
       </div>
       <div class="gn-clients-list" id="gn-clients-list" style="display:none"></div>
 
@@ -3445,7 +3482,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <button class="tool-nav-back" onclick="navigateTo('home')">← Back</button>
     <span class="tool-nav-divider">|</span>
     <span class="tool-nav-title">Discharge Summary</span>
-    <button class="tool-help-btn" onclick="startToolTutorial('Discharge Summary')">? Guide</button>
+    <button class="tool-help-btn" onclick="startToolTutorial('Discharge Summary')">Walkthrough</button>
   </div>
   <div style="display:flex;gap:16px;flex:1;min-height:0;padding:16px 16px 0 16px;">
 
@@ -3651,7 +3688,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     </div><!-- /left panel -->
 
     <!-- RIGHT PANEL: OUTPUT -->
-    <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:0;overflow-y:auto;">
+    <div id="ds-right-panel" style="flex:1;min-width:0;display:flex;flex-direction:column;gap:0;overflow-y:auto;">
 
       <div style="background:var(--warning-bg);border:1px solid var(--warning-border);border-radius:6px;padding:8px 12px;margin-bottom:12px;font-size:11px;color:var(--warning-text);">
         ⚠ Proofread all generated text before copying to Remarkable. Verify dates, names, and clinical details are accurate.
@@ -3713,7 +3750,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       </div>
 
       <!-- Complete in Remarkable reference card -->
-      <div style="background:#f3f4f3;border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:16px;">
+      <div id="ds-remarkable-ref" style="background:#f3f4f3;border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:16px;">
         <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-secondary);margin-bottom:10px;">Complete Directly in Remarkable</div>
         <div style="font-size:12px;color:var(--text-secondary);display:flex;flex-direction:column;gap:5px;">
           <div style="display:flex;align-items:center;gap:8px;"><span style="width:6px;height:6px;border-radius:50%;background:var(--text-secondary);display:inline-block;flex-shrink:0;"></span>Admission ASAM LOC — check all LOCs client was admitted at</div>
@@ -8743,9 +8780,7 @@ function fillSampleClient() {
   snState.hiDenied = true;
 
   // ── GROUP NOTE ──
-  document.getElementById('gn-date').value = today;
   gnState.date = today;
-  document.getElementById('gn-counselor').value = 'Sarah M.';
   gnState.counselor = 'Sarah M.';
   document.getElementById('gn-ratio-clients').value = 4;
   gnState.ratioClients = 4;
@@ -9271,217 +9306,302 @@ document.addEventListener('DOMContentLoaded', () => {
 
 const TUT_STEPS = [
 
-  // ── HOME SCREEN ───────────────────────────────────────────
+  // ── WELCOME ───────────────────────────────────────────────────────────────
   { view:'home', sel:null, section:null,
-    title:'DocAssist Walkthrough',
-    body:'This walkthrough covers all five documentation tools. Each step spotlights a part of the interface and explains what to do. A sample client (Marcus) has been loaded so you can see the tools populated with realistic data.' },
+    title:'Welcome to DocAssist',
+    body:'Documentation takes real time away from the work that matters most — your face-to-face moments with clients. I built this tool because I wanted you to be able to focus on those moments, not on paperwork. DocAssist is designed to make your documentation faster, more thorough, and built to hold up when it counts. Please take a few minutes with this walkthrough — the better you know this tool, the more it works for you.' },
 
+  { view:'home', sel:null, section:null,
+    title:'How DocAssist works',
+    body:'DocAssist generates the clinical documentation you need for Remarkable. You fill out the tool, generate the text, review it, and paste it into the right fields in Remarkable. That is the complete workflow — nothing this tool produces gets submitted anywhere automatically. You are always in control of what goes into the record. There are five tools organized by documentation type: ASAM narratives, treatment plans, session notes, group notes, and discharge summaries.' },
+
+  // ── HOME SCREEN ───────────────────────────────────────────────────────────
   { view:'home', sel:'.home-grid', section:'Home Screen',
     title:'Your documentation tools',
-    body:'The home screen gives you access to all five tools. Click any card to open it. Your work is saved as you move between tools — nothing is lost when you navigate back home.' },
+    body:'Each card opens a different tool. You will often use several of them for the same client — an ASAM narrative, then a treatment plan, then session notes over time. Your work is saved as you move between tools, so you can start an ASAM, switch to the ITP tool to align your treatment plan, and come back to the ASAM without losing anything.' },
 
   { view:'home', sel:'#timerGroup', section:'Home Screen',
     title:'Session timer',
-    body:'The session timer tracks documentation time across all tools. Use ▶ to start, ■ to stop, and ↺ to reset. Start/end timestamps appear alongside the elapsed time for reference.' },
+    body:'The session timer tracks how long you spend on documentation. Start it when you begin, stop it when you are done. It persists across all tools as you move between them. It does not feed into any generated documentation or output — it is for your own reference and time awareness only.' },
 
-  // ── ASAM DOCUMENTATION ────────────────────────────────────
+  { view:'home', sel:'.reset-btn', section:'Home Screen',
+    title:'Reset button',
+    body:'The ↺ Reset button clears all data across every tool and returns DocAssist to a blank state. It will ask you to confirm before clearing anything. Use this when you are done with one client and starting fresh for another, or any time you want a clean slate. It does not affect anything in Remarkable — only what is currently open in DocAssist.' },
+
+  // ── ASAM DOCUMENTATION ────────────────────────────────────────────────────
   { view:'asam', sel:'#view-asam .tool-nav', section:'ASAM Documentation', navigate:'asam',
     title:'ASAM Documentation',
-    body:'This tool generates your medical necessity narrative and Remarkable criteria checklist. It covers all six ASAM dimensions and adapts to the level of care and document type you select. Use it for initial authorizations, continued stay reviews, and discharge ASAMs.' },
+    body:'The ASAM Documentation tool generates your medical necessity narrative — the clinical document that your client\'s insurance company uses to decide whether to authorize their continued treatment. This is not administrative paperwork. If this documentation is weak, generic, or incomplete, the insurance company may deny authorization and your client may lose access to the level of care they still need.' },
+
+  { view:'asam', sel:'#view-asam .tool-nav', section:'ASAM Documentation', navigate:'asam',
+    title:'Your responsibility in this document',
+    body:'Every field you complete in this tool is a clinical statement about this specific client on this specific date. The quality of your documentation directly affects your client\'s treatment. This walkthrough will show you not just how to fill it out, but how to fill it out well. Take your time with it — a few extra minutes of quality documentation here protects weeks of continued care.' },
 
   { view:'asam', sel:'#locSelect', section:'ASAM Documentation', navigate:'asam',
     title:'Level of Care',
-    body:'Start here. The LOC determines which dimensions carry primary driver status, what fields are required, and whether withdrawal management inputs appear. Nothing in the left panel activates until a LOC is chosen. Marcus is set to 3.5 — the dimension tabs are now active.' },
+    body:'Start here. Select the level of care that matches the client\'s current authorization in Remarkable — not where you think they should be, but where they currently are. This selection activates the right dimensions, required fields, and clinical framing for their current episode of care. If you are unsure which LOC to select, check Remarkable or ask your supervisor before proceeding.' },
 
   { view:'asam', sel:'.toggle-group', section:'ASAM Documentation', navigate:'asam',
     title:'Document type',
-    body:'Initial Admission for new authorizations. Continued Stay for ongoing prior auth — it requires more fields and carries the most weight with payer reviewers. Discharge produces a status-oriented ASAM that supports audit and continuity of care.' },
+    body:'You will use Continued Stay most often — every time the client\'s insurance company needs to reauthorize treatment, which happens on a regular schedule. Use Initial Admission for the very first ASAM at admission. Discharge is used at the end of a treatment episode and serves audit and continuity of care purposes rather than authorization. When in doubt about which type to use, ask your supervisor.' },
 
   { view:'asam', sel:'#dimTabs', section:'ASAM Documentation', navigate:'asam',
-    title:'Click through every dimension',
-    body:'Click each numbered tab to work through all six dimensions. Do not skip a dimension just because it is low-acuity — a payer reviewer who sees blank fields will question whether a complete clinical picture was considered. Primary driver tabs are marked with a badge; start there, but complete them all.' },
+    title:'The six ASAM dimensions',
+    body:'Each tab covers a different clinical domain: Dim 1 is withdrawal risk and intoxication history. Dim 2 is physical health and medical conditions. Dim 3 is mental and emotional health. Dim 4 is readiness to change and motivation. Dim 5 is relapse risk and recovery environment. Dim 6 is recovery support and living situation. Click through all six — even dimensions that look stable need documentation.' },
+
+  { view:'asam', sel:'#dimTabs', section:'ASAM Documentation', navigate:'asam',
+    title:'Do not skip dimensions',
+    body:'A blank dimension is a gap the insurance company\'s reviewer will notice. Even if a client has no withdrawal symptoms, Dimension 1 should explicitly say so — absence of a problem is still a clinical statement that belongs in the record. "No acute withdrawal symptoms observed at this time" documents clinical judgment. A blank field documents nothing.' },
+
+  { view:'asam', sel:'#dimTabs', section:'ASAM Documentation', navigate:'asam',
+    title:'Primary Driver dimensions',
+    body:'The "Primary Driver" badge marks the dimensions that most justify this client\'s current level of care. For most residential clients, Dimensions 3 and 4 carry the most weight — the client\'s mental health presentation and their readiness to engage in treatment are what the insurance company looks at most carefully. Start with primary drivers, complete them thoroughly, and then fill the remaining dimensions.' },
 
   { view:'asam', sel:'#dim1-sev-pills', section:'ASAM Documentation', navigate:'asam',
-    title:'Severity pills and challenge messages',
-    body:'Use the severity pills to rate acuity within each dimension. If you select a value suggesting stable functioning, an amber challenge message may appear. This is a documentation prompt — it asks you to explain why this client still needs this LOC despite low acuity in that dimension.' },
+    action: function() { var b = document.querySelector('[data-dim="1"]'); if (b) showDim(1, b); },
+    title:'Severity ratings',
+    body:'Use the severity pills to rate the clinical acuity within each dimension. 0 means no problem is present. 1 to 2 represents low to mild concern. 3 indicates significant acuity. 4 is severe or acute. Select the level that honestly reflects this client\'s current presentation — not where they were at admission, but where they are today.' },
+
+  { view:'asam', sel:'#dim1-sev-pills', section:'ASAM Documentation', navigate:'asam',
+    title:'Challenge messages',
+    body:'If you select a value suggesting stable functioning — like "None" for withdrawal risk — you may see an amber challenge message. This is a documentation prompt, not an error. It is asking: if this dimension is stable, why does this client still need this level of care? Document the answer. That clinical explanation is what turns a stable rating into evidence that continued treatment is still necessary.' },
 
   { view:'asam', sel:'#grp-dim4-barriers', section:'ASAM Documentation', navigate:'asam',
     action: function() { showDim(4, document.querySelector('[data-dim="4"]')); },
-    side: 'right',
+    side:'right',
     title:'Individualize every free-text field',
-    body:'Payer reviewers read hundreds of notes that say "client demonstrates ambivalence" and deny them. What survives review is specific: the client\'s name, their exact behaviors, concrete clinical observations, their own words where appropriate. Look at this field — it describes Marcus\'s specific ambivalence pattern, his inconsistent group engagement, and his tendency to externalize consequences. Every text box in DocAssist should read like it could only describe this client on this date.' },
+    body:'This is the most important instruction in this entire walkthrough. Insurance reviewers read hundreds of notes that say "the client demonstrates ambivalence about recovery." They deny those notes. What survives review is specific: the client\'s name, their exact behaviors, their own words, and concrete clinical observations from this session or this period.' },
+
+  { view:'asam', sel:'#grp-dim4-barriers', section:'ASAM Documentation', navigate:'asam',
+    side:'right',
+    title:'What specific looks like',
+    body:'Compare these two: "The client lacks insight into the severity of their substance use." versus "Marcus minimizes the impact of his cocaine use on his family relationships despite acknowledging two incidents of job loss and a recent separation from his partner." The second version names the client, the substance, the behavior pattern, and the consequences. Write like the second one. Every time.' },
 
   { view:'asam', sel:'#generateBar', section:'ASAM Documentation', navigate:'asam',
     title:'Generating your narrative',
-    body:'When dimensions are complete, click Generate. Required fields are validated first — any that are missing are flagged in red with a clickable list that jumps you directly to each one. Fields left blank are omitted from the narrative.' },
+    body:'When you have completed the dimensions, click Generate. Required fields are validated first — any missing ones are flagged in red with a clickable list that jumps you to each one. Required does not mean every field; it means the fields that are clinically necessary for your selected document type and LOC. Fields you intentionally leave blank are simply omitted from the output.' },
 
   { view:'asam', sel:'.output-tabs', section:'ASAM Documentation', navigate:'asam',
-    title:'ASAM Narrative tab',
-    body:'The ASAM Narrative tab shows your complete medical necessity documentation. A proofread banner appears at the top — always review generated text for clinical accuracy before copying into Remarkable.' },
+    title:'Your ASAM narrative',
+    body:'The narrative tab shows your complete medical necessity documentation. Read the proofread banner at the top — it is there because generated text requires a human review. The tool combines your inputs into clinical language, but it cannot catch every clinical nuance. Read each dimension section before you copy anything into Remarkable.' },
+
+  { view:'asam', sel:'.output-tabs', section:'ASAM Documentation', navigate:'asam',
+    title:'What to look for when proofreading',
+    body:'Check that the client\'s name appears correctly throughout. Read for clinical accuracy — does the language honestly reflect your assessment of this client, or does any sentence sound like it could describe anyone? Look for awkward phrasing where two separate inputs were combined. If anything reads as generic or inaccurate, go back to that dimension and add more specific detail before copying.' },
 
   { view:'asam', sel:'#outputDoc', section:'ASAM Documentation', navigate:'asam',
     title:'Copying into Remarkable',
-    body:'Each dimension section has its own Copy button. In Remarkable, open the ASAM form, scroll to the dimension field, and paste. Use "Copy Narrative" in the tab bar to copy everything at once.' },
+    body:'Each dimension section has its own Copy button. In Remarkable, the ASAM form has one text field per dimension — each dimension\'s narrative from DocAssist goes into its corresponding field. Copy one dimension, open Remarkable, paste it into that dimension\'s field, then come back for the next. Or use "Copy Narrative" in the tab bar to copy everything at once if your workflow allows.' },
 
   { view:'asam', sel:'#tab-btn-2', section:'ASAM Documentation', navigate:'asam',
     action: function() { switchTab(2); },
-    title:'Criteria & Risk Ratings',
-    body:'Risk ratings (0–4) are auto-suggested based on your inputs — each shows an "Auto-suggested" label and a plain-language description of that score. You can change any rating by clicking a different number if your clinical judgment differs. Below the ratings, the criteria checklist shows ASAM criteria letters pre-checked from your documentation. Use "Copy Summary" to get a formatted reference list for clicking boxes in Remarkable.' },
+    title:'Risk Ratings',
+    body:'The Risk Ratings panel shows a 0 to 4 score for each dimension, auto-suggested based on your inputs. Each rating has a plain-language description so you know what that score represents. These are starting points — adjust any rating that does not match your clinical judgment. The "Auto-suggested" label tells you which scores the tool calculated; treat each as a recommendation to evaluate, not a final answer.' },
 
-  // ── ITP DEVELOPMENT ───────────────────────────────────────
+  { view:'asam', sel:'#tab-btn-2', section:'ASAM Documentation', navigate:'asam',
+    title:'Criteria checklist',
+    body:'The criteria checklist below the ratings shows ASAM criteria letters pre-checked based on your documentation. These letters map to specific authorization criteria that the insurance company uses to evaluate whether this level of care is clinically justified. Checking the right criteria is not just administrative — these are the specific pathways that determine whether authorization is approved. Use "Copy Summary" to get the formatted list for entering into Remarkable.' },
+
+  // ── ITP DEVELOPMENT ───────────────────────────────────────────────────────
   { view:'itp', sel:'#view-itp .tool-nav', section:'ITP Development', navigate:'itp',
     title:'ITP Development',
-    body:'The ITP tool builds goals, objectives, and interventions formatted to match Remarkable\'s ITP field structure. It works independently of ASAM, though the two tools are designed to stay aligned.' },
+    body:'The ITP tool builds your Individual Treatment Plan — goals, objectives, and interventions — formatted to match Remarkable\'s ITP field structure. The ITP is not separate from the ASAM: it should emerge directly from what you documented there. The clinical problems you identified in the ASAM are the problems you build goals around in the ITP.' },
+
+  { view:'itp', sel:'#view-itp .tool-nav', section:'ITP Development', navigate:'itp',
+    title:'The documentation story',
+    body:'When your ASAM, ITP, and session notes are aligned, your documentation tells a consistent story: here is what is wrong clinically (ASAM), here is the plan to address it (ITP), and here is the evidence that the plan is being worked (session notes). That story is what authorization reviewers expect to see. A mismatch between the ASAM and ITP raises questions you do not want raised.' },
 
   { view:'itp', sel:'#asamRefPanel', section:'ITP Development', navigate:'itp',
     title:'ASAM Goals Reference',
-    body:'Expand the reference panel to see continued stay content from ASAM Documentation — Dimension 3 goals, Dimension 4 barriers and rationale, Dimensions 5 and 6 progress. Use this to verify your ITP reflects what you documented in the ASAM before generating.' },
+    body:'Before building the ITP, expand this reference panel and read what you documented in the ASAM. It pulls in your Dimension 3 goals, Dimension 4 barriers and rationale, and Dimensions 5 and 6 progress. Your ITP categories should address the same clinical concerns. If the ASAM identifies mood dysregulation and treatment resistance, the ITP should have goals targeting those areas — not something else entirely.' },
 
-  { view:'itp', sel:'.itp-add-row', section:'ITP Development', navigate:'itp',
+  { view:'itp', sel:'.itp-add-row', section:'ITP Development', navigate:'itp', side:'right',
     action: function() {
       ['A','B','C'].forEach(function(s) { itpSelected[s].clear(); });
       itpSelected['B'].add('depression');
       itpSelected['C'].add('relapse');
       renderITPGoals();
     },
-    title:'Adding goal categories',
-    body:'Each section (A, B, C) has a dropdown listing available goal categories. Select a category that fits your client\'s clinical presentation and click "+ Add." A goal card appears below with template language as a starting point. Only add categories that are clinically relevant to this client — the ITP should reflect their actual treatment needs.' },
+    title:'Section structure: A, B, and C',
+    body:'Section A covers primary substance use disorders. Section B covers co-occurring conditions and behavioral issues — depression, anxiety, trauma, impulsivity, and similar clinical presentations. Section C covers recovery support and community integration. Use the dropdown in each section to add the goal categories that correspond to what you documented in the ASAM.' },
+
+  { view:'itp', sel:'.itp-add-row', section:'ITP Development', navigate:'itp', side:'right',
+    title:'Select only what applies',
+    body:'Add only the categories that are clinically active for this client in this episode of care. A client with stable family relationships does not need a Family Conflicts goal. A client without legal involvement does not need a Legal Problems goal. The ITP should reflect this client\'s real treatment needs — not a comprehensive list of everything the tool offers. An ITP with twelve goals covering every possible category looks like a template, not a treatment plan.' },
+
+  { view:'itp', sel:'#itp-goal-depression', section:'ITP Development', navigate:'itp', side:'right', delay:300,
+    title:'Making the goal SMART',
+    body:'SMART stands for Specific, Measurable, Achievable, Relevant, and Time-bound. The goal textarea starts with template language and shows an amber border — a reminder that it has not yet been individualized. The amber border clears when you edit the text. Every goal you write should meet all five SMART criteria.' },
 
   { view:'itp', sel:'#itp-goal-depression', section:'ITP Development', navigate:'itp', side:'right',
-    title:'Making the goal SMART',
-    body:'The goal textarea starts with template language and shows an amber border — a reminder that it has not been individualized yet. The amber border clears when you edit the text. Replace the template with language specific to this client: their name, their particular pattern, the behavior you are targeting. A goal that could apply to any client will not meet documentation standards. Make it measurable (by what date, to what degree) and relevant to this client\'s treatment plan.' },
+    title:'What SMART looks like in practice',
+    body:'Here is the difference. Not SMART: "Marcus will improve his coping skills and manage his depression more effectively." SMART: "Marcus will identify and practice two grounding techniques during group by November 15th, reducing self-reported distress from 8/10 to 5/10 in high-stress moments." One describes a direction. The other describes a destination — for this specific person, by a specific date, in a measurable way.' },
 
-  { view:'itp', sel:'#itp-pair-depression-0', section:'ITP Development', navigate:'itp', side:'right',
+  { view:'itp', sel:'#itp-cards-B', section:'ITP Development', navigate:'itp', side:'right',
+    action: function() { var cb = document.getElementById('itp-pair-depression-0'); if (cb && !cb.checked) { cb.checked = true; cb.dispatchEvent(new Event('change')); } },
     title:'Selecting objectives and target dates',
-    body:'Below the goal text are objective and intervention pairs. Check the ones that apply — only check objectives you actually intend to work on with this client. When you check an objective, a Target Date field appears. Set a realistic date for completion. These dates appear in the formatted output and support accountability and continued stay documentation.' },
+    body:'Check each objective that reflects actual clinical work you plan to do with this client — not everything that sounds reasonable, only what you genuinely intend to address in this episode. When you check an objective, a target date field appears. Set a realistic date. These dates create clinical accountability: if you select an objective in October and it has not been worked on by December, that gap will be visible in the record.' },
 
   { view:'itp', sel:'#itp-cm-body', section:'ITP Development', navigate:'itp', side:'right',
-    title:'Case Management objectives (Section C)',
-    body:'Section C includes a standard set of Case Management objectives for recovery and community integration. These are pre-written and apply broadly — but you should only check the ones that are actually relevant to this client. Do not check all of them by default. A client who already has stable housing does not need a housing objective. Individualize the selection to reflect what this client actually needs in the current episode of care.' },
+    action: function() { var cb = document.getElementById('itp-cm-master-cb'); if (cb && !cb.checked) { cb.checked = true; cb.dispatchEvent(new Event('change')); } var body = document.getElementById('itp-cm-body'); if (body) body.style.display = ''; },
+    title:'Case Management objectives',
+    body:'Section C includes a standard set of Case Management objectives for recovery and community integration. Select only the ones that apply to this client\'s actual needs. A client who already has stable housing does not need a housing objective. A client with strong natural support does not need community connection objectives. Checking everything available signals a template ITP rather than an individualized one — and reviewers notice.' },
 
-  { view:'itp', sel:'#view-itp .generate-bar', section:'ITP Development', navigate:'itp',
-    title:'Generating ITP output',
-    body:'When goals are ready, click Generate. If any goal textarea still shows template language, a warning lists which categories need attention. Output appears on the right as separate boxes per goal — Goal, Objectives, and Interventions — each with its own Copy button matching Remarkable\'s ITP field structure.' },
+  { view:'itp', sel:'#itpOutputBoxes', section:'ITP Development', navigate:'itp',
+    action: function() { formatITPOutput(null); },
+    title:'Generated ITP output',
+    body:'After clicking Generate, the right panel shows a separate output box for each goal — Goal text, Objectives, and Interventions — each with its own Copy button, matching Remarkable\'s ITP field structure. Before copying, read each output box once. If a goal still sounds generic or like template language even after you edited it, go back and revise it before it goes into Remarkable.' },
 
-  // ── INDIVIDUAL NOTE ────────────────────────────────────────
+  // ── INDIVIDUAL NOTE ───────────────────────────────────────────────────────
   { view:'note', sel:'#view-note .tool-nav', section:'Individual Note', navigate:'note',
     title:'Individual Note',
-    body:'The Individual Note tool generates session progress notes formatted for Remarkable\'s two-field note structure. Use this after every individual session. It works independently of both ASAM and ITP.' },
+    body:'You will use this tool after every individual session. A well-written progress note does three things: documents what happened in the session, shows that treatment is working toward the goals in the treatment plan, and provides evidence that the client continues to need this level of care. This note is clinical documentation of your professional judgment.' },
+
+  { view:'note', sel:'#view-note .tool-nav', section:'Individual Note', navigate:'note',
+    title:'Why this note matters beyond the record',
+    body:'The insurance company reviews session notes when evaluating whether to continue authorizing treatment. A note that does not reference the treatment plan, or that documents generic content, raises questions about whether meaningful treatment is occurring. A note that is specific, clinically grounded, and tied to the treatment plan is evidence that your client is in the right place receiving the right care.' },
 
   { view:'note', sel:'.sn-meta-row', section:'Individual Note', navigate:'note',
     title:'Client name and date',
-    body:'Enter the client\'s first name and the session date. These appear in the boilerplate framing sentences DocAssist generates around your written content.' },
+    body:'Enter the client\'s first name and the session date. These appear in the framing sentences DocAssist generates around your written content. Make sure the date is accurate — it is the date of the session, not the date you are completing the documentation.' },
 
   { view:'note', sel:'#sn-type', section:'Individual Note', navigate:'note',
     title:'Session type',
-    body:'"Working off ITP (Reviewing)" is the standard type for ongoing sessions. "Updating / Revising ITP" removes the reviewed-objective framing. "First Meeting" hides ITP reference fields. "Crisis Intervention" switches to a crisis-focused format.' },
+    body:'Use "Working off ITP (Reviewing)" for every standard individual session where you are working within the existing treatment plan — this will be most sessions. Use "Updating / Revising ITP" only when you are actively changing the treatment plan goals in Remarkable during this specific session. Using the wrong type generates incorrect framing sentences in the output.' },
+
+  { view:'note', sel:'#sn-type', section:'Individual Note', navigate:'note',
+    title:'First meeting and crisis types',
+    body:'"First Meeting / Initial ITP" removes ITP reference fields for the first session with a new client — use this when there is not yet a treatment plan to reference. "Crisis Intervention" switches to a format for sessions focused on a safety concern or acute crisis. Use it only when the session content was genuinely crisis-focused, not as a substitute for a standard note when things were difficult.' },
 
   { view:'note', sel:'#sn-itp-fields', section:'Individual Note', navigate:'note',
     title:'ITP Reference',
-    body:'Document which objective you worked on this session and which you\'re assigning next. Use Goal Letter and Objective Number. Add multiple reviewed or assigned objectives with the + buttons. These generate the framing sentences that anchor your note to the treatment plan.' },
+    body:'Document which objective you worked on this session and which you are assigning next. The insurance company expects session notes to link directly to treatment plan objectives. A session that cannot be tied to a specific ITP objective raises the question of what, exactly, was being treated. This linkage is what turns a therapeutic conversation into documented, billable clinical services.' },
+
+  { view:'note', sel:'#sn-itp-fields', section:'Individual Note', navigate:'note',
+    title:'Be accurate with your objective references',
+    body:'Enter the Goal Letter and Objective Number for what you actually reviewed — not the objective that sounds most relevant, but the one you genuinely worked on. If you worked on Objective 2B, document 2B. You can add multiple reviewed or assigned objectives with the + buttons if the session covered more than one. Accuracy here protects both the client\'s record and your clinical accountability.' },
 
   { view:'note', sel:'#sn-intervention-chips', section:'Individual Note', navigate:'note',
     title:'Therapeutic interventions',
-    body:'Select the modality you used. These map to a separate field in Remarkable — not the narrative DocAssist generates. Select what applies here, then enter the intervention detail in Remarkable\'s own interventions field.' },
+    body:'Select the therapeutic approach you used. If the session centered on what the client wants from recovery, what is holding them back, or building their motivation to change — that is Motivational Interviewing. If the session centered on examining how the client thinks about their use, identifying thought patterns that drive behavior, or challenging distorted thinking — that is CBT. When in doubt, think about what the conversation was actually about.' },
+
+  { view:'note', sel:'#sn-intervention-chips', section:'Individual Note', navigate:'note',
+    title:'A second step in Remarkable',
+    body:'These selections map to a separate field in Remarkable — not the narrative DocAssist generates. After pasting your DocAssist output into Remarkable, find the interventions or technique field in the session note form and complete it there. This is a second required step that is easy to overlook. The intervention field is part of the required session note structure — do not skip it.' },
 
   { view:'note', sel:'#sn-describe', section:'Individual Note', navigate:'note', side:'right',
     title:'Session description',
-    body:'Write in complete sentences. This text is copied verbatim into Remarkable — write it exactly as you want it to appear in the record. Cover what happened: techniques used, topics discussed, assignments reviewed, significant client statements.' },
+    body:'Write in complete sentences. This text is copied verbatim — what you type here is exactly what will appear in Remarkable. Cover what happened: what you discussed, how you applied specific techniques, any homework or assignments reviewed or given, and significant client statements that reflect their current status. Write as if you are describing this session to a colleague who needs to understand what occurred.' },
 
   { view:'note', sel:'#sn-progress', section:'Individual Note', navigate:'note', side:'right',
     title:'Response and progress',
-    body:'Document the client\'s response to interventions, progress toward goals, your observations, and clinical judgment. Write in complete sentences — this is also pasted verbatim. Payer reviewers pay close attention to this field, so be specific.' },
+    body:'Document the client\'s response to interventions, progress toward goals, your clinical observations, and your clinical judgment. Write two to four specific sentences. "Client engaged appropriately" is not documentation of progress. "Marcus was able to identify three high-risk situations from the past week and generated two specific coping strategies for each, demonstrating increased awareness of relapse triggers" is. Specific and observable language is what demonstrates that treatment is working.' },
+
+  { view:'note', sel:'#sn-progress', section:'Individual Note', navigate:'note', side:'right',
+    title:'Your clinical judgment belongs here',
+    body:'This field is where you state what you observed, what it tells you clinically, and what it means for the client\'s trajectory in treatment. The insurance company pays close attention to this field when evaluating continued authorization. Do not summarize — document. A strong response and progress field is often the difference between a clean authorization and a request for additional clinical information.' },
 
   { view:'note', sel:'.sn-risk-box', section:'Individual Note', navigate:'note', side:'right',
     title:'Risk and safety',
-    body:'The risk section adds a safety documentation line to the note. Check SI denied, HI denied, and safety plan reviewed as applicable. If concerns are present, check that box — a text area opens for you to describe the concern and your clinical response.' },
+    body:'The risk section generates a safety documentation line at the end of the note. Check every box that accurately reflects what was assessed in this session. If concerns are present, the text area that opens is part of the permanent clinical record — be accurate, specific, and professional. If no concerns are present, checking the denial boxes is still required documentation that a safety assessment occurred.' },
+
+  { view:'note', sel:'#view-note .generate-bar', section:'Individual Note', navigate:'note',
+    action: function() { snGenerate(); },
+    title:'Generate your note',
+    body:'Click Generate to produce the progress note. Two copy-ready output sections appear on the right — one for each of Remarkable\'s two note fields. Fields left blank are omitted, so you can generate with just the essentials if needed. Read both sections before copying anything into Remarkable.' },
 
   { view:'note', sel:'.session-preview', section:'Individual Note', navigate:'note',
     title:'Two output fields',
-    body:'Two copy-ready sections appear here after generating. The top maps to "Describe Therapeutic Interventions Provided" in Remarkable. The bottom maps to "Response — Intervention/Progress/Clinical Judgement." Copy each into the corresponding Remarkable field.' },
+    body:'The top section maps to "Describe Therapeutic Interventions Provided" in Remarkable. The bottom maps to "Response — Intervention/Progress/Clinical Judgement." In Remarkable, open the session note, paste the top output into the first field, then copy the bottom output and paste it into the second field. Each has its own Copy button.' },
 
-  // ── GROUP NOTES ───────────────────────────────────────────
+  { view:'note', sel:'.session-preview', section:'Individual Note', navigate:'note',
+    title:'Read before you paste',
+    body:'If either section contains placeholder text like "[Client]" where the name should appear, or if something reads as inaccurate or unclear, go back, correct the input, and generate again. The note that goes into Remarkable is the permanent record. A small correction now prevents a documentation problem later.' },
+
+  // ── GROUP NOTES ───────────────────────────────────────────────────────────
   { view:'group', sel:'#view-group .tool-nav', section:'Group Notes', navigate:'group',
     title:'Group Notes',
-    body:'The Group Notes tool generates individual progress notes for all clients in a group session from a single shared entry. Fill in the session setup once, then document individual client responses.' },
+    body:'The Group Notes tool generates individual progress notes for every client in a group session from a single shared entry. You set up the session once — the activities, topic, and techniques used — and then document each client\'s individual response. One setup generates all the individual notes you need.' },
+
+  { view:'group', sel:'#view-group .tool-nav', section:'Group Notes', navigate:'group',
+    title:'The copy workflow',
+    body:'Each client still gets their own separate note in Remarkable. The shared intervention block — which describes what happened in group — goes into each client\'s note. Then each client\'s individual response card is unique to that client. When copying: paste the shared block into every client\'s note first, then go back and copy each individual response card into the correct client\'s note.' },
 
   { view:'group', sel:'#gn-ratio-clients', section:'Group Notes', navigate:'group',
-    title:'Date, counselor, and ratio',
-    body:'Enter the session date, your name, and the group ratio — clients on the left, staff on the right. The ratio determines how many client cards appear. If the ratio exceeds 12:1, a non-billable warning appears. The ratio can be adjusted at any time.' },
+    title:'Group ratio',
+    body:'Enter the number of clients on the left and staff on the right. The ratio determines how many client cards appear below. If the ratio exceeds 12:1, a non-billable warning appears automatically. Group sessions above a 12:1 client-to-staff ratio cannot be billed to the client\'s insurance company — this is a hard billing requirement, not a soft guideline. Adjust staffing or split the group if needed.' },
 
   { view:'group', sel:'#gn-activities-section', section:'Group Notes', navigate:'group',
     title:'Group activities',
-    body:'Check each activity that happened in the session. Group rules reviewed is pre-checked as a default. If you check Topic Discussion, a text field appears to enter the topic name — this is included in the shared narrative. If you check Activity, fields appear for the activity name and its clinical benefit or purpose.' },
+    body:'Check each activity that happened in this session. Group rules reviewed is pre-checked as a default since it typically opens every group. If you check Topic Discussion, a text field appears for the topic name — this appears in the shared narrative. If you check Activity, fields appear for the activity name and its clinical purpose or benefit. What you enter here directly generates the shared intervention text.' },
 
   { view:'group', sel:'#gn-topic-wrap', section:'Group Notes', navigate:'group',
     title:'Topic and activity details',
-    body:'The topic name and activity details you enter here appear in the shared intervention block that is generated once and copied for all clients. Be specific — "Anxiety and Recovery" is clearer than "anxiety" and reads better in the record.' },
+    body:'Be specific about what you enter here — it goes directly into the shared clinical narrative. "Anxiety and Recovery" is clearer documentation than "anxiety." "Progressive muscle relaxation to build stress tolerance in recovery" is stronger than "relaxation activity." The more specific your entries, the more clinically meaningful the generated note.' },
 
   { view:'group', sel:'#gn-techniques-section', section:'Group Notes', navigate:'group',
     title:'Techniques used',
-    body:'Check the clinical techniques you used during group. These also appear in the shared intervention block. Motivational Interviewing and CBT are the available options — if you used both, check both.' },
+    body:'Check the clinical techniques you used in group. These also appear in the shared intervention block. Motivational Interviewing and CBT are the available options — check both if you used both. These selections generate specific clinical language about how each technique was applied in a group context.' },
 
   { view:'group', sel:'#gn-clients-area', section:'Group Notes', navigate:'group',
     title:'Client response cards',
-    body:'A client card appears for each client in the ratio. Enter the client\'s name, then select a prognosis level — Poor, Fair, or Good. This auto-fills the clinical judgment line. Good prognosis triggers an amber billing caution. Add individual response notes as needed.' },
+    body:'A client card appears for each client in the ratio. Enter the name, then select a prognosis level — Poor, Fair, or Good. This auto-fills the clinical judgment line. For each activity or technique included in the session, document that client\'s individual response: what they said, how they participated, what they appeared to take from the experience. Good prognosis triggers an amber billing caution.' },
+
+  { view:'group', sel:'#gn-clients-area', section:'Group Notes', navigate:'group',
+    title:'Document what actually happened',
+    body:'If a client was disengaged or non-participatory, use the disengagement checkbox on their card — it changes the generated language to accurately reflect non-participation. Do not document engagement that did not occur. If a client sat quietly and did not respond to prompts, that is clinically significant and should be documented as such, not softened into generic participation language.' },
 
   { view:'group', sel:'#gn-generate-bar', section:'Group Notes', navigate:'group',
     title:'Generating',
-    body:'Click Generate to produce copy-ready output for every client. The shared intervention block — the session narrative — appears once at the top and gets copied a single time for all clients. Each client card below it contains their individual response, ready to copy into their separate Remarkable note.' },
+    body:'Click Generate to produce copy-ready output for every client. The shared intervention block appears once at the top — it describes what happened in group and is the same for every client. Each client\'s individual response card appears below it. This is the same order you will paste them into Remarkable: shared block first, then the individual response for that client.' },
 
   { view:'group', sel:'#gn-output-list', section:'Group Notes', navigate:'group',
     action: function() { gnGenerateAll(); },
-    side: 'left',
+    side:'left',
     title:'The generated output',
-    body:'The shared intervention block appears at the top — copy it once and paste it into each client\'s Remarkable note. Below it, each client has their own response card with their name, prognosis, clinical judgment line, and individual responses to each group activity. Copy each client card into the appropriate Remarkable session note.' },
+    body:'The shared intervention block at the top gets pasted into every client\'s Remarkable session note. Below it, each client has their own response card with their name, prognosis, clinical judgment line, and individual activity responses. Copy each client\'s card into that client\'s note in Remarkable — do not mix up cards between clients.' },
 
-  // ── DISCHARGE SUMMARY ─────────────────────────────────────
+  // ── DISCHARGE SUMMARY ─────────────────────────────────────────────────────
   { view:'discharge', sel:'#view-discharge .tool-nav', section:'Discharge Summary', navigate:'discharge',
     title:'Discharge Summary',
-    body:'The Discharge Summary generates structured discharge documentation. Unlike other tools, it auto-renders as you fill fields — there is no separate Generate step. The right panel updates in real time as you work through the left panel.' },
+    body:'The Discharge Summary is different from every other tool: there is no Generate button. As you fill in a field on the left, the corresponding output block on the right updates immediately. Fill in a field — look right to see what was generated. Work through the left panel from top to bottom and the right panel builds as you go.' },
 
   { view:'discharge', sel:'#ds-context-section', section:'Discharge Summary', navigate:'discharge',
     title:'Discharge context',
-    body:'Enter the client\'s name, admission date, last contact date, and discharge type. Successful or Unsuccessful (Administrative or Left ASA). These values drive several output fields and determine which continuity of care options appear in the left panel.' },
+    body:'Enter the client\'s name, admission date, last contact date, and discharge type. Successful means the client completed the agreed episode of care and met treatment goals. Unsuccessful Administrative means the facility ended the relationship — due to rule violations, safety concerns, or similar reasons. Left ASA (Against Staff Advice) means the client chose to leave before treatment was complete.' },
+
+  { view:'discharge', sel:'#ds-context-section', section:'Discharge Summary', navigate:'discharge',
+    title:'Why discharge type matters',
+    body:'The discharge type shapes the tone of every output block the tool generates. A Successful discharge generates language about goal attainment and aftercare planning. An Unsuccessful or Left ASA discharge generates language appropriate to the nature of the discharge and affects the eligibility-to-return language. Select accurately — this document becomes part of the permanent record and may be reviewed if this client returns to treatment.' },
 
   { view:'discharge', sel:'#ds-phase-list', section:'Discharge Summary', navigate:'discharge', side:'right',
     title:'Phase history',
-    body:'Add a phase entry for each level of care the client moved through, with the date they started. DocAssist calculates time at each phase automatically. This feeds the Dosage Hours calculator and supports the Admission ASAM LOC field in Remarkable.' },
+    body:'Add a phase entry for each level of care the client moved through, starting with admission. Enter the LOC and the date they started that phase — DocAssist calculates how long they spent at each level automatically. Phases should be entered in chronological order and should match what was authorized and documented in Remarkable for each period. This information feeds the Dosage Hours calculation.' },
 
   { view:'discharge', sel:'#ds-dh-section', section:'Discharge Summary', navigate:'discharge', side:'right',
     title:'Dosage Hours',
-    body:'Dosage Hours are calculated automatically from the phase history using LOC-specific multipliers. Copy the total and paste it into the Sublocade / Vivitrol Dosage Hours field in Remarkable. The per-phase breakdown appears below the total for your reference.' },
+    body:'Dosage Hours are calculated automatically from the phase history using level-of-care multipliers. Copy the total and paste it into the Dosage Hours field in Remarkable. The per-phase breakdown appears below the total for your reference. If the total looks incorrect, check that your phase dates are accurate and that the correct LOC is selected for each phase.' },
 
-  { view:'discharge', sel:'#ds-out-status', section:'Discharge Summary', navigate:'discharge',
-    title:'Output: Status at Last Contact',
-    body:'This output block is fed by the "Status at Last Contact" textarea on the left. It generates the client\'s presentation and statements at last contact, followed by the eligibility-to-return determination. Copy it into the "Status of the Client at Last Contact" field in Remarkable.' },
+  { view:'discharge', sel:'#ds-right-panel', section:'Discharge Summary', navigate:'discharge', side:'left',
+    title:'Output blocks',
+    body:'Each output block on the right corresponds to a specific Remarkable field. Read every block completely before copying — generated discharge text can occasionally combine inputs in ways that are technically correct but clinically awkward, or show placeholder text if a field was skipped. What goes into Remarkable is a permanent record. Take a moment to read each block before pasting it.' },
 
-  { view:'discharge', sel:'#ds-out-progress', section:'Discharge Summary', navigate:'discharge',
-    title:'Output: Progress Summary',
-    body:'This block is fed by the success level selection, the skill checkboxes, and the clinical observations textarea. It produces a structured summary of treatment progress and goal attainment. Copy it into the "Progress Summary" field in Remarkable.' },
+  { view:'discharge', sel:'#ds-right-panel', section:'Discharge Summary', navigate:'discharge', side:'left',
+    title:'Which block goes where',
+    body:'Paste each block into its matching Remarkable field in order: Status of the Client at Last Contact, Progress Summary, Client\'s Response to Treatment and Transfer/Discharge, Continuity of Care / Referral Information, and Aftercare Options. Use the label at the top of each output block to identify which Remarkable field it belongs in.' },
 
-  { view:'discharge', sel:'#ds-out-response', section:'Discharge Summary', navigate:'discharge', side:'left',
-    title:'Output: Client\'s Response to Treatment',
-    body:'This block captures the client\'s response to the treatment episode and the discharge plan. It is generated from the discharge type, success level, and clinical observations you entered. Copy it into the "Client\'s Response to Treatment and Transfer/Discharge" field in Remarkable.' },
-
-  { view:'discharge', sel:'#ds-out-coc', section:'Discharge Summary', navigate:'discharge', side:'left',
-    title:'Output: Continuity of Care',
-    body:'This block is generated from the referral checkboxes, transition location, and resource sheet fields in the left panel. It documents where the client is going after discharge and what was arranged. Copy it into the "Continuity of Care / Referral Information" field in Remarkable.' },
-
-  { view:'discharge', sel:'#ds-out-aftercare', section:'Discharge Summary', navigate:'discharge', side:'left',
-    title:'Output: Aftercare Options',
-    body:'This block is generated from the aftercare element checkboxes at the bottom of the left panel. Check each aftercare recommendation that applies. The output lists them in a structured format. Copy it into the "Aftercare Options" field in Remarkable.' },
-
-  { view:'discharge', sel:null, section:'Discharge Summary', navigate:'discharge',
+  { view:'discharge', sel:'#ds-remarkable-ref', section:'Discharge Summary', navigate:'discharge', side:'left',
     title:'Fields to complete in Remarkable directly',
-    body:'Some discharge fields are completed directly in Remarkable without DocAssist output: Admission ASAM LOC checkboxes, Type of Discharge (dropdown), Voluntary/Involuntary Termination Status, and the Eligibility to Return dropdown. A reference card at the bottom of the right panel lists these as a reminder.' },
+    body:'This reference card lists the fields you complete directly in Remarkable — they do not have DocAssist output. These include discharge-specific checkboxes, dropdowns, and fields that require your direct input in Remarkable\'s form. Keep this card visible while finishing the Discharge Summary in Remarkable. If you are unsure what any of these fields mean or how to complete them, ask your supervisor before submitting.' },
 
-  // ── FINISH ────────────────────────────────────────────────
+  // ── FINISH ────────────────────────────────────────────────────────────────
   { view:'discharge', sel:null, section:null,
+    action: function() { tutConfetti(); },
     title:'You\'re all set',
-    body:'That covers all five tools. Return to this walkthrough anytime using the button on the home screen. Each tool also has a "? Guide" button in its header that walks through just that tool.',
+    body:'You made it through. You now know this tool well enough to use it — the rest builds with practice. Return to this walkthrough anytime from the home screen, or use the Walkthrough button inside any individual tool for a focused review. If you have questions about a specific situation or anything in the tool, reach out to your supervisor. This was built to give you more time with your clients. That is what this was built to protect.',
     last: true },
 ];
+
 
 let tutSteps = TUT_STEPS;
 let tutStep = 0;
@@ -9551,7 +9671,7 @@ function tutShowStep(n) {
   const step = tutSteps[n];
   const total = tutSteps.length;
 
-  document.getElementById('tut-counter').textContent = 'Step ' + (n + 1) + ' of ' + total;
+  document.getElementById('tut-counter').textContent = '';
   document.getElementById('tut-section-label').textContent = step.section || '';
   document.getElementById('tut-section-label').style.display = step.section ? 'block' : 'none';
   document.getElementById('tut-title').textContent = step.title;
@@ -9568,11 +9688,11 @@ function tutShowStep(n) {
     navigateTo(step.view);
     setTimeout(function() {
       if (step.action) step.action();
-      setTimeout(function() { tutPositionStep(step); }, 80);
+      setTimeout(function() { tutPositionStep(step); }, step.delay || 80);
     }, 400);
   } else {
     if (step.action) step.action();
-    setTimeout(function() { tutPositionStep(step); }, 60);
+    setTimeout(function() { tutPositionStep(step); }, step.delay || 60);
   }
 }
 
@@ -9604,7 +9724,7 @@ function tutPositionStep(step) {
   }
 
   overlay.classList.remove('tut-no-spotlight');
-  el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  el.scrollIntoView({ block: 'nearest' });
 
   setTimeout(function() {
     var rect = el.getBoundingClientRect();
@@ -9617,7 +9737,7 @@ function tutPositionStep(step) {
 
     // Spotlight
     spotlight.style.display = 'block';
-    spotlight.style.top = Math.max(56, rect.top - PADDING) + 'px';
+    spotlight.style.top = Math.max(0, rect.top - PADDING) + 'px';
     spotlight.style.left = Math.max(0, rect.left - PADDING) + 'px';
     spotlight.style.width = (rect.width + PADDING * 2) + 'px';
     spotlight.style.height = (rect.height + PADDING * 2) + 'px';
@@ -9673,7 +9793,57 @@ function tutPositionStep(step) {
         tooltip.style.top = '60px';
       }
     });
-  }, 90);
+  }, 200);
+}
+
+function tutConfetti() {
+  var canvas = document.createElement('canvas');
+  canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:10000;';
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  document.body.appendChild(canvas);
+  var ctx = canvas.getContext('2d');
+  var colors = ['#2d6a4f','#52b788','#95d5b2','#ffd166','#ef476f','#118ab2','#06d6a0','#f4a261','#a8dadc'];
+  var particles = [];
+  for (var i = 0; i < 100; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: -20 - Math.random() * 120,
+      w: 7 + Math.random() * 9,
+      h: 3 + Math.random() * 5,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      rot: Math.random() * 360,
+      vx: (Math.random() - 0.5) * 2.5,
+      vy: 2.5 + Math.random() * 4,
+      vrot: (Math.random() - 0.5) * 7,
+      shape: Math.random() > 0.4 ? 'rect' : 'circle'
+    });
+  }
+  var start = Date.now();
+  var DURATION = 4000;
+  function animate() {
+    var elapsed = Date.now() - start;
+    if (elapsed > DURATION) { canvas.remove(); return; }
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    var fade = elapsed > DURATION - 1000 ? (DURATION - elapsed) / 1000 : 1;
+    particles.forEach(function(p) {
+      p.x += p.vx; p.y += p.vy; p.rot += p.vrot;
+      if (p.y > canvas.height + 20) { p.y = -20; p.x = Math.random() * canvas.width; }
+      ctx.save();
+      ctx.globalAlpha = fade;
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot * Math.PI / 180);
+      ctx.fillStyle = p.color;
+      if (p.shape === 'circle') {
+        ctx.beginPath(); ctx.arc(0, 0, p.w / 2, 0, Math.PI * 2); ctx.fill();
+      } else {
+        ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+      }
+      ctx.restore();
+    });
+    requestAnimationFrame(animate);
+  }
+  animate();
 }
 </script>
 
