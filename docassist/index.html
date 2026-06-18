@@ -1864,7 +1864,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 <div class="app-header">
   <div class="header-left">
     <div class="app-title">DocAssist</div>
-    <div onclick="openChangelogModal()" style="font-size:9px;font-weight:600;padding:1px 6px;border-radius:8px;background:#1a3d22;color:#7ec8a0;border:1px solid #2d6a4f;letter-spacing:.07em;display:inline-block;margin:1px 0 2px;cursor:pointer;" onmouseover="this.style.background='#2d6a4f'" onmouseout="this.style.background='#1a3d22'">v1.4</div>
+    <div onclick="openChangelogModal()" style="font-size:9px;font-weight:600;padding:1px 6px;border-radius:8px;background:#1a3d22;color:#7ec8a0;border:1px solid #2d6a4f;letter-spacing:.07em;display:inline-block;margin:1px 0 2px;cursor:pointer;" onmouseover="this.style.background='#2d6a4f'" onmouseout="this.style.background='#1a3d22'">v1.5</div>
     <div class="app-subtitle">Woodhaven Clinical Documentation</div>
   </div>
   <div style="display:flex;align-items:center;gap:14px">
@@ -2800,6 +2800,10 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
           <div class="itp-smart-warning" id="itpSmartWarning">
             <div class="itp-smart-warning-title">⚠ The following goals still use template language and should be made SMART before submitting:</div>
             <ul id="itpSmartWarningList"></ul>
+          </div>
+          <div class="itp-smart-warning" id="itpQuoteWarning">
+            <div class="itp-smart-warning-title">⚠ The following goals are missing a client statement — add a direct quote before submitting:</div>
+            <ul id="itpQuoteWarningList"></ul>
           </div>
           <div id="itpSections"></div>
         </div>
@@ -3796,6 +3800,25 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       <button onclick="closeChangelogModal()" style="background:none;border:none;font-size:18px;color:#999;cursor:pointer;line-height:1;padding:0 0 0 12px;" title="Close">✕</button>
     </div>
     <div style="overflow-y:auto;padding:20px 24px 28px;">
+
+    <!-- v1.5 -->
+    <div style="margin-bottom:28px;">
+      <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px;">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;background:var(--accent);color:#fff;padding:2px 8px;border-radius:4px;">v1.5</span>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5a6a62;">June 18, 2026</span>
+        <span style="font-size:14px;font-weight:600;color:#1b4332;">Client statements and homework assignments</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:7px;">
+        <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 13px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;">
+          <span style="font-size:9px;font-weight:600;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">ITP</span>
+          <span style="font-size:13px;line-height:1.55;">Each ITP goal now requires a direct client statement — a verbatim quote from the client connecting their own words to the goal being created. This documents collaborative treatment planning, which is both a clinical standard and an authorization requirement. The statement appears in the Goal copy box above the goal text.</span>
+        </div>
+        <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 13px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;">
+          <span style="font-size:9px;font-weight:600;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">ITP</span>
+          <span style="font-size:13px;line-height:1.55;">Homework assignment downloads added to ITP output. When objectives with corresponding Wiley Homework Planner worksheets are selected, the relevant assignments appear automatically as clickable links after formatting. Assignments open directly in the browser — no separate document needed. Coverage spans 66 objective/intervention pairs across 27 goal categories.</span>
+        </div>
+      </div>
+    </div>
 
     <!-- v1.4 -->
     <div style="margin-bottom:28px;">
@@ -5800,7 +5823,7 @@ const GOALS_DATA = [
       { o:'Attend group therapy sessions to share thoughts and feelings associated with, reasons for, consequences of, and alternatives to opioid addiction.',
         i:'Assign the client to attend group therapy. Direct group therapy that facilitates the client sharing causes for, consequences of, feelings about, and alternatives to addiction.' },
       { o:'List and discuss 10 negative consequences resulting from or exacerbated by opioid dependence.',
-        i:'Ask the client to make a list of the ways opioid use has negatively impacted his/her life; process in individual or group sessions. Confront the client\'s use of denial to minimize the severity of opioid abuse.' },
+        i:'Ask the client to make a list of the ways opioid use has negatively impacted his/her life (or assign "Substance Abuse Negative Impact Versus Sobriety\'s Positive Impact" in the Adult Psychotherapy Homework Planner, 2nd ed.); process in individual or group sessions. Confront the client\'s use of denial to minimize the severity of opioid abuse.' },
       { o:'Identify and make changes in social relationships that will support recovery.',
         i:'Review the negative influence of the client continuing substance-related friendships and assist him/her in making a plan to develop new sober relationships including "sobriety buddies"; revisit routinely and facilitate development of a new social support system.' },
       { o:'Learn and implement 3 personal coping strategies to manage urges to relapse.',
@@ -5819,9 +5842,9 @@ const GOALS_DATA = [
       { o:'Cooperate with a thorough medical examination to rule out alternative causes for pain and to explore new treatment possibilities.',
         i:'Refer the client to a physician or clinic to undergo a thorough examination to rule out any undiagnosed condition and to receive recommendations on further treatment options.' },
       { o:'Identify and monitor 3 specific pain triggers.',
-        i:'Teach the client self-monitoring of symptoms; ask the client to keep a pain journal that records time of day, location, severity, and what was done to alleviate the pain; process with the client to increase insight into the nature of the pain and triggers.' },
+        i:'Teach the client self-monitoring of symptoms; ask the client to keep a pain journal that records time of day, location, severity, and what was done to alleviate the pain (or assign "Pain and Stress Journal" in the Adult Psychotherapy Homework Planner, 2nd ed.); process with the client to increase insight into the nature of the pain and triggers.' },
       { o:'Increase the level and range of activity by identifying and engaging in 3 pleasurable activities.',
-        i:'Ask the client to create a list of activities that are pleasurable; process the list, developing a plan of increasing the frequency of engaging in selected pleasurable activities.' },
+        i:'Ask the client to create a list of activities that are pleasurable (or assign "Identify and Schedule Pleasant Activities" in the Adult Psychotherapy Homework Planner, 2nd ed.); process the list, developing a plan of increasing the frequency of engaging in selected pleasurable activities.' },
       { o:'Identify daily negative pain-related thoughts and replace them with more positive coping-related thoughts.',
         i:'Assign the client a homework exercise in which he/she identifies negative pain-related self-talk and positive alternatives (or assign "Correcting Distorted Thinking" in the Addiction Treatment Homework Planner, 4th ed.).' },
       { o:'Investigate the use of alternative pain remedies to reduce dependence on medication.',
@@ -5859,11 +5882,11 @@ const GOALS_DATA = [
     ],
     pairs:[
       { o:'Keep a daily journal of persons, situations, and other triggers of anger; record thoughts, feelings, and actions taken.',
-        i:'Assign the client to keep an ongoing log of situations that precipitate angry feelings, noting the thoughts, feelings, intensity, and duration of anger; review the log to help the client understand the causes and extent of anger.' },
+        i:'Assign the client to keep an ongoing log of situations that precipitate angry feelings, noting the thoughts, feelings, intensity, and duration of anger (or assign "Anger Journal," "Is My Anger Due to Feeling Threatened?" or "Is My Anger Due to Unmet Expectations?" in the Addiction Treatment Homework Planner, 4th ed.); review the log to help the client understand the causes and extent of anger.' },
       { o:'Learn 5 calming strategies as part of managing reactions to frustration.',
         i:'Teach the client calming techniques (e.g., muscle relaxation, paced breathing, calming self-talk or imagery) as part of a tailored strategy for responding appropriately to angry feelings when they occur.' },
       { o:'Identify, challenge, and replace anger-inducing self-talk with self-talk that facilitates a less angry reaction.',
-        i:'Assign the client a homework exercise to identify angry self-talk and generate alternatives that help moderate angry reactions; reinforce success, providing corrective feedback toward improvement.' },
+        i:'Assign the client a homework exercise to identify angry self-talk and generate alternatives that help moderate angry reactions (or assign "Correcting Distorted Thinking" in the Addiction Treatment Homework Planner, 4th ed.); reinforce success, providing corrective feedback toward improvement.' },
       { o:'Learn and implement 5 problem-solving and conflict resolution skills to manage interpersonal problems.',
         i:'Teach the client conflict resolution skills (e.g., empathy, active listening, "I messages," respectful communication, assertiveness without aggression, compromise); use modeling, role-playing, and behavior rehearsal.' },
     ]
@@ -5882,7 +5905,7 @@ const GOALS_DATA = [
       { o:'Articulate 3 antisocial and addiction behaviors that have resulted in pain and disappointment to others.',
         i:'Confront any denial of responsibility for irresponsible, self-centered, and impulsive behaviors (or assign "Letter of Apology" in the Adult Psychotherapy Homework Planner, 2nd ed.).' },
       { o:'Write 1 aftercare plan that includes a sponsor, AA meetings, and counseling.',
-        i:'Help the client develop an aftercare program that specifically outlines what AA meetings will be attended, the psychotherapist he/she will be working with, and how a daily inventory will be taken.' },
+        i:'Help the client develop an aftercare program that specifically outlines what AA meetings will be attended, the psychotherapist he/she will be working with, and how a daily inventory will be taken (or assign "Taking Daily Inventory" in the Addiction Treatment Homework Planner, 4th ed.).' },
     ]
   },
   { id:'anxiety', name:'Anxiety', section:'B',
@@ -5895,11 +5918,11 @@ const GOALS_DATA = [
       { o:'Describe the history of anxiety symptoms.',
         i:'Utilize a graphic display such as a timeline to help the client identify the pattern of anxiety symptoms (e.g., when they started, how they have varied over time); or assign "My Anxiety Profile" in the Addiction Treatment Homework Planner, 4th ed.' },
       { o:'Acknowledge the powerlessness and unmanageability caused by excessive anxiety and addiction.',
-        i:'Teach the client about the relationship between anxiety and addiction (e.g., how the substance was used to treat anxious symptoms, why more substance use became necessary).' },
+        i:'Teach the client about the relationship between anxiety and addiction (e.g., how the substance was used to treat anxious symptoms, why more substance use became necessary) (or assign "Coping with Stress" in the Addiction Treatment Homework Planner, 4th ed.).' },
       { o:'Learn and implement 5 calming skills to reduce overall anxiety and manage anxiety symptoms.',
         i:'Assign the client homework each session in which he/she practices relaxation exercises daily; teach relaxation skills (e.g., progressive muscle, guided imagery, slow diaphragmatic breathing).' },
       { o:'Identify, challenge, and replace fearful self-talk with positive, realistic, and empowering self-talk.',
-        i:'Assign the client a homework exercise to identify fearful self-talk and create reality-based alternatives; reinforce success, providing corrective feedback toward improvement.' },
+        i:'Assign the client a homework exercise to identify fearful self-talk and create reality-based alternatives (or assign "Negative Thoughts Trigger Negative Feelings" or "Positive Self-Talk" in the Adult Psychotherapy Homework Planner, 2nd ed.); reinforce success, providing corrective feedback toward improvement.' },
     ]
   },
   { id:'adhd', name:'ADHD', section:'B',
@@ -5915,7 +5938,7 @@ const GOALS_DATA = [
       { o:'Report instances when relaxation techniques reduced tension and frustration while increasing focus.',
         i:'Using techniques like progressive relaxation, guided imagery, or biofeedback, teach the client how to relax completely; assign to relax twice per day for 10 to 20 minutes per session.' },
       { o:'Increase knowledge about ADHD symptoms and their treatment.',
-        i:'Educate the client about the signs and symptoms of ADHD and how they disrupt functioning through distractibility, poor planning, impulsivity, and possible procrastination.' },
+        i:'Educate the client about the signs and symptoms of ADHD and how they disrupt functioning through distractibility, poor planning, impulsivity, and possible procrastination (or assign "Symptoms and Fixes for ADD" in the Adult Psychotherapy Homework Planner, 2nd ed.).' },
       { o:'Develop an aftercare program that includes recovery group meetings, a sponsor, and continued therapy for ADHD and addiction.',
         i:'Help the client to develop an aftercare program that includes regular attendance at recovery group meetings, getting a sponsor, and continuing the therapy necessary to bring ADHD and addictive behavior under control.' },
     ]
@@ -5930,13 +5953,13 @@ const GOALS_DATA = [
     ],
     pairs:[
       { o:'Identify 3 unhealthy rules and roles learned in the family of origin.',
-        i:'Teach the client about the unhealthy rules and roles that develop in dysfunctional families and help identify what role he/she played in the family dynamics.' },
+        i:'Teach the client about the unhealthy rules and roles that develop in dysfunctional families and help identify what role he/she played in the family dynamics (or assign "Changing from Victim to Survivor" in the Adult Psychotherapy Homework Planner, 2nd ed.).' },
       { o:'Identify a pattern of abusing substances as a means of escape from psychological pain associated with childhood traumas, and verbalize constructive means of coping.',
-        i:'Teach the client healthier and more constructive means of coping with emotional pain (e.g., sharing pain with others, attending AA meetings, confronting and then forgiving perpetrator, setting healthy boundaries).' },
+        i:'Teach the client healthier and more constructive means of coping with emotional pain (e.g., sharing pain with others, attending AA meetings, confronting and then forgiving perpetrator, setting healthy boundaries) (or assign "Setting and Maintaining Boundaries" in the Addiction Treatment Homework Planner, 4th ed.).' },
       { o:'Acknowledge the need to implement 3 anger control techniques; learn and implement 3 anger management techniques.',
         i:'Teach the client anger management techniques (see Overcoming Situational and General Anger by Deffenbacher and McKay or assign "Alternatives to Destructive Anger" in the Adult Psychotherapy Homework Planner, 2nd ed.).' },
       { o:'Verbalize one plan as to how to fulfill the unmet needs of childhood now that adulthood has been reached.',
-        i:'Assist the client in identifying, understanding, and verbalizing unresolved needs, wishes, and wants from childhood; then help develop a written plan to meet each unmet need.' },
+        i:'Assist the client in identifying, understanding, and verbalizing unresolved needs, wishes, and wants from childhood (or assign "Corresponding with My Childhood Self" in the Addiction Treatment Homework Planner, 4th ed.); then help develop a written plan to meet each unmet need.' },
     ]
   },
   { id:'danger', name:'Dangerousness / Lethality', section:'B',
@@ -5949,9 +5972,9 @@ const GOALS_DATA = [
     ],
     pairs:[
       { o:'Practice relaxation skills twice each day for 10 to 20 minutes.',
-        i:'Using progressive relaxation techniques, teach the client how to relax; ask the client to rate the extent of relaxation achieved on a scale of 1 to 10.' },
+        i:'Using progressive relaxation techniques, teach the client how to relax (or assign "Safe and Peaceful Place Meditation" in the Addiction Treatment Homework Planner, 4th ed.); ask the client to rate the extent of relaxation achieved on a scale of 1 to 10.' },
       { o:'Identify 3 possible causes of dangerous or lethal behaviors.',
-        i:'Explore with the client family-of-origin issues (e.g., physical abuse, abandonment, sexual abuse, gang affiliation, parental chemical dependence) that may have led to dangerous lethal behaviors.' },
+        i:'Explore with the client family-of-origin issues (e.g., physical abuse, abandonment, sexual abuse, gang affiliation, parental chemical dependence) that may have led to dangerous lethal behaviors (or assign "Understanding Family History" in the Addiction Treatment Homework Planner, 4th ed.).' },
       { o:'List five ways dangerous and lethal behaviors contribute to substance abuse and vice versa.',
         i:'Assist the client in listing five ways that substance abuse contributes to lethal behaviors (e.g., deepens depression and shame, reduces inhibition to reason with self or others).' },
       { o:'Sign a behavior contract that lists all behaviors expected in recovery and the consequences of failing to meet contractual obligations.',
@@ -5970,11 +5993,11 @@ const GOALS_DATA = [
     ],
     pairs:[
       { o:'Identify at least five dynamics of early family life that contributed to developing dependent traits.',
-        i:'Educate the client about the childhood etiology of fear of making decisions and how this is not appropriate as an adult (or assign "Understanding Family History" in the Addiction Treatment Homework Planner, 4th ed.).' },
+        i:'Educate the client about the childhood etiology of fear of making decisions and how this is not appropriate as an adult (or assign "Understanding Family History" in the Addiction Treatment Homework Planner, 4th ed. or "Taking Steps Toward Independence" in the Adult Psychotherapy Homework Planner, 2nd ed.).' },
       { o:'Identify five incidents in which dependent traits were used to avoid the anxiety of making decisions.',
         i:'Ask the client to identify at least five instances in which he/she avoided decisions out of fear of failure or rejection (or assign "Making Your Own Decisions" in the Adult Psychotherapy Homework Planner, 2nd ed.).' },
       { o:'Identify abandonment experiences in the family of origin, and how they have influenced current relationships.',
-        i:'Raise the client\'s awareness of the tendency to take the child role in relationships; explore causes in childhood abandonment and rejection experiences.' },
+        i:'Raise the client\'s awareness of the tendency to take the child role in relationships; explore causes in childhood abandonment and rejection experiences (or assign "Satisfying Unmet Emotional Needs" in the Adult Psychotherapy Homework Planner, 2nd ed.).' },
     ]
   },
   { id:'depression', name:'Depression', section:'B',
@@ -5989,7 +6012,7 @@ const GOALS_DATA = [
       { o:'Verbalize the powerlessness and unmanageability that result from using addictive behavior to cope with depression.',
         i:'Using a 12-step Step One exercise, help the client to admit powerlessness and unmanageability over addictive behavior and depression (or assign "Consequences of Continuing Addictive Lifestyles" in the Addiction Treatment Homework Planner, 4th ed.).' },
       { o:'Identify and replace cognitive self-talk that supports depression.',
-        i:'Assign the client to keep a daily journal of automatic thoughts associated with depressive feelings; process the journal material to challenge depressive thinking patterns and replace with reality-based thoughts.' },
+        i:'Assign the client to keep a daily journal of automatic thoughts associated with depressive feelings (or assign "Negative Thoughts Trigger Negative Feelings," "Correcting Distorted Thinking," or "Positive Self-Talk" in the Adult Psychotherapy Homework Planner, 2nd ed.); process the journal material to challenge depressive thinking patterns and replace with reality-based thoughts.' },
       { o:'Write down five things each night for which gratitude is felt.',
         i:'Teach the client about the 12-step recovery program\'s concept of an attitude of gratitude; assign to write down five things for which he/she is grateful each day.' },
     ]
@@ -6003,13 +6026,13 @@ const GOALS_DATA = [
     ],
     pairs:[
       { o:'Learn and implement 3 skills to manage thoughts, urges, and physical sensations related to drug use and associated behavior problems.',
-        i:'Use self-control techniques (e.g., identifying thoughts and urges associated with drug use); teach thought-stopping, having the client redirect self to alternative, competing thoughts, feelings, and actions.' },
+        i:'Use self-control techniques (e.g., identifying thoughts and urges associated with drug use); teach thought-stopping, having the client redirect self to alternative, competing thoughts, feelings, and actions (or assign "Making Use of the Thought-Stopping Technique" in the Adult Psychotherapy Homework Planner, 2nd ed.).' },
       { o:'Learn and implement 3 assertive communication skills to be used among family members.',
-        i:'Using modeling, role-playing, and behavior rehearsal, teach the client and family members assertive communication skills (e.g., "I messages," simple empathic and confrontational assertion).' },
+        i:'Using modeling, role-playing, and behavior rehearsal, teach the client and family members assertive communication skills (e.g., "I messages," simple empathic and confrontational assertion) (or assign "Communication Skills" in the Addiction Treatment Homework Planner, 4th ed.).' },
       { o:'Learn and implement 3 problem-solving skills for use in approaching family problems.',
-        i:'Using modeling, role-playing, and behavior rehearsal, teach the client and family members a problem-solving approach including defining the problem, generating options, evaluating pros and cons, developing a plan, and evaluating.' },
+        i:'Using modeling, role-playing, and behavior rehearsal, teach the client and family members a problem-solving approach including defining the problem, generating options, evaluating pros and cons, developing a plan, and evaluating (or assign "Applying Problem-Solving to Interpersonal Conflict" in the Adult Psychotherapy Homework Planner, 2nd ed.).' },
       { o:'Plan and implement pleasurable family activities that promote communication and bonding.',
-        i:'Assist the family in identifying and planning pleasurable family activities in which all members participate; process the experience and redirect for conflict management.' },
+        i:'Assist the family in identifying and planning pleasurable family activities in which all members participate (or assign "Creating a Family Ritual" in the Addiction Treatment Homework Planner, 4th ed.); process the experience and redirect for conflict management.' },
     ]
   },
   { id:'grief', name:'Grief / Loss Unresolved', section:'B',
@@ -6025,7 +6048,7 @@ const GOALS_DATA = [
       { o:'Identify what stages of grief have been experienced along the continuum of the grieving process.',
         i:'Assist the client in identifying the stages of grief that he/she has experienced and which stage he/she is presently working through.' },
       { o:'Express thoughts and feelings about the deceased that went unexpressed while the deceased was alive.',
-        i:'Ask the client to write a letter to the lost person describing fond memories, painful or regretful memories, and current feelings; process the letter in session.' },
+        i:'Ask the client to write a letter to the lost person describing fond memories, painful or regretful memories, and current feelings (or assign "Dear _____: A Letter to a Lost Loved One" in the Adult Psychotherapy Homework Planner, 2nd ed. or "Am I Having Difficulty Letting Go?" in the Addiction Treatment Homework Planner, 4th ed.); process the letter in session.' },
       { o:'Make a written plan to increase independence and social interaction.',
         i:'Assign the client to write a plan to improve social contact with old friends and to make new ones (or assign "Moving On with My Life" in the Addiction Treatment Homework Planner, 4th ed.).' },
     ]
@@ -6043,7 +6066,7 @@ const GOALS_DATA = [
       { o:'List the negative consequences caused by impulsivity.',
         i:'Assign the client to write a list of negative consequences that occurred because of impulsivity (or assign "Recognizing the Negative Consequences of Impulsive Behavior" in the Adult Psychotherapy Homework Planner, 2nd ed.).' },
       { o:'Identify 3 thoughts that trigger impulsive behavior, then replace each with a more accurate thought.',
-        i:'Help the client to uncover dysfunctional thoughts that lead to impulsivity; assist in replacing each with a thought that is more accurate, positive, self-enhancing, and adaptive.' },
+        i:'Help the client to uncover dysfunctional thoughts that lead to impulsivity; assist in replacing each with a thought that is more accurate, positive, self-enhancing, and adaptive (or assign "Journal and Replace Self-Defeating Thoughts" in the Adult Psychotherapy Homework Planner, 2nd ed. or "A Different Approach" in the Addiction Treatment Homework Planner, 4th ed.).' },
     ]
   },
   { id:'legal', name:'Legal Problems', section:'B',
@@ -6078,7 +6101,7 @@ const GOALS_DATA = [
       { o:'List 10 lies told to exaggerate accomplishments and to seek acceptance and recognition.',
         i:'Assign the client to list common lies told to exaggerate accomplishments and bolster self-image; show why the self-defeating lies eventually led to rejection from others.' },
       { o:'Acknowledge that low self-esteem and fear of failure or rejection are felt internally despite the external facade.',
-        i:'Confront expressions of entitlement and braggadocio, interpreting them as a cover for feelings of fear and low self-esteem. Reinforce social interactions characterized by humility, empathy, honesty, and compassion.' },
+        i:'Confront expressions of entitlement and braggadocio, interpreting them as a cover for feelings of fear and low self-esteem. Reinforce social interactions characterized by humility, empathy, honesty, and compassion (or assign "Getting Out of Myself" or "Being Genuinely Unselfish" in the Addiction Treatment Homework Planner, 4th ed.).' },
     ]
   },
   { id:'odd', name:'Oppositional Defiant Behavior', section:'B',
@@ -6096,7 +6119,7 @@ const GOALS_DATA = [
       { o:'Identify, challenge, and replace self-talk that leads to anger and misbehavior with self-talk that facilitates more constructive reactions.',
         i:'Explore the client\'s self-talk that mediates angry feelings and actions (e.g., demanding expectations reflected in should, must, or have to statements); identify and challenge biases, generating appraisals that facilitate a more flexible response.' },
       { o:'Learn and implement thought-stopping to manage intrusive unwanted thoughts that trigger anger and acting out.',
-        i:'Assign the client to implement a "thought-stopping" technique on a daily basis between sessions; review implementation; reinforce success, providing corrective feedback toward improvement.' },
+        i:'Assign the client to implement a "thought-stopping" technique on a daily basis between sessions (or assign "Making Use of the Thought-Stopping Technique" in the Adult Psychotherapy Homework Planner, 2nd ed.); review implementation; reinforce success, providing corrective feedback toward improvement.' },
     ]
   },
   { id:'ptsd', name:'Posttraumatic Stress Disorder (PTSD)', section:'B',
@@ -6113,9 +6136,9 @@ const GOALS_DATA = [
       { o:'Learn and implement 3 calming and coping strategies to manage challenging situations related to trauma.',
         i:'Teach the client strategies from Stress Inoculation Training such as relaxation, breathing control, covert modeling, and/or role playing.' },
       { o:'Identify, challenge, and replace biased, fearful self-talk with reality-based, positive self-talk.',
-        i:'Assign the client a homework exercise to identify fearful self-talk and create reality-based alternatives; review and reinforce success, providing corrective feedback for failure.' },
+        i:'Assign the client a homework exercise to identify fearful self-talk and create reality-based alternatives (or assign "Negative Thoughts Trigger Negative Feelings" in the Adult Psychotherapy Homework Planner, 2nd ed.); review and reinforce success, providing corrective feedback for failure.' },
       { o:'Participate in imaginal and in vivo exposure to trauma-related memories until distress is markedly reduced.',
-        i:'Assign the client a homework exercise in which he/she does an exposure exercise and records responses; review and reinforce progress, problem-solve obstacles.' },
+        i:'Assign the client a homework exercise in which he/she does an exposure exercise and records responses (or assign "Gradually Reducing Your Phobic Fear" in the Adult Psychotherapy Homework Planner, 2nd ed.); review and reinforce progress, problem-solve obstacles.' },
       { o:'Learn and implement 3 thought-stopping techniques to manage intrusive, unwanted thoughts.',
         i:'Teach the client thought-stopping in which he/she internally voices the word "stop" immediately upon noticing unwanted trauma-related thoughts (or assign "Making Use of the Thought-Stopping Technique" in the Adult Psychotherapy Homework Planner, 2nd ed.).' },
     ]
@@ -6206,7 +6229,7 @@ const GOALS_DATA = [
       { o:'Provide data for a Stage of Change assessment.',
         i:'Assess the client\'s position in the Stage of Change (see Substance Abuse Treatment and the Stages of Change by Conners, Donovan, and DiClemente); provide feedback of results.' },
       { o:'List times when addictive behavior led to negative consequences and the need for treatment.',
-        i:'Help the client make a list of negative consequences of addiction that clearly demonstrate the need for treatment (or assign "Accepting the Need for Treatment" in the Addiction Treatment Homework Planner, 4th ed.).' },
+        i:'Help the client make a list of negative consequences of addiction that clearly demonstrate the need for treatment (or assign "Barriers and Solutions" in the Addiction Treatment Homework Planner, 4th ed.).' },
     ]
   },
 
@@ -6224,7 +6247,7 @@ const GOALS_DATA = [
       { o:'Write 1 detailed chemical use history, describing treatment attempts and the specific situations surrounding relapse.',
         i:'Assign the client to write a chemical use history, describing attempts at recovery and the situations surrounding relapse.' },
       { o:'Verbalize the powerlessness and unmanageability that result from addiction and relapse.',
-        i:'Using a 12-step recovery program\'s Step One exercise, help the client to see the powerlessness and unmanageability that result from addiction and relapse (or assign the client to complete the Step One Worksheet).' },
+        i:'Using a 12-step recovery program\'s Step One exercise, help the client to see the powerlessness and unmanageability that result from addiction and relapse (or assign "Step 1 Worksheet AA").' },
       { o:'Verbalize reasons why it is essential to work a daily program of recovery.',
         i:'Teach the client about the importance of a daily program of recovery, including attending meetings, working with a sponsor, and helping others in the program.' },
       { o:'Learn and implement 3 skills to interrupt the relapse process.',
@@ -6281,11 +6304,11 @@ const GOALS_DATA = [
       { o:'List 3 instances when addiction has led to partner relational conflicts.',
         i:'Help the client see how addiction has caused relationship conflicts, and how conflicts have precipitated addiction. Ask to list instances when addiction has led to relationship conflict.' },
       { o:'Identify 3 problems in the relationship including one\'s own role in the problems.',
-        i:'Assign the client a task recording in journals the positive and negative things about the significant other and the relationship; ask the client not to share journal material until the material will be processed.' },
+        i:'Assign the client a task recording in journals the positive and negative things about the significant other and the relationship (or assign "Positive and Negative Contributions to the Relationship: Mine and Yours" in the Adult Psychotherapy Homework Planner, 2nd ed.); ask the client not to share journal material until the material will be processed.' },
       { o:'Increase the frequency of the direct expression of honest, respectful, and positive feelings within the relationship.',
         i:'Assign the client a homework exercise to use and record newly learned communication skills (or assign "Communication Skills" in the Addiction Treatment Homework Planner, 4th ed.); process results in session.' },
       { o:'Learn and implement 3 problem-solving and conflict resolution skills.',
-        i:'Assign the client a homework exercise to use and record newly learned problem-solving and conflict resolution skills; process results in session.' },
+        i:'Assign the client a homework exercise to use and record newly learned problem-solving and conflict resolution skills (or assign "Applying Problem-Solving to Interpersonal Conflict" in the Adult Psychotherapy Homework Planner, 2nd ed. or "Identifying Proven Problem-Solving Skills" in the Addiction Treatment Homework Planner, 4th ed.); process results in session.' },
     ]
   },
   { id:'peers', name:'Peer Group Negativity', section:'C',
@@ -6297,13 +6320,13 @@ const GOALS_DATA = [
     ],
     pairs:[
       { o:'Identify several times when peer group negativity led to addictive behavior.',
-        i:'Help the client see the relationship between the peer group and addictive behavior, particularly how the peer group encouraged addictive behavior; assign to list instances when peers encouraged addictive behavior.' },
+        i:'Help the client see the relationship between the peer group and addictive behavior, particularly how the peer group encouraged addictive behavior (or assign "What Do I Need and How Do I Get It?" in the Addiction Treatment Homework Planner, 4th ed.); assign to list instances when peers encouraged addictive behavior.' },
       { o:'Verbalize an acceptance of the need for breaking ties with the current peer group.',
-        i:'Reinforce the client\'s verbalized intent to break ties with the current peer group; empathize with the difficulty in leaving friends behind and making new friends who will reinforce changes toward sobriety. Help the client grieve the loss of the old peer group and make plans to develop new friends in recovery.' },
+        i:'Reinforce the client\'s verbalized intent to break ties with the current peer group; empathize with the difficulty in leaving friends behind and making new friends who will reinforce changes toward sobriety (or assign "What Do Others See Changing?" in the Addiction Treatment Homework Planner, 4th ed.). Help the client grieve the loss of the old peer group and make plans to develop new friends in recovery.' },
       { o:'Meet with a temporary sponsor and make plans to attend recovery group meetings.',
         i:'Encourage and facilitate the client meeting a 12-step recovery program temporary sponsor, and discuss plans for recovery (or assign "Personal Recovery Planning" in the Addiction Treatment Homework Planner, 4th ed.).' },
       { o:'Make a list of peers who are positive and peers who are negative toward recovery efforts.',
-        i:'Help the client to make a list of all peers who are positive or negative toward recovery; assist in planning how to avoid or cope with peers who are unsupportive or critical of recovery efforts.' },
+        i:'Help the client to make a list of all peers who are positive or negative toward recovery (or assign "Building My Support Network" in the Addiction Treatment Homework Planner, 4th ed.); assist in planning how to avoid or cope with peers who are unsupportive or critical of recovery efforts.' },
     ]
   },
 ];
@@ -6466,6 +6489,20 @@ function renderITPGoals() {
       cmDateLabel.style.cssText = 'display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-secondary);padding-top:8px;border-top:1px solid #b6d9c3;white-space:nowrap;';
       cmDateLabel.innerHTML = 'Target Date for CM objectives: <input type="date" id="itp-cm-target-date" style="border:1px solid var(--border);border-radius:4px;padding:3px 7px;font-family:inherit;font-size:11px;color:var(--text);background:white;outline:none;" />';
       cmBody.appendChild(cmDateLabel);
+
+      const cmQuoteLabel = document.createElement('div');
+      cmQuoteLabel.className = 'itp-goal-label';
+      cmQuoteLabel.style.marginTop = '10px';
+      cmQuoteLabel.textContent = 'Client Statement — quote from client about community and recovery resources (required):';
+      cmBody.appendChild(cmQuoteLabel);
+      const cmQuoteInput = document.createElement('input');
+      cmQuoteInput.type = 'text';
+      cmQuoteInput.id = 'itp-cm-quote';
+      cmQuoteInput.placeholder = 'e.g., I want to find a home AA group and connect with an IOP before I leave.';
+      cmQuoteInput.style.cssText = 'width:100%;box-sizing:border-box;border:1px solid var(--border);border-radius:5px;padding:7px 10px;font-family:"IBM Plex Sans",sans-serif;font-size:12px;color:var(--text);background:white;outline:none;margin-bottom:4px;';
+      cmQuoteInput.onfocus = () => cmQuoteInput.style.borderColor = 'var(--border-focus)';
+      cmQuoteInput.onblur = () => cmQuoteInput.style.borderColor = 'var(--border)';
+      cmBody.appendChild(cmQuoteInput);
 
       cmRow.appendChild(cmBody);
 
@@ -6653,6 +6690,21 @@ function rebuildSection(section) {
     };
 
     body.appendChild(gta);
+
+    // Client quote
+    const quoteLabel = document.createElement('div');
+    quoteLabel.className = 'itp-goal-label';
+    quoteLabel.style.marginTop = '10px';
+    quoteLabel.textContent = 'Client Statement — quote from client supporting this goal (required):';
+    body.appendChild(quoteLabel);
+    const quoteInput = document.createElement('input');
+    quoteInput.type = 'text';
+    quoteInput.id = `itp-quote-${cat.id}`;
+    quoteInput.placeholder = 'e.g., I want to work on my anger.';
+    quoteInput.style.cssText = 'width:100%;box-sizing:border-box;border:1px solid var(--border);border-radius:5px;padding:7px 10px;font-family:"IBM Plex Sans",sans-serif;font-size:12px;color:var(--text);background:white;outline:none;margin-bottom:4px;';
+    quoteInput.onfocus = () => quoteInput.style.borderColor = 'var(--border-focus)';
+    quoteInput.onblur = () => quoteInput.style.borderColor = 'var(--border)';
+    body.appendChild(quoteInput);
 
     // pairs
     const pl = document.createElement('div'); pl.className = 'itp-pairs-label'; pl.textContent = 'Objectives & Interventions — check all that apply:';
@@ -6857,39 +6909,84 @@ function rebuildSection(section) {
 const HOMEWORK_MAP = {
   'aca_0': ['UNDERSTANDING CODEPENDENT BEHAVIORS.pdf'],
   'aca_2': ['UNDERSTANDING FAMILY HISTORY.pdf'],
+  'adhd_2': ['SYMPTOMS AND FIXES FOR ADD.pdf'],
+  'anger_0': ['Anger Journal.pdf', 'IS MY ANGER DUE TO FEELING THREATENED.pdf', 'IS MY ANGER DUE TO UNMET EXPECTATIONS.pdf'],
+  'anger_2': ['Correcting Distorted Thinking.pdf'],
   'antisocial_0': ['How I Have Hurt Others.pdf'],
   'antisocial_1': ['Letter Of Apology.pdf'],
+  'antisocial_2': ['TAKING DAILY INVENTORY.pdf'],
   'anxiety_0': ['MY ANXIETY PROFILE.pdf'],
-  'dependent_0': ['UNDERSTANDING FAMILY HISTORY.pdf'],
+  'anxiety_1': ['COPING WITH STRESS.pdf'],
+  'anxiety_3': ['NEGATIVE THOUGHTS TRIGGER NEGATIVE FEELINGS.pdf', 'POSITIVE SELF TALK.pdf'],
+  'danger_0': ['safe and peaceful place meditation.pdf'],
+  'danger_1': ['UNDERSTANDING FAMILY HISTORY.pdf'],
+  'dependent_0': ['UNDERSTANDING FAMILY HISTORY.pdf', 'TAKING STEPS TOWARD INDEPENDENCE.pdf'],
   'dependent_1': ['MAKING YOUR OWN DECISIONS.pdf'],
+  'dependent_2': ['SATISFYING UNMET EMOTIONAL NEEDS.pdf'],
   'depression_0': ['Consequences of continuning addictive lifestyles.pdf'],
+  'depression_1': ['NEGATIVE THOUGHTS TRIGGER NEGATIVE FEELINGS.pdf', 'Correcting Distorted Thinking.pdf', 'POSITIVE SELF TALK.pdf'],
   'environment_0': ['UNDERSTANDING FAMILY HISTORY.pdf'],
   'environment_1': ['Assessing my needs.pdf'],
   'environment_2': ['WHAT WOULD MY IDEAL LIFE LOOK LIKE.pdf'],
+  'family_0': ['MAKING USE OF THE THOUGHT STOPPING TECHNIQUE.pdf'],
+  'family_1': ['Communication Skills.pdf'],
+  'family_2': ['APPLYING PROBLEM SOLVING TO INTERPERSONAL CONFLICT.pdf'],
+  'family_3': ['Creating A Family Ritual.pdf'],
+  'grief_2': ['DEAR  A LETTER TO A LOST LOVED ONE.pdf', 'AM I HAVING DIFFICULTY LETTING GO.pdf'],
   'grief_3': ['Moving on with my life.pdf'],
   'impulsivity_0': ['IMPULSIVE BEHAVIOR JOURNAL.pdf'],
   'impulsivity_1': ['RECOGNIZING THE NEGATIVE CONSEQUENCES OF IMPULSIVE BEHAVIOR.pdf'],
+  'impulsivity_2': ['JOURNAL AND REPLACE SELF-DEFEATING THOUGHTS.pdf', 'A DIFFERENT APPROACH.pdf'],
   'legal_0': ['ACCEPT RESPONSIBILITY FOR ILLEGAL BEHAVIOR.pdf'],
+  'legal_1': ["What's Addiction Got To Do With My Problems.pdf"],
   'legal_2': ['CROOKED THINKING LEADS TO CROOKED BEHAVIOR.pdf'],
   'legal_3': ['Personal Recovery Planning.pdf'],
+  'narcissistic_2': ['Getting out of myself.pdf', 'Being genuinely unselfish.pdf'],
+  'odd_3': ['MAKING USE OF THE THOUGHT STOPPING TECHNIQUE.pdf'],
+  'opioid_2': ["SUBSTANCE ABUSE NEGATIVE IMPACT VERSUS SOBRIETY'S POSITIVE IMPACT.pdf"],
+  'pain_1': ['PAIN AND STRESS JOURNAL.pdf'],
+  'pain_2': ['IDENTIFY AND SCHEDULE PLEASANT ACTIVITIES.pdf'],
   'pain_3': ['Correcting Distorted Thinking.pdf'],
   'pain_4': ['ALTERNATIVE METHODS FOR MANAGING PAIN.pdf', 'COPING WITH ADDICTION AND CHRONIC PAIN #18.pdf'],
+  'partner_1': ['POSITIVE AND NEGATIVE CONTRIBUTIONS TO THE RELATIONSHIP MINE AND YOURS.pdf'],
   'partner_2': ['Communication Skills.pdf'],
+  'partner_3': ['APPLYING PROBLEM SOLVING TO INTERPERSONAL CONFLICT.pdf', 'IDENTIFYING PROVEN PROBLEM-SOLVING SKILLS.pdf'],
+  'peers_0': ['WHAT DO I NEED AND HOW DO I GET IT.pdf'],
+  'peers_1': ['What do others see changing.pdf'],
   'peers_2': ['Personal Recovery Planning.pdf'],
+  'peers_3': ['Building My support network.pdf'],
   'ptsd_0': ['COPING WITH ADDICTION AND PTSD OR OTHER ANXIETY DISORDERS.pdf'],
+  'ptsd_2': ['NEGATIVE THOUGHTS TRIGGER NEGATIVE FEELINGS.pdf'],
+  'ptsd_3': ['GRADUALLY REDUCING YOUR PHOBIC FEAR.pdf'],
   'ptsd_4': ['MAKING USE OF THE THOUGHT STOPPING TECHNIQUE.pdf'],
+  'relapse_1': ['Step 1 worksheets AA.pdf'],
   'resistance_1': ['How far have I come.pdf'],
+  'resistance_3': ['Barriers and solutions.pdf'],
   'selfcare1_2': ['Relating self care deficits to my addiction.pdf'],
   'selfcare2_0': ['Filling in the Gaps.pdf'],
   'selfcare2_1': ['Working Towards Independence.pdf'],
+  'selfharm_1': ["SUBSTANCE ABUSE NEGATIVE IMPACT VERSUS SOBRIETY'S POSITIVE IMPACT.pdf"],
   'sud_2': ['making change happen.pdf', 'a working recovery plan.pdf'],
   'suicide_0': ['NEGATIVE THOUGHTS TRIGGER NEGATIVE FEELINGS.pdf'],
   'suicide_2': ['Why Do I Matter and Who Cares.pdf'],
+  'trauma_0': ['CHANGING FROM VICTIM TO SURVIVOR.pdf'],
+  'trauma_1': ['Setting and maintaining boundaries.pdf'],
   'trauma_2': ['Alternative To Destructive Anger.pdf'],
+  'trauma_3': ['Corresponding with My Childhood Self.pdf'],
 };
 
 function hwFilenameToLabel(filename) {
-  return filename.replace(/\.pdf$/i, '').replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+  const corrections = {
+    'continuning': 'Continuing',
+    'Continuning': 'Continuing',
+    'self care deficits': 'Self-Care Deficits',
+    'replacself': 'Replace Self',
+  };
+  const lower = filename.replace(/\.pdf$/i, '').replace(/_/g, ' ').replace(/\s+/g, ' ').trim().toLowerCase();
+  const small = new Set(['a','an','the','and','but','or','for','nor','on','at','to','by','in','of','up','as','is','it']);
+  let label = lower.replace(/\b\w+/g, (w, i) => (i === 0 || !small.has(w)) ? w[0].toUpperCase() + w.slice(1) : w);
+  Object.entries(corrections).forEach(([wrong, right]) => { label = label.replace(new RegExp(wrong, 'gi'), right); });
+  return label;
 }
 
 function formatITPOutput(btn) {
@@ -6900,6 +6997,7 @@ function formatITPOutput(btn) {
 
   // Build structured output: array of { sectionLabel, goalLetter, goalText, objectives:[], interventions:[] }
   const goals = [];
+  const missingQuotes = [];
 
   ['A','B','C'].forEach(section => {
     const cats = GOALS_DATA.filter(c => c.section === section && itpSelected[section].has(c.id));
@@ -6923,13 +7021,23 @@ function formatITPOutput(btn) {
       const cmInterventions = selectedPairs.map(({ pair }, seq) =>
         `Intervention ${seq+1}${letter}: ${pair.i}`
       );
+      const cmQuoteEl = document.getElementById('itp-cm-quote');
+      const cmClientQuote = cmQuoteEl ? cmQuoteEl.value.trim() : '';
+      if (!cmClientQuote) {
+        missingQuotes.push(`Section C — Case Management goal`);
+        if (cmQuoteEl) cmQuoteEl.style.borderColor = '#d9534f';
+      } else {
+        if (cmQuoteEl) cmQuoteEl.style.borderColor = 'var(--border)';
+      }
       goals.push({
         sectionLabel: ITP_SECTION_LABELS[section],
         goalLetter: letter,
         catName: 'Case Management — Recovery & Community Integration',
         goalText: 'Client will successfully transition to community-based recovery supports by engaging with identified resources, services, and support systems prior to discharge.',
+        clientQuote: cmClientQuote,
         objectives: cmObjectives,
         interventions: cmInterventions,
+        homeworkPdfs: [],
       });
     }
 
@@ -6937,6 +7045,14 @@ function formatITPOutput(btn) {
       const letter = letters[letterIdx++];
       const gta = document.getElementById(`itp-goal-${cat.id}`);
       const goalText = gta ? gta.value.trim() : cat.goals[0];
+      const quoteEl = document.getElementById(`itp-quote-${cat.id}`);
+      const clientQuote = quoteEl ? quoteEl.value.trim() : '';
+      if (!clientQuote) {
+        missingQuotes.push(`${ITP_SECTION_LABELS[section].split('—')[0].trim()} — Goal ${letter} (${cat.name})`);
+        if (quoteEl) quoteEl.style.borderColor = '#d9534f';
+      } else {
+        if (quoteEl) quoteEl.style.borderColor = 'var(--border)';
+      }
       if (gta && gta.classList.contains('unchanged')) {
         unchanged.push(`${ITP_SECTION_LABELS[section].split('—')[0].trim()} — Goal ${letter} (${cat.name})`);
       }
@@ -6953,7 +7069,7 @@ function formatITPOutput(btn) {
         const hw = HOMEWORK_MAP[`${cat.id}_${i}`];
         if (hw) hw.forEach(pdf => { if (!homeworkPdfs.includes(pdf)) homeworkPdfs.push(pdf); });
       });
-      goals.push({ sectionLabel: ITP_SECTION_LABELS[section], goalLetter: letter, catName: cat.name, goalText, objectives, interventions, homeworkPdfs });
+      goals.push({ sectionLabel: ITP_SECTION_LABELS[section], goalLetter: letter, catName: cat.name, goalText, clientQuote, objectives, interventions, homeworkPdfs });
     });
 
     customs.forEach((customCat, customIdx) => {
@@ -6982,6 +7098,17 @@ function formatITPOutput(btn) {
     warning.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   } else {
     warning.classList.remove('visible');
+  }
+
+  // Handle missing client quote warning
+  const quoteWarning = document.getElementById('itpQuoteWarning');
+  const quoteList = document.getElementById('itpQuoteWarningList');
+  if (missingQuotes.length) {
+    quoteList.innerHTML = missingQuotes.map(q => `<li>${q}</li>`).join('');
+    quoteWarning.classList.add('visible');
+    if (!unchanged.length) quoteWarning.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  } else {
+    quoteWarning.classList.remove('visible');
   }
 
   const placeholder = document.getElementById('itpOutputPlaceholder');
@@ -7017,7 +7144,10 @@ function formatITPOutput(btn) {
     boxesContainer.appendChild(goalLabel);
 
     // Goal box
-    makeOutputBox(boxesContainer, 'Goal', `Goal ${g.goalLetter}: ${g.goalText} (ESTABLISHED ${todayStr})`);
+    const goalLineText = g.clientQuote
+      ? `Client stated, "${g.clientQuote}"\n\nGoal ${g.goalLetter}: ${g.goalText} (ESTABLISHED ${todayStr})`
+      : `Goal ${g.goalLetter}: ${g.goalText} (ESTABLISHED ${todayStr})`;
+    makeOutputBox(boxesContainer, 'Goal', goalLineText);
 
     // Objectives box (only if any selected)
     if (g.objectives.length) {
@@ -7029,23 +7159,43 @@ function formatITPOutput(btn) {
       makeOutputBox(boxesContainer, 'Interventions', g.interventions.join('\n'));
     }
 
-    // Homework links (only if any apply to selected pairs)
     if (g.homeworkPdfs && g.homeworkPdfs.length) {
       const hwWrap = document.createElement('div');
-      hwWrap.style.cssText = 'margin-bottom:8px;padding:8px 10px;background:var(--accent-light);border-radius:5px;border:1px solid var(--border);';
-      const hwLabel = document.createElement('div');
-      hwLabel.style.cssText = 'font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--accent);margin-bottom:6px;';
-      hwLabel.textContent = '📄 Suggested Homework';
-      hwWrap.appendChild(hwLabel);
+      hwWrap.className = 'itp-hw-block';
+      hwWrap.style.cssText = 'margin-bottom:8px;padding:10px 12px;background:linear-gradient(135deg,var(--accent-light) 0%,#f0f7f0 100%);border-radius:6px;border:1px solid var(--accent-light);border-left:3px solid var(--accent);';
+      const hwHeader = document.createElement('div');
+      hwHeader.style.cssText = 'display:flex;align-items:center;gap:6px;margin-bottom:4px;';
+      const hwIcon = document.createElement('span');
+      hwIcon.textContent = '📋';
+      hwIcon.style.cssText = 'font-size:13px;';
+      const hwTitle = document.createElement('span');
+      hwTitle.style.cssText = 'font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--accent);';
+      hwTitle.textContent = 'Optional Homework Assignments';
+      const hwCount = document.createElement('span');
+      hwCount.style.cssText = 'font-size:9px;font-weight:600;color:white;background:var(--accent);border-radius:10px;padding:1px 6px;margin-left:2px;';
+      hwCount.textContent = g.homeworkPdfs.length;
+      hwHeader.appendChild(hwIcon);
+      hwHeader.appendChild(hwTitle);
+      hwHeader.appendChild(hwCount);
+      hwWrap.appendChild(hwHeader);
+      const hwSub = document.createElement('div');
+      hwSub.style.cssText = 'font-size:10px;color:var(--text-secondary);margin-bottom:8px;line-height:1.4;';
+      hwSub.textContent = 'These worksheets correspond to the objectives selected above. Use at your discretion — not required.';
+      hwWrap.appendChild(hwSub);
+      const pillRow = document.createElement('div');
+      pillRow.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;';
       g.homeworkPdfs.forEach(pdf => {
-        const link = document.createElement('a');
-        link.href = 'pdfs/' + encodeURIComponent(pdf);
-        link.target = '_blank';
-        link.rel = 'noopener';
-        link.textContent = hwFilenameToLabel(pdf);
-        link.style.cssText = 'display:block;font-size:11px;color:var(--accent);text-decoration:underline;margin-bottom:3px;cursor:pointer;';
-        hwWrap.appendChild(link);
+        const pill = document.createElement('a');
+        pill.href = 'pdfs/' + encodeURIComponent(pdf);
+        pill.target = '_blank';
+        pill.rel = 'noopener';
+        pill.style.cssText = 'display:inline-flex;align-items:center;padding:4px 12px;background:white;border:1px solid var(--accent);border-radius:20px;font-size:11px;font-family:"IBM Plex Sans",sans-serif;color:var(--accent);text-decoration:none;font-weight:500;cursor:pointer;transition:background 0.15s,color 0.15s;';
+        pill.onmouseover = () => { pill.style.background = 'var(--accent)'; pill.style.color = 'white'; };
+        pill.onmouseout = () => { pill.style.background = 'white'; pill.style.color = 'var(--accent)'; };
+        pill.textContent = hwFilenameToLabel(pdf);
+        pillRow.appendChild(pill);
       });
+      hwWrap.appendChild(pillRow);
       boxesContainer.appendChild(hwWrap);
     }
 
@@ -8653,6 +8803,10 @@ function doReset() {
   if (itpWarning) itpWarning.classList.remove('visible');
   const itpWarningList = document.getElementById('itpSmartWarningList');
   if (itpWarningList) itpWarningList.innerHTML = '';
+  const itpQuoteWarning = document.getElementById('itpQuoteWarning');
+  if (itpQuoteWarning) itpQuoteWarning.classList.remove('visible');
+  const itpQuoteWarningList = document.getElementById('itpQuoteWarningList');
+  if (itpQuoteWarningList) itpQuoteWarningList.innerHTML = '';
 
   // Reset ASAM reference panel state
   asamRefOpen = false;
@@ -8823,8 +8977,31 @@ function fillSampleClient() {
   state.dim6.csProgress = 'Marcus and his clinician have begun identifying aftercare resources including a local IOP program and AA meeting options. His partner has agreed to participate in a family session this week. Discharge planning is in progress; a clinically appropriate step-down plan has not yet been established.';
   document.querySelector('#grp-dim6-cs-progress textarea').value = state.dim6.csProgress;
 
+  // ── ITP ──
+  itpSelected['B'].add('anger');
+  itpSelected['B'].add('depression');
+  itpSelected['C'].add('relapse');
+  renderITPGoals();
+  // Anger goal: select objective 0 (journal — has Anger Journal homework), set target date, add client quote
+  setTimeout(() => {
+    const angerGta = document.getElementById('itp-goal-anger');
+    if (angerGta) {
+      angerGta.value = 'Marcus will keep a daily anger journal identifying situations, triggers, and physical cues for 30 days, reducing the frequency of aggressive responses from daily to fewer than twice per week by ' + (() => { const d = new Date(); d.setDate(d.getDate()+30); return (d.getMonth()+1)+'/'+(d.getDate())+'/'+d.getFullYear(); })() + '.';
+      angerGta.classList.remove('unchanged');
+      const notice = document.getElementById('itp-edit-notice-anger');
+      if (notice) notice.style.display = 'none';
+    }
+    const angerQuote = document.getElementById('itp-quote-anger');
+    if (angerQuote) angerQuote.value = 'I blow up over little things and I know it\'s pushing people away. I want to get control of it.';
+    const angerCb0 = document.getElementById('itp-pair-anger-0');
+    if (angerCb0 && !angerCb0.checked) { angerCb0.checked = true; angerCb0.dispatchEvent(new Event('change')); }
+    const depressionQuote = document.getElementById('itp-quote-depression');
+    if (depressionQuote) depressionQuote.value = 'I know the drinking made the depression worse. I want to work through both of them.';
+    const relapseQuote = document.getElementById('itp-quote-relapse');
+    if (relapseQuote) relapseQuote.value = 'Every time I leave treatment I end up back at square one. I want to actually figure out what keeps tripping me up.';
+  }, 150);
+
   // ── SESSION NOTE ──
-  document.getElementById('sn-client').value = 'Marcus';
   snState.clientName = 'Marcus';
   document.getElementById('sn-date').value = today;
   snState.date = today;
@@ -9521,6 +9698,15 @@ const TUT_STEPS = [
     title:'Selecting objectives and target dates',
     body:'Check each objective that reflects actual clinical work you plan to do with this client — not everything that sounds reasonable, only what you genuinely intend to address in this episode. When you check an objective, a target date field appears. Set a realistic date. These dates create clinical accountability: if you select an objective in October and it has not been worked on by December, that gap will be visible in the record.' },
 
+  { view:'itp', sel:'#itp-quote-depression', section:'ITP Development', navigate:'itp', side:'right', delay:300,
+    action: function() {
+      var q = document.getElementById('itp-quote-depression');
+      if (q && !q.value) q.value = 'I know the drinking made the depression worse. I want to work through both of them.';
+    },
+    title:'Client statement',
+    body:'Every goal requires a direct quote from the client — in their own words — that connects their stated desire to the goal being created. This is not optional. It documents that treatment planning was a collaborative process, which is both a clinical standard and an authorization requirement. The exact words matter: \"I want to work on my anger\" is a client statement. \"The client expressed a desire to address anger management\" is a paraphrase. Use the actual words.' },
+
+
   { view:'itp', sel:'#itp-cm-body', section:'ITP Development', navigate:'itp', side:'right',
     action: function() { var cb = document.getElementById('itp-cm-master-cb'); if (cb && !cb.checked) { cb.checked = true; cb.dispatchEvent(new Event('change')); } var body = document.getElementById('itp-cm-body'); if (body) body.style.display = ''; },
     title:'Case Management objectives',
@@ -9530,6 +9716,11 @@ const TUT_STEPS = [
     action: function() { formatITPOutput(null); },
     title:'Generated ITP output',
     body:'After clicking Generate, the right panel shows a separate output box for each goal — Goal text, Objectives, and Interventions — each with its own Copy button, matching Remarkable\'s ITP field structure. Before copying, read each output box once. If a goal still sounds generic or like template language even after you edited it, go back and revise it before it goes into Remarkable.' },
+
+  { view:'itp', sel:'.itp-hw-block', section:'ITP Development', navigate:'itp', delay:300,
+    title:'Homework assignments',
+    body:'When objectives with corresponding Wiley Homework Planner assignments are selected, they appear automatically in the output — no extra steps needed. These are optional worksheets tied to the clinical work. Click any assignment to open it directly without hunting through a separate document.' },
+
 
   { view:'itp', sel:null, section:'ITP Development', navigate:'itp',
     title:'ITP walkthrough complete',
