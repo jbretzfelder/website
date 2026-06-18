@@ -3811,7 +3811,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
         <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 13px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;">
           <span style="font-size:9px;font-weight:600;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">Platform</span>
-          <span style="font-size:13px;line-height:1.55;">"? Guide" button added to each tool's header. Runs a focused walkthrough of just that tool without requiring the full training sequence. Useful for counselors who need a refresher on one specific tool.</span>
+          <span style="font-size:13px;line-height:1.55;">"Walkthrough" button added to each tool's header. Runs a focused walkthrough of just that tool without requiring the full training sequence. Useful for counselors who need a refresher on one specific tool.</span>
         </div>
       </div>
     </div>
@@ -6854,6 +6854,44 @@ function rebuildSection(section) {
   });
 }
 
+const HOMEWORK_MAP = {
+  'aca_0': ['UNDERSTANDING CODEPENDENT BEHAVIORS.pdf'],
+  'aca_2': ['UNDERSTANDING FAMILY HISTORY.pdf'],
+  'antisocial_0': ['How I Have Hurt Others.pdf'],
+  'antisocial_1': ['Letter Of Apology.pdf'],
+  'anxiety_0': ['MY ANXIETY PROFILE.pdf'],
+  'dependent_0': ['UNDERSTANDING FAMILY HISTORY.pdf'],
+  'dependent_1': ['MAKING YOUR OWN DECISIONS.pdf'],
+  'depression_0': ['Consequences of continuning addictive lifestyles.pdf'],
+  'environment_0': ['UNDERSTANDING FAMILY HISTORY.pdf'],
+  'environment_1': ['Assessing my needs.pdf'],
+  'environment_2': ['WHAT WOULD MY IDEAL LIFE LOOK LIKE.pdf'],
+  'grief_3': ['Moving on with my life.pdf'],
+  'impulsivity_0': ['IMPULSIVE BEHAVIOR JOURNAL.pdf'],
+  'impulsivity_1': ['RECOGNIZING THE NEGATIVE CONSEQUENCES OF IMPULSIVE BEHAVIOR.pdf'],
+  'legal_0': ['ACCEPT RESPONSIBILITY FOR ILLEGAL BEHAVIOR.pdf'],
+  'legal_2': ['CROOKED THINKING LEADS TO CROOKED BEHAVIOR.pdf'],
+  'legal_3': ['Personal Recovery Planning.pdf'],
+  'pain_3': ['Correcting Distorted Thinking.pdf'],
+  'pain_4': ['ALTERNATIVE METHODS FOR MANAGING PAIN.pdf', 'COPING WITH ADDICTION AND CHRONIC PAIN #18.pdf'],
+  'partner_2': ['Communication Skills.pdf'],
+  'peers_2': ['Personal Recovery Planning.pdf'],
+  'ptsd_0': ['COPING WITH ADDICTION AND PTSD OR OTHER ANXIETY DISORDERS.pdf'],
+  'ptsd_4': ['MAKING USE OF THE THOUGHT STOPPING TECHNIQUE.pdf'],
+  'resistance_1': ['How far have I come.pdf'],
+  'selfcare1_2': ['Relating self care deficits to my addiction.pdf'],
+  'selfcare2_0': ['Filling in the Gaps.pdf'],
+  'selfcare2_1': ['Working Towards Independence.pdf'],
+  'sud_2': ['making change happen.pdf', 'a working recovery plan.pdf'],
+  'suicide_0': ['NEGATIVE THOUGHTS TRIGGER NEGATIVE FEELINGS.pdf'],
+  'suicide_2': ['Why Do I Matter and Who Cares.pdf'],
+  'trauma_2': ['Alternative To Destructive Anger.pdf'],
+};
+
+function hwFilenameToLabel(filename) {
+  return filename.replace(/\.pdf$/i, '').replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+}
+
 function formatITPOutput(btn) {
   const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   const unchanged = [];
@@ -6902,7 +6940,7 @@ function formatITPOutput(btn) {
       if (gta && gta.classList.contains('unchanged')) {
         unchanged.push(`${ITP_SECTION_LABELS[section].split('—')[0].trim()} — Goal ${letter} (${cat.name})`);
       }
-      const objectives = [], interventions = [];
+      const objectives = [], interventions = [], homeworkPdfs = [];
       cat.pairs.forEach((pair, i) => {
         const cb = document.getElementById(`itp-pair-${cat.id}-${i}`);
         if (!cb || !cb.checked) return;
@@ -6912,8 +6950,10 @@ function formatITPOutput(btn) {
           : '__/__/____';
         objectives.push(`Objective ${i+1}${letter}: ${pair.o} (START DATE ${todayStr}) (TARGET DATE ${targetDate})`);
         interventions.push(`Intervention ${i+1}${letter}: ${pair.i}`);
+        const hw = HOMEWORK_MAP[`${cat.id}_${i}`];
+        if (hw) hw.forEach(pdf => { if (!homeworkPdfs.includes(pdf)) homeworkPdfs.push(pdf); });
       });
-      goals.push({ sectionLabel: ITP_SECTION_LABELS[section], goalLetter: letter, catName: cat.name, goalText, objectives, interventions });
+      goals.push({ sectionLabel: ITP_SECTION_LABELS[section], goalLetter: letter, catName: cat.name, goalText, objectives, interventions, homeworkPdfs });
     });
 
     customs.forEach((customCat, customIdx) => {
@@ -6987,6 +7027,26 @@ function formatITPOutput(btn) {
     // Interventions box (only if any selected)
     if (g.interventions.length) {
       makeOutputBox(boxesContainer, 'Interventions', g.interventions.join('\n'));
+    }
+
+    // Homework links (only if any apply to selected pairs)
+    if (g.homeworkPdfs && g.homeworkPdfs.length) {
+      const hwWrap = document.createElement('div');
+      hwWrap.style.cssText = 'margin-bottom:8px;padding:8px 10px;background:var(--accent-light);border-radius:5px;border:1px solid var(--border);';
+      const hwLabel = document.createElement('div');
+      hwLabel.style.cssText = 'font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--accent);margin-bottom:6px;';
+      hwLabel.textContent = '📄 Suggested Homework';
+      hwWrap.appendChild(hwLabel);
+      g.homeworkPdfs.forEach(pdf => {
+        const link = document.createElement('a');
+        link.href = 'pdfs/' + encodeURIComponent(pdf);
+        link.target = '_blank';
+        link.rel = 'noopener';
+        link.textContent = hwFilenameToLabel(pdf);
+        link.style.cssText = 'display:block;font-size:11px;color:var(--accent);text-decoration:underline;margin-bottom:3px;cursor:pointer;';
+        hwWrap.appendChild(link);
+      });
+      boxesContainer.appendChild(hwWrap);
     }
 
     // Spacer between goals
