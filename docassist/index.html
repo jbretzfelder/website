@@ -2739,6 +2739,23 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
           </div>
         </div>
 
+        <!-- HOMEWORK LIBRARY PANEL -->
+        <div class="asam-ref-panel" id="hwLibraryPanel" style="margin-top:0;">
+          <div class="asam-ref-header" onclick="toggleHwLibrary()" style="cursor:pointer;">
+            <div class="asam-ref-header-left">
+              <div class="asam-ref-header-title">📋 Homework Assignment Library</div>
+              <div class="asam-ref-header-sub">Download any Wiley Homework Planner worksheet directly — no objective selection required</div>
+            </div>
+            <div class="asam-ref-toggle" id="hwLibraryToggle">▾ expand</div>
+          </div>
+          <div id="hwLibraryBody" style="display:none;padding:12px 14px;">
+            <select id="hwLibrarySelect" onchange="openHwPdf(this)" style="width:100%;box-sizing:border-box;border:1px solid var(--border);border-radius:5px;padding:7px 10px;font-family:'IBM Plex Sans',sans-serif;font-size:12px;color:var(--text);background:white;outline:none;cursor:pointer;">
+              <option value="">— Select a worksheet to open —</option>
+            </select>
+            <div style="font-size:10px;color:var(--text-secondary);margin-top:6px;">Opens in a new tab. Worksheets are from the Wiley Addiction Treatment and Adult Psychotherapy Homework Planners.</div>
+          </div>
+        </div>
+
         <!-- TRANSITION JUSTIFICATION PANEL -->
         <div class="tj-panel" id="tjPanel">
           <div class="tj-header" onclick="toggleTJ()">
@@ -6988,6 +7005,114 @@ function hwFilenameToLabel(filename) {
   Object.entries(corrections).forEach(([wrong, right]) => { label = label.replace(new RegExp(wrong, 'gi'), right); });
   return label;
 }
+
+const ALL_HOMEWORK_GROUPS = [
+  { label: 'Substance Use & Recovery', files: [
+    'A DIFFERENT APPROACH.pdf', 'a working recovery plan.pdf',
+    'Consequences of continuning addictive lifestyles.pdf', 'Filling in the Gaps.pdf',
+    'How far have I come.pdf', 'making change happen.pdf', 'Moving on with my life.pdf',
+    'Personal Recovery Planning.pdf', 'Setting And Pursuing Goals In Recovery.pdf',
+    "SUBSTANCE ABUSE NEGATIVE IMPACT VERSUS SOBRIETY'S POSITIVE IMPACT.pdf",
+    "What's Addiction Got To Do With My Problems.pdf", 'WHAT WOULD MY IDEAL LIFE LOOK LIKE.pdf',
+  ]},
+  { label: 'Relapse Prevention', files: [
+    'Barriers and solutions.pdf', 'IDENTIFYING RELAPSE TRIGGERS AND CUES.pdf',
+    'relapse prevention planning.pdf', 'RELAPSE TRIGGERS.pdf',
+  ]},
+  { label: 'Anger & Emotions', files: [
+    'Anger Journal.pdf', 'Alternative To Destructive Anger.pdf',
+    'FEELINGS AND FORGIVENESS LETTER.pdf', 'IS MY ANGER DUE TO FEELING THREATENED.pdf',
+    'IS MY ANGER DUE TO UNMET EXPECTATIONS.pdf', 'LEARNING TO SELF-SOOTHE.pdf',
+    'SATISFYING UNMET EMOTIONAL NEEDS.pdf',
+  ]},
+  { label: 'Anxiety, Trauma & PTSD', files: [
+    'ANALYZE THE PROBABILITY OF A FEARED EVENT.pdf', 'CHANGING FROM VICTIM TO SURVIVOR.pdf',
+    'COPING WITH ADDICTION AND PTSD OR OTHER ANXIETY DISORDERS.pdf', 'COPING WITH STRESS.pdf',
+    'Corresponding with My Childhood Self.pdf', 'GRADUALLY REDUCING YOUR PHOBIC FEAR.pdf',
+    'Grounding techniques from Seeking Safety.pdf', 'MY ANXIETY PROFILE.pdf',
+    'safe and peaceful place meditation.pdf', 'Seeking-Safety-Coping-Skills-Reprint-English.pdf',
+  ]},
+  { label: 'Mood & Thinking Patterns', files: [
+    'Correcting Distorted Thinking.pdf', 'CROOKED THINKING LEADS TO CROOKED BEHAVIOR.pdf',
+    'JOURNAL AND REPLACE SELF-DEFEATING THOUGHTS.pdf', 'MAKING USE OF THE THOUGHT STOPPING TECHNIQUE.pdf',
+    'NEGATIVE THOUGHTS TRIGGER NEGATIVE FEELINGS.pdf', 'POSITIVE SELF TALK.pdf',
+  ]},
+  { label: 'Relationships & Communication', files: [
+    'APPLYING PROBLEM SOLVING TO INTERPERSONAL CONFLICT.pdf', 'Communication Skills.pdf',
+    'Creating A Family Ritual.pdf', 'Handling Tough Situations In A Healthy Way.pdf',
+    "HOW CAN WE MEET EACH OTHER'S NEEDS AND DESIRES.pdf", 'How I Have Hurt Others.pdf',
+    'IDENTIFYING PROVEN PROBLEM-SOLVING SKILLS.pdf', 'Is it romance or is it fear.pdf',
+    'Learning to ask instead of demand.pdf', 'Letter Of Apology.pdf',
+    'NEGOTIATING SKILLS FOR SUCCESS.pdf',
+    'POSITIVE AND NEGATIVE CONTRIBUTIONS TO THE RELATIONSHIP MINE AND YOURS.pdf',
+    'Setting and maintaining boundaries.pdf', 'UNDERSTANDING CODEPENDENT BEHAVIORS.pdf',
+    'UNDERSTANDING FAMILY HISTORY.pdf',
+  ]},
+  { label: 'Self-Care & Independence', files: [
+    'A VOCATIONAL ACTION PLAN.pdf', 'Assessing my needs.pdf', 'Building My support network.pdf',
+    'Getting Organized.pdf', 'IDENTIFY AND SCHEDULE PLEASANT ACTIVITIES.pdf',
+    'Interest and Skill self-assesment.pdf', 'MAKING YOUR OWN DECISIONS.pdf',
+    'PHYSICAL AND EMOTIONAL SELF-CARE.pdf', 'Relating self care deficits to my addiction.pdf',
+    'TAKING DAILY INVENTORY.pdf', 'TAKING STEPS TOWARD INDEPENDENCE.pdf',
+    'WHAT DO I NEED AND HOW DO I GET IT.pdf', 'WHAT DO YOU HEAR AND SEE.pdf',
+    'What do others see changing.pdf', 'Working Towards Independence.pdf',
+  ]},
+  { label: 'Impulsivity & Behavior', files: [
+    'ACCEPT RESPONSIBILITY FOR ILLEGAL BEHAVIOR.pdf', 'IMPULSIVE BEHAVIOR JOURNAL.pdf',
+    'PROBLEM SOLVING AN ALTERNATIVE TO IMPULSIVE ACTION.pdf',
+    'RECOGNIZING THE NEGATIVE CONSEQUENCES OF IMPULSIVE BEHAVIOR.pdf',
+  ]},
+  { label: 'Pain & Medical', files: [
+    'ALTERNATIVE METHODS FOR MANAGING PAIN.pdf', 'COPING WITH ADDICTION AND CHRONIC PAIN #18.pdf',
+    'Coping With Addiction and Other Medical Problems.pdf', 'HOW I FEEL ABOUT MY MEDICAL TREATMENT.pdf',
+    'PAIN AND STRESS JOURNAL.pdf',
+  ]},
+  { label: 'Character & Growth', files: [
+    'AM I HAVING DIFFICULTY LETTING GO.pdf', 'Being genuinely unselfish.pdf',
+    'DEAR  A LETTER TO A LOST LOVED ONE.pdf', 'Getting out of myself.pdf',
+    'SYMPTOMS AND FIXES FOR ADD.pdf', 'Why Do I Matter and Who Cares.pdf',
+  ]},
+  { label: 'Spirituality', files: [
+    'MY HISTORY OF SPIRITUALITY.pdf', 'Understanding spirituality.pdf',
+  ]},
+  { label: 'AA / 12-Step & Aftercare', files: [
+    '3rd Step Guide AA.pdf', 'AFTERCARE PLAN COMPONENTS.pdf', 'RESTORING SOCIALIZATION COMFORT.pdf',
+    'Step 1 worksheets AA.pdf', 'Step 2 Worksheet AA.pdf',
+  ]},
+];
+
+function buildHwLibrary() {
+  const sel = document.getElementById('hwLibrarySelect');
+  if (!sel || sel.options.length > 1) return;
+  ALL_HOMEWORK_GROUPS.forEach(group => {
+    const og = document.createElement('optgroup');
+    og.label = group.label;
+    group.files.forEach(pdf => {
+      const opt = document.createElement('option');
+      opt.value = pdf;
+      opt.textContent = hwFilenameToLabel(pdf);
+      og.appendChild(opt);
+    });
+    sel.appendChild(og);
+  });
+}
+
+function openHwPdf(sel) {
+  if (!sel.value) return;
+  window.open('pdfs/' + encodeURIComponent(sel.value), '_blank');
+  sel.value = '';
+}
+
+function toggleHwLibrary() {
+  const body = document.getElementById('hwLibraryBody');
+  const toggle = document.getElementById('hwLibraryToggle');
+  const open = body.style.display === 'none';
+  body.style.display = open ? 'block' : 'none';
+  toggle.textContent = open ? '▴ collapse' : '▾ expand';
+  if (open) buildHwLibrary();
+}
+
+function filterHwLibrary() {}
 
 function formatITPOutput(btn) {
   const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
