@@ -3911,9 +3911,13 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 
         <div id="de-resource-sheet-wrap" style="display:none;margin-bottom:10px;">
           <label class="form-label">Resource Sheet Provided? *</label>
-          <div style="display:flex;gap:6px;">
+          <div style="display:flex;gap:6px;margin-bottom:6px;">
             <button class="ds-pill" onclick="deSetYN('resourceSheetProvided','yes','de-rs')" id="de-rs-yes">Yes</button>
             <button class="ds-pill" onclick="deSetYN('resourceSheetProvided','no','de-rs')" id="de-rs-no">No</button>
+          </div>
+          <div id="de-rs-reason-wrap" style="display:none;">
+            <label class="form-label">If No, Why Not?</label>
+            <textarea class="form-textarea" id="de-rs-reason" rows="2" placeholder="Explain…" oninput="deState.resourceSheetReason=this.value;deRenderOutput()" style="min-height:50px;"></textarea>
           </div>
         </div>
 
@@ -3946,10 +3950,20 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:12px;">Property & Paperwork</div>
 
         <div style="margin-bottom:10px;">
-          <label class="form-label">Did Client Receive Property and Phone?</label>
+          <label class="form-label">Did Client Receive Property?</label>
           <div style="display:flex;gap:6px;">
-            <button class="ds-pill" onclick="deSetYN('propertyPhoneReceived','yes','de-pp')" id="de-pp-yes">Yes</button>
-            <button class="ds-pill" onclick="deSetYN('propertyPhoneReceived','no','de-pp')" id="de-pp-no">No</button>
+            <button class="ds-pill" onclick="deSetYNA('propertyReceived','yes','de-prop')" id="de-prop-yes">Yes</button>
+            <button class="ds-pill" onclick="deSetYNA('propertyReceived','no','de-prop')" id="de-prop-no">No</button>
+            <button class="ds-pill" onclick="deSetYNA('propertyReceived','na','de-prop')" id="de-prop-na">N/A</button>
+          </div>
+        </div>
+
+        <div style="margin-bottom:10px;">
+          <label class="form-label">Did Client Receive Phone?</label>
+          <div style="display:flex;gap:6px;">
+            <button class="ds-pill" onclick="deSetYNA('phoneReceived','yes','de-phn')" id="de-phn-yes">Yes</button>
+            <button class="ds-pill" onclick="deSetYNA('phoneReceived','no','de-phn')" id="de-phn-no">No</button>
+            <button class="ds-pill" onclick="deSetYNA('phoneReceived','na','de-phn')" id="de-phn-na">N/A</button>
           </div>
         </div>
 
@@ -9147,15 +9161,15 @@ let deState = {
   clientName: '', dischargeDate: '', departureTime: '', unit: '', dischargeType: '', dischargeSubtype: '',
   unsuccessfulReason: '', neutralReason: '',
   bridgeContacted: '', bridgeNotContactedReason: '', staffInvolved: '',
-  destination: '', resourceSheetProvided: '', forwardingInfo: '', forwardingNone: false,
+  destination: '', resourceSheetProvided: '', resourceSheetReason: '', forwardingInfo: '', forwardingNone: false,
   medsReceived: '', medsNotReceivedReason: '',
-  propertyPhoneReceived: '', woodhavenPropertyCollected: '', paperworkSigned: '', phoneCallMade: '',
+  propertyReceived: '', phoneReceived: '', woodhavenPropertyCollected: '', paperworkSigned: '', phoneCallMade: '',
   onProbation: '', poNotified: '', outpatientOffered: '',
   roomVacated: '', clientsOnUnit: '', roomCleanedSearched: '',
   additionalInfo: ''
 };
 
-const DE_YN_FIELDS = ['bridgeContacted','resourceSheetProvided','medsReceived','propertyPhoneReceived',
+const DE_YN_FIELDS = ['bridgeContacted','resourceSheetProvided','medsReceived',
   'woodhavenPropertyCollected','paperworkSigned','phoneCallMade','onProbation','poNotified','outpatientOffered','roomCleanedSearched'];
 
 function deToggleForwardingNone(checked) {
@@ -9184,10 +9198,23 @@ function deSetYN(field, val, prefix) {
   if (field === 'medsReceived') {
     document.getElementById('de-meds-reason-wrap').style.display = newVal === 'no' ? 'block' : 'none';
   }
+  if (field === 'resourceSheetProvided') {
+    document.getElementById('de-rs-reason-wrap').style.display = newVal === 'no' ? 'block' : 'none';
+  }
   if (field === 'onProbation') {
     document.getElementById('de-po-wrap').style.display = newVal === 'yes' ? 'block' : 'none';
     if (newVal !== 'yes') { deState.poNotified = ''; ['yes','no'].forEach(v => document.getElementById('de-po-'+v).classList.remove('active')); }
   }
+  deRenderOutput();
+}
+
+function deSetYNA(field, val, prefix) {
+  const newVal = (deState[field] === val) ? '' : val;
+  deState[field] = newVal;
+  ['yes','no','na'].forEach(v => {
+    const el = document.getElementById(prefix + '-' + v);
+    if (el) el.classList.toggle('active', v === newVal);
+  });
   deRenderOutput();
 }
 
@@ -9245,7 +9272,8 @@ function deFmtTime(t) {
 
 function deYN(label, val) {
   if (!val) return null;
-  return `${label}: ${val === 'yes' ? 'Yes' : 'No'}`;
+  const display = val === 'yes' ? 'Yes' : val === 'no' ? 'No' : 'N/A';
+  return `${label}: ${display}`;
 }
 
 function deRenderOutput() {
@@ -9329,6 +9357,7 @@ function deRenderOutput() {
 
   if (s.dischargeType === 'unsuccessful' && s.resourceSheetProvided) {
     lines.push(deYN('Resource Sheet Provided', s.resourceSheetProvided));
+    if (s.resourceSheetProvided === 'no' && s.resourceSheetReason) lines.push(`Reason: ${s.resourceSheetReason}`);
   }
 
   if (s.medsReceived) {
@@ -9347,7 +9376,8 @@ function deRenderOutput() {
   }
 
   const logisticsLines = [
-    deYN('Property and Phone Received', s.propertyPhoneReceived),
+    deYN('Property Received', s.propertyReceived),
+    deYN('Phone Received', s.phoneReceived),
     deYN('Woodhaven Property Collected', s.woodhavenPropertyCollected),
     deYN('Discharge Paperwork Signed', s.paperworkSigned),
     (s.dischargeType === 'unsuccessful' ? deYN('Phone Call Made', s.phoneCallMade) : null)
@@ -9386,15 +9416,15 @@ function deReset() {
     clientName: '', dischargeDate: '', departureTime: '', unit: '', dischargeType: '', dischargeSubtype: '',
     unsuccessfulReason: '', neutralReason: '',
     bridgeContacted: '', bridgeNotContactedReason: '', staffInvolved: '',
-    destination: '', resourceSheetProvided: '', forwardingInfo: '', forwardingNone: false,
+    destination: '', resourceSheetProvided: '', resourceSheetReason: '', forwardingInfo: '', forwardingNone: false,
     medsReceived: '', medsNotReceivedReason: '',
-    propertyPhoneReceived: '', woodhavenPropertyCollected: '', paperworkSigned: '', phoneCallMade: '',
+    propertyReceived: '', phoneReceived: '', woodhavenPropertyCollected: '', paperworkSigned: '', phoneCallMade: '',
     onProbation: '', poNotified: '', outpatientOffered: '',
     roomVacated: '', clientsOnUnit: '', roomCleanedSearched: '',
     additionalInfo: ''
   };
   ['de-client-name','de-discharge-date','de-departure-time','de-unsuccessful-reason','de-neutral-reason','de-bridge-reason',
-   'de-staff-involved','de-destination','de-meds-reason','de-room','de-census','de-forwarding','de-additional'].forEach(id => {
+   'de-staff-involved','de-destination','de-meds-reason','de-rs-reason','de-room','de-census','de-forwarding','de-additional'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
@@ -9404,8 +9434,11 @@ function deReset() {
   document.getElementById('de-forwarding-none').checked = false;
   ['successful','unsuccessful','neutral'].forEach(v => document.getElementById('de-dt-'+v).classList.remove('active'));
   ['asa','admin'].forEach(v => document.getElementById('de-sub-'+v).classList.remove('active'));
-  ['de-bridge','de-rs','de-meds','de-pp','de-wp','de-pw','de-call','de-prob','de-po','de-op','de-clean'].forEach(prefix => {
+  ['de-bridge','de-rs','de-meds','de-wp','de-pw','de-call','de-prob','de-po','de-op','de-clean'].forEach(prefix => {
     ['yes','no'].forEach(v => { const el = document.getElementById(prefix + '-' + v); if (el) el.classList.remove('active'); });
+  });
+  ['de-prop','de-phn'].forEach(prefix => {
+    ['yes','no','na'].forEach(v => { const el = document.getElementById(prefix + '-' + v); if (el) el.classList.remove('active'); });
   });
   document.getElementById('de-subtype-wrap').style.display = 'none';
   document.getElementById('de-unsuccessful-reason-wrap').style.display = 'none';
@@ -9414,6 +9447,7 @@ function deReset() {
   document.getElementById('de-bridge-reason-wrap').style.display = 'none';
   document.getElementById('de-resource-sheet-wrap').style.display = 'none';
   document.getElementById('de-meds-reason-wrap').style.display = 'none';
+  document.getElementById('de-rs-reason-wrap').style.display = 'none';
   document.getElementById('de-call-wrap').style.display = 'none';
   document.getElementById('de-po-wrap').style.display = 'none';
   document.getElementById('de-missing-banner').style.display = 'none';
