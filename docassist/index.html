@@ -1864,7 +1864,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 <div class="app-header">
   <div class="header-left">
     <div class="app-title">DocAssist</div>
-    <div onclick="openChangelogModal()" style="font-size:9px;font-weight:600;padding:1px 6px;border-radius:8px;background:#1a3d22;color:#7ec8a0;border:1px solid #2d6a4f;letter-spacing:.07em;display:inline-block;margin:1px 0 2px;cursor:pointer;" onmouseover="this.style.background='#2d6a4f'" onmouseout="this.style.background='#1a3d22'">v1.5</div>
+    <div onclick="openChangelogModal()" style="font-size:9px;font-weight:600;padding:1px 6px;border-radius:8px;background:#1a3d22;color:#7ec8a0;border:1px solid #2d6a4f;letter-spacing:.07em;display:inline-block;margin:1px 0 2px;cursor:pointer;" onmouseover="this.style.background='#2d6a4f'" onmouseout="this.style.background='#1a3d22'">v1.6</div>
     <div class="app-subtitle">Woodhaven Clinical Documentation</div>
   </div>
   <div style="display:flex;align-items:center;gap:14px">
@@ -1997,6 +1997,12 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         <div class="home-card-icon"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div>
         <div class="home-card-title">Discharge Summary</div>
         <div class="home-card-desc">Structured discharge documentation covering treatment progress, goals, and aftercare plan</div>
+        <div class="home-card-arrow">Open →</div>
+      </div>
+      <div class="home-card" onclick="navigateTo('discharge-email')">
+        <div class="home-card-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22 6 12 13 2 6"/></svg></div>
+        <div class="home-card-title">Discharge Email</div>
+        <div class="home-card-desc">Standardized discharge notification covering logistics and follow-up, ready to email to the discharge team</div>
         <div class="home-card-arrow">Open →</div>
       </div>
     </div>
@@ -3805,6 +3811,257 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   </div><!-- /layout -->
 </div><!-- /view-discharge -->
 
+<!-- ═══ DISCHARGE EMAIL VIEW ═══════════════════════════════ -->
+<div id="view-discharge-email" class="tool-view">
+  <div class="tool-nav">
+    <button class="tool-nav-back" onclick="navigateTo('home')">← Back</button>
+    <span class="tool-nav-divider">|</span>
+    <span class="tool-nav-title">Discharge Email</span>
+  </div>
+  <div style="display:flex;gap:16px;flex:1;min-height:0;padding:16px 16px 0 16px;">
+
+    <!-- LEFT PANEL: INPUTS -->
+    <div style="width:420px;min-width:340px;display:flex;flex-direction:column;gap:0;overflow-y:auto;padding-right:6px;">
+
+      <!-- Client & Discharge -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:12px;">Client & Discharge</div>
+
+        <div style="margin-bottom:10px;">
+          <label class="form-label">Client Full Name *</label>
+          <input class="form-input" id="de-client-name" type="text" placeholder="Full name" oninput="deState.clientName=this.value;deRenderOutput()">
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+          <div>
+            <label class="form-label">Date of Discharge *</label>
+            <input class="form-input" id="de-discharge-date" type="date" oninput="deState.dischargeDate=this.value;deRenderOutput()">
+          </div>
+          <div>
+            <label class="form-label">Time of Departure</label>
+            <input class="form-input" id="de-departure-time" type="time" oninput="deState.departureTime=this.value;deRenderOutput()">
+          </div>
+        </div>
+
+        <div style="margin-bottom:10px;">
+          <label class="form-label">Unit *</label>
+          <select class="form-select" id="de-unit" onchange="deState.unit=this.value;deRenderOutput()">
+            <option value="">Select unit</option>
+            <option value="5th Floor">5th Floor</option>
+            <option value="6th Floor">6th Floor</option>
+            <option value="8th Floor">8th Floor</option>
+            <option value="Men's PHP">Men's PHP</option>
+            <option value="Women's PHP">Women's PHP</option>
+            <option value="Community OP">Community OP</option>
+          </select>
+        </div>
+
+        <div style="margin-bottom:10px;">
+          <label class="form-label">Type of Discharge *</label>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
+            <button class="ds-pill" onclick="deSetDischargeType('successful')" id="de-dt-successful">Successful</button>
+            <button class="ds-pill" onclick="deSetDischargeType('unsuccessful')" id="de-dt-unsuccessful">Unsuccessful</button>
+            <button class="ds-pill" onclick="deSetDischargeType('neutral')" id="de-dt-neutral">Neutral</button>
+          </div>
+          <div id="de-subtype-wrap" style="display:none;margin-left:12px;padding-left:10px;border-left:2px solid var(--border);">
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:5px;">Reason</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;">
+              <button class="ds-pill ds-subpill" onclick="deSetSubtype('asa')" id="de-sub-asa">Left ASA</button>
+              <button class="ds-pill ds-subpill" onclick="deSetSubtype('admin')" id="de-sub-admin">Administrative</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="de-unsuccessful-reason-wrap" style="display:none;margin-bottom:10px;">
+          <label class="form-label">Reason for Leaving *</label>
+          <textarea class="form-textarea" id="de-unsuccessful-reason" rows="2" placeholder="Why did the client leave ASA, or why were they administratively discharged?" oninput="deState.unsuccessfulReason=this.value;deRenderOutput()" style="min-height:55px;"></textarea>
+        </div>
+
+        <div id="de-neutral-reason-wrap" style="display:none;margin-bottom:10px;">
+          <label class="form-label">Reason for Neutral Discharge</label>
+          <input class="form-input" id="de-neutral-reason" type="text" placeholder="e.g., insurance denial, mental health, probation" oninput="deState.neutralReason=this.value;deRenderOutput()">
+        </div>
+
+        <div id="de-bridge-wrap" style="display:none;margin-bottom:6px;">
+          <label class="form-label">Was The Bridge Contacted? *</label>
+          <div style="display:flex;gap:6px;margin-bottom:6px;">
+            <button class="ds-pill" onclick="deSetYN('bridgeContacted','yes','de-bridge')" id="de-bridge-yes">Yes</button>
+            <button class="ds-pill" onclick="deSetYN('bridgeContacted','no','de-bridge')" id="de-bridge-no">No</button>
+          </div>
+          <div id="de-bridge-reason-wrap" style="display:none;">
+            <label class="form-label">Why Not? What Other Attempts Were Made?</label>
+            <textarea class="form-textarea" id="de-bridge-reason" rows="2" placeholder="Explain why The Bridge wasn't contacted and what other intervention attempts were made…" oninput="deState.bridgeNotContactedReason=this.value;deRenderOutput()" style="min-height:55px;"></textarea>
+          </div>
+        </div>
+
+        <div>
+          <label class="form-label">Staff Involved with Intervention</label>
+          <textarea class="form-textarea" id="de-staff-involved" rows="2" placeholder="Names of staff involved in the intervention…" oninput="deState.staffInvolved=this.value;deRenderOutput()" style="min-height:50px;"></textarea>
+        </div>
+      </div>
+
+      <!-- Departure Logistics -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:12px;">Departure Logistics</div>
+
+        <div style="margin-bottom:10px;">
+          <label class="form-label">Where Is the Client Going? *</label>
+          <input class="form-input" id="de-destination" type="text" placeholder="Destination upon leaving" oninput="deState.destination=this.value;deRenderOutput()">
+        </div>
+
+        <div id="de-resource-sheet-wrap" style="display:none;margin-bottom:10px;">
+          <label class="form-label">Resource Sheet Provided? *</label>
+          <div style="display:flex;gap:6px;">
+            <button class="ds-pill" onclick="deSetYN('resourceSheetProvided','yes','de-rs')" id="de-rs-yes">Yes</button>
+            <button class="ds-pill" onclick="deSetYN('resourceSheetProvided','no','de-rs')" id="de-rs-no">No</button>
+          </div>
+        </div>
+
+        <div style="margin-bottom:6px;">
+          <label class="form-label">Medications Received?</label>
+          <div style="display:flex;gap:6px;margin-bottom:6px;">
+            <button class="ds-pill" onclick="deSetYN('medsReceived','yes','de-meds')" id="de-meds-yes">Yes</button>
+            <button class="ds-pill" onclick="deSetYN('medsReceived','no','de-meds')" id="de-meds-no">No</button>
+          </div>
+          <div id="de-meds-reason-wrap" style="display:none;">
+            <label class="form-label">If No, Why Not?</label>
+            <textarea class="form-textarea" id="de-meds-reason" rows="2" placeholder="Explain…" oninput="deState.medsNotReceivedReason=this.value;deRenderOutput()" style="min-height:50px;"></textarea>
+          </div>
+        </div>
+
+        <div>
+          <label class="form-label">Forwarding Address and/or Phone Number</label>
+          <div style="display:flex;gap:6px;margin-bottom:6px;">
+            <button class="ds-pill" onclick="deToggleForwardingNone()" id="de-forwarding-none">None Left</button>
+          </div>
+          <input class="form-input" id="de-forwarding" type="text" placeholder="If left with client" oninput="deState.forwardingInfo=this.value;deRenderOutput()">
+        </div>
+      </div>
+
+      <!-- Property & Paperwork -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:12px;">Property & Paperwork</div>
+
+        <div style="margin-bottom:10px;">
+          <label class="form-label">Did Client Receive Property and Phone?</label>
+          <div style="display:flex;gap:6px;">
+            <button class="ds-pill" onclick="deSetYN('propertyPhoneReceived','yes','de-pp')" id="de-pp-yes">Yes</button>
+            <button class="ds-pill" onclick="deSetYN('propertyPhoneReceived','no','de-pp')" id="de-pp-no">No</button>
+          </div>
+        </div>
+
+        <div style="margin-bottom:10px;">
+          <label class="form-label">Was Woodhaven Property Collected?</label>
+          <div style="display:flex;gap:6px;">
+            <button class="ds-pill" onclick="deSetYN('woodhavenPropertyCollected','yes','de-wp')" id="de-wp-yes">Yes</button>
+            <button class="ds-pill" onclick="deSetYN('woodhavenPropertyCollected','no','de-wp')" id="de-wp-no">No</button>
+          </div>
+        </div>
+
+        <div style="margin-bottom:10px;">
+          <label class="form-label">Did Client Sign All Discharge Paperwork?</label>
+          <div style="display:flex;gap:6px;">
+            <button class="ds-pill" onclick="deSetYN('paperworkSigned','yes','de-pw')" id="de-pw-yes">Yes</button>
+            <button class="ds-pill" onclick="deSetYN('paperworkSigned','no','de-pw')" id="de-pw-no">No</button>
+          </div>
+        </div>
+
+        <div id="de-call-wrap" style="display:none;">
+          <label class="form-label">Did Client Make a Phone Call?</label>
+          <div style="display:flex;gap:6px;">
+            <button class="ds-pill" onclick="deSetYN('phoneCallMade','yes','de-call')" id="de-call-yes">Yes</button>
+            <button class="ds-pill" onclick="deSetYN('phoneCallMade','no','de-call')" id="de-call-no">No</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Probation & Outpatient -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:12px;">Probation & Outpatient</div>
+
+        <div style="margin-bottom:10px;">
+          <label class="form-label">Is the Client on Probation?</label>
+          <div style="display:flex;gap:6px;">
+            <button class="ds-pill" onclick="deSetYN('onProbation','yes','de-prob')" id="de-prob-yes">Yes</button>
+            <button class="ds-pill" onclick="deSetYN('onProbation','no','de-prob')" id="de-prob-no">No</button>
+          </div>
+          <div id="de-po-wrap" style="display:none;margin-top:8px;">
+            <label class="form-label">Has the Probation Officer Been Notified? *</label>
+            <div style="display:flex;gap:6px;">
+              <button class="ds-pill" onclick="deSetYN('poNotified','yes','de-po')" id="de-po-yes">Yes</button>
+              <button class="ds-pill" onclick="deSetYN('poNotified','no','de-po')" id="de-po-no">No</button>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label class="form-label">Was Client Offered Woodhaven Outpatient Services? *</label>
+          <div style="display:flex;gap:6px;">
+            <button class="ds-pill" onclick="deSetYN('outpatientOffered','yes','de-op')" id="de-op-yes">Yes</button>
+            <button class="ds-pill" onclick="deSetYN('outpatientOffered','no','de-op')" id="de-op-no">No</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Room & Census -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:12px;">Room & Census</div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+          <div>
+            <label class="form-label">Room Vacated</label>
+            <input class="form-input" id="de-room" type="text" placeholder="Room #" oninput="deState.roomVacated=this.value;deRenderOutput()">
+          </div>
+          <div>
+            <label class="form-label">Clients Remaining on Unit</label>
+            <input class="form-input" id="de-census" type="number" min="0" placeholder="#" oninput="deState.clientsOnUnit=this.value;deRenderOutput()">
+          </div>
+        </div>
+
+        <div>
+          <label class="form-label">Was the Room Cleaned and Searched?</label>
+          <div style="display:flex;gap:6px;">
+            <button class="ds-pill" onclick="deSetYN('roomCleanedSearched','yes','de-clean')" id="de-clean-yes">Yes</button>
+            <button class="ds-pill" onclick="deSetYN('roomCleanedSearched','no','de-clean')" id="de-clean-no">No</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Additional Information -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:12px;">Additional Information</div>
+        <textarea class="form-textarea" id="de-additional" rows="3" placeholder="Anything else important to document about this discharge…" oninput="deState.additionalInfo=this.value;deRenderOutput()" style="min-height:65px;"></textarea>
+      </div>
+
+    </div><!-- /left panel -->
+
+    <!-- RIGHT PANEL: OUTPUT -->
+    <div id="de-right-panel" style="flex:1;min-width:0;display:flex;flex-direction:column;gap:0;overflow-y:auto;">
+
+      <div style="background:var(--warning-bg);border:1px solid var(--warning-border);border-radius:6px;padding:8px 12px;margin-bottom:12px;font-size:11px;color:var(--warning-text);">
+        ⚠ Proofread before sending. Verify names, dates, and clinical details are accurate.
+      </div>
+
+      <div id="de-missing-banner" style="display:none;background:#fff7ed;border:1px solid #fdba74;border-radius:6px;padding:8px 12px;margin-bottom:12px;font-size:11px;color:#9a3412;"></div>
+
+      <div class="ds-output-block" id="de-out-subject-block">
+        <div class="ds-out-label">Subject Line</div>
+        <div class="ds-out-text" id="de-out-subject-text"></div>
+        <button class="ds-copy-btn" onclick="dsCopyBlock('de-out-subject-text')">Copy Subject</button>
+      </div>
+
+      <div class="ds-output-block" id="de-out-block">
+        <div class="ds-out-label">Discharge Notification Email</div>
+        <div class="ds-out-text" id="de-out-text"></div>
+        <button class="ds-copy-btn" onclick="dsCopyBlock('de-out-text')">Copy Email</button>
+      </div>
+
+      <div style="font-size:11px;color:var(--text-secondary);padding:4px 2px 16px;">Please email this notification to <strong>discharge@woodhavenohio.com</strong>.</div>
+
+    </div><!-- /right panel -->
+  </div><!-- /layout -->
+</div><!-- /view-discharge-email -->
+
 <!-- ═══ CHANGELOG VIEW ════════════════════════════════════ -->
 <!-- Changelog modal -->
 <div id="changelogModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;align-items:center;justify-content:center;" onclick="if(event.target===this)closeChangelogModal()">
@@ -3817,6 +4074,21 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       <button onclick="closeChangelogModal()" style="background:none;border:none;font-size:18px;color:#999;cursor:pointer;line-height:1;padding:0 0 0 12px;" title="Close">✕</button>
     </div>
     <div style="overflow-y:auto;padding:20px 24px 28px;">
+
+    <!-- v1.6 -->
+    <div style="margin-bottom:28px;">
+      <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px;">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;background:var(--accent);color:#fff;padding:2px 8px;border-radius:4px;">v1.6</span>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5a6a62;">June 30, 2026</span>
+        <span style="font-size:14px;font-weight:600;color:#1b4332;">Discharge Email tool</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:7px;">
+        <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 13px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;">
+          <span style="font-size:9px;font-weight:600;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">NEW</span>
+          <span style="font-size:13px;line-height:1.55;">New Discharge Email tool added to the home screen. Captures discharge logistics — type of discharge, ASA intervention attempts, destination, property and paperwork, probation notification, and unit status — and formats it into a standardized email ready to send to discharge@woodhavenohio.com.</span>
+        </div>
+      </div>
+    </div>
 
     <!-- v1.5 -->
     <div style="margin-bottom:28px;">
@@ -5134,6 +5406,7 @@ function navigateTo(view) {
   document.getElementById('view-' + view).classList.add('active');
   if (view === 'itp') renderAsamRef();
   if (view === 'discharge') dsInit();
+  if (view === 'discharge-email') deRenderOutput();
 }
 
 function switchTab(n) {
@@ -8863,6 +9136,291 @@ function dsReset() {
 
 // ─── END DISCHARGE TOOL ────────────────────────────
 
+// ═══════════════════════════════════════════════════
+// DISCHARGE EMAIL
+// ═══════════════════════════════════════════════════
+
+let deState = {
+  clientName: '', dischargeDate: '', departureTime: '', unit: '', dischargeType: '', dischargeSubtype: '',
+  unsuccessfulReason: '', neutralReason: '',
+  bridgeContacted: '', bridgeNotContactedReason: '', staffInvolved: '',
+  destination: '', resourceSheetProvided: '', forwardingInfo: '', forwardingNone: false,
+  medsReceived: '', medsNotReceivedReason: '',
+  propertyPhoneReceived: '', woodhavenPropertyCollected: '', paperworkSigned: '', phoneCallMade: '',
+  onProbation: '', poNotified: '', outpatientOffered: '',
+  roomVacated: '', clientsOnUnit: '', roomCleanedSearched: '',
+  additionalInfo: ''
+};
+
+const DE_YN_FIELDS = ['bridgeContacted','resourceSheetProvided','medsReceived','propertyPhoneReceived',
+  'woodhavenPropertyCollected','paperworkSigned','phoneCallMade','onProbation','poNotified','outpatientOffered','roomCleanedSearched'];
+
+function deToggleForwardingNone() {
+  deState.forwardingNone = !deState.forwardingNone;
+  const btn = document.getElementById('de-forwarding-none');
+  const input = document.getElementById('de-forwarding');
+  btn.classList.toggle('active', deState.forwardingNone);
+  if (deState.forwardingNone) {
+    deState.forwardingInfo = '';
+    input.value = '';
+    input.disabled = true;
+  } else {
+    input.disabled = false;
+  }
+  deRenderOutput();
+}
+
+function deSetYN(field, val, prefix) {
+  const newVal = (deState[field] === val) ? '' : val;
+  deState[field] = newVal;
+  ['yes','no'].forEach(v => {
+    const el = document.getElementById(prefix + '-' + v);
+    if (el) el.classList.toggle('active', v === newVal);
+  });
+  if (field === 'bridgeContacted') {
+    document.getElementById('de-bridge-reason-wrap').style.display = newVal === 'no' ? 'block' : 'none';
+  }
+  if (field === 'medsReceived') {
+    document.getElementById('de-meds-reason-wrap').style.display = newVal === 'no' ? 'block' : 'none';
+  }
+  if (field === 'onProbation') {
+    document.getElementById('de-po-wrap').style.display = newVal === 'yes' ? 'block' : 'none';
+    if (newVal !== 'yes') { deState.poNotified = ''; ['yes','no'].forEach(v => document.getElementById('de-po-'+v).classList.remove('active')); }
+  }
+  deRenderOutput();
+}
+
+function deSetDischargeType(val) {
+  const newVal = (deState.dischargeType === val) ? '' : val;
+  deState.dischargeType = newVal;
+  deState.dischargeSubtype = '';
+  ['successful','unsuccessful','neutral'].forEach(v => {
+    document.getElementById('de-dt-' + v).classList.toggle('active', v === newVal);
+  });
+  document.getElementById('de-subtype-wrap').style.display = newVal === 'unsuccessful' ? 'block' : 'none';
+  ['asa','admin'].forEach(v => document.getElementById('de-sub-' + v).classList.remove('active'));
+
+  document.getElementById('de-unsuccessful-reason-wrap').style.display = newVal === 'unsuccessful' ? 'block' : 'none';
+  document.getElementById('de-neutral-reason-wrap').style.display = newVal === 'neutral' ? 'block' : 'none';
+  document.getElementById('de-resource-sheet-wrap').style.display = newVal === 'unsuccessful' ? 'block' : 'none';
+  document.getElementById('de-call-wrap').style.display = newVal === 'unsuccessful' ? 'block' : 'none';
+
+  if (newVal !== 'unsuccessful') {
+    document.getElementById('de-bridge-wrap').style.display = 'none';
+  }
+  deRenderOutput();
+}
+
+function deSetSubtype(val) {
+  const newVal = (deState.dischargeSubtype === val) ? '' : val;
+  deState.dischargeSubtype = newVal;
+  ['asa','admin'].forEach(v => {
+    document.getElementById('de-sub-' + v).classList.toggle('active', v === newVal);
+  });
+  document.getElementById('de-bridge-wrap').style.display = newVal === 'asa' ? 'block' : 'none';
+  deRenderOutput();
+}
+
+const DE_TYPE_LABELS = {
+  successful: 'Successful',
+  unsuccessful: 'Unsuccessful',
+  neutral: 'Neutral'
+};
+const DE_SUBTYPE_LABELS = { asa: 'Left Against Staff Advice (ASA)', admin: 'Administrative Discharge' };
+
+function deFmtDate(d) {
+  if (!d) return '';
+  const dt = new Date(d + 'T00:00:00');
+  return dt.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+}
+
+function deFmtTime(t) {
+  if (!t) return '';
+  const [h, m] = t.split(':').map(Number);
+  const period = h >= 12 ? 'PM' : 'AM';
+  const h12 = h % 12 === 0 ? 12 : h % 12;
+  return `${h12}:${String(m).padStart(2,'0')} ${period}`;
+}
+
+function deYN(label, val) {
+  if (!val) return null;
+  return `${label}: ${val === 'yes' ? 'Yes' : 'No'}`;
+}
+
+function deRenderOutput() {
+  const s = deState;
+  const out = document.getElementById('de-out-text');
+  const subjectOut = document.getElementById('de-out-subject-text');
+  const banner = document.getElementById('de-missing-banner');
+  if (!out || !subjectOut) return;
+
+  // Required-field check (non-blocking — informational only)
+  const missing = [];
+  if (!s.clientName) missing.push('Client full name');
+  if (!s.dischargeDate) missing.push('Date of discharge');
+  if (!s.unit) missing.push('Unit');
+  if (!s.dischargeType) missing.push('Type of discharge');
+  if (s.dischargeType === 'unsuccessful' && !s.unsuccessfulReason) missing.push('Reason for leaving');
+  if (s.dischargeType === 'unsuccessful' && s.dischargeSubtype === 'asa' && !s.bridgeContacted) missing.push('Bridge contact');
+  if (!s.destination) missing.push('Where client is going');
+  if (s.dischargeType === 'unsuccessful' && !s.resourceSheetProvided) missing.push('Resource sheet provided');
+  if (s.onProbation === 'yes' && !s.poNotified) missing.push('Probation officer notified');
+  if (!s.outpatientOffered) missing.push('Outpatient services offered');
+
+  if (banner) {
+    if (missing.length && (s.clientName || s.dischargeDate || s.dischargeType)) {
+      banner.style.display = 'block';
+      banner.textContent = 'Required, not yet answered: ' + missing.join(', ') + '.';
+    } else {
+      banner.style.display = 'none';
+    }
+  }
+
+  if (!s.clientName && !s.dischargeDate && !s.dischargeType && !s.unit) {
+    out.innerHTML = '<span class="ds-out-empty">Complete fields on the left to generate the discharge email.</span>';
+    subjectOut.innerHTML = '<span class="ds-out-empty">Complete fields on the left to generate the subject line.</span>';
+    return;
+  }
+
+  const C = s.clientName || '[Client Name]';
+  const dateStr = deFmtDate(s.dischargeDate) || '[Date of Discharge]';
+  const unitStr = s.unit || '[Unit]';
+
+  subjectOut.textContent = `Discharge Notification - ${unitStr} - ${dateStr}`;
+
+  let typeLine = DE_TYPE_LABELS[s.dischargeType] || '[Type of Discharge]';
+  if (s.dischargeType === 'unsuccessful' && s.dischargeSubtype) {
+    typeLine += ` — ${DE_SUBTYPE_LABELS[s.dischargeSubtype]}`;
+  }
+  if (s.dischargeType === 'neutral' && s.neutralReason) {
+    typeLine += ` — ${s.neutralReason}`;
+  }
+
+  const lines = [];
+  lines.push(`Client: ${C}`);
+  lines.push(`Date of Discharge: ${dateStr}`);
+  if (s.departureTime) lines.push(`Time of Departure: ${deFmtTime(s.departureTime)}`);
+  lines.push(`Unit: ${unitStr}`);
+  lines.push(`Type of Discharge: ${typeLine}`);
+
+  if (s.dischargeType === 'unsuccessful' && s.unsuccessfulReason) {
+    lines.push('');
+    lines.push(`Reason for Leaving: ${s.unsuccessfulReason}`);
+  }
+
+  if (s.dischargeType === 'unsuccessful' && s.dischargeSubtype === 'asa' && s.bridgeContacted) {
+    lines.push('');
+    if (s.bridgeContacted === 'yes') {
+      lines.push('The Bridge Contacted: Yes');
+    } else {
+      lines.push('The Bridge Contacted: No');
+      if (s.bridgeNotContactedReason) lines.push(`Reason / Other Attempts to Intervene: ${s.bridgeNotContactedReason}`);
+    }
+  }
+
+  if (s.staffInvolved) {
+    lines.push('');
+    lines.push(`Staff Involved with Intervention: ${s.staffInvolved}`);
+  }
+
+  lines.push('');
+  lines.push(`Destination: ${s.destination || '[Destination]'}`);
+
+  if (s.dischargeType === 'unsuccessful' && s.resourceSheetProvided) {
+    lines.push(deYN('Resource Sheet Provided', s.resourceSheetProvided));
+  }
+
+  if (s.medsReceived) {
+    if (s.medsReceived === 'yes') {
+      lines.push('Medications Received: Yes');
+    } else {
+      lines.push('Medications Received: No');
+      if (s.medsNotReceivedReason) lines.push(`Reason: ${s.medsNotReceivedReason}`);
+    }
+  }
+
+  if (s.forwardingNone) {
+    lines.push('Forwarding Address and/or Phone Number: None left');
+  } else if (s.forwardingInfo) {
+    lines.push(`Forwarding Address and/or Phone Number: ${s.forwardingInfo}`);
+  }
+
+  const logisticsLines = [
+    deYN('Property and Phone Received', s.propertyPhoneReceived),
+    deYN('Woodhaven Property Collected', s.woodhavenPropertyCollected),
+    deYN('Discharge Paperwork Signed', s.paperworkSigned),
+    (s.dischargeType === 'unsuccessful' ? deYN('Phone Call Made', s.phoneCallMade) : null)
+  ].filter(Boolean);
+  if (logisticsLines.length) { lines.push(''); logisticsLines.forEach(l => lines.push(l)); }
+
+  if (s.onProbation) {
+    lines.push('');
+    lines.push(s.onProbation === 'yes' ? 'On Probation: Yes' : 'On Probation: No');
+    if (s.onProbation === 'yes') {
+      lines.push(deYN('Probation Officer Notified', s.poNotified) || 'Probation Officer Notified: [Not yet answered]');
+    }
+  }
+
+  if (s.outpatientOffered) {
+    lines.push(deYN('Offered Connection to Woodhaven Outpatient Services', s.outpatientOffered));
+  }
+
+  const roomLines = [];
+  if (s.roomVacated) roomLines.push(`Room Vacated: ${s.roomVacated}${s.roomCleanedSearched ? ` (Cleaned and Searched: ${s.roomCleanedSearched === 'yes' ? 'Yes' : 'No'})` : ''}`);
+  else if (s.roomCleanedSearched) roomLines.push(deYN('Room Cleaned and Searched', s.roomCleanedSearched));
+  if (s.clientsOnUnit !== '' && s.clientsOnUnit !== undefined && s.clientsOnUnit !== null) roomLines.push(`Clients Remaining on Unit: ${s.clientsOnUnit}`);
+  if (roomLines.length) { lines.push(''); roomLines.forEach(l => lines.push(l)); }
+
+  if (s.additionalInfo) {
+    lines.push('');
+    lines.push('Additional Information:');
+    lines.push(s.additionalInfo);
+  }
+
+  out.textContent = lines.join('\n');
+}
+
+function deReset() {
+  deState = {
+    clientName: '', dischargeDate: '', departureTime: '', unit: '', dischargeType: '', dischargeSubtype: '',
+    unsuccessfulReason: '', neutralReason: '',
+    bridgeContacted: '', bridgeNotContactedReason: '', staffInvolved: '',
+    destination: '', resourceSheetProvided: '', forwardingInfo: '', forwardingNone: false,
+    medsReceived: '', medsNotReceivedReason: '',
+    propertyPhoneReceived: '', woodhavenPropertyCollected: '', paperworkSigned: '', phoneCallMade: '',
+    onProbation: '', poNotified: '', outpatientOffered: '',
+    roomVacated: '', clientsOnUnit: '', roomCleanedSearched: '',
+    additionalInfo: ''
+  };
+  ['de-client-name','de-discharge-date','de-departure-time','de-unsuccessful-reason','de-neutral-reason','de-bridge-reason',
+   'de-staff-involved','de-destination','de-meds-reason','de-room','de-census','de-forwarding','de-additional'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('de-unit').value = '';
+  const fwdInput = document.getElementById('de-forwarding');
+  fwdInput.disabled = false;
+  document.getElementById('de-forwarding-none').classList.remove('active');
+  ['successful','unsuccessful','neutral'].forEach(v => document.getElementById('de-dt-'+v).classList.remove('active'));
+  ['asa','admin'].forEach(v => document.getElementById('de-sub-'+v).classList.remove('active'));
+  ['de-bridge','de-rs','de-meds','de-pp','de-wp','de-pw','de-call','de-prob','de-po','de-op','de-clean'].forEach(prefix => {
+    ['yes','no'].forEach(v => { const el = document.getElementById(prefix + '-' + v); if (el) el.classList.remove('active'); });
+  });
+  document.getElementById('de-subtype-wrap').style.display = 'none';
+  document.getElementById('de-unsuccessful-reason-wrap').style.display = 'none';
+  document.getElementById('de-neutral-reason-wrap').style.display = 'none';
+  document.getElementById('de-bridge-wrap').style.display = 'none';
+  document.getElementById('de-bridge-reason-wrap').style.display = 'none';
+  document.getElementById('de-resource-sheet-wrap').style.display = 'none';
+  document.getElementById('de-meds-reason-wrap').style.display = 'none';
+  document.getElementById('de-call-wrap').style.display = 'none';
+  document.getElementById('de-po-wrap').style.display = 'none';
+  document.getElementById('de-missing-banner').style.display = 'none';
+  deRenderOutput();
+}
+
+// ─── END DISCHARGE EMAIL TOOL ──────────────────────
+
 function doReset() {
   document.getElementById('resetModal').style.display = 'none';
 
@@ -8950,6 +9508,9 @@ function doReset() {
 
   // Reset discharge summary
   dsReset();
+
+  // Reset discharge email
+  deReset();
 
   // Go back to tab 1
   switchTab(1);
