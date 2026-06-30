@@ -3930,9 +3930,12 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
 
         <div>
-          <label class="form-label">Forwarding Address and/or Phone Number</label>
-          <div style="display:flex;gap:6px;margin-bottom:6px;">
-            <button class="ds-pill" onclick="deToggleForwardingNone()" id="de-forwarding-none">None Left</button>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+            <label class="form-label" style="margin-bottom:0;">Forwarding Address and/or Phone Number</label>
+            <label class="ds-skill-row" style="font-size:11px;color:var(--text-secondary);white-space:nowrap;">
+              <input type="checkbox" id="de-forwarding-none" onchange="deToggleForwardingNone(this.checked)">
+              None left
+            </label>
           </div>
           <input class="form-input" id="de-forwarding" type="text" placeholder="If left with client" oninput="deState.forwardingInfo=this.value;deRenderOutput()">
         </div>
@@ -9155,12 +9158,10 @@ let deState = {
 const DE_YN_FIELDS = ['bridgeContacted','resourceSheetProvided','medsReceived','propertyPhoneReceived',
   'woodhavenPropertyCollected','paperworkSigned','phoneCallMade','onProbation','poNotified','outpatientOffered','roomCleanedSearched'];
 
-function deToggleForwardingNone() {
-  deState.forwardingNone = !deState.forwardingNone;
-  const btn = document.getElementById('de-forwarding-none');
+function deToggleForwardingNone(checked) {
+  deState.forwardingNone = checked;
   const input = document.getElementById('de-forwarding');
-  btn.classList.toggle('active', deState.forwardingNone);
-  if (deState.forwardingNone) {
+  if (checked) {
     deState.forwardingInfo = '';
     input.value = '';
     input.disabled = true;
@@ -9400,7 +9401,7 @@ function deReset() {
   document.getElementById('de-unit').value = '';
   const fwdInput = document.getElementById('de-forwarding');
   fwdInput.disabled = false;
-  document.getElementById('de-forwarding-none').classList.remove('active');
+  document.getElementById('de-forwarding-none').checked = false;
   ['successful','unsuccessful','neutral'].forEach(v => document.getElementById('de-dt-'+v).classList.remove('active'));
   ['asa','admin'].forEach(v => document.getElementById('de-sub-'+v).classList.remove('active'));
   ['de-bridge','de-rs','de-meds','de-pp','de-wp','de-pw','de-call','de-prob','de-po','de-op','de-clean'].forEach(prefix => {
