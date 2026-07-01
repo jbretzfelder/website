@@ -1987,16 +1987,16 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         <div class="home-card-desc">Session progress notes formatted for Remarkable, tied to ITP objectives</div>
         <div class="home-card-arrow">Open →</div>
       </div>
-      <div class="home-card" onclick="navigateTo('group')">
-        <div class="home-card-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
-        <div class="home-card-title">Group Notes</div>
-        <div class="home-card-desc">Document group sessions with individual client responses from a single entry</div>
-        <div class="home-card-arrow">Open →</div>
-      </div>
       <div class="home-card" onclick="navigateTo('discharge')">
         <div class="home-card-icon"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div>
         <div class="home-card-title">Discharge Summary</div>
         <div class="home-card-desc">Structured discharge documentation covering treatment progress, goals, and aftercare plan</div>
+        <div class="home-card-arrow">Open →</div>
+      </div>
+      <div class="home-card" onclick="navigateTo('group')">
+        <div class="home-card-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <div class="home-card-title">Group Notes</div>
+        <div class="home-card-desc">Document group sessions with individual client responses from a single entry</div>
         <div class="home-card-arrow">Open →</div>
       </div>
       <div class="home-card" onclick="navigateTo('discharge-email')">
@@ -3845,7 +3845,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 
         <div style="margin-bottom:10px;">
           <label class="form-label">Unit *</label>
-          <select class="form-select" id="de-unit" onchange="deState.unit=this.value;deRenderOutput()">
+          <select class="form-select" id="de-unit" onchange="deSetUnit(this.value)">
             <option value="">Select unit</option>
             <option value="5th Floor">5th Floor</option>
             <option value="6th Floor">6th Floor</option>
@@ -3895,8 +3895,8 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
 
         <div>
-          <label class="form-label">Staff Involved with Intervention</label>
-          <textarea class="form-textarea" id="de-staff-involved" rows="2" placeholder="Names of staff involved in the intervention…" oninput="deState.staffInvolved=this.value;deRenderOutput()" style="min-height:50px;"></textarea>
+          <label class="form-label">Staff Involved with Discharge</label>
+          <textarea class="form-textarea" id="de-staff-involved" rows="2" placeholder="Names of staff involved in the discharge…" oninput="deState.staffInvolved=this.value;deRenderOutput()" style="min-height:50px;"></textarea>
         </div>
       </div>
 
@@ -3904,7 +3904,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
         <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:12px;">Departure Logistics</div>
 
-        <div style="margin-bottom:10px;">
+        <div id="de-destination-wrap" style="margin-bottom:10px;">
           <label class="form-label">Where Is the Client Going? *</label>
           <input class="form-input" id="de-destination" type="text" placeholder="Destination upon leaving" oninput="deState.destination=this.value;deRenderOutput()">
         </div>
@@ -3934,7 +3934,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       </div>
 
       <!-- Property & Paperwork -->
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
+      <div id="de-property-paperwork-card" style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
         <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:12px;">Property & Paperwork</div>
 
         <div style="margin-bottom:10px;">
@@ -4012,7 +4012,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
           </div>
         </div>
 
-        <div>
+        <div id="de-outpatient-wrap">
           <label class="form-label">Was Client Offered Woodhaven Outpatient Services? *</label>
           <div style="display:flex;gap:6px;">
             <button class="ds-pill" onclick="deSetYN('outpatientOffered','yes','de-op')" id="de-op-yes">Yes</button>
@@ -4022,7 +4022,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       </div>
 
       <!-- Room & Census -->
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
+      <div id="de-room-census-card" style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
         <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:12px;">Room & Census</div>
 
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
@@ -4057,7 +4057,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <div id="de-right-panel" style="flex:1;min-width:0;display:flex;flex-direction:column;gap:0;overflow-y:auto;">
 
       <div style="background:var(--warning-bg);border:1px solid var(--warning-border);border-radius:6px;padding:8px 12px;margin-bottom:12px;font-size:11px;color:var(--warning-text);">
-        ⚠ Proofread before sending. Verify names, dates, and clinical details are accurate.
+        ⚠ Proofread before sending. Verify names, dates, and details are accurate.
       </div>
 
       <div id="de-missing-banner" style="display:none;background:#fff7ed;border:1px solid #fdba74;border-radius:6px;padding:8px 12px;margin-bottom:12px;font-size:11px;color:#9a3412;"></div>
@@ -9173,6 +9173,33 @@ let deState = {
 const DE_YN_FIELDS = ['bridgeContacted','resourceSheetProvided','medsReceived',
   'woodhavenPropertyCollected','paperworkSigned','phoneCallMade','onProbation','poNotified','outpatientOffered','roomCleanedSearched'];
 
+const DE_OP_HIDDEN_FIELDS = ['destination','resourceSheetProvided','resourceSheetReason',
+  'propertyReceived','phoneReceived','woodhavenPropertyCollected','medsReceived','medsNotReceivedReason',
+  'paperworkSigned','phoneCallMade','outpatientOffered','roomVacated','clientsOnUnit','roomCleanedSearched'];
+
+function deSetUnit(val) {
+  deState.unit = val;
+  const isOP = (val === 'Community OP');
+
+  document.getElementById('de-destination-wrap').style.display = isOP ? 'none' : 'block';
+  document.getElementById('de-resource-sheet-wrap').style.display = isOP ? 'none' : 'block';
+  document.getElementById('de-property-paperwork-card').style.display = isOP ? 'none' : 'block';
+  document.getElementById('de-outpatient-wrap').style.display = isOP ? 'none' : 'block';
+  document.getElementById('de-room-census-card').style.display = isOP ? 'none' : 'block';
+
+  if (isOP) {
+    DE_OP_HIDDEN_FIELDS.forEach(f => { deState[f] = ''; });
+    ['de-destination','de-rs-reason','de-meds-reason','de-room','de-census'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+    ['de-rs','de-prop','de-phn','de-wp','de-meds','de-pw','de-call','de-op','de-clean'].forEach(prefix => {
+      ['yes','no','na'].forEach(v => { const el = document.getElementById(prefix + '-' + v); if (el) el.classList.remove('active'); });
+    });
+  }
+  deRenderOutput();
+}
+
 function deToggleForwardingNone(checked) {
   deState.forwardingNone = checked;
   const input = document.getElementById('de-forwarding');
@@ -9291,10 +9318,11 @@ function deRenderOutput() {
   if (!s.dischargeType) missing.push('Type of discharge');
   if (s.dischargeType === 'unsuccessful' && !s.unsuccessfulReason) missing.push('Reason for leaving');
   if (s.dischargeType === 'unsuccessful' && s.dischargeSubtype === 'asa' && !s.bridgeContacted) missing.push('Bridge contact');
-  if (!s.destination) missing.push('Where client is going');
-  if (!s.resourceSheetProvided) missing.push('Resource sheet provided');
+  const isOP = (s.unit === 'Community OP');
+  if (!isOP && !s.destination) missing.push('Where client is going');
+  if (!isOP && !s.resourceSheetProvided) missing.push('Resource sheet provided');
   if (s.onProbation === 'yes' && !s.poNotified) missing.push('Probation officer notified');
-  if (!s.outpatientOffered) missing.push('Outpatient services offered');
+  if (!isOP && !s.outpatientOffered) missing.push('Outpatient services offered');
 
   if (banner) {
     if (missing.length && (s.clientName || s.dischargeDate || s.dischargeType)) {
@@ -9352,8 +9380,10 @@ function deRenderOutput() {
     lines.push(`Staff Involved with Intervention: ${s.staffInvolved}`);
   }
 
-  lines.push('');
-  lines.push(`Destination: ${s.destination || '[Destination]'}`);
+  if (s.unit !== 'Community OP') {
+    lines.push('');
+    lines.push(`Destination: ${s.destination || '[Destination]'}`);
+  }
 
   if (s.resourceSheetProvided) {
     lines.push(deYN('Resource Sheet Provided', s.resourceSheetProvided));
@@ -9431,6 +9461,11 @@ function deReset() {
     if (el) el.value = '';
   });
   document.getElementById('de-unit').value = '';
+  document.getElementById('de-destination-wrap').style.display = 'block';
+  document.getElementById('de-resource-sheet-wrap').style.display = 'block';
+  document.getElementById('de-property-paperwork-card').style.display = 'block';
+  document.getElementById('de-outpatient-wrap').style.display = 'block';
+  document.getElementById('de-room-census-card').style.display = 'block';
   const fwdInput = document.getElementById('de-forwarding');
   fwdInput.disabled = false;
   document.getElementById('de-forwarding-none').checked = false;
