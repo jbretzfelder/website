@@ -3905,7 +3905,13 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:12px;">Departure Logistics</div>
 
         <div id="de-destination-wrap" style="margin-bottom:10px;">
-          <label class="form-label">Where Is the Client Going? *</label>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+            <label class="form-label" style="margin-bottom:0;">Where Is the Client Going? *</label>
+            <label class="ds-skill-row" style="font-size:11px;color:var(--text-secondary);white-space:nowrap;">
+              <input type="checkbox" id="de-destination-unknown" onchange="deToggleDestinationUnknown(this.checked)">
+              Unknown
+            </label>
+          </div>
           <input class="form-input" id="de-destination" type="text" placeholder="Destination upon leaving" oninput="deState.destination=this.value;deRenderOutput()">
         </div>
 
@@ -3998,10 +4004,11 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:12px;">Probation & Outpatient</div>
 
         <div style="margin-bottom:10px;">
-          <label class="form-label">Is the Client on Probation?</label>
+          <label class="form-label">Is the Client on Probation? *</label>
           <div style="display:flex;gap:6px;">
-            <button class="ds-pill" onclick="deSetYN('onProbation','yes','de-prob')" id="de-prob-yes">Yes</button>
-            <button class="ds-pill" onclick="deSetYN('onProbation','no','de-prob')" id="de-prob-no">No</button>
+            <button class="ds-pill" onclick="deSetTri('onProbation','yes','de-prob')" id="de-prob-yes">Yes</button>
+            <button class="ds-pill" onclick="deSetTri('onProbation','no','de-prob')" id="de-prob-no">No</button>
+            <button class="ds-pill" onclick="deSetTri('onProbation','unknown','de-prob')" id="de-prob-unknown">Unknown</button>
           </div>
           <div id="de-po-wrap" style="display:none;margin-top:8px;">
             <label class="form-label">Has the Probation Officer Been Notified? *</label>
@@ -4015,8 +4022,9 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         <div id="de-outpatient-wrap">
           <label class="form-label">Was Client Offered Woodhaven Outpatient Services? *</label>
           <div style="display:flex;gap:6px;">
-            <button class="ds-pill" onclick="deSetYN('outpatientOffered','yes','de-op')" id="de-op-yes">Yes</button>
-            <button class="ds-pill" onclick="deSetYN('outpatientOffered','no','de-op')" id="de-op-no">No</button>
+            <button class="ds-pill" onclick="deSetTri('outpatientOffered','yes','de-op')" id="de-op-yes">Yes</button>
+            <button class="ds-pill" onclick="deSetTri('outpatientOffered','no','de-op')" id="de-op-no">No</button>
+            <button class="ds-pill" onclick="deSetTri('outpatientOffered','unknown','de-op')" id="de-op-unknown">Unknown</button>
           </div>
         </div>
       </div>
@@ -9162,7 +9170,7 @@ let deState = {
   clientName: '', dischargeDate: '', departureTime: '', unit: '', dischargeType: '', dischargeSubtype: '',
   unsuccessfulReason: '', neutralReason: '',
   bridgeContacted: '', bridgeNotContactedReason: '', staffInvolved: '',
-  destination: '', resourceSheetProvided: '', resourceSheetReason: '', forwardingInfo: '', forwardingNone: false,
+  destination: '', destinationUnknown: false, resourceSheetProvided: '', resourceSheetReason: '', forwardingInfo: '', forwardingNone: false,
   medsReceived: '', medsNotReceivedReason: '',
   propertyReceived: '', phoneReceived: '', woodhavenPropertyCollected: '', paperworkSigned: '', phoneCallMade: '',
   onProbation: '', poNotified: '', outpatientOffered: '',
@@ -9173,7 +9181,7 @@ let deState = {
 const DE_YN_FIELDS = ['bridgeContacted','resourceSheetProvided','medsReceived',
   'woodhavenPropertyCollected','paperworkSigned','phoneCallMade','onProbation','poNotified','outpatientOffered','roomCleanedSearched'];
 
-const DE_OP_HIDDEN_FIELDS = ['destination','resourceSheetProvided','resourceSheetReason',
+const DE_OP_HIDDEN_FIELDS = ['destination','destinationUnknown','resourceSheetProvided','resourceSheetReason',
   'propertyReceived','phoneReceived','woodhavenPropertyCollected','medsReceived','medsNotReceivedReason',
   'paperworkSigned','phoneCallMade','outpatientOffered','roomVacated','clientsOnUnit','roomCleanedSearched'];
 
@@ -9188,14 +9196,17 @@ function deSetUnit(val) {
   document.getElementById('de-room-census-card').style.display = isOP ? 'none' : 'block';
 
   if (isOP) {
-    DE_OP_HIDDEN_FIELDS.forEach(f => { deState[f] = ''; });
+    DE_OP_HIDDEN_FIELDS.forEach(f => { deState[f] = (f === 'destinationUnknown' ? false : ''); });
     ['de-destination','de-rs-reason','de-meds-reason','de-room','de-census'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.value = '';
     });
-    ['de-rs','de-prop','de-phn','de-wp','de-meds','de-pw','de-call','de-op','de-clean'].forEach(prefix => {
+    document.getElementById('de-destination-unknown').checked = false;
+    document.getElementById('de-destination').disabled = false;
+    ['de-rs','de-prop','de-phn','de-wp','de-meds','de-pw','de-call','de-clean'].forEach(prefix => {
       ['yes','no','na'].forEach(v => { const el = document.getElementById(prefix + '-' + v); if (el) el.classList.remove('active'); });
     });
+    ['yes','no','unknown'].forEach(v => { const el = document.getElementById('de-op-' + v); if (el) el.classList.remove('active'); });
   }
   deRenderOutput();
 }
@@ -9226,9 +9237,32 @@ function deSetYN(field, val, prefix) {
   if (field === 'resourceSheetProvided') {
     document.getElementById('de-rs-reason-wrap').style.display = newVal === 'no' ? 'block' : 'none';
   }
+  deRenderOutput();
+}
+
+function deSetTri(field, val, prefix) {
+  const newVal = (deState[field] === val) ? '' : val;
+  deState[field] = newVal;
+  ['yes','no','unknown'].forEach(v => {
+    const el = document.getElementById(prefix + '-' + v);
+    if (el) el.classList.toggle('active', v === newVal);
+  });
   if (field === 'onProbation') {
     document.getElementById('de-po-wrap').style.display = newVal === 'yes' ? 'block' : 'none';
     if (newVal !== 'yes') { deState.poNotified = ''; ['yes','no'].forEach(v => document.getElementById('de-po-'+v).classList.remove('active')); }
+  }
+  deRenderOutput();
+}
+
+function deToggleDestinationUnknown(checked) {
+  deState.destinationUnknown = checked;
+  const input = document.getElementById('de-destination');
+  if (checked) {
+    deState.destination = '';
+    input.value = '';
+    input.disabled = true;
+  } else {
+    input.disabled = false;
   }
   deRenderOutput();
 }
@@ -9299,7 +9333,7 @@ function deFmtTime(t) {
 
 function deYN(label, val) {
   if (!val) return null;
-  const display = val === 'yes' ? 'Yes' : val === 'no' ? 'No' : 'N/A';
+  const display = val === 'yes' ? 'Yes' : val === 'no' ? 'No' : val === 'unknown' ? 'Unknown' : 'N/A';
   return `${label}: ${display}`;
 }
 
@@ -9319,8 +9353,9 @@ function deRenderOutput() {
   if (s.dischargeType === 'unsuccessful' && !s.unsuccessfulReason) missing.push('Reason for leaving');
   if (s.dischargeType === 'unsuccessful' && s.dischargeSubtype === 'asa' && !s.bridgeContacted) missing.push('Bridge contact');
   const isOP = (s.unit === 'Community OP');
-  if (!isOP && !s.destination) missing.push('Where client is going');
+  if (!isOP && !s.destination && !s.destinationUnknown) missing.push('Where client is going');
   if (!isOP && !s.resourceSheetProvided) missing.push('Resource sheet provided');
+  if (!s.onProbation) missing.push('On probation status');
   if (s.onProbation === 'yes' && !s.poNotified) missing.push('Probation officer notified');
   if (!isOP && !s.outpatientOffered) missing.push('Outpatient services offered');
 
@@ -9382,7 +9417,7 @@ function deRenderOutput() {
 
   if (s.unit !== 'Community OP') {
     lines.push('');
-    lines.push(`Destination: ${s.destination || '[Destination]'}`);
+    lines.push(`Destination: ${s.destinationUnknown ? 'Unknown' : (s.destination || '[Destination]')}`);
   }
 
   if (s.resourceSheetProvided) {
@@ -9418,7 +9453,7 @@ function deRenderOutput() {
 
   if (s.onProbation) {
     lines.push('');
-    lines.push(s.onProbation === 'yes' ? 'On Probation: Yes' : 'On Probation: No');
+    lines.push(deYN('On Probation', s.onProbation));
     if (s.onProbation === 'yes') {
       lines.push(deYN('Probation Officer Notified', s.poNotified) || 'Probation Officer Notified: [Not yet answered]');
     }
@@ -9448,7 +9483,7 @@ function deReset() {
     clientName: '', dischargeDate: '', departureTime: '', unit: '', dischargeType: '', dischargeSubtype: '',
     unsuccessfulReason: '', neutralReason: '',
     bridgeContacted: '', bridgeNotContactedReason: '', staffInvolved: '',
-    destination: '', resourceSheetProvided: '', resourceSheetReason: '', forwardingInfo: '', forwardingNone: false,
+    destination: '', destinationUnknown: false, resourceSheetProvided: '', resourceSheetReason: '', forwardingInfo: '', forwardingNone: false,
     medsReceived: '', medsNotReceivedReason: '',
     propertyReceived: '', phoneReceived: '', woodhavenPropertyCollected: '', paperworkSigned: '', phoneCallMade: '',
     onProbation: '', poNotified: '', outpatientOffered: '',
@@ -9469,10 +9504,16 @@ function deReset() {
   const fwdInput = document.getElementById('de-forwarding');
   fwdInput.disabled = false;
   document.getElementById('de-forwarding-none').checked = false;
+  const destInput = document.getElementById('de-destination');
+  destInput.disabled = false;
+  document.getElementById('de-destination-unknown').checked = false;
   ['successful','unsuccessful','neutral'].forEach(v => document.getElementById('de-dt-'+v).classList.remove('active'));
   ['asa','admin'].forEach(v => document.getElementById('de-sub-'+v).classList.remove('active'));
-  ['de-bridge','de-rs','de-wp','de-pw','de-call','de-prob','de-po','de-op','de-clean'].forEach(prefix => {
+  ['de-bridge','de-rs','de-wp','de-pw','de-call','de-po','de-clean'].forEach(prefix => {
     ['yes','no'].forEach(v => { const el = document.getElementById(prefix + '-' + v); if (el) el.classList.remove('active'); });
+  });
+  ['de-prob','de-op'].forEach(prefix => {
+    ['yes','no','unknown'].forEach(v => { const el = document.getElementById(prefix + '-' + v); if (el) el.classList.remove('active'); });
   });
   ['de-prop','de-phn','de-meds'].forEach(prefix => {
     ['yes','no','na'].forEach(v => { const el = document.getElementById(prefix + '-' + v); if (el) el.classList.remove('active'); });
