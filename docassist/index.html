@@ -1865,7 +1865,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   <div class="header-left">
     <div class="app-title">DocAssist</div>
     <div onclick="openChangelogModal()" style="font-size:9px;font-weight:600;padding:1px 6px;border-radius:8px;background:#1a3d22;color:#7ec8a0;border:1px solid #2d6a4f;letter-spacing:.07em;display:inline-block;margin:1px 0 2px;cursor:pointer;" onmouseover="this.style.background='#2d6a4f'" onmouseout="this.style.background='#1a3d22'">v1.6</div>
-    <div class="app-subtitle">Woodhaven Clinical Documentation</div>
+    <div class="app-subtitle">Woodhaven Documentation Tool</div>
   </div>
   <div style="display:flex;align-items:center;gap:14px">
     <!-- Session Timer -->
@@ -1883,7 +1883,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <div style="width:1px;height:20px;background:#1e3352"></div>
     <button class="feedback-btn" onclick="openFeedbackModal()">💬 Give Feedback</button>
     <button class="reset-btn" onclick="confirmReset()">↺ Reset</button>
-    <div class="header-badge" id="clinicalBadge" onclick="demoClick()" style="cursor:default;user-select:none">Clinical Use Only</div>
+    <div class="header-badge" id="clinicalBadge" onclick="demoClick()" style="cursor:default;user-select:none">Staff Use Only</div>
   </div>
 </div>
 
@@ -3909,7 +3909,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
           <input class="form-input" id="de-destination" type="text" placeholder="Destination upon leaving" oninput="deState.destination=this.value;deRenderOutput()">
         </div>
 
-        <div id="de-resource-sheet-wrap" style="display:none;margin-bottom:10px;">
+        <div id="de-resource-sheet-wrap" style="margin-bottom:10px;">
           <label class="form-label">Resource Sheet Provided? *</label>
           <div style="display:flex;gap:6px;margin-bottom:6px;">
             <button class="ds-pill" onclick="deSetYN('resourceSheetProvided','yes','de-rs')" id="de-rs-yes">Yes</button>
@@ -3918,18 +3918,6 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
           <div id="de-rs-reason-wrap" style="display:none;">
             <label class="form-label">If No, Why Not?</label>
             <textarea class="form-textarea" id="de-rs-reason" rows="2" placeholder="Explain…" oninput="deState.resourceSheetReason=this.value;deRenderOutput()" style="min-height:50px;"></textarea>
-          </div>
-        </div>
-
-        <div style="margin-bottom:6px;">
-          <label class="form-label">Medications Received?</label>
-          <div style="display:flex;gap:6px;margin-bottom:6px;">
-            <button class="ds-pill" onclick="deSetYN('medsReceived','yes','de-meds')" id="de-meds-yes">Yes</button>
-            <button class="ds-pill" onclick="deSetYN('medsReceived','no','de-meds')" id="de-meds-no">No</button>
-          </div>
-          <div id="de-meds-reason-wrap" style="display:none;">
-            <label class="form-label">If No, Why Not?</label>
-            <textarea class="form-textarea" id="de-meds-reason" rows="2" placeholder="Explain…" oninput="deState.medsNotReceivedReason=this.value;deRenderOutput()" style="min-height:50px;"></textarea>
           </div>
         </div>
 
@@ -3972,6 +3960,19 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
           <div style="display:flex;gap:6px;">
             <button class="ds-pill" onclick="deSetYN('woodhavenPropertyCollected','yes','de-wp')" id="de-wp-yes">Yes</button>
             <button class="ds-pill" onclick="deSetYN('woodhavenPropertyCollected','no','de-wp')" id="de-wp-no">No</button>
+          </div>
+        </div>
+
+        <div style="margin-bottom:10px;">
+          <label class="form-label">Medications Received?</label>
+          <div style="display:flex;gap:6px;margin-bottom:6px;">
+            <button class="ds-pill" onclick="deSetYNA('medsReceived','yes','de-meds')" id="de-meds-yes">Yes</button>
+            <button class="ds-pill" onclick="deSetYNA('medsReceived','no','de-meds')" id="de-meds-no">No</button>
+            <button class="ds-pill" onclick="deSetYNA('medsReceived','na','de-meds')" id="de-meds-na">N/A</button>
+          </div>
+          <div id="de-meds-reason-wrap" style="display:none;">
+            <label class="form-label">If No, Why Not?</label>
+            <textarea class="form-textarea" id="de-meds-reason" rows="2" placeholder="Explain…" oninput="deState.medsNotReceivedReason=this.value;deRenderOutput()" style="min-height:50px;"></textarea>
           </div>
         </div>
 
@@ -9195,9 +9196,6 @@ function deSetYN(field, val, prefix) {
   if (field === 'bridgeContacted') {
     document.getElementById('de-bridge-reason-wrap').style.display = newVal === 'no' ? 'block' : 'none';
   }
-  if (field === 'medsReceived') {
-    document.getElementById('de-meds-reason-wrap').style.display = newVal === 'no' ? 'block' : 'none';
-  }
   if (field === 'resourceSheetProvided') {
     document.getElementById('de-rs-reason-wrap').style.display = newVal === 'no' ? 'block' : 'none';
   }
@@ -9215,6 +9213,9 @@ function deSetYNA(field, val, prefix) {
     const el = document.getElementById(prefix + '-' + v);
     if (el) el.classList.toggle('active', v === newVal);
   });
+  if (field === 'medsReceived') {
+    document.getElementById('de-meds-reason-wrap').style.display = newVal === 'no' ? 'block' : 'none';
+  }
   deRenderOutput();
 }
 
@@ -9230,7 +9231,6 @@ function deSetDischargeType(val) {
 
   document.getElementById('de-unsuccessful-reason-wrap').style.display = newVal === 'unsuccessful' ? 'block' : 'none';
   document.getElementById('de-neutral-reason-wrap').style.display = newVal === 'neutral' ? 'block' : 'none';
-  document.getElementById('de-resource-sheet-wrap').style.display = newVal === 'unsuccessful' ? 'block' : 'none';
   document.getElementById('de-call-wrap').style.display = newVal === 'unsuccessful' ? 'block' : 'none';
 
   if (newVal !== 'unsuccessful') {
@@ -9292,7 +9292,7 @@ function deRenderOutput() {
   if (s.dischargeType === 'unsuccessful' && !s.unsuccessfulReason) missing.push('Reason for leaving');
   if (s.dischargeType === 'unsuccessful' && s.dischargeSubtype === 'asa' && !s.bridgeContacted) missing.push('Bridge contact');
   if (!s.destination) missing.push('Where client is going');
-  if (s.dischargeType === 'unsuccessful' && !s.resourceSheetProvided) missing.push('Resource sheet provided');
+  if (!s.resourceSheetProvided) missing.push('Resource sheet provided');
   if (s.onProbation === 'yes' && !s.poNotified) missing.push('Probation officer notified');
   if (!s.outpatientOffered) missing.push('Outpatient services offered');
 
@@ -9355,7 +9355,7 @@ function deRenderOutput() {
   lines.push('');
   lines.push(`Destination: ${s.destination || '[Destination]'}`);
 
-  if (s.dischargeType === 'unsuccessful' && s.resourceSheetProvided) {
+  if (s.resourceSheetProvided) {
     lines.push(deYN('Resource Sheet Provided', s.resourceSheetProvided));
     if (s.resourceSheetProvided === 'no' && s.resourceSheetReason) lines.push(`Reason: ${s.resourceSheetReason}`);
   }
@@ -9363,6 +9363,8 @@ function deRenderOutput() {
   if (s.medsReceived) {
     if (s.medsReceived === 'yes') {
       lines.push('Medications Received: Yes');
+    } else if (s.medsReceived === 'na') {
+      lines.push('Medications Received: N/A');
     } else {
       lines.push('Medications Received: No');
       if (s.medsNotReceivedReason) lines.push(`Reason: ${s.medsNotReceivedReason}`);
@@ -9434,10 +9436,10 @@ function deReset() {
   document.getElementById('de-forwarding-none').checked = false;
   ['successful','unsuccessful','neutral'].forEach(v => document.getElementById('de-dt-'+v).classList.remove('active'));
   ['asa','admin'].forEach(v => document.getElementById('de-sub-'+v).classList.remove('active'));
-  ['de-bridge','de-rs','de-meds','de-wp','de-pw','de-call','de-prob','de-po','de-op','de-clean'].forEach(prefix => {
+  ['de-bridge','de-rs','de-wp','de-pw','de-call','de-prob','de-po','de-op','de-clean'].forEach(prefix => {
     ['yes','no'].forEach(v => { const el = document.getElementById(prefix + '-' + v); if (el) el.classList.remove('active'); });
   });
-  ['de-prop','de-phn'].forEach(prefix => {
+  ['de-prop','de-phn','de-meds'].forEach(prefix => {
     ['yes','no','na'].forEach(v => { const el = document.getElementById(prefix + '-' + v); if (el) el.classList.remove('active'); });
   });
   document.getElementById('de-subtype-wrap').style.display = 'none';
@@ -9445,7 +9447,6 @@ function deReset() {
   document.getElementById('de-neutral-reason-wrap').style.display = 'none';
   document.getElementById('de-bridge-wrap').style.display = 'none';
   document.getElementById('de-bridge-reason-wrap').style.display = 'none';
-  document.getElementById('de-resource-sheet-wrap').style.display = 'none';
   document.getElementById('de-meds-reason-wrap').style.display = 'none';
   document.getElementById('de-rs-reason-wrap').style.display = 'none';
   document.getElementById('de-call-wrap').style.display = 'none';
@@ -9846,12 +9847,100 @@ function fillSampleClient() {
   dsRenderOutput();
   dsCalcDosageHours();
 
+  // ── DISCHARGE EMAIL ──
+  deReset();
+  deState.clientName = 'Marcus';
+  document.getElementById('de-client-name').value = 'Marcus';
+  const deDateStr = '2026-10-05';
+  document.getElementById('de-discharge-date').value = deDateStr;
+  deState.dischargeDate = deDateStr;
+  document.getElementById('de-departure-time').value = '14:45';
+  deState.departureTime = '14:45';
+  document.getElementById('de-unit').value = '5th Floor';
+  deState.unit = '5th Floor';
+
+  deState.dischargeType = 'unsuccessful';
+  document.getElementById('de-dt-unsuccessful').classList.add('active');
+  document.getElementById('de-subtype-wrap').style.display = 'block';
+  document.getElementById('de-unsuccessful-reason-wrap').style.display = 'block';
+  document.getElementById('de-call-wrap').style.display = 'block';
+
+  deState.dischargeSubtype = 'asa';
+  document.getElementById('de-sub-asa').classList.add('active');
+  document.getElementById('de-bridge-wrap').style.display = 'block';
+
+  const deReasonText = 'Marcus reported increasing frustration with the structure of the program and stated he "just needed a break." He packed his belongings and informed staff of his intent to leave despite being encouraged to process these feelings in session.';
+  document.getElementById('de-unsuccessful-reason').value = deReasonText;
+  deState.unsuccessfulReason = deReasonText;
+
+  document.getElementById('de-bridge-no').classList.add('active');
+  deState.bridgeContacted = 'no';
+  document.getElementById('de-bridge-reason-wrap').style.display = 'block';
+  const deBridgeReasonText = 'Marcus declined contact with The Bridge and left the building before staff could complete the referral. Primary counselor and on-call clinician both attempted brief motivational conversations to encourage him to stay.';
+  document.getElementById('de-bridge-reason').value = deBridgeReasonText;
+  deState.bridgeNotContactedReason = deBridgeReasonText;
+
+  const deStaffText = 'Primary Counselor J. Smith, On-Call Clinician R. Davis';
+  document.getElementById('de-staff-involved').value = deStaffText;
+  deState.staffInvolved = deStaffText;
+
+  const deDestinationText = "Returned to his mother's residence in Dayton, OH";
+  document.getElementById('de-destination').value = deDestinationText;
+  deState.destination = deDestinationText;
+
+  document.getElementById('de-rs-yes').classList.add('active');
+  deState.resourceSheetProvided = 'yes';
+
+  document.getElementById('de-meds-no').classList.add('active');
+  deState.medsReceived = 'no';
+  document.getElementById('de-meds-reason-wrap').style.display = 'block';
+  const deMedsReasonText = 'Marcus left before the scheduled medication pass; nursing was notified.';
+  document.getElementById('de-meds-reason').value = deMedsReasonText;
+  deState.medsNotReceivedReason = deMedsReasonText;
+
+  document.getElementById('de-forwarding-none').checked = true;
+  document.getElementById('de-forwarding').disabled = true;
+  deState.forwardingNone = true;
+
+  document.getElementById('de-prop-yes').classList.add('active');
+  deState.propertyReceived = 'yes';
+  document.getElementById('de-phn-yes').classList.add('active');
+  deState.phoneReceived = 'yes';
+  document.getElementById('de-wp-yes').classList.add('active');
+  deState.woodhavenPropertyCollected = 'yes';
+  document.getElementById('de-pw-no').classList.add('active');
+  deState.paperworkSigned = 'no';
+  document.getElementById('de-call-yes').classList.add('active');
+  deState.phoneCallMade = 'yes';
+
+  document.getElementById('de-prob-yes').classList.add('active');
+  deState.onProbation = 'yes';
+  document.getElementById('de-po-wrap').style.display = 'block';
+  document.getElementById('de-po-yes').classList.add('active');
+  deState.poNotified = 'yes';
+
+  document.getElementById('de-op-yes').classList.add('active');
+  deState.outpatientOffered = 'yes';
+
+  document.getElementById('de-room').value = '512';
+  deState.roomVacated = '512';
+  document.getElementById('de-clean-yes').classList.add('active');
+  deState.roomCleanedSearched = 'yes';
+  document.getElementById('de-census').value = '7';
+  deState.clientsOnUnit = '7';
+
+  const deAdditionalText = 'Client was calm and cooperative throughout the departure process. No safety concerns were observed at the time he left the unit.';
+  document.getElementById('de-additional').value = deAdditionalText;
+  deState.additionalInfo = deAdditionalText;
+
+  deRenderOutput();
+
   tjSampleClientLoaded = true;
 
   // ── Flash badge ──
   const badge = document.getElementById('clinicalBadge');
   badge.textContent = '✓ Sample Loaded';
-  setTimeout(() => { badge.textContent = 'Clinical Use Only'; }, 2500);
+  setTimeout(() => { badge.textContent = 'Staff Use Only'; }, 2500);
 }
 
 // ═══════════════════════════════════════════════════
