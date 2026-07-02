@@ -9631,11 +9631,15 @@ function deRenderOutput() {
     return;
   }
 
-  const C = s.clientName || '[Client Name]';
-  const dateStr = deFmtDate(s.dischargeDate) || '[Date of Discharge]';
-  const unitStr = s.unit || '[Unit]';
+const C = s.clientName || '[Client Name]';
+const dateStr = deFmtDate(s.dischargeDate) || '[Date of Discharge]';
+const unitStr = s.unit || '[Unit]';
 
-  subjectOut.textContent = `Discharge Notification - ${unitStr} - ${dateStr}`;
+const typeStr = s.dischargeType
+  ? s.dischargeType.charAt(0).toUpperCase() + s.dischargeType.slice(1)
+  : '[Type of Discharge]';
+
+subjectOut.textContent = `Discharge - ${typeStr} - ${unitStr} - ${dateStr}`;
 
   let typeLine = DE_TYPE_LABELS[s.dischargeType] || '[Type of Discharge]';
   if (s.dischargeType === 'unsuccessful' && s.dischargeSubtype) {
