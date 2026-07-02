@@ -1327,6 +1327,61 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 .itp-smart-warning-title { font-size: 11px; font-weight: 700; color: #7c4a00; margin-bottom: 5px; }
 .itp-smart-warning ul { margin: 0; padding-left: 18px; }
 .itp-smart-warning li { font-size: 11px; color: #7c4a00; line-height: 1.6; }
+
+/* ─── NURSING NOTE ACCORDION GROUPS ───────── */
+.nn-group-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nn-group-links { display: flex; align-items: center; gap: 6px; }
+.nn-group-link {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--accent);
+  cursor: pointer;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.nn-group-link:hover { text-decoration: underline; }
+.nn-group-link-sep { font-size: 10px; color: var(--text-secondary); }
+.nn-accordion {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin-bottom: 6px;
+  overflow: hidden;
+}
+.nn-accordion-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  cursor: pointer;
+  background: var(--surface);
+  user-select: none;
+}
+.nn-accordion-header:hover { background: var(--output-bg); }
+.nn-accordion-label { font-size: 11.5px; font-weight: 600; color: var(--text); }
+.nn-accordion-meta { display: flex; align-items: center; gap: 8px; }
+.nn-accordion-count {
+  font-size: 9.5px;
+  font-weight: 700;
+  background: var(--accent);
+  color: #fff;
+  padding: 1px 6px;
+  border-radius: 9px;
+  display: none;
+}
+.nn-accordion-count.visible { display: inline-block; }
+.nn-accordion-toggle { font-size: 10px; color: var(--text-secondary); flex-shrink: 0; }
+.nn-accordion-body {
+  padding: 10px;
+  display: none;
+  border-top: 1px solid var(--border);
+  background: var(--output-bg);
+}
+.nn-accordion-body.open { display: block; }
+
 .asam-ref-panel {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -4162,12 +4217,26 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       </div>
 
       <div>
-        <div class="sn-section-title" style="margin-bottom:4px">Mental Status Exam</div>
+        <div class="sn-section-title nn-group-heading">
+          <span>Mental Status Exam</span>
+          <span class="nn-group-links">
+            <span class="nn-group-link" onclick="nnSetAllAccordions('nn-mse-wrap',true)">Expand all</span>
+            <span class="nn-group-link-sep">·</span>
+            <span class="nn-group-link" onclick="nnSetAllAccordions('nn-mse-wrap',false)">Collapse all</span>
+          </span>
+        </div>
         <div id="nn-mse-wrap"></div>
       </div>
 
       <div>
-        <div class="sn-section-title" style="margin-bottom:4px">Physical Observations</div>
+        <div class="sn-section-title nn-group-heading">
+          <span>Physical Observations</span>
+          <span class="nn-group-links">
+            <span class="nn-group-link" onclick="nnSetAllAccordions('nn-physical-wrap',true)">Expand all</span>
+            <span class="nn-group-link-sep">·</span>
+            <span class="nn-group-link" onclick="nnSetAllAccordions('nn-physical-wrap',false)">Collapse all</span>
+          </span>
+        </div>
         <div id="nn-physical-wrap"></div>
       </div>
 
@@ -4178,7 +4247,14 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       </div>
 
       <div>
-        <div class="sn-section-title" style="margin-bottom:4px">Medication Response</div>
+        <div class="sn-section-title nn-group-heading">
+          <span>Medication Response</span>
+          <span class="nn-group-links">
+            <span class="nn-group-link" onclick="nnSetAllAccordions('nn-medresponse-wrap',true)">Expand all</span>
+            <span class="nn-group-link-sep">·</span>
+            <span class="nn-group-link" onclick="nnSetAllAccordions('nn-medresponse-wrap',false)">Collapse all</span>
+          </span>
+        </div>
         <div id="nn-medresponse-wrap"></div>
       </div>
 
@@ -10619,7 +10695,7 @@ const nnState = {
   ciwa:'', cows:'', bp:'', pulse:'',
   mse: { appearance:[], behavior:[], loc:[], orientation:[], speech:[], mood:[], affect:[], thoughtContent:[], perception:[], memory:[], attention:[], insight:[], judgment:[], impulseControl:[] },
   physical: { generalAppearance:[], neurological:[] },
-  meds:[], medResponse:[], medDetail:'',
+  meds:[], medResponse: { appropriate:[], ongoing:[], sideEffects:[], refusal:[] }, medDetail:'',
   medicalStability:[], psychSymptoms:[], siDetail:'',
   sleepHydrationNutrition:'',
   cravings: null, cravingsDetail:'',
@@ -10719,31 +10795,73 @@ function nnBuildGroupedChips(containerId, groups, stateObj) {
   const container = document.getElementById(containerId);
   container.innerHTML = '';
   groups.forEach(g => {
-    const wrap = document.createElement('div');
-    wrap.style.marginBottom = '10px';
-    const label = document.createElement('div');
-    label.className = 'sn-label';
-    label.style.marginBottom = '4px';
-    label.textContent = g.label;
-    wrap.appendChild(label);
+    const acc = document.createElement('div');
+    acc.className = 'nn-accordion';
+
+    const header = document.createElement('div');
+    header.className = 'nn-accordion-header';
+
+    const labelSpan = document.createElement('span');
+    labelSpan.className = 'nn-accordion-label';
+    labelSpan.textContent = g.label;
+
+    const meta = document.createElement('div');
+    meta.className = 'nn-accordion-meta';
+    const count = document.createElement('span');
+    count.className = 'nn-accordion-count';
+    const toggle = document.createElement('span');
+    toggle.className = 'nn-accordion-toggle';
+    toggle.textContent = '▾';
+    meta.appendChild(count);
+    meta.appendChild(toggle);
+
+    header.appendChild(labelSpan);
+    header.appendChild(meta);
+
+    const body = document.createElement('div');
+    body.className = 'nn-accordion-body';
     const grid = document.createElement('div');
     grid.className = 'sn-chip-grid';
+
+    function updateCount() {
+      const n = stateObj[g.key].length;
+      count.textContent = n;
+      count.classList.toggle('visible', n > 0);
+    }
+
     g.options.forEach(opt => {
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'sn-chip';
       btn.textContent = opt;
-      btn.onclick = () => {
+      btn.onclick = (e) => {
+        e.stopPropagation();
         const arr = stateObj[g.key];
         const i = arr.indexOf(opt);
         if (i > -1) { arr.splice(i, 1); btn.classList.remove('active'); }
         else { arr.push(opt); btn.classList.add('active'); }
+        updateCount();
       };
       grid.appendChild(btn);
     });
-    wrap.appendChild(grid);
-    container.appendChild(wrap);
+
+    body.appendChild(grid);
+    header.onclick = () => {
+      const isOpen = body.classList.toggle('open');
+      toggle.textContent = isOpen ? '▴' : '▾';
+    };
+
+    acc.appendChild(header);
+    acc.appendChild(body);
+    container.appendChild(acc);
+    updateCount();
   });
+}
+
+function nnSetAllAccordions(containerId, open) {
+  const container = document.getElementById(containerId);
+  container.querySelectorAll('.nn-accordion-body').forEach(b => b.classList.toggle('open', open));
+  container.querySelectorAll('.nn-accordion-toggle').forEach(t => t.textContent = open ? '▴' : '▾');
 }
 
 function nnBuildCravingsPills() {
@@ -10769,7 +10887,7 @@ function nnBuildAllChips() {
   nnBuildGroupedChips('nn-mse-wrap', NN_MSE_GROUPS, nnState.mse);
   nnBuildGroupedChips('nn-physical-wrap', NN_PHYSICAL_GROUPS, nnState.physical);
   nnBuildFlatChips('nn-med-chips', NN_MEDS, nnState.meds);
-  nnBuildGroupedChips('nn-medresponse-wrap', NN_MED_RESPONSE_GROUPS, { appropriate: nnState.medResponse, ongoing: nnState.medResponse, sideEffects: nnState.medResponse, refusal: nnState.medResponse });
+  nnBuildGroupedChips('nn-medresponse-wrap', NN_MED_RESPONSE_GROUPS, nnState.medResponse);
   nnBuildFlatChips('nn-stability-chips', NN_MEDICAL_STABILITY, nnState.medicalStability);
   nnBuildFlatChips('nn-psych-chips', NN_PSYCH_SYMPTOMS, nnState.psychSymptoms, (opt) => {
     if (opt === 'Suicidal ideation') {
@@ -10802,6 +10920,78 @@ function nnJoinList(items) {
   return `${items.slice(0, -1).join(', ')}, and ${items[items.length - 1]}`;
 }
 
+function nnLower(s) {
+  if (!s) return s;
+  return s.charAt(0).toLowerCase() + s.slice(1);
+}
+
+function nnCapFirst(s) {
+  if (!s) return s;
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+function nnThoughtContentClause(opts) {
+  if (!opts.length) return '';
+  const SI = 'Denies suicidal ideation (SI)';
+  const HI = 'Denies homicidal ideation (HI)';
+  const hasSI = opts.includes(SI);
+  const hasHI = opts.includes(HI);
+  const rest = opts.filter(o => o !== SI && o !== HI);
+  if (hasSI && hasHI) rest.push('Denies suicidal (SI) and homicidal (HI) ideation');
+  else if (hasSI) rest.push(SI);
+  else if (hasHI) rest.push(HI);
+  return nnCapFirst(`${nnJoinList(rest.map(nnLower))}.`);
+}
+
+function nnBuildMseNarrative() {
+  const m = nnState.mse;
+  const clauses = [];
+
+  if (m.appearance.length) clauses.push(`Client appears ${nnJoinList(m.appearance.map(nnLower))}.`);
+  if (m.behavior.length) clauses.push(`Behavior ${nnJoinList(m.behavior.map(nnLower))}.`);
+
+  const locItems = m.loc.slice();
+  const orientItems = m.orientation.slice();
+  if (locItems.includes('Alert') && orientItems.some(o => o.toLowerCase().startsWith('alert'))) {
+    locItems.splice(locItems.indexOf('Alert'), 1);
+  }
+  const locOrient = [];
+  if (locItems.length) locOrient.push(nnJoinList(locItems.map(nnLower)));
+  if (orientItems.length) locOrient.push(nnJoinList(orientItems.map(nnLower)));
+  if (locOrient.length) clauses.push(nnCapFirst(`${locOrient.join('; ')}.`));
+
+  if (m.speech.length) clauses.push(`Speech ${nnJoinList(m.speech.map(nnLower))}.`);
+
+  const moodAffect = [];
+  if (m.mood.length) moodAffect.push(`mood ${nnJoinList(m.mood.map(nnLower))}`);
+  if (m.affect.length) moodAffect.push(`affect ${nnJoinList(m.affect.map(nnLower))}`);
+  if (moodAffect.length) clauses.push(nnCapFirst(`${moodAffect.join(', ')}.`));
+
+  const thoughtClause = nnThoughtContentClause(m.thoughtContent);
+  if (thoughtClause) clauses.push(thoughtClause);
+
+  if (m.perception.length) clauses.push(nnCapFirst(`${nnJoinList(m.perception.map(nnLower))}.`));
+  if (m.memory.length) clauses.push(nnCapFirst(`${nnJoinList(m.memory.map(nnLower))}.`));
+  if (m.attention.length) clauses.push(`Attention/concentration ${nnJoinList(m.attention.map(nnLower))}.`);
+
+  const insightJudgment = [];
+  if (m.insight.length) insightJudgment.push(`insight ${nnJoinList(m.insight.map(nnLower))}`);
+  if (m.judgment.length) insightJudgment.push(`judgment ${nnJoinList(m.judgment.map(nnLower))}`);
+  if (insightJudgment.length) clauses.push(nnCapFirst(`${insightJudgment.join(', ')}.`));
+
+  if (m.impulseControl.length) clauses.push(`Impulse control ${nnJoinList(m.impulseControl.map(nnLower))}.`);
+
+  return clauses.join(' ');
+}
+
+function nnBuildPhysicalNarrative() {
+  const p = nnState.physical;
+  const clauses = [];
+  if (p.generalAppearance.length) clauses.push(`General appearance ${nnJoinList(p.generalAppearance.map(nnLower))}.`);
+  if (p.neurological.length) clauses.push(`Neurologically, ${nnJoinList(p.neurological.map(nnLower))}.`);
+  return clauses.join(' ');
+}
+
 function nnFormatNote() {
   const wdLabels = { alcohol:'alcohol', opioid:'opioid', benzo:'benzodiazepine', stimulant:'stimulant', poly:'polysubstance' };
   const lines = [];
@@ -10822,17 +11012,16 @@ function nnFormatNote() {
   if (nnState.ciwa) lines.push(`CIWA-Ar score: ${nnState.ciwa}.`);
   if (nnState.cows) lines.push(`COWS score: ${nnState.cows}.`);
 
-  const mseParts = [];
-  Object.keys(nnState.mse).forEach(k => { if (nnState.mse[k].length) mseParts.push(...nnState.mse[k]); });
-  if (mseParts.length) lines.push(`Mental status exam notable for ${nnJoinList(mseParts)}.`);
+  const mseNarrative = nnBuildMseNarrative();
+  if (mseNarrative) lines.push(`Mental status exam: ${mseNarrative}`);
 
-  const physParts = [];
-  Object.keys(nnState.physical).forEach(k => { if (nnState.physical[k].length) physParts.push(...nnState.physical[k]); });
-  if (physParts.length) lines.push(`Physical exam notable for ${nnJoinList(physParts)}.`);
+  const physNarrative = nnBuildPhysicalNarrative();
+  if (physNarrative) lines.push(`Physical exam: ${physNarrative}`);
 
   // Medication management
   if (nnState.meds.length) lines.push(`This nurse administered ${nnJoinList(nnState.meds)} per provider order/protocol for withdrawal symptom management.`);
-  if (nnState.medResponse.length) lines.push(nnState.medResponse.join(' '));
+  const medResponseAll = Object.values(nnState.medResponse).flat();
+  if (medResponseAll.length) lines.push(medResponseAll.join(' '));
   if (nnState.medDetail) lines.push(nnState.medDetail);
 
   // Medical stability / psychiatric symptoms
@@ -10870,19 +11059,31 @@ function nnCopyNote(btn) {
 }
 
 function nnClear() {
-  Object.assign(nnState, {
-    clientName:'', date: new Date().toISOString().split('T')[0],
-    wdType:'',
-    symptoms:[], symptomDetail:'',
-    ciwa:'', cows:'', bp:'', pulse:'',
-    mse: { appearance:[], behavior:[], loc:[], orientation:[], speech:[], mood:[], affect:[], thoughtContent:[], perception:[], memory:[], attention:[], insight:[], judgment:[], impulseControl:[] },
-    physical: { generalAppearance:[], neurological:[] },
-    meds:[], medResponse:[], medDetail:'',
-    medicalStability:[], psychSymptoms:[], siDetail:'',
-    sleepHydrationNutrition:'',
-    cravings: null, cravingsDetail:'',
-    continuedNeed:'',
-  });
+  // Primitive fields can be reassigned directly
+  nnState.clientName = '';
+  nnState.date = new Date().toISOString().split('T')[0];
+  nnState.wdType = '';
+  nnState.symptomDetail = '';
+  nnState.ciwa = '';
+  nnState.cows = '';
+  nnState.bp = '';
+  nnState.pulse = '';
+  nnState.medDetail = '';
+  nnState.siDetail = '';
+  nnState.sleepHydrationNutrition = '';
+  nnState.cravings = null;
+  nnState.cravingsDetail = '';
+  nnState.continuedNeed = '';
+
+  // Arrays are cleared in place (not reassigned) so existing chip closures stay wired to the right object
+  nnState.symptoms.length = 0;
+  nnState.meds.length = 0;
+  nnState.medicalStability.length = 0;
+  nnState.psychSymptoms.length = 0;
+  Object.keys(nnState.mse).forEach(k => { nnState.mse[k].length = 0; });
+  Object.keys(nnState.physical).forEach(k => { nnState.physical[k].length = 0; });
+  Object.keys(nnState.medResponse).forEach(k => { nnState.medResponse[k].length = 0; });
+
   ['nn-client','nn-symptom-detail','nn-ciwa','nn-cows','nn-bp','nn-pulse','nn-med-detail','nn-si-detail','nn-sleep','nn-cravings-detail','nn-continued-need'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
@@ -10892,6 +11093,9 @@ function nnClear() {
   nnUpdateCloserButton();
   document.getElementById('nn-si-detail-wrap').style.display = 'none';
   document.querySelectorAll('#view-nn .sn-chip').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('#view-nn .nn-accordion-count').forEach(c => { c.textContent = '0'; c.classList.remove('visible'); });
+  document.querySelectorAll('#view-nn .nn-accordion-body').forEach(b => b.classList.remove('open'));
+  document.querySelectorAll('#view-nn .nn-accordion-toggle').forEach(t => { t.textContent = '▾'; });
   document.getElementById('nnPlaceholder').style.display = 'flex';
   document.getElementById('nnNoteWrap').style.display = 'none';
   document.getElementById('nnNoteOutput').textContent = '';
