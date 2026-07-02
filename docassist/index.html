@@ -10272,6 +10272,75 @@ function fillSampleClient() {
 
   deRenderOutput();
 
+  // ── NURSING NOTE ──
+  document.getElementById('nn-client').value = 'Marcus';
+  nnState.clientName = 'Marcus';
+  document.getElementById('nn-date').value = today;
+  nnState.date = today;
+  document.getElementById('nn-wd-type').value = 'alcohol';
+  nnState.wdType = 'alcohol';
+  nnUpdateCloserButton();
+
+  ['Anxiety', 'Insomnia', 'Cravings'].forEach(s => nnSelectChip('nn-symptom-chips', s));
+  const nnSymptomDetailText = 'Reports mild residual anxiety and difficulty falling asleep. Denies nausea, vomiting, or tremors at this time.';
+  document.getElementById('nn-symptom-detail').value = nnSymptomDetailText;
+  nnState.symptomDetail = nnSymptomDetailText;
+
+  document.getElementById('nn-ciwa').value = '9';
+  nnState.ciwa = '9';
+  document.getElementById('nn-bp').value = '128/82';
+  nnState.bp = '128/82';
+  document.getElementById('nn-pulse').value = '84';
+  nnState.pulse = '84';
+
+  [
+    ['nn-mse-wrap', 'Well-groomed'], ['nn-mse-wrap', 'Appropriately dressed'],
+    ['nn-mse-wrap', 'Calm'], ['nn-mse-wrap', 'Cooperative'],
+    ['nn-mse-wrap', 'Alert'], ['nn-mse-wrap', 'Alert and oriented ×4 (person, place, time, situation)'],
+    ['nn-mse-wrap', 'Clear'], ['nn-mse-wrap', 'Coherent'],
+    ['nn-mse-wrap', 'Anxious'], ['nn-mse-wrap', 'Appropriate'],
+    ['nn-mse-wrap', 'Denies suicidal ideation (SI)'], ['nn-mse-wrap', 'Denies homicidal ideation (HI)'],
+    ['nn-mse-wrap', 'Denies hallucinations'],
+    ['nn-mse-wrap', 'Intact recent and remote memory'],
+    ['nn-mse-wrap', 'Intact'],
+  ].forEach(([containerId, label]) => nnSelectChip(containerId, label));
+  // Insight, Judgment, and Impulse Control each offer 'Good' as an option, so select it
+  // within each of those three accordion groups specifically rather than relying on
+  // textContent matching, which would only find the first 'Good' chip in the container.
+  document.querySelectorAll('#nn-mse-wrap .nn-accordion').forEach(acc => {
+    const label = acc.querySelector('.nn-accordion-label');
+    if (label && ['Insight', 'Judgment', 'Impulse Control'].includes(label.textContent)) {
+      const btn = Array.from(acc.querySelectorAll('.sn-chip')).find(b => b.textContent === 'Good');
+      if (btn && !btn.classList.contains('active')) btn.click();
+    }
+  });
+  nnExpandPopulated('nn-mse-wrap');
+
+  ['No acute distress', 'Tremors absent', 'Gait steady', 'Pupils equal and reactive'].forEach(label => {
+    nnSelectChip('nn-physical-wrap', label);
+  });
+  nnExpandPopulated('nn-physical-wrap');
+
+  ['Trazodone', 'Melatonin'].forEach(m => nnSelectChip('nn-med-chips', m));
+  nnSelectChip('nn-medresponse-wrap', 'Client tolerated medications well.');
+  nnSelectChip('nn-medresponse-wrap', 'Resting comfortably after receiving medication.');
+  nnExpandPopulated('nn-medresponse-wrap');
+
+  nnSelectChip('nn-psych-chips', 'Anxiety');
+
+  const nnSleepText = 'Reports sleeping approximately 4 hours overnight, improved from previous nights. Appetite fair. Fluids encouraged and tolerated well.';
+  document.getElementById('nn-sleep').value = nnSleepText;
+  nnState.sleepHydrationNutrition = nnSleepText;
+
+  nnSelectChip('nn-cravings-pills', '6');
+  const nnCravingsText = 'Client reports ongoing alcohol cravings and voices some uncertainty about his ability to maintain abstinence if discharged at this time.';
+  document.getElementById('nn-cravings-detail').value = nnCravingsText;
+  nnState.cravingsDetail = nnCravingsText;
+
+  const nnContinuedNeedText = 'CIWA-Ar score decreased from 16 on admission to 9 today; however, Marcus continues to require monitoring for residual withdrawal symptoms, sleep disturbance, and cravings. He remains medically vulnerable given his recent history of withdrawal and has not yet achieved sufficient stability for safe transition to a lower level of care. Continued 3.7-WM services remain medically necessary.';
+  document.getElementById('nn-continued-need').value = nnContinuedNeedText;
+  nnState.continuedNeed = nnContinuedNeedText;
+
   tjSampleClientLoaded = true;
 
   // ── Flash badge ──
@@ -10896,6 +10965,32 @@ function nnBuildAllChips() {
     }
   });
   nnBuildCravingsPills();
+}
+
+// Clicks the chip button matching `label` inside containerId, reusing its existing
+// toggle handler so state array + active class + accordion count stay in sync.
+function nnSelectChip(containerId, label) {
+  const container = document.getElementById(containerId);
+  if (!container) return false;
+  const btns = container.querySelectorAll('.sn-chip');
+  for (const btn of btns) {
+    if (btn.textContent === String(label)) { btn.click(); return true; }
+  }
+  return false;
+}
+
+// Expands any accordion within containerId that has at least one selection,
+// so pre-filled sample data is visible without requiring a manual expand.
+function nnExpandPopulated(containerId) {
+  document.querySelectorAll(`#${containerId} .nn-accordion`).forEach(acc => {
+    const count = acc.querySelector('.nn-accordion-count');
+    const body = acc.querySelector('.nn-accordion-body');
+    const toggle = acc.querySelector('.nn-accordion-toggle');
+    if (count && count.classList.contains('visible') && body && toggle) {
+      body.classList.add('open');
+      toggle.textContent = '▴';
+    }
+  });
 }
 
 function nnUpdateCloserButton() {
