@@ -1382,6 +1382,64 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 }
 .nn-accordion-body.open { display: block; }
 
+.nn-section-card {
+  background: var(--output-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px 14px;
+  scroll-margin-top: 46px;
+}
+.nn-jump-nav {
+  position: sticky;
+  top: -18px;
+  margin: -18px -18px 0;
+  padding: 10px 18px 9px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 11px;
+}
+.nn-jump-link {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  white-space: nowrap;
+  padding: 2px 0;
+  border-bottom: 2px solid transparent;
+}
+.nn-jump-link:hover { color: var(--accent); border-bottom-color: var(--accent-light); }
+.nn-progress-hint { font-weight: 600; color: var(--accent); }
+
+.nn-check-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 3px 14px;
+}
+.nn-check-grid.nn-check-grid-wide { grid-template-columns: 1fr; gap: 5px; }
+.nn-check-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  padding: 3px 2px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+.nn-check-row:hover { background: var(--accent-light); }
+.nn-check-row input[type="checkbox"] {
+  accent-color: var(--accent);
+  margin-top: 2px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.nn-check-row span {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--text);
+}
+
 .asam-ref-panel {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -4160,94 +4218,106 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 
     <!-- LEFT: INPUTS -->
     <div class="session-inputs">
-      <div class="sn-section-title" style="margin-bottom:0">Shift Details</div>
-      <div class="sn-meta-row">
-        <div>
-          <label class="sn-label" style="white-space:nowrap">Client First Name</label>
-          <input class="sn-input" id="nn-client" placeholder="e.g. Joseph" oninput="nnState.clientName=this.value">
-        </div>
-        <div>
-          <label class="sn-label">Date</label>
-          <input class="sn-input" type="date" id="nn-date" oninput="nnState.date=this.value">
-        </div>
+      <div class="nn-jump-nav">
+        <span class="nn-jump-link" onclick="nnJumpTo('nn-sec-details')">Details</span>
+        <span class="nn-jump-link" onclick="nnJumpTo('nn-sec-symptoms')">Symptoms</span>
+        <span class="nn-jump-link" onclick="nnJumpTo('nn-sec-objective')">Findings</span>
+        <span class="nn-jump-link" onclick="nnJumpTo('nn-sec-meds')">Meds</span>
+        <span class="nn-jump-link" onclick="nnJumpTo('nn-sec-stability')">Stability</span>
+        <span class="nn-jump-link" onclick="nnJumpTo('nn-sec-psych')">Psych</span>
+        <span class="nn-jump-link" onclick="nnJumpTo('nn-sec-sleep')">Sleep</span>
+        <span class="nn-jump-link" onclick="nnJumpTo('nn-sec-cravings')">Cravings</span>
+        <span class="nn-jump-link" onclick="nnJumpTo('nn-sec-continued')">Continued Need</span>
       </div>
-      <div>
-        <label class="sn-label">Withdrawal Type</label>
-        <select class="sn-select" id="nn-wd-type" onchange="nnState.wdType=this.value;nnUpdateCloserButton()">
-          <option value="">— Select —</option>
-          <option value="alcohol">Alcohol</option>
-          <option value="opioid">Opioid</option>
-          <option value="benzo">Benzodiazepine</option>
-          <option value="stimulant">Stimulant</option>
-          <option value="poly">Polysubstance / Other</option>
-        </select>
+
+      <div class="nn-section-card" id="nn-sec-details">
+        <div class="sn-section-title" style="margin-bottom:0">Shift Details</div>
+        <div class="sn-meta-row">
+          <div>
+            <label class="sn-label" style="white-space:nowrap">Client First Name</label>
+            <input class="sn-input" id="nn-client" placeholder="e.g. Joseph" oninput="nnState.clientName=this.value">
+          </div>
+          <div>
+            <label class="sn-label">Date</label>
+            <input class="sn-input" type="date" id="nn-date" oninput="nnState.date=this.value">
+          </div>
+        </div>
+        <div>
+          <label class="sn-label">Withdrawal Type</label>
+          <select class="sn-select" id="nn-wd-type" onchange="nnState.wdType=this.value;nnUpdateCloserButton()">
+            <option value="">— Select —</option>
+            <option value="alcohol">Alcohol</option>
+            <option value="opioid">Opioid</option>
+            <option value="benzo">Benzodiazepine</option>
+            <option value="stimulant">Stimulant</option>
+            <option value="poly">Polysubstance / Other</option>
+          </select>
+        </div>
       </div>
 
       <!-- SECTION 1: WITHDRAWAL SYMPTOMS -->
-      <div>
+      <div class="nn-section-card" id="nn-sec-symptoms">
         <div class="sn-section-title">Withdrawal Symptoms</div>
-        <div class="sn-chip-grid" id="nn-symptom-chips"></div>
-      </div>
-      <div>
-        <div class="sentence-hint" style="margin-bottom:6px">✎ Write in complete sentences — pasted verbatim</div>
+        <div id="nn-symptom-chips"></div>
+        <div class="sentence-hint" style="margin:10px 0 6px">✎ Write in complete sentences — pasted verbatim</div>
         <textarea class="sn-textarea" id="nn-symptom-detail" style="min-height:60px" placeholder="Additional detail on symptoms reported or observed…" oninput="nnState.symptomDetail=this.value"></textarea>
       </div>
 
       <!-- SECTION 2: OBJECTIVE ASSESSMENT FINDINGS -->
-      <div class="sn-section-title">Objective Assessment Findings</div>
-      <div class="sn-meta-row">
-        <div>
-          <label class="sn-label">CIWA-Ar Score</label>
-          <input class="sn-input" id="nn-ciwa" type="number" min="0" placeholder="e.g. 14" oninput="nnState.ciwa=this.value">
+      <div class="nn-section-card" id="nn-sec-objective">
+        <div class="sn-section-title">Objective Assessment Findings</div>
+        <div class="sn-meta-row">
+          <div>
+            <label class="sn-label">CIWA-Ar Score</label>
+            <input class="sn-input" id="nn-ciwa" type="number" min="0" placeholder="e.g. 14" oninput="nnState.ciwa=this.value">
+          </div>
+          <div>
+            <label class="sn-label">COWS Score</label>
+            <input class="sn-input" id="nn-cows" type="number" min="0" placeholder="e.g. 13" oninput="nnState.cows=this.value">
+          </div>
         </div>
-        <div>
-          <label class="sn-label">COWS Score</label>
-          <input class="sn-input" id="nn-cows" type="number" min="0" placeholder="e.g. 13" oninput="nnState.cows=this.value">
+        <div class="sn-meta-row">
+          <div>
+            <label class="sn-label">Blood Pressure</label>
+            <input class="sn-input" id="nn-bp" placeholder="e.g. 142/88" oninput="nnState.bp=this.value">
+          </div>
+          <div>
+            <label class="sn-label">Pulse</label>
+            <input class="sn-input" id="nn-pulse" placeholder="e.g. 98" oninput="nnState.pulse=this.value">
+          </div>
         </div>
-      </div>
-      <div class="sn-meta-row">
-        <div>
-          <label class="sn-label">Blood Pressure</label>
-          <input class="sn-input" id="nn-bp" placeholder="e.g. 142/88" oninput="nnState.bp=this.value">
-        </div>
-        <div>
-          <label class="sn-label">Pulse</label>
-          <input class="sn-input" id="nn-pulse" placeholder="e.g. 98" oninput="nnState.pulse=this.value">
-        </div>
-      </div>
 
-      <div>
-        <div class="sn-section-title nn-group-heading">
-          <span>Mental Status Exam</span>
-          <span class="nn-group-links">
-            <span class="nn-group-link" onclick="nnSetAllAccordions('nn-mse-wrap',true)">Expand all</span>
-            <span class="nn-group-link-sep">·</span>
-            <span class="nn-group-link" onclick="nnSetAllAccordions('nn-mse-wrap',false)">Collapse all</span>
-          </span>
+        <div style="margin-top:10px">
+          <div class="sn-section-title nn-group-heading">
+            <span>Mental Status Exam</span>
+            <span class="nn-group-links">
+              <span class="nn-group-link" onclick="nnSetAllAccordions('nn-mse-wrap',true)">Expand all</span>
+              <span class="nn-group-link-sep">·</span>
+              <span class="nn-group-link" onclick="nnSetAllAccordions('nn-mse-wrap',false)">Collapse all</span>
+            </span>
+          </div>
+          <div id="nn-mse-wrap"></div>
         </div>
-        <div id="nn-mse-wrap"></div>
-      </div>
 
-      <div>
-        <div class="sn-section-title nn-group-heading">
-          <span>Physical Observations</span>
-          <span class="nn-group-links">
-            <span class="nn-group-link" onclick="nnSetAllAccordions('nn-physical-wrap',true)">Expand all</span>
-            <span class="nn-group-link-sep">·</span>
-            <span class="nn-group-link" onclick="nnSetAllAccordions('nn-physical-wrap',false)">Collapse all</span>
-          </span>
+        <div style="margin-top:10px">
+          <div class="sn-section-title nn-group-heading">
+            <span>Physical Observations</span>
+            <span class="nn-group-links">
+              <span class="nn-group-link" onclick="nnSetAllAccordions('nn-physical-wrap',true)">Expand all</span>
+              <span class="nn-group-link-sep">·</span>
+              <span class="nn-group-link" onclick="nnSetAllAccordions('nn-physical-wrap',false)">Collapse all</span>
+            </span>
+          </div>
+          <div id="nn-physical-wrap"></div>
         </div>
-        <div id="nn-physical-wrap"></div>
       </div>
 
       <!-- SECTION 3: MEDICATION MANAGEMENT -->
-      <div>
+      <div class="nn-section-card" id="nn-sec-meds">
         <div class="sn-section-title">Medications Administered</div>
-        <div class="sn-chip-grid" id="nn-med-chips"></div>
-      </div>
+        <div id="nn-med-chips"></div>
 
-      <div>
-        <div class="sn-section-title nn-group-heading">
+        <div class="sn-section-title nn-group-heading" style="margin-top:10px">
           <span>Medication Response</span>
           <span class="nn-group-links">
             <span class="nn-group-link" onclick="nnSetAllAccordions('nn-medresponse-wrap',true)">Expand all</span>
@@ -4256,22 +4326,21 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
           </span>
         </div>
         <div id="nn-medresponse-wrap"></div>
-      </div>
 
-      <div>
-        <div class="sentence-hint" style="margin-bottom:6px">✎ Write in complete sentences — pasted verbatim</div>
+        <div class="sentence-hint" style="margin:10px 0 6px">✎ Write in complete sentences — pasted verbatim</div>
         <textarea class="sn-textarea" id="nn-med-detail" style="min-height:60px" placeholder="Additional detail on medication response…" oninput="nnState.medDetail=this.value"></textarea>
       </div>
 
-      <!-- SECTION 4: MEDICAL STABILITY / PSYCHIATRIC SYMPTOMS -->
-      <div>
+      <!-- SECTION 4: MEDICAL STABILITY -->
+      <div class="nn-section-card" id="nn-sec-stability">
         <div class="sn-section-title">Medical Stability</div>
-        <div class="sn-chip-grid" id="nn-stability-chips"></div>
+        <div id="nn-stability-chips"></div>
       </div>
 
-      <div>
+      <!-- SECTION 4b: PSYCHIATRIC SYMPTOMS -->
+      <div class="nn-section-card" id="nn-sec-psych">
         <div class="sn-section-title">Psychiatric Symptoms</div>
-        <div class="sn-chip-grid" id="nn-psych-chips"></div>
+        <div id="nn-psych-chips"></div>
         <div id="nn-si-detail-wrap" style="display:none;margin-top:8px">
           <div class="sentence-hint" style="margin-bottom:5px">✎ Write in complete sentences — pasted verbatim</div>
           <textarea class="sn-textarea" id="nn-si-detail" placeholder="Describe SI findings, risk assessment, and clinical response taken…" oninput="nnState.siDetail=this.value"></textarea>
@@ -4279,24 +4348,37 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       </div>
 
       <!-- SECTION 5: SLEEP / HYDRATION / NUTRITION -->
-      <div>
+      <div class="nn-section-card" id="nn-sec-sleep">
         <div class="sn-section-title">Sleep, Hydration &amp; Nutrition</div>
         <div class="sentence-hint" style="margin-bottom:6px">✎ Write in complete sentences — pasted verbatim</div>
         <textarea class="sn-textarea" id="nn-sleep" style="min-height:60px" placeholder="e.g. Client reports sleeping approximately 2 hours overnight. Appetite poor. Encouraged fluid intake and monitored hydration status." oninput="nnState.sleepHydrationNutrition=this.value"></textarea>
       </div>
 
       <!-- SECTION 6: CRAVINGS AND RELAPSE RISK -->
-      <div>
+      <div class="nn-section-card" id="nn-sec-cravings">
         <div class="sn-section-title">Cravings &amp; Relapse Risk</div>
         <label class="sn-label">Cravings (0–10)</label>
-        <div class="sn-chip-grid" id="nn-cravings-pills" style="margin-bottom:8px"></div>
+        <select class="sn-select" id="nn-cravings-select" style="margin-bottom:8px" onchange="nnState.cravings = this.value ? Number(this.value) : null">
+          <option value="">— Not assessed —</option>
+          <option value="0">0 — none reported</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10 — severe</option>
+        </select>
         <div class="sentence-hint" style="margin-bottom:6px">✎ Write in complete sentences — pasted verbatim</div>
         <textarea class="sn-textarea" id="nn-cravings-detail" style="min-height:55px" placeholder="e.g. Client verbalizes concern regarding ability to remain abstinent if discharged at this time." oninput="nnState.cravingsDetail=this.value"></textarea>
       </div>
 
       <!-- SECTION 7: CONTINUED NEED -->
-      <div>
-        <div class="sn-section-title">Continued Need for 3.7-WM</div>
+      <div class="continued-section" id="nn-sec-continued" style="display:block;scroll-margin-top:46px">
+        <div class="continued-section-title">Continued Need for 3.7-WM</div>
         <div class="sentence-hint" style="margin-bottom:6px">✎ Answers: why can't the client safely step down today? — pasted verbatim</div>
         <textarea class="sn-textarea" id="nn-continued-need" style="min-height:70px" placeholder="e.g. Client continues to experience active withdrawal symptoms requiring medication management and nursing monitoring. Has not yet achieved medical stability for transition to a lower level of care." oninput="nnState.continuedNeed=this.value"></textarea>
         <button type="button" class="sn-add-obj-btn" id="nn-closer-btn" style="margin-top:8px" onclick="nnInsertCloser()">+ Insert suggested closing statement</button>
@@ -4322,7 +4404,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   </div><!-- /session-tab-inner -->
 
   <div class="generate-bar">
-    <span class="generate-bar-hint">Fill in shift assessment — fields left blank will be omitted.</span>
+    <span class="generate-bar-hint"><span class="nn-progress-hint" id="nn-progress-hint">0 of 8 sections started</span> · Fields left blank will be omitted.</span>
     <div style="display:flex;gap:8px;">
       <button class="btn btn-ghost" onclick="nnClear()">Clear</button>
       <button class="btn btn-primary" onclick="nnGenerate()">Generate</button>
@@ -4347,13 +4429,17 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <div style="margin-bottom:28px;">
       <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px;">
         <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;background:var(--accent);color:#fff;padding:2px 8px;border-radius:4px;">v1.7</span>
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5a6a62;">July 2, 2026</span>
-        <span style="font-size:14px;font-weight:600;color:#1b4332;">Nursing Note tool (initial draft)</span>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5a6a62;">July 4, 2026</span>
+        <span style="font-size:14px;font-weight:600;color:#1b4332;">Nursing Note tool</span>
       </div>
       <div style="display:flex;flex-direction:column;gap:7px;">
         <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 13px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;">
           <span style="font-size:9px;font-weight:600;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">NEW</span>
-          <span style="font-size:13px;line-height:1.55;">New Nursing Note tool added to the home screen, built with the nursing coordinator. Captures a shift assessment following the withdrawal symptoms, objective findings, medication management, and continued need structure — including CIWA-Ar and COWS scores, vitals, a full mental status exam, physical observations, medication administration and response, medical stability and psychiatric symptoms, sleep/hydration/nutrition, and cravings and relapse risk. Generates a single nursing progress note. This tool is under active development and will continue to change as the coordinator reviews it.</span>
+          <span style="font-size:13px;line-height:1.55;">New Nursing Note tool added to the home screen, built with the nursing coordinator. Captures a shift assessment following the withdrawal symptoms, objective findings, medication management, and continued need structure — including CIWA-Ar and COWS scores, vitals, a full mental status exam, physical observations, medication administration and response, medical stability and psychiatric symptoms, sleep/hydration/nutrition, and cravings and relapse risk. Generates a single nursing progress note.</span>
+        </div>
+        <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 13px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;">
+          <span style="font-size:9px;font-weight:600;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">Nursing Note</span>
+          <span style="font-size:13px;line-height:1.55;">Refined the tool after initial review: mental status exam and physical exam findings now generate as natural clinical sentences rather than a comma list. Single-select findings that represent a rating or a state (level of consciousness, orientation, memory, attention, insight, judgment, impulse control, cravings) are now dropdowns instead of togglable options, so contradictory selections aren't possible; multi-select findings (symptoms, medications, MSE checklist items, medical stability, psychiatric symptoms) are now checkbox grids instead of pills for a cleaner, more aligned layout. Added a sticky section-jump navigation bar, a live "sections started" progress indicator, and card-style grouping to break up the long input form. The mental status exam section now expands by default on load and after Clear, since it's assessed every shift; physical observations and medication response stay collapsed until needed. The sample client (Marcus) now populates the Nursing Note tool for demonstration purposes. This tool is under active development and will continue to change as the coordinator reviews it.</span>
         </div>
       </div>
     </div>
@@ -10304,16 +10390,12 @@ function fillSampleClient() {
     ['nn-mse-wrap', 'Intact recent and remote memory'],
     ['nn-mse-wrap', 'Intact'],
   ].forEach(([containerId, label]) => nnSelectChip(containerId, label));
-  // Insight, Judgment, and Impulse Control each offer 'Good' as an option, so select it
-  // within each of those three accordion groups specifically rather than relying on
-  // textContent matching, which would only find the first 'Good' chip in the container.
-  document.querySelectorAll('#nn-mse-wrap .nn-accordion').forEach(acc => {
-    const label = acc.querySelector('.nn-accordion-label');
-    if (label && ['Insight', 'Judgment', 'Impulse Control'].includes(label.textContent)) {
-      const btn = Array.from(acc.querySelectorAll('.sn-chip')).find(b => b.textContent === 'Good');
-      if (btn && !btn.classList.contains('active')) btn.click();
-    }
-  });
+  // Insight, Judgment, and Impulse Control are now single-select dropdowns, so each
+  // is targeted directly by key rather than searching for 'Good' text, since all
+  // three offer 'Good' as an option and a generic text search can't disambiguate them.
+  nnSetSingleSelect('nn-mse-wrap', 'insight', 'Good');
+  nnSetSingleSelect('nn-mse-wrap', 'judgment', 'Good');
+  nnSetSingleSelect('nn-mse-wrap', 'impulseControl', 'Good');
   nnExpandPopulated('nn-mse-wrap');
 
   ['No acute distress', 'Tremors absent', 'Gait steady', 'Pupils equal and reactive'].forEach(label => {
@@ -10332,7 +10414,8 @@ function fillSampleClient() {
   document.getElementById('nn-sleep').value = nnSleepText;
   nnState.sleepHydrationNutrition = nnSleepText;
 
-  nnSelectChip('nn-cravings-pills', '6');
+  document.getElementById('nn-cravings-select').value = '6';
+  nnState.cravings = 6;
   const nnCravingsText = 'Client reports ongoing alcohol cravings and voices some uncertainty about his ability to maintain abstinence if discharged at this time.';
   document.getElementById('nn-cravings-detail').value = nnCravingsText;
   nnState.cravingsDetail = nnCravingsText;
@@ -10340,6 +10423,7 @@ function fillSampleClient() {
   const nnContinuedNeedText = 'CIWA-Ar score decreased from 16 on admission to 9 today; however, Marcus continues to require monitoring for residual withdrawal symptoms, sleep disturbance, and cravings. He remains medically vulnerable given his recent history of withdrawal and has not yet achieved sufficient stability for safe transition to a lower level of care. Continued 3.7-WM services remain medically necessary.';
   document.getElementById('nn-continued-need').value = nnContinuedNeedText;
   nnState.continuedNeed = nnContinuedNeedText;
+  nnUpdateProgress();
 
   tjSampleClientLoaded = true;
 
@@ -10775,31 +10859,31 @@ const nnState = {
 const NN_SYMPTOMS = ['Anxiety','Tremors','Sweating','Nausea/vomiting','Diarrhea','Body aches','Restlessness','Insomnia','Chills/gooseflesh','Cravings','Headache','Hallucinations'];
 
 const NN_MSE_GROUPS = [
-  { key:'appearance', label:'Appearance', options:['Well-groomed','Disheveled','Poor hygiene','Appropriately dressed','Malodorous','Appears stated age','Restless','Diaphoretic'] },
-  { key:'behavior', label:'Behavior', options:['Calm','Cooperative','Guarded','Agitated','Irritable','Withdrawn','Pacing','Fidgeting','Psychomotor agitation','Psychomotor slowing'] },
-  { key:'loc', label:'Level of Consciousness', options:['Alert','Lethargic','Drowsy','Somnolent','Difficult to arouse'] },
-  { key:'orientation', label:'Orientation', options:['Alert and oriented ×4 (person, place, time, situation)','Oriented ×3','Confused','Disoriented'] },
-  { key:'speech', label:'Speech', options:['Clear','Coherent','Pressured','Rapid','Slow','Slurred','Soft','Loud','Delayed responses'] },
-  { key:'mood', label:'Mood (patient-reported)', options:['Anxious','Depressed','Angry','Hopeless','Fine'] },
-  { key:'affect', label:'Affect (observed)', options:['Appropriate','Flat','Blunted','Constricted','Labile','Tearful','Congruent with mood','Incongruent'] },
-  { key:'thoughtContent', label:'Thought Content', options:['No delusions observed','Paranoid thoughts','Obsessive thoughts','Preoccupied with withdrawal symptoms','Denies suicidal ideation (SI)','Denies homicidal ideation (HI)'] },
-  { key:'perception', label:'Perception', options:['No hallucinations observed','Reports auditory hallucinations','Reports visual hallucinations','Denies hallucinations'] },
-  { key:'memory', label:'Memory', options:['Intact recent and remote memory','Impaired short-term memory','Forgetful'] },
-  { key:'attention', label:'Attention/Concentration', options:['Intact','Easily distracted','Poor concentration','Difficulty following conversation'] },
-  { key:'insight', label:'Insight', options:['Good','Fair','Limited','Poor insight into illness or substance use'] },
-  { key:'judgment', label:'Judgment', options:['Good','Fair','Impaired','Poor decision-making'] },
-  { key:'impulseControl', label:'Impulse Control', options:['Good','Fair','Poor','Impulsive behavior observed'] },
+  { key:'appearance', label:'Appearance', type:'multi', options:['Well-groomed','Disheveled','Poor hygiene','Appropriately dressed','Malodorous','Appears stated age','Restless','Diaphoretic'] },
+  { key:'behavior', label:'Behavior', type:'multi', options:['Calm','Cooperative','Guarded','Agitated','Irritable','Withdrawn','Pacing','Fidgeting','Psychomotor agitation','Psychomotor slowing'] },
+  { key:'loc', label:'Level of Consciousness', type:'single', options:['Alert','Lethargic','Drowsy','Somnolent','Difficult to arouse'] },
+  { key:'orientation', label:'Orientation', type:'single', options:['Alert and oriented ×4 (person, place, time, situation)','Oriented ×3','Confused','Disoriented'] },
+  { key:'speech', label:'Speech', type:'multi', options:['Clear','Coherent','Pressured','Rapid','Slow','Slurred','Soft','Loud','Delayed responses'] },
+  { key:'mood', label:'Mood (patient-reported)', type:'multi', options:['Anxious','Depressed','Angry','Hopeless','Fine'] },
+  { key:'affect', label:'Affect (observed)', type:'multi', options:['Appropriate','Flat','Blunted','Constricted','Labile','Tearful','Congruent with mood','Incongruent'] },
+  { key:'thoughtContent', label:'Thought Content', type:'multi', options:['No delusions observed','Paranoid thoughts','Obsessive thoughts','Preoccupied with withdrawal symptoms','Denies suicidal ideation (SI)','Denies homicidal ideation (HI)'] },
+  { key:'perception', label:'Perception', type:'multi', options:['No hallucinations observed','Reports auditory hallucinations','Reports visual hallucinations','Denies hallucinations'] },
+  { key:'memory', label:'Memory', type:'single', options:['Intact recent and remote memory','Impaired short-term memory','Forgetful'] },
+  { key:'attention', label:'Attention/Concentration', type:'single', options:['Intact','Easily distracted','Poor concentration','Difficulty following conversation'] },
+  { key:'insight', label:'Insight', type:'single', options:['Good','Fair','Limited','Poor insight into illness or substance use'] },
+  { key:'judgment', label:'Judgment', type:'single', options:['Good','Fair','Impaired','Poor decision-making'] },
+  { key:'impulseControl', label:'Impulse Control', type:'single', options:['Good','Fair','Poor','Impulsive behavior observed'] },
 ];
 
 const NN_PHYSICAL_GROUPS = [
-  { key:'generalAppearance', label:'General Appearance', options:['Well-developed','Well-nourished','Ill-appearing','Fatigued','Diaphoretic','Pale','Flushed','Appears uncomfortable','No acute distress'] },
-  { key:'neurological', label:'Neurological', options:['Alert and oriented ×4','Tremors present','Tremors absent','Gait steady','Gait unsteady','Dizziness reported','Coordination intact','Pupils equal and reactive'] },
+  { key:'generalAppearance', label:'General Appearance', type:'multi', options:['Well-developed','Well-nourished','Ill-appearing','Fatigued','Diaphoretic','Pale','Flushed','Appears uncomfortable','No acute distress'] },
+  { key:'neurological', label:'Neurological', type:'multi', options:['Alert and oriented ×4','Tremors present','Tremors absent','Gait steady','Gait unsteady','Dizziness reported','Coordination intact','Pupils equal and reactive'] },
 ];
 
 const NN_MEDS = ['Tylenol','Ibuprofen','Baclofen','Lucemyra','Clonidine','Bentyl','Colace','Imodium','Zofran','Melatonin','Trazodone','Remeron','Vistaril','Valium (per CIWA)','Ativan (per CIWA)','Suboxone (per COWS)','Subutex (per COWS)','Methadone (observed self-administration)','Librium (per CIWA)'];
 
 const NN_MED_RESPONSE_GROUPS = [
-  { key:'appropriate', label:'Appropriate Response', options:[
+  { key:'appropriate', label:'Appropriate Response', type:'multi', wide:true, options:[
     'Client accepted scheduled medications without difficulty.',
     'Medication administered as ordered; no immediate adverse reactions observed.',
     'Client tolerated medications well.',
@@ -10810,7 +10894,7 @@ const NN_MED_RESPONSE_GROUPS = [
     'Resting comfortably after receiving medication.',
     'Reports improved ability to participate in treatment activities following symptom relief.'
   ]},
-  { key:'ongoing', label:'Ongoing Symptoms', options:[
+  { key:'ongoing', label:'Ongoing Symptoms', type:'multi', wide:true, options:[
     'Client reports only partial relief of withdrawal symptoms following medication administration.',
     'Continues to experience mild anxiety despite medication; symptoms remain manageable.',
     'Reports persistent body aches requiring continued monitoring.',
@@ -10818,14 +10902,14 @@ const NN_MED_RESPONSE_GROUPS = [
     'Withdrawal symptoms persist but remain controlled with current medication regimen.',
     'Client continues to require scheduled and PRN medications for symptom management.'
   ]},
-  { key:'sideEffects', label:'Side Effects / Monitoring', options:[
+  { key:'sideEffects', label:'Side Effects / Monitoring', type:'multi', wide:true, options:[
     'No adverse medication effects observed during assessment.',
     'Mild drowsiness noted following medication administration; easily arousable and respirations remain even and unlabored.',
     'Denies dizziness, rash, difficulty breathing, or other adverse reactions.',
     'Blood pressure remains within provider-established parameters following medication administration.',
     'Client educated regarding medication purpose, expected effects, and possible side effects; verbalized understanding.'
   ]},
-  { key:'refusal', label:'Refusal', options:[
+  { key:'refusal', label:'Refusal', type:'multi', wide:true, options:[
     'Client declined medication after education regarding risks and benefits. Provider notified per facility protocol.',
     'Client refused PRN medication, stating symptoms are manageable at this time.',
     'Medication held per provider parameters due to hypotension/bradycardia.'
@@ -10843,25 +10927,32 @@ const NN_CLOSERS = {
   poly: 'Client continues to experience withdrawal-related symptoms requiring medication management and nursing monitoring. Client has not yet achieved sufficient stability for safe transition to a lower level of care.'
 };
 
-function nnBuildFlatChips(containerId, options, stateArr, onToggle) {
+function nnBuildCheckGrid(containerId, options, stateArr, onToggle, wide) {
   const container = document.getElementById(containerId);
   container.innerHTML = '';
+  container.classList.add('nn-check-grid');
+  container.classList.toggle('nn-check-grid-wide', !!wide);
   options.forEach(opt => {
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'sn-chip';
-    btn.textContent = opt;
-    btn.onclick = () => {
+    const row = document.createElement('label');
+    row.className = 'nn-check-row';
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.checked = stateArr.includes(opt);
+    cb.onchange = () => {
       const i = stateArr.indexOf(opt);
-      if (i > -1) { stateArr.splice(i, 1); btn.classList.remove('active'); }
-      else { stateArr.push(opt); btn.classList.add('active'); }
+      if (cb.checked && i === -1) stateArr.push(opt);
+      else if (!cb.checked && i > -1) stateArr.splice(i, 1);
       if (onToggle) onToggle(opt, stateArr.includes(opt));
     };
-    container.appendChild(btn);
+    const span = document.createElement('span');
+    span.textContent = opt;
+    row.appendChild(cb);
+    row.appendChild(span);
+    container.appendChild(row);
   });
 }
 
-function nnBuildGroupedChips(containerId, groups, stateObj) {
+function nnBuildGroupedChips(containerId, groups, stateObj, defaultOpen) {
   const container = document.getElementById(containerId);
   container.innerHTML = '';
   groups.forEach(g => {
@@ -10881,7 +10972,7 @@ function nnBuildGroupedChips(containerId, groups, stateObj) {
     count.className = 'nn-accordion-count';
     const toggle = document.createElement('span');
     toggle.className = 'nn-accordion-toggle';
-    toggle.textContent = '▾';
+    toggle.textContent = defaultOpen ? '▴' : '▾';
     meta.appendChild(count);
     meta.appendChild(toggle);
 
@@ -10889,33 +10980,76 @@ function nnBuildGroupedChips(containerId, groups, stateObj) {
     header.appendChild(meta);
 
     const body = document.createElement('div');
-    body.className = 'nn-accordion-body';
-    const grid = document.createElement('div');
-    grid.className = 'sn-chip-grid';
+    body.className = 'nn-accordion-body' + (defaultOpen ? ' open' : '');
 
     function updateCount() {
-      const n = stateObj[g.key].length;
-      count.textContent = n;
-      count.classList.toggle('visible', n > 0);
+      const arr = stateObj[g.key];
+      if (g.type === 'single') {
+        if (arr.length > 0) {
+          const val = arr[0];
+          count.textContent = val.length > 18 ? val.slice(0, 16) + '…' : val;
+          count.classList.add('visible');
+        } else {
+          count.textContent = '';
+          count.classList.remove('visible');
+        }
+      } else {
+        const n = arr.length;
+        count.textContent = n;
+        count.classList.toggle('visible', n > 0);
+      }
     }
 
-    g.options.forEach(opt => {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'sn-chip';
-      btn.textContent = opt;
-      btn.onclick = (e) => {
+    if (g.type === 'single') {
+      const select = document.createElement('select');
+      select.className = 'sn-select';
+      select.dataset.key = g.key;
+      const noneOpt = document.createElement('option');
+      noneOpt.value = '';
+      noneOpt.textContent = '— None selected —';
+      select.appendChild(noneOpt);
+      g.options.forEach(opt => {
+        const o = document.createElement('option');
+        o.value = opt;
+        o.textContent = opt;
+        select.appendChild(o);
+      });
+      select.value = stateObj[g.key][0] || '';
+      select.onclick = (e) => e.stopPropagation();
+      select.onchange = (e) => {
         e.stopPropagation();
         const arr = stateObj[g.key];
-        const i = arr.indexOf(opt);
-        if (i > -1) { arr.splice(i, 1); btn.classList.remove('active'); }
-        else { arr.push(opt); btn.classList.add('active'); }
+        arr.length = 0;
+        if (select.value) arr.push(select.value);
         updateCount();
       };
-      grid.appendChild(btn);
-    });
+      body.appendChild(select);
+    } else {
+      const grid = document.createElement('div');
+      grid.className = 'nn-check-grid' + (g.wide ? ' nn-check-grid-wide' : '');
+      g.options.forEach(opt => {
+        const row = document.createElement('label');
+        row.className = 'nn-check-row';
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.checked = stateObj[g.key].includes(opt);
+        cb.onclick = (e) => e.stopPropagation();
+        cb.onchange = () => {
+          const arr = stateObj[g.key];
+          const i = arr.indexOf(opt);
+          if (cb.checked && i === -1) arr.push(opt);
+          else if (!cb.checked && i > -1) arr.splice(i, 1);
+          updateCount();
+        };
+        const span = document.createElement('span');
+        span.textContent = opt;
+        row.appendChild(cb);
+        row.appendChild(span);
+        grid.appendChild(row);
+      });
+      body.appendChild(grid);
+    }
 
-    body.appendChild(grid);
     header.onclick = () => {
       const isOpen = body.classList.toggle('open');
       toggle.textContent = isOpen ? '▴' : '▾';
@@ -10934,49 +11068,60 @@ function nnSetAllAccordions(containerId, open) {
   container.querySelectorAll('.nn-accordion-toggle').forEach(t => t.textContent = open ? '▴' : '▾');
 }
 
-function nnBuildCravingsPills() {
-  const container = document.getElementById('nn-cravings-pills');
-  container.innerHTML = '';
-  for (let i = 0; i <= 10; i++) {
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'sn-chip';
-    btn.textContent = i;
-    btn.onclick = () => {
-      const wasActive = nnState.cravings === i;
-      container.querySelectorAll('.sn-chip').forEach(c => c.classList.remove('active'));
-      nnState.cravings = wasActive ? null : i;
-      if (!wasActive) btn.classList.add('active');
-    };
-    container.appendChild(btn);
-  }
-}
-
 function nnBuildAllChips() {
-  nnBuildFlatChips('nn-symptom-chips', NN_SYMPTOMS, nnState.symptoms);
-  nnBuildGroupedChips('nn-mse-wrap', NN_MSE_GROUPS, nnState.mse);
+  nnBuildCheckGrid('nn-symptom-chips', NN_SYMPTOMS, nnState.symptoms);
+  nnBuildGroupedChips('nn-mse-wrap', NN_MSE_GROUPS, nnState.mse, true);
   nnBuildGroupedChips('nn-physical-wrap', NN_PHYSICAL_GROUPS, nnState.physical);
-  nnBuildFlatChips('nn-med-chips', NN_MEDS, nnState.meds);
+  nnBuildCheckGrid('nn-med-chips', NN_MEDS, nnState.meds);
   nnBuildGroupedChips('nn-medresponse-wrap', NN_MED_RESPONSE_GROUPS, nnState.medResponse);
-  nnBuildFlatChips('nn-stability-chips', NN_MEDICAL_STABILITY, nnState.medicalStability);
-  nnBuildFlatChips('nn-psych-chips', NN_PSYCH_SYMPTOMS, nnState.psychSymptoms, (opt) => {
+  nnBuildCheckGrid('nn-stability-chips', NN_MEDICAL_STABILITY, nnState.medicalStability);
+  nnBuildCheckGrid('nn-psych-chips', NN_PSYCH_SYMPTOMS, nnState.psychSymptoms, (opt) => {
     if (opt === 'Suicidal ideation') {
       document.getElementById('nn-si-detail-wrap').style.display = nnState.psychSymptoms.includes('Suicidal ideation') ? 'block' : 'none';
     }
   });
-  nnBuildCravingsPills();
 }
 
-// Clicks the chip button matching `label` inside containerId, reusing its existing
-// toggle handler so state array + active class + accordion count stay in sync.
+// Sets the finding matching `label` inside containerId — checks checkbox rows
+// (multi-select categories) first, then <select> dropdowns (single-select
+// categories), reusing native checkbox/change behavior so state stays in sync.
 function nnSelectChip(containerId, label) {
   const container = document.getElementById(containerId);
   if (!container) return false;
-  const btns = container.querySelectorAll('.sn-chip');
-  for (const btn of btns) {
-    if (btn.textContent === String(label)) { btn.click(); return true; }
+  label = String(label);
+
+  const rows = container.querySelectorAll('.nn-check-row');
+  for (const row of rows) {
+    const span = row.querySelector('span');
+    if (span && span.textContent === label) {
+      const cb = row.querySelector('input[type="checkbox"]');
+      if (cb && !cb.checked) cb.click();
+      return true;
+    }
   }
+
+  const selects = container.querySelectorAll('select');
+  for (const select of selects) {
+    const opt = Array.from(select.options).find(o => o.value === label);
+    if (opt) {
+      select.value = label;
+      select.dispatchEvent(new Event('change', { bubbles: true }));
+      return true;
+    }
+  }
+
   return false;
+}
+
+// Sets a single-select MSE/Physical dropdown by its data-key, disambiguating
+// categories that share option text (e.g. Insight/Judgment/Impulse Control
+// all offer "Good" — nnSelectChip alone can't tell which one is meant).
+function nnSetSingleSelect(containerId, key, value) {
+  const select = document.querySelector(`#${containerId} select[data-key="${key}"]`);
+  if (!select) return false;
+  select.value = value;
+  select.dispatchEvent(new Event('change', { bubbles: true }));
+  return true;
 }
 
 // Expands any accordion within containerId that has at least one selection,
@@ -10991,6 +11136,35 @@ function nnExpandPopulated(containerId) {
       toggle.textContent = '▴';
     }
   });
+}
+
+function nnJumpTo(sectionId) {
+  const el = document.getElementById(sectionId);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function nnSectionsStatus() {
+  const mseHasAny = Object.values(nnState.mse).some(a => a.length > 0);
+  const physHasAny = Object.values(nnState.physical).some(a => a.length > 0);
+  const medResponseHasAny = Object.values(nnState.medResponse).some(a => a.length > 0);
+  return [
+    { label: 'Symptoms', started: nnState.symptoms.length > 0 || nnState.symptomDetail.trim() !== '' },
+    { label: 'Findings', started: !!(nnState.ciwa || nnState.cows || nnState.bp || nnState.pulse || mseHasAny || physHasAny) },
+    { label: 'Meds', started: nnState.meds.length > 0 || medResponseHasAny || nnState.medDetail.trim() !== '' },
+    { label: 'Stability', started: nnState.medicalStability.length > 0 },
+    { label: 'Psych', started: nnState.psychSymptoms.length > 0 },
+    { label: 'Sleep', started: nnState.sleepHydrationNutrition.trim() !== '' },
+    { label: 'Cravings', started: (nnState.cravings !== null && nnState.cravings !== undefined) || nnState.cravingsDetail.trim() !== '' },
+    { label: 'Continued Need', started: nnState.continuedNeed.trim() !== '' },
+  ];
+}
+
+function nnUpdateProgress() {
+  const el = document.getElementById('nn-progress-hint');
+  if (!el) return;
+  const statuses = nnSectionsStatus();
+  const startedCount = statuses.filter(s => s.started).length;
+  el.textContent = `${startedCount} of ${statuses.length} sections started`;
 }
 
 function nnUpdateCloserButton() {
@@ -11186,15 +11360,19 @@ function nnClear() {
   });
   document.getElementById('nn-date').value = nnState.date;
   document.getElementById('nn-wd-type').value = '';
+  document.getElementById('nn-cravings-select').value = '';
   nnUpdateCloserButton();
   document.getElementById('nn-si-detail-wrap').style.display = 'none';
-  document.querySelectorAll('#view-nn .sn-chip').forEach(c => c.classList.remove('active'));
-  document.querySelectorAll('#view-nn .nn-accordion-count').forEach(c => { c.textContent = '0'; c.classList.remove('visible'); });
+  document.querySelectorAll('#view-nn input[type="checkbox"]').forEach(cb => { cb.checked = false; });
+  document.querySelectorAll('#view-nn .nn-accordion select').forEach(sel => { sel.value = ''; });
+  document.querySelectorAll('#view-nn .nn-accordion-count').forEach(c => { c.textContent = ''; c.classList.remove('visible'); });
   document.querySelectorAll('#view-nn .nn-accordion-body').forEach(b => b.classList.remove('open'));
   document.querySelectorAll('#view-nn .nn-accordion-toggle').forEach(t => { t.textContent = '▾'; });
+  nnSetAllAccordions('nn-mse-wrap', true); // Mental Status Exam stays expanded by default, even after Clear
   document.getElementById('nnPlaceholder').style.display = 'flex';
   document.getElementById('nnNoteWrap').style.display = 'none';
   document.getElementById('nnNoteOutput').textContent = '';
+  nnUpdateProgress();
 }
 
 // Init on load
@@ -11208,6 +11386,11 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('nn-date').value = nnState.date;
   nnBuildAllChips();
   nnUpdateCloserButton();
+  const nnViewEl = document.getElementById('view-nn');
+  nnViewEl.addEventListener('input', nnUpdateProgress);
+  nnViewEl.addEventListener('change', nnUpdateProgress);
+  nnViewEl.addEventListener('click', nnUpdateProgress);
+  nnUpdateProgress();
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
