@@ -4278,6 +4278,16 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
         <div class="sn-meta-row">
           <div>
+            <label class="sn-label">CSSA Score</label>
+            <input class="sn-input" id="nn-cssa" type="number" min="0" placeholder="e.g. 8" oninput="nnState.cssa=this.value">
+          </div>
+          <div>
+            <label class="sn-label">AWAS Score</label>
+            <input class="sn-input" id="nn-awas" type="number" min="0" placeholder="e.g. 6" oninput="nnState.awas=this.value">
+          </div>
+        </div>
+        <div class="sn-meta-row">
+          <div>
             <label class="sn-label">Blood Pressure</label>
             <input class="sn-input" id="nn-bp" placeholder="e.g. 142/88" oninput="nnState.bp=this.value">
           </div>
@@ -10846,7 +10856,7 @@ const nnState = {
   clientName:'', date: new Date().toISOString().split('T')[0],
   wdType:'',
   symptoms:[], symptomDetail:'',
-  ciwa:'', cows:'', bp:'', pulse:'',
+  ciwa:'', cows:'', cssa:'', awas:'', bp:'', pulse:'',
   mse: { appearance:[], behavior:[], loc:[], orientation:[], speech:[], mood:[], affect:[], thoughtContent:[], perception:[], memory:[], attention:[], insight:[], judgment:[], impulseControl:[] },
   physical: { generalAppearance:[], neurological:[] },
   meds:[], medResponse: { appropriate:[], ongoing:[], sideEffects:[], refusal:[] }, medDetail:'',
@@ -11149,7 +11159,7 @@ function nnSectionsStatus() {
   const medResponseHasAny = Object.values(nnState.medResponse).some(a => a.length > 0);
   return [
     { label: 'Symptoms', started: nnState.symptoms.length > 0 || nnState.symptomDetail.trim() !== '' },
-    { label: 'Findings', started: !!(nnState.ciwa || nnState.cows || nnState.bp || nnState.pulse || mseHasAny || physHasAny) },
+    { label: 'Findings', started: !!(nnState.ciwa || nnState.cows || nnState.cssa || nnState.awas || nnState.bp || nnState.pulse || mseHasAny || physHasAny) },
     { label: 'Meds', started: nnState.meds.length > 0 || medResponseHasAny || nnState.medDetail.trim() !== '' },
     { label: 'Stability', started: nnState.medicalStability.length > 0 },
     { label: 'Psych', started: nnState.psychSymptoms.length > 0 },
@@ -11281,6 +11291,8 @@ function nnFormatNote() {
   if (vitalsParts.length) lines.push(`Vital Signs: ${vitalsParts.join(', ')}.`);
   if (nnState.ciwa) lines.push(`CIWA-Ar score: ${nnState.ciwa}.`);
   if (nnState.cows) lines.push(`COWS score: ${nnState.cows}.`);
+  if (nnState.cssa) lines.push(`CSSA score: ${nnState.cssa}.`);
+  if (nnState.awas) lines.push(`AWAS score: ${nnState.awas}.`);
 
   const mseNarrative = nnBuildMseNarrative();
   if (mseNarrative) lines.push(`Mental status exam: ${mseNarrative}`);
@@ -11336,6 +11348,8 @@ function nnClear() {
   nnState.symptomDetail = '';
   nnState.ciwa = '';
   nnState.cows = '';
+  nnState.cssa = '';
+  nnState.awas = '';
   nnState.bp = '';
   nnState.pulse = '';
   nnState.medDetail = '';
@@ -11354,7 +11368,7 @@ function nnClear() {
   Object.keys(nnState.physical).forEach(k => { nnState.physical[k].length = 0; });
   Object.keys(nnState.medResponse).forEach(k => { nnState.medResponse[k].length = 0; });
 
-  ['nn-client','nn-symptom-detail','nn-ciwa','nn-cows','nn-bp','nn-pulse','nn-med-detail','nn-si-detail','nn-sleep','nn-cravings-detail','nn-continued-need'].forEach(id => {
+  ['nn-client','nn-symptom-detail','nn-ciwa','nn-cows','nn-cssa','nn-awas','nn-bp','nn-pulse','nn-med-detail','nn-si-detail','nn-sleep','nn-cravings-detail','nn-continued-need'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
