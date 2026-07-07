@@ -4445,11 +4445,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       <div style="display:flex;flex-direction:column;gap:7px;">
         <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 13px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;">
           <span style="font-size:9px;font-weight:600;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">NEW</span>
-          <span style="font-size:13px;line-height:1.55;">New Nursing Note tool added to the home screen, built with the nursing coordinator. Captures a shift assessment following the withdrawal symptoms, objective findings, medication management, and continued need structure — including CIWA-Ar and COWS scores, vitals, a full mental status exam, physical observations, medication administration and response, medical stability and psychiatric symptoms, sleep/hydration/nutrition, and cravings and relapse risk. Generates a single nursing progress note.</span>
-        </div>
-        <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 13px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;">
-          <span style="font-size:9px;font-weight:600;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">Nursing Note</span>
-          <span style="font-size:13px;line-height:1.55;">Refined the tool after initial review: mental status exam and physical exam findings now generate as natural clinical sentences rather than a comma list. Single-select findings that represent a rating or a state (level of consciousness, orientation, memory, attention, insight, judgment, impulse control, cravings) are now dropdowns instead of togglable options, so contradictory selections aren't possible; multi-select findings (symptoms, medications, MSE checklist items, medical stability, psychiatric symptoms) are now checkbox grids instead of pills for a cleaner, more aligned layout. Added a sticky section-jump navigation bar, a live "sections started" progress indicator, and card-style grouping to break up the long input form. The mental status exam section now expands by default on load and after Clear, since it's assessed every shift; physical observations and medication response stay collapsed until needed. The sample client (Marcus) now populates the Nursing Note tool for demonstration purposes. This tool is under active development and will continue to change as the coordinator reviews it.</span>
+          <span style="font-size:13px;line-height:1.55;">New Nursing Note tool added to the home screen, built with the nursing coordinator, for nursing staff to use for shift documentation.</span>
         </div>
       </div>
     </div>
@@ -9536,7 +9532,8 @@ const DE_YN_FIELDS = ['bridgeContacted','resourceSheetProvided','medsReceived',
 
 const DE_OP_HIDDEN_FIELDS = ['destination','destinationUnknown','resourceSheetProvided','resourceSheetReason',
   'propertyReceived','phoneReceived','woodhavenPropertyCollected','medsReceived','medsNotReceivedReason',
-  'paperworkSigned','phoneCallMade','outpatientOffered','roomVacated','clientsOnUnit','roomCleanedSearched'];
+  'paperworkSigned','phoneCallMade','outpatientOffered','roomVacated','clientsOnUnit','roomCleanedSearched',
+  'bridgeContacted','bridgeNotContactedReason'];
 
 function deSetUnit(val) {
   deState.unit = val;
@@ -9547,16 +9544,18 @@ function deSetUnit(val) {
   document.getElementById('de-property-paperwork-card').style.display = isOP ? 'none' : 'block';
   document.getElementById('de-outpatient-wrap').style.display = isOP ? 'none' : 'block';
   document.getElementById('de-room-census-card').style.display = isOP ? 'none' : 'block';
+  if (isOP) document.getElementById('de-bridge-wrap').style.display = 'none';
 
   if (isOP) {
     DE_OP_HIDDEN_FIELDS.forEach(f => { deState[f] = (f === 'destinationUnknown' ? false : ''); });
-    ['de-destination','de-rs-reason','de-meds-reason','de-room','de-census'].forEach(id => {
+    ['de-destination','de-rs-reason','de-meds-reason','de-room','de-census','de-bridge-reason'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.value = '';
     });
     document.getElementById('de-destination-unknown').checked = false;
     document.getElementById('de-destination').disabled = false;
-    ['de-rs','de-prop','de-phn','de-wp','de-meds','de-pw','de-call','de-clean'].forEach(prefix => {
+    document.getElementById('de-bridge-reason-wrap').style.display = 'none';
+    ['de-rs','de-prop','de-phn','de-wp','de-meds','de-pw','de-call','de-clean','de-bridge'].forEach(prefix => {
       ['yes','no','na'].forEach(v => { const el = document.getElementById(prefix + '-' + v); if (el) el.classList.remove('active'); });
     });
     ['yes','no','unknown'].forEach(v => { const el = document.getElementById('de-op-' + v); if (el) el.classList.remove('active'); });
@@ -9659,7 +9658,7 @@ function deSetSubtype(val) {
   ['asa','admin'].forEach(v => {
     document.getElementById('de-sub-' + v).classList.toggle('active', v === newVal);
   });
-  document.getElementById('de-bridge-wrap').style.display = newVal === 'asa' ? 'block' : 'none';
+  document.getElementById('de-bridge-wrap').style.display = (newVal === 'asa' && deState.unit !== 'Community OP') ? 'block' : 'none';
   deRenderOutput();
 }
 
@@ -9704,8 +9703,8 @@ function deRenderOutput() {
   if (!s.unit) missing.push('Unit');
   if (!s.dischargeType) missing.push('Type of discharge');
   if (s.dischargeType === 'unsuccessful' && !s.unsuccessfulReason) missing.push('Reason for leaving');
-  if (s.dischargeType === 'unsuccessful' && s.dischargeSubtype === 'asa' && !s.bridgeContacted) missing.push('Bridge contact');
   const isOP = (s.unit === 'Community OP');
+  if (!isOP && s.dischargeType === 'unsuccessful' && s.dischargeSubtype === 'asa' && !s.bridgeContacted) missing.push('Bridge contact');
   if (!isOP && !s.destination && !s.destinationUnknown) missing.push('Where client is going');
   if (!isOP && !s.resourceSheetProvided) missing.push('Resource sheet provided');
   if (!s.onProbation) missing.push('On probation status');
@@ -9754,7 +9753,7 @@ function deRenderOutput() {
     lines.push(`Reason for Leaving: ${s.unsuccessfulReason}`);
   }
 
-  if (s.dischargeType === 'unsuccessful' && s.dischargeSubtype === 'asa' && s.bridgeContacted) {
+  if (!isOP && s.dischargeType === 'unsuccessful' && s.dischargeSubtype === 'asa' && s.bridgeContacted) {
     lines.push('');
     if (s.bridgeContacted === 'yes') {
       lines.push('The Bridge Contacted: Yes');
