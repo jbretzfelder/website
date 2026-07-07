@@ -1970,6 +1970,8 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 }
 #tut-next-btn:hover { background: #1e4d38; border-color: #1e4d38; }
 </style>
+
+<script data-goatcounter="https://docassist.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
 <body>
 
@@ -5682,6 +5684,7 @@ function generate() {
   }
 
   errorPanel.style.display = 'none';
+  gcTrack('generate-asam');
 
   const cfg = LOC_CONFIG[state.loc];
   const d1 = genDim1(), d2 = genDim2(), d3 = genDim3(), d4 = genDim4(), d5 = genDim5(), d6 = genDim6();
@@ -5776,9 +5779,16 @@ function copyOutput(btn) {
 const TAB_COPY_LABELS = { 1:'Copy Narrative', 2:'Copy Criteria' };
 let activeTab = 1;
 
+function gcTrack(path) {
+  if (window.goatcounter && typeof window.goatcounter.count === 'function') {
+    window.goatcounter.count({ path: path, event: true });
+  }
+}
+
 function navigateTo(view) {
   document.querySelectorAll('.tool-view').forEach(v => v.classList.remove('active'));
   document.getElementById('view-' + view).classList.add('active');
+  gcTrack('tool-' + view);
   if (view === 'itp') renderAsamRef();
   if (view === 'discharge') dsInit();
   if (view === 'discharge-email') deRenderOutput();
@@ -7979,6 +7989,7 @@ function formatITPOutput(btn) {
   });
 
   if (btn) { const orig = btn.textContent; btn.textContent = '✓ Formatted'; btn.classList.add('copied'); setTimeout(()=>{btn.textContent=orig;btn.classList.remove('copied');},1800); }
+  gcTrack('generate-itp');
 }
 
 function makeOutputBox(container, label, text) {
@@ -8737,6 +8748,7 @@ function gnGenerateAll() {
   });
 
   gnRenderOutputView();
+  gcTrack('generate-group-notes');
 
   // Switch to output view
   document.getElementById('gn-clients-area').style.display = 'none';
@@ -9324,6 +9336,7 @@ function dsCopyBlock(id) {
     const btn = el.parentElement.querySelector('.ds-copy-btn');
     if (btn) { btn.textContent = 'Copied!'; setTimeout(() => btn.textContent = 'Copy', 1800); }
   });
+  gcTrack(id.startsWith('de-') ? 'generate-discharge-email' : 'generate-discharge-summary');
 }
 
 // Count weekdays and weekend days in a date range [startStr, endStr)
@@ -10796,6 +10809,7 @@ function snGenerate() {
   document.getElementById('snDescribeOutput').textContent = snFormatDescribe();
   document.getElementById('snResponseOutput').textContent = snFormatResponse();
   document.getElementById('snPreviewPanel').scrollTop = 0;
+  gcTrack('generate-individual-note');
 }
 
 function snCopyDescribe(btn) {
@@ -11332,6 +11346,7 @@ function nnGenerate() {
   document.getElementById('nnMetaLine').textContent = dateLabel ? `${nameLabel} — ${dateLabel}` : nameLabel;
   document.getElementById('nnNoteOutput').textContent = nnFormatNote();
   document.getElementById('nnPreviewPanel').scrollTop = 0;
+  gcTrack('generate-nursing-note');
 }
 
 function nnCopyNote(btn) {
