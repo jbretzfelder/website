@@ -1109,6 +1109,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   transition: border-color 0.15s;
 }
 .sn-textarea:focus { border-color: var(--border-focus); }
+.sn-textarea.field-error { border-color: #c0392b !important; }
 .sn-textarea::placeholder, .sn-input::placeholder { color: #b0b8c5; }
 
 .sn-risk-box {
@@ -1979,7 +1980,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 <div class="app-header">
   <div class="header-left">
     <div class="app-title">DocAssist</div>
-    <div onclick="openChangelogModal()" style="font-size:9px;font-weight:600;padding:1px 6px;border-radius:8px;background:#1a3d22;color:#7ec8a0;border:1px solid #2d6a4f;letter-spacing:.07em;display:inline-block;margin:1px 0 2px;cursor:pointer;" onmouseover="this.style.background='#2d6a4f'" onmouseout="this.style.background='#1a3d22'">v1.7</div>
+    <div onclick="openChangelogModal()" style="font-size:9px;font-weight:600;padding:1px 6px;border-radius:8px;background:#1a3d22;color:#7ec8a0;border:1px solid #2d6a4f;letter-spacing:.07em;display:inline-block;margin:1px 0 2px;cursor:pointer;" onmouseover="this.style.background='#2d6a4f'" onmouseout="this.style.background='#1a3d22'">v1.8</div>
     <div class="app-subtitle">Woodhaven Documentation Tool</div>
   </div>
   <div style="display:flex;align-items:center;gap:14px">
@@ -2106,6 +2107,12 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         <div class="home-card-icon"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div>
         <div class="home-card-title">Discharge Summary</div>
         <div class="home-card-desc">Structured discharge documentation covering treatment progress, goals, and aftercare plan</div>
+        <div class="home-card-arrow">Open →</div>
+      </div>
+      <div class="home-card" onclick="navigateTo('asa')">
+        <div class="home-card-icon"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div>
+        <div class="home-card-title">ASA Intervention Note</div>
+        <div class="home-card-desc">Document staff intervention and clinical judgement to capture billing when a client leaves against staff advice</div>
         <div class="home-card-arrow">Open →</div>
       </div>
       <div class="home-card" onclick="navigateTo('group')">
@@ -4424,6 +4431,151 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   </div>
 </div><!-- /view-nn -->
 
+<!-- ═══ ASA NOTE VIEW ═══════════════════════════════════ -->
+<div id="view-asa" class="tool-view">
+  <div class="tool-nav">
+    <button class="tool-nav-back" onclick="navigateTo('home')">← Back</button>
+    <span class="tool-nav-divider">|</span>
+    <span class="tool-nav-title">ASA Intervention Note</span>
+  </div>
+  <div class="session-tab-inner" style="flex:1;min-height:0">
+
+    <!-- LEFT: INPUTS -->
+    <div class="session-inputs">
+      <div class="sn-section-title" style="margin-bottom:0">Departure Details</div>
+
+      <div class="sn-meta-row-3">
+        <div>
+          <label class="sn-label" style="white-space:nowrap">Client First Name</label>
+          <input class="sn-input" id="asa-client" placeholder="e.g. Joseph" oninput="asaState.clientName=this.value">
+        </div>
+        <div>
+          <label class="sn-label">Date</label>
+          <input class="sn-input" type="date" id="asa-date" oninput="asaState.date=this.value">
+        </div>
+        <div>
+          <label class="sn-label">Time of Departure</label>
+          <input class="sn-input" type="time" id="asa-time" oninput="asaState.time=this.value">
+        </div>
+      </div>
+
+      <!-- Precipitant -->
+      <div>
+        <div class="sn-section-title">Precipitant / Reason for Leaving <span style="color:#c0392b">*</span></div>
+        <div class="sentence-hint" style="margin-bottom:6px">✎ Write in complete sentences — pasted verbatim</div>
+        <textarea class="sn-textarea" id="asa-precipitant" style="min-height:70px" placeholder="What led to the client's decision to leave — stated reasons, precipitating event, mood/behavior leading up to the departure, etc." oninput="asaState.precipitant=this.value"></textarea>
+      </div>
+
+      <!-- Interventions attempted (not included in output — separate Remarkable field) -->
+      <div>
+        <div class="sn-section-title">Interventions Attempted</div>
+        <div id="asa-intervention-chips"></div>
+      </div>
+
+      <!-- Session Description -->
+      <div>
+        <div class="sn-section-title">Describe Staff Intervention <span style="color:#c0392b">*</span></div>
+        <div class="sentence-hint" style="margin-bottom:6px">✎ Write in complete sentences — pasted verbatim</div>
+        <textarea class="sn-textarea" id="asa-describe" style="min-height:90px" placeholder="Describe what occurred — how staff was alerted, attempts to engage and de-escalate, client's response, and how the departure occurred." oninput="asaState.describe=this.value"></textarea>
+      </div>
+
+      <!-- Safety information provided -->
+      <div>
+        <div class="sn-section-title">Safety Information Provided</div>
+        <div id="asa-safety-chips"></div>
+      </div>
+
+      <!-- Response / Clinical Judgement -->
+      <div>
+        <div class="sn-section-title">Response — Clinical Judgement <span style="color:#c0392b">*</span></div>
+        <div class="sentence-hint" style="margin-bottom:6px">✎ Write in complete sentences — pasted verbatim</div>
+        <textarea class="sn-textarea" id="asa-progress" style="min-height:90px" placeholder="Document clinical observations, presentation at time of departure, and clinical judgement regarding the client's decision and safety." oninput="asaState.progress=this.value"></textarea>
+      </div>
+
+      <!-- Contact with Support Person -->
+      <div class="sn-risk-box" style="background:var(--output-bg);border-color:var(--border)">
+        <div class="sn-risk-title" style="color:var(--accent)">☎ Contact with Support Person</div>
+        <div class="sentence-hint" style="margin-bottom:6px">An ASA departure alone is not a basis to contact anyone — Part 2 requires either a signed ROI or a genuine medical emergency.</div>
+        <label class="sn-label" style="display:block;margin-bottom:4px">Basis for Contact</label>
+        <select class="sn-select" id="asa-contact-basis" style="width:100%;margin-bottom:8px" onchange="asaState.contactBasis=this.value;asaUpdateContactBasis()">
+          <option value="">No contact made</option>
+          <option value="roi">Contact made under existing ROI</option>
+          <option value="emergency">Contact made under medical emergency exception</option>
+        </select>
+
+        <div id="asa-emergency-basis-wrap" style="display:none;margin-bottom:8px">
+          <label class="sn-label" style="display:block;margin-bottom:4px">Basis for Emergency Exception</label>
+          <div style="display:flex;gap:12px;flex-wrap:wrap">
+            <label class="sn-checkbox-row" style="margin:0"><input type="checkbox" id="asa-emerg-si" onchange="asaState.emergencyBasis.si=this.checked"> Active SI</label>
+            <label class="sn-checkbox-row" style="margin:0"><input type="checkbox" id="asa-emerg-hi" onchange="asaState.emergencyBasis.hi=this.checked"> Active HI</label>
+            <label class="sn-checkbox-row" style="margin:0"><input type="checkbox" id="asa-emerg-medical" onchange="asaState.emergencyBasis.medical=this.checked"> Acute medical risk</label>
+          </div>
+        </div>
+
+        <div id="asa-contact-detail-wrap" style="display:none">
+          <div class="sentence-hint" style="margin-bottom:5px">✎ Write in complete sentences — pasted verbatim</div>
+          <textarea class="sn-textarea" id="asa-contact-detail" placeholder="Describe who was contacted, when, and their response…" oninput="asaState.contactDetail=this.value"></textarea>
+        </div>
+      </div>
+
+      <!-- Risk -->
+      <div class="sn-risk-box">
+        <div class="sn-risk-title">⚠ Risk &amp; Safety</div>
+        <label class="sn-checkbox-row" style="margin:0 0 8px"><input type="checkbox" id="asa-incomplete" onchange="asaState.assessmentIncomplete=this.checked;asaToggleIncomplete(this.checked)"> Client departed before risk assessment could be completed</label>
+        <div id="asa-risk-fields-wrap">
+          <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:8px">
+            <label class="sn-checkbox-row" style="margin:0"><input type="checkbox" id="asa-si" onchange="asaState.siDenied=this.checked"> SI denied</label>
+            <label class="sn-checkbox-row" style="margin:0"><input type="checkbox" id="asa-hi" onchange="asaState.hiDenied=this.checked"> HI denied</label>
+            <label class="sn-checkbox-row" style="margin:0"><input type="checkbox" id="asa-sp" onchange="asaState.safetyPlan=this.checked"> Safety plan reviewed</label>
+            <label class="sn-checkbox-row" style="margin:0"><input type="checkbox" id="asa-risk-flag" onchange="asaState.riskFlag=this.checked;document.getElementById('asa-risk-detail-wrap').style.display=this.checked?'block':'none'"> Concerns present</label>
+          </div>
+          <div id="asa-risk-detail-wrap" style="display:none">
+            <div class="sentence-hint" style="margin-bottom:5px">✎ Write in complete sentences — pasted verbatim</div>
+            <textarea class="sn-textarea" id="asa-risk-details" placeholder="Describe risk concerns, assessment findings, and clinical response taken…" oninput="asaState.riskDetails=this.value"></textarea>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /session-inputs -->
+
+    <!-- RIGHT: PREVIEW -->
+    <div class="session-preview" id="asaPreviewPanel">
+      <div class="sn-preview-placeholder" id="asaPlaceholder">
+        <div><svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.45"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div>
+        <div style="font-size:13px;line-height:1.6;color:var(--text-secondary)">Fill in the departure details and click<br><strong>Generate</strong> to format the ASA note.</div>
+      </div>
+      <div id="asaNoteWrap" style="display:none;flex-direction:column;gap:16px;flex:1">
+        <div class="sn-preview-header">
+          <span class="sn-preview-title">ASA Departure Note</span>
+        </div>
+        <div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+            <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--accent)">Describe Therapeutic Interventions Provided</span>
+            <button class="tab-copy-btn" onclick="asaCopyDescribe(this)">Copy</button>
+          </div>
+          <div class="sn-note-output" id="asaDescribeOutput"></div>
+        </div>
+        <div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+            <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--accent)">Response — Intervention / Progress / Clinical Judgement</span>
+            <button class="tab-copy-btn" onclick="asaCopyResponse(this)">Copy</button>
+          </div>
+          <div class="sn-note-output" id="asaResponseOutput"></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /session-tab-inner -->
+
+  <div class="generate-bar">
+    <span class="generate-bar-hint" id="asa-generate-hint">Precipitant, staff intervention, and response are required. Other fields left blank will be omitted.</span>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-ghost" onclick="asaClear()">Clear</button>
+      <button class="btn btn-primary" onclick="asaGenerate()">Generate</button>
+    </div>
+  </div>
+</div><!-- /view-asa -->
+
 <!-- ═══ CHANGELOG VIEW ════════════════════════════════════ -->
 <!-- Changelog modal -->
 <div id="changelogModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;align-items:center;justify-content:center;" onclick="if(event.target===this)closeChangelogModal()">
@@ -4436,6 +4588,21 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       <button onclick="closeChangelogModal()" style="background:none;border:none;font-size:18px;color:#999;cursor:pointer;line-height:1;padding:0 0 0 12px;" title="Close">✕</button>
     </div>
     <div style="overflow-y:auto;padding:20px 24px 28px;">
+
+    <!-- v1.8 -->
+    <div style="margin-bottom:28px;">
+      <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px;">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;background:var(--accent);color:#fff;padding:2px 8px;border-radius:4px;">v1.8</span>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5a6a62;">July 15, 2026</span>
+        <span style="font-size:14px;font-weight:600;color:#1b4332;">ASA Intervention Note tool</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:7px;">
+        <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 13px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;">
+          <span style="font-size:9px;font-weight:600;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">NEW</span>
+          <span style="font-size:13px;line-height:1.55;">New ASA Intervention Note tool added to the home screen. Documents the staff intervention and clinical judgement when a client leaves against staff advice, capturing billing for the day. Includes a Part 2–aware contact section that requires either an existing Release of Information or a genuine medical emergency basis before generating contact language, and requires precipitant, intervention, and clinical judgement fields to be completed before generating.</span>
+        </div>
+      </div>
+    </div>
 
     <!-- v1.7 -->
     <div style="margin-bottom:28px;">
@@ -9993,6 +10160,9 @@ function doReset() {
   // Reset nursing note
   nnClear();
 
+  // Reset ASA note
+  asaClear();
+
   // Go back to tab 1
   switchTab(1);
 }
@@ -10446,6 +10616,49 @@ function fillSampleClient() {
   document.getElementById('nn-continued-need').value = nnContinuedNeedText;
   nnState.continuedNeed = nnContinuedNeedText;
   nnUpdateProgress();
+
+  // ── ASA NOTE ──
+  asaState.clientName = 'Marcus';
+  document.getElementById('asa-client').value = 'Marcus';
+  document.getElementById('asa-date').value = today;
+  asaState.date = today;
+  document.getElementById('asa-time').value = '14:45';
+  asaState.time = '14:45';
+  const asaPrecipitantText = 'Marcus received a phone call from a family member this afternoon and became visibly upset, stating he "needed to leave and handle this himself." He reported feeling overwhelmed and stated treatment was "not helping right now."';
+  document.getElementById('asa-precipitant').value = asaPrecipitantText;
+  asaState.precipitant = asaPrecipitantText;
+  asaState.interventions.length = 0;
+  ['Crisis De-escalation','Motivational Interviewing'].forEach(i => asaState.interventions.push(i));
+  document.querySelectorAll('#asa-intervention-chips .nn-check-row').forEach(row => {
+    const cb = row.querySelector('input[type="checkbox"]');
+    const span = row.querySelector('span');
+    if (cb && span) cb.checked = asaState.interventions.includes(span.textContent);
+  });
+  const asaDescribeText = 'This clinician was alerted by milieu staff that Marcus was packing his belongings and stating intent to leave. This clinician met with Marcus in a private office and attempted to explore the precipitating call, validate his distress, and identify alternatives to leaving, including contacting the family member with staff support and revisiting his safety plan. Marcus was receptive but ultimately stated he had made his decision and declined further discussion.';
+  document.getElementById('asa-describe').value = asaDescribeText;
+  asaState.describe = asaDescribeText;
+  asaState.safetyItems.length = 0;
+  ['Crisis line number provided','Instructed to return to facility or seek ER care if withdrawal or safety concerns arise','Reengagement/readmission contact information provided'].forEach(i => asaState.safetyItems.push(i));
+  document.querySelectorAll('#asa-safety-chips .nn-check-row').forEach(row => {
+    const cb = row.querySelector('input[type="checkbox"]');
+    const span = row.querySelector('span');
+    if (cb && span) cb.checked = asaState.safetyItems.includes(span.textContent);
+  });
+  document.getElementById('asa-si').checked = true;
+  asaState.siDenied = true;
+  document.getElementById('asa-hi').checked = true;
+  asaState.hiDenied = true;
+  document.getElementById('asa-sp').checked = true;
+  asaState.safetyPlan = true;
+  const asaProgressText = 'Marcus remained calm and cooperative throughout the interaction. He was alert and oriented, and his speech and thought process were coherent. He did not present as acutely intoxicated or in withdrawal. Clinical judgement is that Marcus is capable of making an informed decision to leave at this time, though he remains at elevated risk for return to use given the acute stressor.';
+  document.getElementById('asa-progress').value = asaProgressText;
+  asaState.progress = asaProgressText;
+  document.getElementById('asa-contact-basis').value = 'roi';
+  asaState.contactBasis = 'roi';
+  asaUpdateContactBasis();
+  const asaContactText = 'This clinician contacted Marcus\'s listed contact per active Release of Information (ROI) on file. The contact was aware of the situation and agreed to pick him up from the facility.';
+  document.getElementById('asa-contact-detail').value = asaContactText;
+  asaState.contactDetail = asaContactText;
 
   tjSampleClientLoaded = true;
 
@@ -11403,6 +11616,205 @@ function nnClear() {
   nnUpdateProgress();
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// ASA NOTE
+// ─────────────────────────────────────────────────────────────────────────────
+
+const asaState = {
+  clientName:'', date: new Date().toISOString().split('T')[0], time:'',
+  precipitant:'', describe:'', progress:'',
+  interventions:[], safetyItems:[],
+  contactBasis:'', emergencyBasis:{si:false, hi:false, medical:false}, contactDetail:'',
+  assessmentIncomplete:false,
+  siDenied:false, hiDenied:false, safetyPlan:false,
+  riskFlag:false, riskDetails:'',
+};
+
+const ASA_INTERVENTIONS = [
+  'Crisis De-escalation',
+  'Motivational Interviewing',
+  'Safety Planning',
+  'Family/Support Contact Attempted',
+];
+
+const ASA_SAFETY_ITEMS = [
+  'Crisis line number provided',
+  'Instructed to return to facility or seek ER care if withdrawal or safety concerns arise',
+  'Reengagement/readmission contact information provided',
+  'Personal belongings and departure logistics discussed',
+];
+
+function asaBuildChips() {
+  nnBuildCheckGrid('asa-intervention-chips', ASA_INTERVENTIONS, asaState.interventions, null, true);
+  nnBuildCheckGrid('asa-safety-chips', ASA_SAFETY_ITEMS, asaState.safetyItems, null, true);
+}
+
+function asaUpdateContactBasis() {
+  const basis = asaState.contactBasis;
+  document.getElementById('asa-emergency-basis-wrap').style.display = basis === 'emergency' ? 'block' : 'none';
+  document.getElementById('asa-contact-detail-wrap').style.display = basis ? 'block' : 'none';
+}
+
+function asaToggleIncomplete(checked) {
+  document.getElementById('asa-risk-fields-wrap').style.display = checked ? 'none' : 'block';
+}
+
+function asaFmtTime12(t) {
+  if (!t) return '';
+  const [hStr, mStr] = t.split(':');
+  let h = parseInt(hStr, 10);
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  return `${h}:${mStr} ${ampm}`;
+}
+
+function asaValidate() {
+  const required = [
+    { id: 'asa-precipitant', value: asaState.precipitant },
+    { id: 'asa-describe', value: asaState.describe },
+    { id: 'asa-progress', value: asaState.progress },
+  ];
+  let firstMissing = null;
+  required.forEach(f => {
+    const el = document.getElementById(f.id);
+    const missing = !f.value || !f.value.trim();
+    if (el) el.classList.toggle('field-error', missing);
+    if (missing && !firstMissing) firstMissing = el;
+  });
+  const hint = document.getElementById('asa-generate-hint');
+  if (firstMissing) {
+    hint.textContent = 'Please complete the required fields highlighted in red before generating.';
+    hint.style.color = '#c0392b';
+    if (firstMissing.scrollIntoView) firstMissing.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return false;
+  }
+  hint.textContent = 'Precipitant, staff intervention, and response are required. Other fields left blank will be omitted.';
+  hint.style.color = '';
+  return true;
+}
+
+function asaFormatDescribe() {
+  const c = asaState.clientName || '[Client]';
+  const timeStr = asaFmtTime12(asaState.time);
+  let lines = [];
+
+  lines.push(timeStr
+    ? `This clinician was notified that ${c} intended to leave the facility against staff advice at approximately ${timeStr}.`
+    : `This clinician was notified that ${c} intended to leave the facility against staff advice.`);
+
+  if (asaState.precipitant) lines.push(asaState.precipitant);
+  if (asaState.describe) lines.push(asaState.describe);
+
+  if (asaState.safetyItems.length) {
+    lines.push(`This clinician provided ${c} with the following prior to departure: ${asaState.safetyItems.join('; ')}.`);
+  }
+
+  return lines.filter(Boolean).map(l => `- ${l}`).join('\n\n');
+}
+
+function asaFormatResponse() {
+  const c = asaState.clientName || '[Client]';
+  let lines = [];
+
+  if (asaState.assessmentIncomplete) {
+    lines.push(`This clinician was unable to complete a full risk assessment as ${c} departed the facility before the assessment could be conducted.`);
+  } else {
+    const riskParts = [];
+    if (asaState.siDenied) riskParts.push('SI denied');
+    if (asaState.hiDenied) riskParts.push('HI denied');
+    if (asaState.safetyPlan) riskParts.push('safety plan reviewed');
+    const riskLine = riskParts.length
+      ? riskParts.join('; ') + '.'
+      : 'No risk or safety concerns identified prior to departure.';
+    lines.push(riskLine);
+    if (asaState.riskFlag && asaState.riskDetails) lines.push(asaState.riskDetails);
+  }
+
+  if (asaState.progress) lines.push(asaState.progress);
+
+  if (asaState.contactBasis === 'roi') {
+    lines.push(`This clinician contacted ${c}'s authorized contact pursuant to an active Release of Information (ROI) on file.`);
+    if (asaState.contactDetail) lines.push(asaState.contactDetail);
+  } else if (asaState.contactBasis === 'emergency') {
+    const basisParts = [];
+    if (asaState.emergencyBasis.si) basisParts.push('active suicidal ideation');
+    if (asaState.emergencyBasis.hi) basisParts.push('active homicidal ideation');
+    if (asaState.emergencyBasis.medical) basisParts.push('acute medical risk');
+    const basisText = basisParts.length ? ` due to ${snJoinList(basisParts)}` : '';
+    lines.push(`This clinician contacted ${c}'s emergency contact under the medical emergency exception${basisText}.`);
+    if (asaState.contactDetail) lines.push(asaState.contactDetail);
+  }
+
+  return lines.filter(Boolean).map(l => `- ${l}`).join('\n\n');
+}
+
+function asaGenerate() {
+  if (!asaValidate()) return;
+  document.getElementById('asaPlaceholder').style.display = 'none';
+  const wrap = document.getElementById('asaNoteWrap');
+  wrap.style.display = 'flex';
+  document.getElementById('asaDescribeOutput').textContent = asaFormatDescribe();
+  document.getElementById('asaResponseOutput').textContent = asaFormatResponse();
+  document.getElementById('asaPreviewPanel').scrollTop = 0;
+  gcTrack('generate-asa-note');
+}
+
+function asaCopyDescribe(btn) {
+  const text = document.getElementById('asaDescribeOutput').textContent;
+  if (text) doCopy(text, btn);
+}
+
+function asaCopyResponse(btn) {
+  const text = document.getElementById('asaResponseOutput').textContent;
+  if (text) doCopy(text, btn);
+}
+
+function asaClear() {
+  asaState.clientName = '';
+  asaState.date = new Date().toISOString().split('T')[0];
+  asaState.time = '';
+  asaState.precipitant = '';
+  asaState.describe = '';
+  asaState.progress = '';
+  asaState.interventions.length = 0;
+  asaState.safetyItems.length = 0;
+  asaState.contactBasis = '';
+  asaState.emergencyBasis.si = false;
+  asaState.emergencyBasis.hi = false;
+  asaState.emergencyBasis.medical = false;
+  asaState.contactDetail = '';
+  asaState.assessmentIncomplete = false;
+  asaState.siDenied = false;
+  asaState.hiDenied = false;
+  asaState.safetyPlan = false;
+  asaState.riskFlag = false;
+  asaState.riskDetails = '';
+
+  ['asa-client','asa-time','asa-precipitant','asa-describe','asa-progress','asa-contact-detail','asa-risk-details'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('asa-date').value = asaState.date;
+  document.getElementById('asa-contact-basis').value = '';
+  ['asa-incomplete','asa-si','asa-hi','asa-sp','asa-risk-flag','asa-emerg-si','asa-emerg-hi','asa-emerg-medical'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.checked = false;
+  });
+  document.getElementById('asa-emergency-basis-wrap').style.display = 'none';
+  document.getElementById('asa-contact-detail-wrap').style.display = 'none';
+  document.getElementById('asa-risk-detail-wrap').style.display = 'none';
+  document.getElementById('asa-risk-fields-wrap').style.display = 'block';
+  document.querySelectorAll('#asa-intervention-chips input[type="checkbox"]').forEach(cb => { cb.checked = false; });
+  document.querySelectorAll('#asa-safety-chips input[type="checkbox"]').forEach(cb => { cb.checked = false; });
+  document.querySelectorAll('#view-asa .field-error').forEach(el => el.classList.remove('field-error'));
+  document.getElementById('asa-generate-hint').textContent = 'Precipitant, staff intervention, and response are required. Other fields left blank will be omitted.';
+  document.getElementById('asa-generate-hint').style.color = '';
+  document.getElementById('asaPlaceholder').style.display = 'flex';
+  document.getElementById('asaNoteWrap').style.display = 'none';
+  document.getElementById('asaDescribeOutput').textContent = '';
+  document.getElementById('asaResponseOutput').textContent = '';
+}
+
 // Init on load
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('sn-date').value = snState.date;
@@ -11419,6 +11831,8 @@ document.addEventListener('DOMContentLoaded', () => {
   nnViewEl.addEventListener('change', nnUpdateProgress);
   nnViewEl.addEventListener('click', nnUpdateProgress);
   nnUpdateProgress();
+  document.getElementById('asa-date').value = asaState.date;
+  asaBuildChips();
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
