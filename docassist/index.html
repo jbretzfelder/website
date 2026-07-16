@@ -198,7 +198,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 .home-grid {
   display: grid;
   grid-template-columns: repeat(4, 220px);
-  gap: 16px;
+  gap: 22px;
   max-width: 928px;
 }
 .home-card {
@@ -233,6 +233,20 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   box-shadow: none;
   transform: none;
 }
+.home-card.home-card-featured {
+  background: var(--accent-light);
+  border-left-width: 5px;
+}
+.home-card-badge.home-card-badge-accent {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+@keyframes home-card-attention-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(45,106,79,0.35); }
+  50% { box-shadow: 0 0 0 8px rgba(45,106,79,0); }
+}
+.home-card.home-card-pulse-temp { animation: home-card-attention-pulse 2.4s ease-in-out infinite; }
 
 /* ─── DISCHARGE TOOL ──────────────────────── */
 .ds-pill {
@@ -290,6 +304,20 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   font-family: 'IBM Plex Sans', sans-serif;
 }
 .ds-copy-btn:hover { background: var(--accent); color: #fff; }
+.ds-copy-btn-lg {
+  padding: 9px 20px;
+  font-size: 13px;
+  font-weight: 700;
+  background: var(--accent);
+  color: #fff;
+  border: 1px solid var(--accent);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.18);
+  width: 160px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.ds-copy-btn-lg:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
 .ds-phase-entry {
   background: var(--bg);
   border: 1px solid var(--border);
@@ -358,11 +386,6 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   font-weight: 600;
   color: var(--text);
 }
-.home-card-desc {
-  font-size: 11px;
-  color: var(--text-secondary);
-  line-height: 1.55;
-}
 .home-card-badge {
   position: absolute;
   top: 10px;
@@ -377,18 +400,47 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   border-radius: 3px;
   border: 1px solid var(--border);
 }
-.home-card-arrow {
+.home-card-footer {
   margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 6px;
+}
+.home-card-arrow {
   font-size: 11px;
   color: var(--accent);
   font-weight: 600;
+}
+.home-card-audience {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 3px 8px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+.home-card-audience-allstaff {
+  background: var(--accent-light);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.home-card-audience-nursing {
+  background: #eaf2fb;
+  color: #2c5c8a;
+  border-color: #b8d4ee;
 }
 
 /* ─── RESPONSIVE ──────────────────────────── */
 @media (max-width: 1250px) {
   .home-grid {
     grid-template-columns: repeat(3, 200px);
-    gap: 12px;
+    gap: 16px;
     max-width: 640px;
   }
   .home-greeting { margin-bottom: 40px; }
@@ -408,7 +460,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 @media (max-width: 950px) {
   .home-grid {
     grid-template-columns: repeat(2, minmax(190px, 260px));
-    gap: 12px;
+    gap: 16px;
     max-width: 560px;
   }
   .home-screen { padding: 28px 20px; }
@@ -426,7 +478,6 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   .home-screen { padding: 18px 14px; }
   .home-greeting { margin-bottom: 18px; }
   .home-greeting-title { font-size: 18px; }
-  .home-card-desc { font-size: 10px; }
 }
 
 /* ─── TOOL NAV ────────────────────────────── */
@@ -590,6 +641,13 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   transition: border-color 0.15s;
 }
 .form-select:focus, .form-input:focus { border-color: var(--border-focus); }
+.form-select:disabled, .form-input:disabled, .form-textarea:disabled {
+  background: var(--bg);
+  color: var(--text-secondary);
+  border-color: var(--border);
+  cursor: not-allowed;
+  opacity: 0.55;
+}
 .form-textarea {
   width: 100%;
   padding: 7px 9px;
@@ -1817,6 +1875,32 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   border-radius: 20px;
   background: #fff8f8;
 }
+.field-error .ds-pill { border-color: #c0392b; }
+@keyframes de-generate-pulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(217,131,43,0.65); }
+  50% { transform: scale(1.08); box-shadow: 0 0 0 12px rgba(217,131,43,0); }
+}
+.generate-bar.de-stale { border-top-color: #d9822b; background: #fff8ef; }
+.generate-bar.de-stale .btn-primary {
+  animation: de-generate-pulse 1.1s ease-in-out infinite;
+  background: #d9822b;
+}
+.generate-bar.de-stale .btn-primary:hover { background: #c26f1f; }
+.generate-bar-hint.de-stale-hint { color: #b45309; font-weight: 700; }
+
+@keyframes de-generate-pulse-ready {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(45,106,79,0.55); }
+  50% { transform: scale(1.08); box-shadow: 0 0 0 12px rgba(45,106,79,0); }
+}
+.generate-bar.de-ready { border-top-color: var(--accent); background: #eef7f1; }
+.generate-bar.de-ready .btn-primary { animation: de-generate-pulse-ready 1.1s ease-in-out infinite; }
+.generate-bar-hint.de-ready-hint { color: var(--accent); font-weight: 700; }
+
+@keyframes de-attention-flash {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(217,131,43,0.7); }
+  50% { transform: scale(1.12); box-shadow: 0 0 0 14px rgba(217,131,43,0); }
+}
+#de-generate-btn.de-attention-flash { animation: de-attention-flash 0.5s ease-in-out 2; }
 
 .error-panel {
   background: #fff0f0;
@@ -2085,53 +2169,70 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       <div class="home-greeting-sub" id="homeGreetingSub"></div>
     </div>
     <div class="home-grid">
+      <div class="home-card home-card-featured" id="home-card-discharge-email" onclick="navigateTo('discharge-email')">
+        <div class="home-card-badge home-card-badge-accent">★ Most Used</div>
+        <div class="home-card-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22 6 12 13 2 6"/></svg></div>
+        <div class="home-card-title">Discharge Email</div>
+        <div class="home-card-footer">
+          <span class="home-card-audience home-card-audience-allstaff">All Staff</span>
+          <span class="home-card-arrow">Open →</span>
+        </div>
+      </div>
       <div class="home-card" onclick="navigateTo('asam')">
         <div class="home-card-icon"><svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg></div>
         <div class="home-card-title">ASAM Documentation</div>
-        <div class="home-card-desc">Medical necessity narrative, dimensional criteria, and risk ratings for prior authorization</div>
-        <div class="home-card-arrow">Open →</div>
+        <div class="home-card-footer">
+          <span class="home-card-audience">Clinical</span>
+          <span class="home-card-arrow">Open →</span>
+        </div>
       </div>
       <div class="home-card" onclick="navigateTo('itp')">
         <div class="home-card-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1" fill="var(--accent)" stroke="none"/><line x1="12" y1="3" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="21"/></svg></div>
         <div class="home-card-title">ITP Development</div>
-        <div class="home-card-desc">Goals, objectives, and interventions from your ITP checklist, formatted for documentation</div>
-        <div class="home-card-arrow">Open →</div>
+        <div class="home-card-footer">
+          <span class="home-card-audience">Clinical</span>
+          <span class="home-card-arrow">Open →</span>
+        </div>
       </div>
       <div class="home-card" onclick="navigateTo('note')">
         <div class="home-card-icon"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
         <div class="home-card-title">Individual Note</div>
-        <div class="home-card-desc">Session progress notes formatted for Remarkable, tied to ITP objectives</div>
-        <div class="home-card-arrow">Open →</div>
+        <div class="home-card-footer">
+          <span class="home-card-audience">Clinical</span>
+          <span class="home-card-arrow">Open →</span>
+        </div>
       </div>
       <div class="home-card" onclick="navigateTo('discharge')">
         <div class="home-card-icon"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div>
         <div class="home-card-title">Discharge Summary</div>
-        <div class="home-card-desc">Structured discharge documentation covering treatment progress, goals, and aftercare plan</div>
-        <div class="home-card-arrow">Open →</div>
+        <div class="home-card-footer">
+          <span class="home-card-audience">Clinical</span>
+          <span class="home-card-arrow">Open →</span>
+        </div>
       </div>
       <div class="home-card" onclick="navigateTo('asa')">
         <div class="home-card-icon"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div>
         <div class="home-card-title">ASA Intervention Note</div>
-        <div class="home-card-desc">Document staff intervention and clinical judgement to capture billing when a client leaves against staff advice</div>
-        <div class="home-card-arrow">Open →</div>
+        <div class="home-card-footer">
+          <span class="home-card-audience">Clinical</span>
+          <span class="home-card-arrow">Open →</span>
+        </div>
       </div>
       <div class="home-card" onclick="navigateTo('group')">
         <div class="home-card-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
         <div class="home-card-title">Group Notes</div>
-        <div class="home-card-desc">Document group sessions with individual client responses from a single entry</div>
-        <div class="home-card-arrow">Open →</div>
-      </div>
-      <div class="home-card" onclick="navigateTo('discharge-email')">
-        <div class="home-card-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22 6 12 13 2 6"/></svg></div>
-        <div class="home-card-title">Discharge Email</div>
-        <div class="home-card-desc">Standardized discharge notification covering logistics and follow-up, ready to email to the discharge team</div>
-        <div class="home-card-arrow">Open →</div>
+        <div class="home-card-footer">
+          <span class="home-card-audience">Clinical</span>
+          <span class="home-card-arrow">Open →</span>
+        </div>
       </div>
       <div class="home-card" onclick="navigateTo('nn')">
         <div class="home-card-icon"><svg viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/><path d="M12 6v6"/><path d="M9 9h6"/></svg></div>
         <div class="home-card-title">Nursing Note</div>
-        <div class="home-card-desc">Shift assessment and withdrawal management documentation — symptoms, findings, medication response, and continued need</div>
-        <div class="home-card-arrow">Open →</div>
+        <div class="home-card-footer">
+          <span class="home-card-audience home-card-audience-nursing">Nursing</span>
+          <span class="home-card-arrow">Open →</span>
+        </div>
       </div>
     </div>
     <div style="text-align:center;margin-top:28px;display:flex;gap:8px;justify-content:center;align-items:center;flex-wrap:wrap;">
@@ -3946,6 +4047,16 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <span class="tool-nav-divider">|</span>
     <span class="tool-nav-title">Discharge Email</span>
   </div>
+  <div id="de-workflow-notice" style="display:none;position:relative;background:#fff3cd;border:2px solid #d9822b;border-left:8px solid #d9822b;border-radius:6px;margin:14px 16px 0 16px;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+    <div id="de-workflow-notice-full" style="padding:14px 18px;">
+      <div style="font-size:15px;font-weight:800;color:#7a4a00;margin-bottom:4px;">⚡ This tool has changed — it no longer updates automatically</div>
+      <div style="font-size:13px;color:#7a4a00;line-height:1.5;margin-bottom:10px;">Fill in the fields on the left, then click <strong>Generate Email</strong> at the bottom of the page. Nothing will appear in the boxes on the right until you do — that's expected, not a bug. If you change anything after generating, click Generate again before copying.</div>
+      <button onclick="deToggleWorkflowNotice()" style="background:#fff;border:1px solid #d9822b;color:#7a4a00;font-size:12px;font-weight:700;padding:6px 14px;border-radius:5px;cursor:pointer;font-family:'IBM Plex Sans',sans-serif;">▴ Shrink this reminder</button>
+    </div>
+    <div id="de-workflow-notice-compact" onclick="deToggleWorkflowNotice()" style="display:none;padding:6px 14px;font-size:11px;font-weight:600;color:#7a4a00;cursor:pointer;">
+      ⚡ Reminder: this tool needs Generate clicked before copying — click to expand
+    </div>
+  </div>
   <div style="display:flex;gap:16px;flex:1;min-height:0;padding:16px 16px 0 16px;">
 
     <!-- LEFT PANEL: INPUTS -->
@@ -4006,7 +4117,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
 
         <div id="de-neutral-reason-wrap" style="display:none;margin-bottom:10px;">
-          <label class="form-label">Reason for Neutral Discharge</label>
+          <label class="form-label">Reason for Neutral Discharge *</label>
           <input class="form-input" id="de-neutral-reason" type="text" placeholder="e.g., insurance denial, mental health, probation" oninput="deState.neutralReason=this.value;deRenderOutput()">
         </div>
 
@@ -4017,8 +4128,11 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
             <button class="ds-pill" onclick="deSetYN('bridgeContacted','no','de-bridge')" id="de-bridge-no">No</button>
           </div>
           <div id="de-bridge-reason-wrap" style="display:none;">
-            <label class="form-label">Why Not? What Other Attempts Were Made?</label>
+            <label class="form-label">Why Not? What Other Attempts Were Made? *</label>
             <textarea class="form-textarea" id="de-bridge-reason" rows="2" placeholder="Explain why The Bridge wasn't contacted and what other intervention attempts were made…" oninput="deState.bridgeNotContactedReason=this.value;deRenderOutput()" style="min-height:55px;"></textarea>
+          </div>
+          <div id="de-bridge-alert" style="display:none;background:#fdecea;border:2px solid #c0392b;border-radius:6px;padding:8px 10px;margin-bottom:8px;font-size:12px;color:#7a1f1f;font-weight:600;align-items:flex-start;gap:6px;">
+            <span id="de-bridge-alert-text" style="font-size:14px;line-height:1.3;"></span>
           </div>
         </div>
 
@@ -4196,24 +4310,38 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         ⚠ Proofread before sending. Verify names, dates, and details are accurate.
       </div>
 
-      <div id="de-missing-banner" style="display:none;background:#fff7ed;border:1px solid #fdba74;border-radius:6px;padding:8px 12px;margin-bottom:12px;font-size:11px;color:#9a3412;"></div>
+      <div class="error-panel" id="de-error-panel" style="display:none">
+        <div class="error-panel-title">Complete the required fields before generating</div>
+        <ul class="error-list" id="de-error-list"></ul>
+      </div>
+
+      <div id="de-stale-banner" style="display:none;background:#fff7ed;border:1px solid #fdba74;border-radius:6px;padding:8px 12px;margin-bottom:12px;font-size:11px;color:#9a3412;font-weight:600;">
+        Fields have changed since this was generated. Click Generate below to refresh before copying.
+      </div>
 
       <div class="ds-output-block" id="de-out-subject-block">
         <div class="ds-out-label">Subject Line</div>
-        <div class="ds-out-text" id="de-out-subject-text"></div>
-        <button class="ds-copy-btn" onclick="dsCopyBlock('de-out-subject-text')">Copy Subject</button>
+        <div class="ds-out-text" id="de-out-subject-text"><span class="ds-out-empty">Fill in the fields, then click Generate below.</span></div>
+        <button class="ds-copy-btn ds-copy-btn-lg" onclick="dsCopyBlock('de-out-subject-text')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px;"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy Subject</button>
       </div>
 
       <div class="ds-output-block" id="de-out-block">
         <div class="ds-out-label">Discharge Notification Email</div>
-        <div class="ds-out-text" id="de-out-text"></div>
-        <button class="ds-copy-btn" onclick="dsCopyBlock('de-out-text')">Copy Email</button>
+        <div class="ds-out-text" id="de-out-text"><span class="ds-out-empty">Fill in the fields, then click Generate below.</span></div>
+        <button class="ds-copy-btn ds-copy-btn-lg" onclick="dsCopyBlock('de-out-text')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px;"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy Email</button>
       </div>
 
       <div style="font-size:11px;color:var(--text-secondary);padding:4px 2px 16px;">Please email this notification to <strong>discharge@woodhavenohio.com</strong>.</div>
 
     </div><!-- /right panel -->
   </div><!-- /layout -->
+
+  <div class="generate-bar" id="de-generate-bar">
+    <span class="generate-bar-hint" id="de-generate-hint">Fill in the fields, then click Generate. The email won't update automatically as you type.</span>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-primary" id="de-generate-btn" onclick="deGenerate()">Generate Email</button>
+    </div>
+  </div>
 </div><!-- /view-discharge-email -->
 
 <!-- ═══ NURSING NOTE VIEW ════════════════════════════ -->
@@ -5958,7 +6086,7 @@ function navigateTo(view) {
   gcTrack('tool-' + view);
   if (view === 'itp') renderAsamRef();
   if (view === 'discharge') dsInit();
-  if (view === 'discharge-email') deRenderOutput();
+  if (view === 'discharge-email') { deRenderOutput(); deInitWorkflowNotice(); }
 }
 
 function switchTab(n) {
@@ -8978,6 +9106,19 @@ document.addEventListener('DOMContentLoaded', function() {
   gnInitClients(0);
 });
 
+// ─── TEMPORARY: pulse on the Discharge Email home card ─────
+// Added 2026-07-16 to draw attention to the new Generate workflow.
+// Auto-expires on its own — safe to delete this whole block anytime
+// after DE_HOME_PULSE_EXPIRES, or sooner if it's no longer wanted.
+const DE_HOME_PULSE_EXPIRES = '2026-07-24';
+document.addEventListener('DOMContentLoaded', function() {
+  const card = document.getElementById('home-card-discharge-email');
+  if (!card) return;
+  if (new Date() < new Date(DE_HOME_PULSE_EXPIRES + 'T00:00:00')) {
+    card.classList.add('home-card-pulse-temp');
+  }
+});
+
 // ═══════════════════════════════════════════════════
 // ═══════════════════════════════════════════════════
 // DISCHARGE SUMMARY TOOL
@@ -9498,11 +9639,45 @@ function dsCopyBlock(id) {
   const el = document.getElementById(id);
   if (!el) return;
   const text = el.textContent.trim();
-  if (!text || el.querySelector('.ds-out-empty')) return;
-  navigator.clipboard.writeText(text).then(() => {
-    const btn = el.parentElement.querySelector('.ds-copy-btn');
-    if (btn) { btn.textContent = 'Copied!'; setTimeout(() => btn.textContent = 'Copy', 1800); }
-  });
+  const btn = el.parentElement.querySelector('.ds-copy-btn');
+  if (!text || el.querySelector('.ds-out-empty')) {
+    if (id.startsWith('de-')) deDirectToGenerate(btn);
+    return;
+  }
+
+  function flashResult(success) {
+    if (!btn) return;
+    const original = btn.dataset.origLabel || btn.innerHTML;
+    btn.dataset.origLabel = original;
+    btn.textContent = success ? '✓ Copied!' : '✗ Copy failed';
+    setTimeout(() => { btn.innerHTML = original; }, success ? 1800 : 3000);
+  }
+
+  function fallbackCopy() {
+    try {
+      const range = document.createRange();
+      range.selectNodeContents(el);
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+      const ok = document.execCommand('copy');
+      sel.removeAllRanges();
+      return ok;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      flashResult(true);
+    }).catch(() => {
+      flashResult(fallbackCopy());
+    });
+  } else {
+    flashResult(fallbackCopy());
+  }
+
   gcTrack(id.startsWith('de-') ? 'generate-discharge-email' : 'generate-discharge-summary');
 }
 
@@ -9869,42 +10044,170 @@ function deYN(label, val) {
   return `${label}: ${display}`;
 }
 
+function deDirectToGenerate(btn) {
+  const generateBtn = document.getElementById('de-generate-btn');
+  if (generateBtn) {
+    generateBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    generateBtn.classList.add('de-attention-flash');
+    setTimeout(() => generateBtn.classList.remove('de-attention-flash'), 1200);
+  }
+  if (btn) {
+    const original = btn.dataset.origLabel || btn.innerHTML;
+    btn.dataset.origLabel = original;
+    btn.textContent = '↓ Generate first';
+    setTimeout(() => { btn.innerHTML = original; }, 1800);
+  }
+}
+
+let deWorkflowNoticeCompact = false;
+
+function deInitWorkflowNotice() {
+  const notice = document.getElementById('de-workflow-notice');
+  if (!notice) return;
+  notice.style.display = 'block';
+  deRenderWorkflowNoticeState();
+}
+
+function deRenderWorkflowNoticeState() {
+  const full = document.getElementById('de-workflow-notice-full');
+  const compact = document.getElementById('de-workflow-notice-compact');
+  if (!full || !compact) return;
+  full.style.display = deWorkflowNoticeCompact ? 'none' : 'block';
+  compact.style.display = deWorkflowNoticeCompact ? 'block' : 'none';
+}
+
+function deToggleWorkflowNotice() {
+  deWorkflowNoticeCompact = !deWorkflowNoticeCompact;
+  deRenderWorkflowNoticeState();
+}
+
+function deBridgeStatus() {
+  const s = deState;
+  const isOP = (s.unit === 'Community OP');
+  const bridgeRequired = (!isOP && s.dischargeType === 'unsuccessful' && s.dischargeSubtype === 'asa');
+  const contactedMissing = bridgeRequired && !s.bridgeContacted;
+  const reasonMissing = bridgeRequired && s.bridgeContacted === 'no' && !s.bridgeNotContactedReason;
+  return { bridgeRequired, contactedMissing, reasonMissing, incomplete: contactedMissing || reasonMissing };
+}
+
+function deUpdateBridgeAlert() {
+  const status = deBridgeStatus();
+  deState._bridgeMissing = status.incomplete;
+
+  const bridgeWrap = document.getElementById('de-bridge-wrap');
+  if (bridgeWrap) bridgeWrap.classList.toggle('field-error', status.contactedMissing);
+  const reasonWrap = document.getElementById('de-bridge-reason-wrap');
+  if (reasonWrap) reasonWrap.classList.toggle('field-error', status.reasonMissing);
+
+  const bridgeAlert = document.getElementById('de-bridge-alert');
+  const bridgeAlertText = document.getElementById('de-bridge-alert-text');
+  if (bridgeAlert && bridgeAlertText) {
+    if (status.contactedMissing) {
+      bridgeAlertText.textContent = '⚠ Required — answer whether The Bridge was contacted.';
+      bridgeAlert.style.display = 'flex';
+    } else if (status.reasonMissing) {
+      bridgeAlertText.textContent = "⚠ Required — explain why The Bridge wasn't contacted and what other attempts were made.";
+      bridgeAlert.style.display = 'flex';
+    } else {
+      bridgeAlert.style.display = 'none';
+    }
+  }
+  return status;
+}
+
+function deComputeErrors() {
+  const s = deState;
+  const isOP = (s.unit === 'Community OP');
+  const bridgeStatus = deBridgeStatus();
+  const errors = [];
+  if (!s.clientName) errors.push({ label: 'Client full name', id: 'de-client-name' });
+  if (!s.dischargeDate) errors.push({ label: 'Date of discharge', id: 'de-discharge-date' });
+  if (!s.unit) errors.push({ label: 'Unit', id: 'de-unit' });
+  if (!s.dischargeType) errors.push({ label: 'Type of discharge', id: 'de-dt-successful' });
+  if (s.dischargeType === 'unsuccessful' && !s.unsuccessfulReason) errors.push({ label: 'Reason for leaving', id: 'de-unsuccessful-reason-wrap' });
+  if (s.dischargeType === 'unsuccessful' && !s.dischargeSubtype) errors.push({ label: 'Reason (ASA or Admin Discharge)', id: 'de-subtype-wrap', critical: true });
+  if (s.dischargeType === 'neutral' && !s.neutralReason) errors.push({ label: 'Reason for neutral discharge', id: 'de-neutral-reason-wrap' });
+  if (bridgeStatus.contactedMissing) errors.push({ label: 'Bridge contact', id: 'de-bridge-wrap', critical: true });
+  if (bridgeStatus.reasonMissing) errors.push({ label: "Bridge — reason not contacted", id: 'de-bridge-reason-wrap', critical: true });
+  if (!isOP && !s.destination && !s.destinationUnknown) errors.push({ label: 'Where client is going', id: 'de-destination-wrap' });
+  if (!isOP && !s.resourceSheetProvided) errors.push({ label: 'Resource sheet provided', id: 'de-resource-sheet-wrap' });
+  if (!s.onProbation) errors.push({ label: 'On probation status', id: 'de-prob-yes' });
+  if (s.onProbation === 'yes' && !s.poNotified) errors.push({ label: 'Probation officer notified', id: 'de-po-wrap' });
+  if (!isOP && !s.outpatientOffered) errors.push({ label: 'Outpatient services offered', id: 'de-outpatient-wrap' });
+  return { errors, isOP, bridgeStatus };
+}
+
+// dirty: form has changed since the last render/generate call
+// ready: no validation errors right now — Generate would succeed if clicked
+function deUpdateGenerateBarState(dirty, ready) {
+  const generateBar = document.getElementById('de-generate-bar');
+  const generateBtn = document.getElementById('de-generate-btn');
+  const generateHint = document.getElementById('de-generate-hint');
+  const staleBanner = document.getElementById('de-stale-banner');
+  if (!generateBar || !generateBtn || !generateHint || !staleBanner) return;
+
+  generateBtn.textContent = deState._generated ? '↻ Regenerate Email' : 'Generate Email';
+
+  const needsRegenerate = !!(ready && dirty && deState._generated);
+  const readyFirstTime = !!(ready && dirty && !deState._generated);
+
+  generateBar.classList.toggle('de-stale', needsRegenerate);
+  generateBar.classList.toggle('de-ready', readyFirstTime);
+  generateHint.classList.toggle('de-stale-hint', needsRegenerate);
+  generateHint.classList.toggle('de-ready-hint', readyFirstTime);
+
+  if (needsRegenerate) {
+    generateHint.textContent = '⚠ Fields changed — click Regenerate to update the email before copying.';
+  } else if (readyFirstTime) {
+    generateHint.textContent = "All required fields are filled in — click Generate to create the email.";
+  } else {
+    generateHint.textContent = "Fill in the fields, then click Generate. The email won't update automatically as you type.";
+  }
+
+  staleBanner.style.display = needsRegenerate ? 'block' : 'none';
+}
+
 function deRenderOutput() {
+  const s = deState;
+  deUpdateBridgeAlert();
+
+  const subtypeWrap = document.getElementById('de-subtype-wrap');
+  if (subtypeWrap) subtypeWrap.classList.toggle('field-error', s.dischargeType === 'unsuccessful' && !s.dischargeSubtype);
+
+  const neutralWrap = document.getElementById('de-neutral-reason-wrap');
+  if (neutralWrap) neutralWrap.classList.toggle('field-error', s.dischargeType === 'neutral' && !s.neutralReason);
+
+  // Mark output stale — any field change after a generate means the visible
+  // text no longer reflects the current form until Generate is clicked again.
+  deState._dirty = true;
+  const hasContent = !!(s.clientName || s.dischargeDate || s.dischargeType || s.unit);
+  const { errors } = deComputeErrors();
+  const ready = hasContent && errors.length === 0;
+  deUpdateGenerateBarState(deState._dirty, ready);
+}
+
+function deGenerate() {
   const s = deState;
   const out = document.getElementById('de-out-text');
   const subjectOut = document.getElementById('de-out-subject-text');
-  const banner = document.getElementById('de-missing-banner');
+  const errorPanel = document.getElementById('de-error-panel');
+  const errorList = document.getElementById('de-error-list');
   if (!out || !subjectOut) return;
 
-  // Required-field check (non-blocking — informational only)
-  const missing = [];
-  if (!s.clientName) missing.push('Client full name');
-  if (!s.dischargeDate) missing.push('Date of discharge');
-  if (!s.unit) missing.push('Unit');
-  if (!s.dischargeType) missing.push('Type of discharge');
-  if (s.dischargeType === 'unsuccessful' && !s.unsuccessfulReason) missing.push('Reason for leaving');
-  const isOP = (s.unit === 'Community OP');
-  if (!isOP && s.dischargeType === 'unsuccessful' && s.dischargeSubtype === 'asa' && !s.bridgeContacted) missing.push('Bridge contact');
-  if (!isOP && !s.destination && !s.destinationUnknown) missing.push('Where client is going');
-  if (!isOP && !s.resourceSheetProvided) missing.push('Resource sheet provided');
-  if (!s.onProbation) missing.push('On probation status');
-  if (s.onProbation === 'yes' && !s.poNotified) missing.push('Probation officer notified');
-  if (!isOP && !s.outpatientOffered) missing.push('Outpatient services offered');
+  deUpdateBridgeAlert();
+  const { errors, isOP } = deComputeErrors();
 
-  if (banner) {
-    if (missing.length && (s.clientName || s.dischargeDate || s.dischargeType)) {
-      banner.style.display = 'block';
-      banner.textContent = 'Required, not yet answered: ' + missing.join(', ') + '.';
-    } else {
-      banner.style.display = 'none';
-    }
-  }
-
-  if (!s.clientName && !s.dischargeDate && !s.dischargeType && !s.unit) {
-    out.innerHTML = '<span class="ds-out-empty">Complete fields on the left to generate the discharge email.</span>';
-    subjectOut.innerHTML = '<span class="ds-out-empty">Complete fields on the left to generate the subject line.</span>';
+  if (errors.length > 0) {
+    errorList.innerHTML = errors.map(e =>
+      `<li${e.critical ? ' style="font-weight:700;color:#c0392b;"' : ''}><button class="error-jump" onclick="deJumpToField('${e.id}')">${e.critical ? '⚠ ' : ''}${e.label}</button></li>`
+    ).join('');
+    errorPanel.style.display = 'block';
+    errorPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
     return;
   }
+
+  errorPanel.style.display = 'none';
+  gcTrack('generate-discharge-email');
 
   const C = s.clientName || '[Client Name]';
   const dateStr = deFmtDate(s.dischargeDate) || '[Date of Discharge]';
@@ -10009,6 +10312,16 @@ function deRenderOutput() {
   }
 
   out.textContent = lines.join('\n');
+
+  deState._generated = true;
+  deState._dirty = false;
+  deUpdateGenerateBarState(false, true);
+}
+
+function deJumpToField(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
 function deReset() {
@@ -10060,7 +10373,14 @@ function deReset() {
   document.getElementById('de-rs-reason-wrap').style.display = 'none';
   document.getElementById('de-call-wrap').style.display = 'none';
   document.getElementById('de-po-wrap').style.display = 'none';
-  document.getElementById('de-missing-banner').style.display = 'none';
+  document.getElementById('de-error-panel').style.display = 'none';
+  document.getElementById('de-stale-banner').style.display = 'none';
+  document.getElementById('de-generate-bar').classList.remove('de-stale');
+  document.getElementById('de-bridge-alert').style.display = 'none';
+  deState._generated = false;
+  deState._dirty = false;
+  document.getElementById('de-out-text').innerHTML = '<span class="ds-out-empty">Fill in the fields, then click Generate below.</span>';
+  document.getElementById('de-out-subject-text').innerHTML = '<span class="ds-out-empty">Fill in the fields, then click Generate below.</span>';
   deRenderOutput();
 }
 
