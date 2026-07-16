@@ -10141,7 +10141,9 @@ function deDirectToGenerate(btn) {
   }
 }
 
+const DE_WORKFLOW_NOTICE_KEY = 'docassist_de_workflow_notice_compact';
 let deWorkflowNoticeCompact = false;
+try { deWorkflowNoticeCompact = localStorage.getItem(DE_WORKFLOW_NOTICE_KEY) === '1'; } catch (err) { deWorkflowNoticeCompact = false; }
 
 function deInitWorkflowNotice() {
   const notice = document.getElementById('de-workflow-notice');
@@ -10160,6 +10162,7 @@ function deRenderWorkflowNoticeState() {
 
 function deToggleWorkflowNotice() {
   deWorkflowNoticeCompact = !deWorkflowNoticeCompact;
+  try { localStorage.setItem(DE_WORKFLOW_NOTICE_KEY, deWorkflowNoticeCompact ? '1' : '0'); } catch (err) { /* ignore */ }
   deRenderWorkflowNoticeState();
 }
 
