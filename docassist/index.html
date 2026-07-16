@@ -175,43 +175,116 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 40px 24px;
+  justify-content: flex-start;
+  padding: clamp(16px, 4vh, 48px) 24px clamp(12px, 3vh, 40px);
   background: linear-gradient(160deg, #f7f9f0 0%, #fdf8e1 100%);
   overflow-y: auto;
 }
 .home-greeting {
   text-align: center;
-  margin-bottom: 60px;
+  margin-bottom: clamp(16px, 4vh, 60px);
 }
 .home-greeting-title {
-  font-size: 26px;
+  font-size: clamp(19px, 2.6vh, 26px);
   font-weight: 500;
   color: var(--text);
   margin-bottom: 6px;
 }
 .home-greeting-sub {
-  font-size: 14px;
+  font-size: clamp(12px, 1.6vh, 14px);
   color: #4a5550;
   letter-spacing: 0.01em;
 }
 .home-grid {
   display: grid;
-  grid-template-columns: repeat(4, 220px);
-  gap: 22px;
-  max-width: 928px;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 220px));
+  gap: clamp(12px, 2.2vh, 22px);
+  width: 100%;
+  max-width: 700px;
+}
+.home-section { margin-bottom: clamp(14px, 3vh, 32px); }
+.home-section-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  margin-bottom: clamp(6px, 1.2vh, 12px);
+  padding-left: 2px;
+}
+.home-quick-access {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--accent-light);
+  border: 1px solid var(--accent);
+  border-left: 5px solid var(--accent);
+  border-radius: 10px;
+  padding: clamp(10px, 2vh, 16px) 22px;
+  max-width: 700px;
+  margin-bottom: clamp(14px, 3vh, 32px);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.home-quick-access:hover {
+  box-shadow: 0 4px 16px rgba(45,106,79,0.16);
+  transform: translateY(-2px);
+}
+.home-quick-icon {
+  width: clamp(36px, 5.5vh, 44px);
+  height: clamp(36px, 5.5vh, 44px);
+  background: #fff;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.home-quick-icon svg {
+  width: 22px;
+  height: 22px;
+  stroke: var(--accent);
+  fill: none;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.home-quick-text { flex: 1; min-width: 0; }
+.home-quick-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.home-quick-tag {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: var(--accent);
+  color: #fff;
+  padding: 3px 8px;
+  border-radius: 10px;
+}
+.home-quick-desc {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 2px;
 }
 .home-card {
   background: var(--surface);
   border: 1px solid var(--border);
   border-left: 3px solid var(--accent);
   border-radius: 10px;
-  padding: 20px 20px 20px 18px;
+  padding: clamp(12px, 2vh, 20px) 20px clamp(12px, 2vh, 20px) 18px;
   cursor: pointer;
   transition: all 0.15s;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: clamp(4px, 1vh, 8px);
   text-align: left;
   position: relative;
   overflow: hidden;
@@ -233,20 +306,11 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   box-shadow: none;
   transform: none;
 }
-.home-card.home-card-featured {
-  background: var(--accent-light);
-  border-left-width: 5px;
-}
-.home-card-badge.home-card-badge-accent {
-  background: var(--accent);
-  color: #fff;
-  border-color: var(--accent);
-}
 @keyframes home-card-attention-pulse {
   0%, 100% { box-shadow: 0 0 0 0 rgba(45,106,79,0.35); }
   50% { box-shadow: 0 0 0 8px rgba(45,106,79,0); }
 }
-.home-card.home-card-pulse-temp { animation: home-card-attention-pulse 2.4s ease-in-out infinite; }
+.home-card-pulse-temp { animation: home-card-attention-pulse 2.4s ease-in-out infinite; }
 
 /* ─── DISCHARGE TOOL ──────────────────────── */
 .ds-pill {
@@ -362,8 +426,8 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 }
 .ds-skill-row input[type=checkbox] { accent-color: var(--accent); cursor: pointer; }
 .home-card-icon {
-  width: 36px;
-  height: 36px;
+  width: clamp(28px, 4.5vh, 36px);
+  height: clamp(28px, 4.5vh, 36px);
   background: var(--accent-light);
   border-radius: 8px;
   display: flex;
@@ -404,8 +468,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   margin-top: auto;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 8px;
+  justify-content: flex-end;
   padding-top: 6px;
 }
 .home-card-arrow {
@@ -413,33 +476,10 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   color: var(--accent);
   font-weight: 600;
 }
-.home-card-audience {
-  font-size: 9px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 3px 8px;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-  background: var(--bg);
-  color: var(--text-secondary);
-  white-space: nowrap;
-}
-.home-card-audience-allstaff {
-  background: var(--accent-light);
-  color: var(--accent);
-  border-color: var(--accent);
-}
-.home-card-audience-nursing {
-  background: #eaf2fb;
-  color: #2c5c8a;
-  border-color: #b8d4ee;
-}
 
 /* ─── RESPONSIVE ──────────────────────────── */
 @media (max-width: 1250px) {
   .home-grid {
-    grid-template-columns: repeat(3, 200px);
     gap: 16px;
     max-width: 640px;
   }
@@ -459,7 +499,6 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 }
 @media (max-width: 950px) {
   .home-grid {
-    grid-template-columns: repeat(2, minmax(190px, 260px));
     gap: 16px;
     max-width: 560px;
   }
@@ -471,10 +510,10 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 }
 @media (max-width: 680px) {
   .home-grid {
-    grid-template-columns: 1fr 1fr;
     gap: 10px;
     max-width: 100%;
   }
+  .home-quick-access { max-width: 100%; flex-wrap: wrap; padding: 14px 16px; }
   .home-screen { padding: 18px 14px; }
   .home-greeting { margin-bottom: 18px; }
   .home-greeting-title { font-size: 18px; }
@@ -2168,74 +2207,64 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       <div class="home-greeting-title" id="homeGreetingTitle"></div>
       <div class="home-greeting-sub" id="homeGreetingSub"></div>
     </div>
-    <div class="home-grid">
-      <div class="home-card home-card-featured" id="home-card-discharge-email" onclick="navigateTo('discharge-email')">
-        <div class="home-card-badge home-card-badge-accent">★ Most Used</div>
-        <div class="home-card-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22 6 12 13 2 6"/></svg></div>
-        <div class="home-card-title">Discharge Email</div>
-        <div class="home-card-footer">
-          <span class="home-card-audience home-card-audience-allstaff">All Staff</span>
-          <span class="home-card-arrow">Open →</span>
-        </div>
+    <div class="home-tools-area">
+    <div class="home-quick-access" id="home-card-discharge-email" onclick="navigateTo('discharge-email')">
+      <div class="home-quick-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22 6 12 13 2 6"/></svg></div>
+      <div class="home-quick-text">
+        <div class="home-quick-title">Discharge Email <span class="home-quick-tag">★ Most Used · All Staff</span></div>
+        <div class="home-quick-desc">Create an email to send regarding a client's discharge</div>
       </div>
-      <div class="home-card" onclick="navigateTo('asam')">
-        <div class="home-card-icon"><svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg></div>
-        <div class="home-card-title">ASAM Documentation</div>
-        <div class="home-card-footer">
-          <span class="home-card-audience">Clinical</span>
-          <span class="home-card-arrow">Open →</span>
+      <div class="home-card-arrow">Open →</div>
+    </div>
+
+    <div class="home-section">
+      <div class="home-section-label">Clinical Documentation</div>
+      <div class="home-grid">
+        <div class="home-card" onclick="navigateTo('asam')">
+          <div class="home-card-icon"><svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg></div>
+          <div class="home-card-title">ASAM Documentation</div>
+          <div class="home-card-footer"><span class="home-card-arrow">Open →</span></div>
         </div>
-      </div>
-      <div class="home-card" onclick="navigateTo('itp')">
-        <div class="home-card-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1" fill="var(--accent)" stroke="none"/><line x1="12" y1="3" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="21"/></svg></div>
-        <div class="home-card-title">ITP Development</div>
-        <div class="home-card-footer">
-          <span class="home-card-audience">Clinical</span>
-          <span class="home-card-arrow">Open →</span>
+        <div class="home-card" onclick="navigateTo('itp')">
+          <div class="home-card-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1" fill="var(--accent)" stroke="none"/><line x1="12" y1="3" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="21"/></svg></div>
+          <div class="home-card-title">ITP Development</div>
+          <div class="home-card-footer"><span class="home-card-arrow">Open →</span></div>
         </div>
-      </div>
-      <div class="home-card" onclick="navigateTo('note')">
-        <div class="home-card-icon"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
-        <div class="home-card-title">Individual Note</div>
-        <div class="home-card-footer">
-          <span class="home-card-audience">Clinical</span>
-          <span class="home-card-arrow">Open →</span>
+        <div class="home-card" onclick="navigateTo('note')">
+          <div class="home-card-icon"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
+          <div class="home-card-title">Individual Note</div>
+          <div class="home-card-footer"><span class="home-card-arrow">Open →</span></div>
         </div>
-      </div>
-      <div class="home-card" onclick="navigateTo('discharge')">
-        <div class="home-card-icon"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div>
-        <div class="home-card-title">Discharge Summary</div>
-        <div class="home-card-footer">
-          <span class="home-card-audience">Clinical</span>
-          <span class="home-card-arrow">Open →</span>
+        <div class="home-card" onclick="navigateTo('group')">
+          <div class="home-card-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <div class="home-card-title">Group Notes</div>
+          <div class="home-card-footer"><span class="home-card-arrow">Open →</span></div>
         </div>
-      </div>
-      <div class="home-card" onclick="navigateTo('asa')">
-        <div class="home-card-icon"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div>
-        <div class="home-card-title">ASA Intervention Note</div>
-        <div class="home-card-footer">
-          <span class="home-card-audience">Clinical</span>
-          <span class="home-card-arrow">Open →</span>
+        <div class="home-card" onclick="navigateTo('asa')">
+          <div class="home-card-icon"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div>
+          <div class="home-card-title">ASA Intervention Note</div>
+          <div class="home-card-footer"><span class="home-card-arrow">Open →</span></div>
         </div>
-      </div>
-      <div class="home-card" onclick="navigateTo('group')">
-        <div class="home-card-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
-        <div class="home-card-title">Group Notes</div>
-        <div class="home-card-footer">
-          <span class="home-card-audience">Clinical</span>
-          <span class="home-card-arrow">Open →</span>
-        </div>
-      </div>
-      <div class="home-card" onclick="navigateTo('nn')">
-        <div class="home-card-icon"><svg viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/><path d="M12 6v6"/><path d="M9 9h6"/></svg></div>
-        <div class="home-card-title">Nursing Note</div>
-        <div class="home-card-footer">
-          <span class="home-card-audience home-card-audience-nursing">Nursing</span>
-          <span class="home-card-arrow">Open →</span>
+        <div class="home-card" onclick="navigateTo('discharge')">
+          <div class="home-card-icon"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div>
+          <div class="home-card-title">Discharge Summary</div>
+          <div class="home-card-footer"><span class="home-card-arrow">Open →</span></div>
         </div>
       </div>
     </div>
-    <div style="text-align:center;margin-top:28px;display:flex;gap:8px;justify-content:center;align-items:center;flex-wrap:wrap;">
+
+    <div class="home-section">
+      <div class="home-section-label">Nursing</div>
+      <div class="home-grid">
+        <div class="home-card" onclick="navigateTo('nn')">
+          <div class="home-card-icon"><svg viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/><path d="M12 6v6"/><path d="M9 9h6"/></svg></div>
+          <div class="home-card-title">Nursing Note</div>
+          <div class="home-card-footer"><span class="home-card-arrow">Open →</span></div>
+        </div>
+      </div>
+    </div>
+    </div><!-- /home-tools-area -->
+    <div style="text-align:center;margin-top:clamp(12px, 3vh, 28px);display:flex;gap:8px;justify-content:center;align-items:center;flex-wrap:wrap;">
       <button onclick="confirmStartTutorial()" style="font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:600;color:#2d6a4f;cursor:pointer;padding:6px 16px;border-radius:20px;border:1px solid #b8d9c4;background:var(--accent-light);line-height:1;transition:background .15s,border-color .15s;" onmouseover="this.style.background='#c8e6d4';this.style.borderColor='#2d6a4f'" onmouseout="this.style.background='var(--accent-light)';this.style.borderColor='#b8d9c4'">▶ How to Use DocAssist</button>
       <button onclick="openChangelogModal()" style="font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:600;color:#2d6a4f;cursor:pointer;padding:6px 16px;border-radius:20px;border:1px solid #b8d9c4;background:var(--accent-light);line-height:1;transition:background .15s,border-color .15s;" onmouseover="this.style.background='#c8e6d4';this.style.borderColor='#2d6a4f'" onmouseout="this.style.background='var(--accent-light)';this.style.borderColor='#b8d9c4'">What's New in DocAssist</button>
     </div>
@@ -12171,7 +12200,7 @@ const TUT_STEPS = [
     body:'DocAssist generates the clinical documentation you need for Remarkable. You fill out the tool, generate the text, review it, and paste it into the right fields in Remarkable. That is the complete workflow — nothing this tool produces gets submitted anywhere automatically. You are always in control of what goes into the record. There are five tools organized by documentation type: ASAM narratives, treatment plans, session notes, group notes, and discharge summaries.' },
 
   // ── HOME SCREEN ───────────────────────────────────────────────────────────
-  { view:'home', sel:'.home-grid', section:'Home Screen',
+  { view:'home', sel:'.home-tools-area', section:'Home Screen',
     title:'Your documentation tools',
     body:'Each card opens a different tool. You will often use several of them for the same client — an ASAM narrative, then a treatment plan, then session notes over time. Your work is saved as you move between tools, so you can start an ASAM, switch to the ITP tool to align your treatment plan, and come back to the ASAM without losing anything.' },
 
