@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>The Ledger — Buy List Tracker</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #15141b;
+    --surface: #1e1c26;
+    --surface-2: #262330;
+    --line: #322f3d;
+    --text: #ece7e0;
+    --muted: #938d9f;
+    --gold: #c9a227;
+    --gold-dim: #8a7220;
+    --green: #4f9a6e;
+    --red: #b8564f;
+    --amber: #d8a94e;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(1200px 600px at 15% -10%, rgba(201,162,39,0.07), transparent 60%),
+      var(--bg);
+    color:var(--text);
+    font-family:'IBM Plex Sans', sans-serif;
+    padding: 40px 24px 100px;
+  }
+  .wrap{ max-width: 1180px; margin: 0 auto; }
+
+  header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap: 32px;
+    flex-wrap: wrap;
+    margin-bottom: 36px;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 28px;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+  h1{
+    font-family:'Fraunces', serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-size: 42px;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  h1 em{
+    font-style: italic;
+    font-weight: 300;
+    color: var(--muted);
+  }
+  .sub{
+    font-size: 14px;
+    color: var(--muted);
+    margin-top: 8px;
+    max-width: 46ch;
+  }
+
+  /* Progress record */
+  .record-wrap{ display:flex; align-items:center; gap:20px; }
+  .record{ position: relative; width: 108px; height: 108px; flex-shrink:0; }
+  .record svg{ transform: rotate(-90deg); }
+  .record .track{ stroke: var(--surface-2); }
+  .record .fill{
+    stroke: var(--gold);
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.5s ease;
+  }
+  .record .label{
+    position:absolute; inset:0;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+  }
+  .record .pct{ font-family:'IBM Plex Mono', monospace; font-size: 20px; font-weight:600; }
+  .record .pct-of{ font-family:'IBM Plex Mono', monospace; font-size: 9px; color: var(--muted); margin-top:2px;}
+  .progress-meta{ font-family:'IBM Plex Mono', monospace; font-size:13px; color: var(--muted); line-height:1.7; }
+  .progress-meta b{ color: var(--text); font-weight:600;}
+
+  /* Controls */
+  .controls{
+    display:flex; gap: 10px; flex-wrap: wrap; align-items:center;
+    margin-bottom: 20px;
+  }
+  input[type="text"]{
+    background: var(--surface);
+    border: 1px solid var(--line);
+    color: var(--text);
+    padding: 9px 14px;
+    border-radius: 6px;
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    min-width: 220px;
+  }
+  input[type="text"]::placeholder{ color: var(--muted); }
+  select{
+    background: var(--surface);
+    border: 1px solid var(--line);
+    color: var(--text);
+    padding: 9px 12px;
+    border-radius: 6px;
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+  }
+  button{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.03em;
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--line);
+    padding: 9px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  button:hover{ border-color: var(--gold); color: var(--gold); }
+  button.primary{
+    background: var(--gold);
+    border-color: var(--gold);
+    color: #1b1808;
+    font-weight: 600;
+  }
+  button.primary:hover{ background: var(--amber); color:#1b1808; }
+  .spacer{ flex: 1; }
+  #fileInput{ display:none; }
+
+  /* Table */
+  .table-wrap{
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--surface);
+  }
+  table{ width:100%; border-collapse: collapse; font-size: 13px; }
+  thead th{
+    position: sticky; top:0;
+    background: var(--surface-2);
+    text-align:left;
+    padding: 12px 14px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    cursor:pointer;
+    user-select:none;
+    border-bottom: 1px solid var(--line);
+    white-space: nowrap;
+  }
+  thead th:hover{ color: var(--gold); }
+  thead th.sorted{ color: var(--gold); }
+  thead th .arrow{ margin-left: 4px; font-size: 9px; opacity:0.7; }
+  tbody tr{ border-bottom: 1px solid var(--line); transition: background 0.1s ease; }
+  tbody tr:last-child{ border-bottom: none; }
+  tbody tr:hover{ background: var(--surface-2); }
+  tbody tr.purchased{ opacity: 0.45; }
+  tbody tr.purchased .title{ text-decoration: line-through; text-decoration-color: var(--green); }
+  td{ padding: 10px 14px; vertical-align: middle; }
+  td.rank{ font-family:'IBM Plex Mono', monospace; color: var(--muted); font-size:12px; }
+  td.title{ font-weight: 500; }
+  td.album{ color: var(--muted); font-style: italic; }
+  td.plays{ font-family:'IBM Plex Mono', monospace; text-align:right; color: var(--muted); }
+  .tier-pill{
+    display:inline-block;
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 10px;
+    padding: 3px 9px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+  .tier-Proven { background: rgba(79,154,110,0.16); color: var(--green); }
+  .tier-Likely { background: rgba(216,169,78,0.16); color: var(--amber); }
+  .tier-Toonew { background: rgba(184,86,79,0.16); color: var(--red); }
+  .tier-Low, .tier-Never, .tier-Unknown { background: rgba(147,141,159,0.14); color: var(--muted); }
+  .check{
+    width: 20px; height:20px;
+    accent-color: var(--green);
+    cursor: pointer;
+  }
+  .bc-link{
+    color: var(--muted);
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 11px;
+    text-decoration: none;
+    border: 1px solid var(--line);
+    padding: 4px 9px;
+    border-radius: 5px;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+  }
+  .bc-link:hover{ color: var(--gold); border-color: var(--gold); }
+  .remove-btn{
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--muted);
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    font-size: 13px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0;
+  }
+  .remove-btn:hover{ background: rgba(184,86,79,0.16); border-color: var(--red); color: var(--red); }
+
+  footer{
+    margin-top: 28px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    text-align:center;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div>
+      <div class="eyebrow">Personal Collection · Purchase Ledger</div>
+      <h1>The <em>Buy</em> List</h1>
+      <div class="sub">259 songs, ranked by conviction. Buy them down, cancel the subscription when the record's full.</div>
+    </div>
+    <div class="record-wrap">
+      <div class="record">
+        <svg width="108" height="108" viewBox="0 0 108 108">
+          <circle class="track" cx="54" cy="54" r="46" fill="none" stroke-width="8"/>
+          <circle id="progressRing" class="fill" cx="54" cy="54" r="46" fill="none" stroke-width="8"
+            stroke-dasharray="289" stroke-dashoffset="289"/>
+        </svg>
+        <div class="label">
+          <div class="pct" id="pctText">0%</div>
+          <div class="pct-of" id="countText">0 / 259</div>
+        </div>
+      </div>
+      <div class="progress-meta">
+        Bought: <b id="metaBought">0</b><br>
+        Remaining: <b id="metaRemaining">259</b><br>
+        Est. cost left: <b id="metaCost">$0</b>
+      </div>
+    </div>
+  </header>
+
+  <div class="controls">
+    <input type="text" id="searchBox" placeholder="Filter by artist, title, or album…">
+    <select id="tierFilter">
+      <option value="">All tiers</option>
+      <option value="Proven favorite">Proven favorite</option>
+      <option value="Likely strong">Likely strong</option>
+      <option value="Too new to trust">Too new to trust</option>
+      <option value="Low data">Low data</option>
+      <option value="Never played">Never played</option>
+    </select>
+    <select id="statusFilter">
+      <option value="">All statuses</option>
+      <option value="pending">Not yet bought</option>
+      <option value="purchased">Already bought</option>
+    </select>
+    <div class="spacer"></div>
+    <button id="exportBtn" class="primary">↓ Save progress</button>
+    <button id="importBtn">↑ Load progress</button>
+    <input type="file" id="fileInput" accept="application/json">
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:40px;">Got it</th>
+          <th data-key="artist" style="width:220px;">Artist<span class="arrow"></span></th>
+          <th data-key="title">Title<span class="arrow"></span></th>
+          <th data-key="album">Album<span class="arrow"></span></th>
+          <th data-key="playsPerMonth" style="text-align:right;">Plays/mo<span class="arrow"></span></th>
+          <th>Bandcamp</th>
+          <th>Apple Music</th>
+          <th style="width:70px;">Remove</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+
+  <footer>Prices assumed at $1.25/song for the cost estimate · progress is stored only in the file you save — nothing leaves this page.</footer>
+</div>
+
+<script>
+const SONGS_RAW = [{"artist": "Phoebe Bridgers", "title": "Garden Song", "album": "Punisher", "genre": "Alternative", "playsPerMonth": 2.02, "tier": "Proven favorite", "source": "Original Buy", "batch": "Phoebe Bridgers - Punisher", "rank": 1, "id": 1, "purchased": false}, {"artist": "Phoebe Bridgers", "title": "Chinese Satellite", "album": "Punisher", "genre": "Alternative", "playsPerMonth": 1.93, "tier": "Proven favorite", "source": "Original Buy", "batch": "Phoebe Bridgers - Punisher", "rank": 2, "id": 2, "purchased": false}, {"artist": "Phoebe Bridgers", "title": "DVD Menu", "album": "Punisher", "genre": "Alternative", "playsPerMonth": 1.35, "tier": "Proven favorite", "source": "Original Buy", "batch": "Phoebe Bridgers - Punisher", "rank": 3, "id": 3, "purchased": false}, {"artist": "Phoebe Bridgers", "title": "Kyoto", "album": "Punisher", "genre": "Alternative", "playsPerMonth": 1.29, "tier": "Proven favorite", "source": "Original Buy", "batch": "Phoebe Bridgers - Punisher", "rank": 4, "id": 4, "purchased": false}, {"artist": "Phoebe Bridgers", "title": "Punisher", "album": "Punisher", "genre": "Alternative", "playsPerMonth": 1.18, "tier": "Proven favorite", "source": "Original Buy", "batch": "Phoebe Bridgers - Punisher", "rank": 5, "id": 5, "purchased": false}, {"artist": "Phoebe Bridgers", "title": "Graceland Too", "album": "Punisher", "genre": "Alternative", "playsPerMonth": 1.13, "tier": "Proven favorite", "source": "Original Buy", "batch": "Phoebe Bridgers - Punisher", "rank": 6, "id": 6, "purchased": false}, {"artist": "Phoebe Bridgers", "title": "Moon Song", "album": "Punisher", "genre": "Alternative", "playsPerMonth": 1.0, "tier": "Proven favorite", "source": "Original Buy", "batch": "Phoebe Bridgers - Punisher", "rank": 7, "id": 7, "purchased": false}, {"artist": "Phoebe Bridgers", "title": "Halloween", "album": "Punisher", "genre": "Alternative", "playsPerMonth": 0.97, "tier": "Proven favorite", "source": "Original Buy", "batch": "Phoebe Bridgers - Punisher", "rank": 8, "id": 8, "purchased": false}, {"artist": "Phoebe Bridgers", "title": "ICU", "album": "Punisher", "genre": "Alternative", "playsPerMonth": 0.95, "tier": "Proven favorite", "source": "Original Buy", "batch": "Phoebe Bridgers - Punisher", "rank": 9, "id": 9, "purchased": false}, {"artist": "Phoebe Bridgers", "title": "Savior Complex", "album": "Punisher", "genre": "Alternative", "playsPerMonth": 0.71, "tier": "Proven favorite", "source": "Original Buy", "batch": "Phoebe Bridgers - Punisher", "rank": 10, "id": 10, "purchased": false}, {"artist": "Phoebe Bridgers", "title": "I Know the End", "album": "Punisher", "genre": "Alternative", "playsPerMonth": 0.7, "tier": "Proven favorite", "source": "Original Buy", "batch": "Phoebe Bridgers - Punisher", "rank": 11, "id": 11, "purchased": false}, {"artist": "blink-182", "title": "Feeling This", "album": "Blink-182 (Bonus Track Version)", "genre": "Rock", "playsPerMonth": 1.28, "tier": "Proven favorite", "source": "Original Buy", "batch": "blink-182 - Blink-182 (Bonus Track Version)", "rank": 12, "id": 12, "purchased": false}, {"artist": "blink-182", "title": "I Miss You", "album": "Blink-182 (Bonus Track Version)", "genre": "Rock", "playsPerMonth": 1.0, "tier": "Proven favorite", "source": "Original Buy", "batch": "blink-182 - Blink-182 (Bonus Track Version)", "rank": 13, "id": 13, "purchased": false}, {"artist": "blink-182", "title": "Always", "album": "Blink-182 (Bonus Track Version)", "genre": "Rock", "playsPerMonth": 0.35, "tier": "Proven favorite", "source": "Original Buy", "batch": "blink-182 - Blink-182 (Bonus Track Version)", "rank": 14, "id": 14, "purchased": false}, {"artist": "boygenius", "title": "Letter To An Old Poet", "album": "the record", "genre": "Alternative", "playsPerMonth": 1.44, "tier": "Proven favorite", "source": "Original Buy", "batch": "boygenius - the record", "rank": 15, "id": 15, "purchased": false}, {"artist": "boygenius", "title": "Emily I'm Sorry", "album": "the record", "genre": "Alternative", "playsPerMonth": 0.55, "tier": "Proven favorite", "source": "Kept Maybe", "batch": "boygenius - the record", "rank": 16, "id": 16, "purchased": false}, {"artist": "boygenius", "title": "Revolution 0", "album": "the record", "genre": "Alternative", "playsPerMonth": 0.38, "tier": "Proven favorite", "source": "Kept Maybe", "batch": "boygenius - the record", "rank": 17, "id": 17, "purchased": false}, {"artist": "Jimmy Eat World", "title": "Sweetness", "album": "Bleed American", "genre": "Alternative", "playsPerMonth": 0.83, "tier": "Proven favorite", "source": "Original Buy", "batch": "Jimmy Eat World - Bleed American", "rank": 18, "id": 18, "purchased": false}, {"artist": "Jimmy Eat World", "title": "Hear You Me", "album": "Bleed American", "genre": "Alternative", "playsPerMonth": 0.72, "tier": "Proven favorite", "source": "Original Buy", "batch": "Jimmy Eat World - Bleed American", "rank": 19, "id": 19, "purchased": false}, {"artist": "Jimmy Eat World", "title": "The Middle", "album": "Bleed American", "genre": "Alternative", "playsPerMonth": 0.54, "tier": "Proven favorite", "source": "Original Buy", "batch": "Jimmy Eat World - Bleed American", "rank": 20, "id": 20, "purchased": false}, {"artist": "blink-182", "title": "All the Small Things", "album": "Enema of the State", "genre": "Rock", "playsPerMonth": 0.84, "tier": "Proven favorite", "source": "Original Buy", "batch": "blink-182 - Enema of the State", "rank": 21, "id": 21, "purchased": false}, {"artist": "blink-182", "title": "Adam's Song", "album": "Enema of the State", "genre": "Rock", "playsPerMonth": 0.81, "tier": "Proven favorite", "source": "Original Buy", "batch": "blink-182 - Enema of the State", "rank": 22, "id": 22, "purchased": false}, {"artist": "blink-182", "title": "Aliens Exist", "album": "Enema of the State", "genre": "Rock", "playsPerMonth": 0.44, "tier": "Likely strong", "source": "Kept Maybe", "batch": "blink-182 - Enema of the State", "rank": 23, "id": 23, "purchased": false}, {"artist": "Phoebe Bridgers", "title": "Kyoto (Copycat Killer Version) [feat. Rob Moose]", "album": "Copycat Killer (feat. Rob Moose) - EP", "genre": "Alternative", "playsPerMonth": 0.77, "tier": "Proven favorite", "source": "Original Buy", "batch": "Phoebe Bridgers - Copycat Killer (feat. Rob Moose) - EP", "rank": 24, "id": 24, "purchased": false}, {"artist": "Phoebe Bridgers", "title": "Chinese Satellite (Copycat Killer Version) [feat. Rob Moose]", "album": "Copycat Killer (feat. Rob Moose) - EP", "genre": "Alternative", "playsPerMonth": 0.73, "tier": "Proven favorite", "source": "Original Buy", "batch": "Phoebe Bridgers - Copycat Killer (feat. Rob Moose) - EP", "rank": 25, "id": 25, "purchased": false}, {"artist": "Phoebe Bridgers", "title": "Punisher (Copycat Killer Version) [feat. Rob Moose]", "album": "Copycat Killer (feat. Rob Moose) - EP", "genre": "Alternative", "playsPerMonth": 0.63, "tier": "Proven favorite", "source": "Original Buy", "batch": "Phoebe Bridgers - Copycat Killer (feat. Rob Moose) - EP", "rank": 26, "id": 26, "purchased": false}, {"artist": "Phoebe Bridgers", "title": "Savior Complex (Copycat Killer Version) [feat. Rob Moose]", "album": "Copycat Killer (feat. Rob Moose) - EP", "genre": "Alternative", "playsPerMonth": 0.59, "tier": "Proven favorite", "source": "Original Buy", "batch": "Phoebe Bridgers - Copycat Killer (feat. Rob Moose) - EP", "rank": 27, "id": 27, "purchased": false}, {"artist": "A Skylit Drive", "title": "All It Takes for Your Dreams to Come True", "album": "Wires... And the Concept of Breathing", "genre": "Alternative", "playsPerMonth": 0.78, "tier": "Proven favorite", "source": "Original Buy", "batch": "A Skylit Drive - Wires... And the Concept of Breathing", "rank": 28, "id": 28, "purchased": false}, {"artist": "A Skylit Drive", "title": "Wires and the Concept of Breathing", "album": "Wires... And the Concept of Breathing", "genre": "Alternative", "playsPerMonth": 0.77, "tier": "Proven favorite", "source": "Original Buy", "batch": "A Skylit Drive - Wires... And the Concept of Breathing", "rank": 29, "id": 29, "purchased": false}, {"artist": "A Skylit Drive", "title": "My Disease", "album": "Wires... And the Concept of Breathing", "genre": "Alternative", "playsPerMonth": 0.61, "tier": "Proven favorite", "source": "Original Buy", "batch": "A Skylit Drive - Wires... And the Concept of Breathing", "rank": 30, "id": 30, "purchased": false}, {"artist": "A Skylit Drive", "title": "I'm Not a Thief, I'm a Treasure Hunter", "album": "Wires... And the Concept of Breathing", "genre": "Alternative", "playsPerMonth": 0.56, "tier": "Proven favorite", "source": "Original Buy", "batch": "A Skylit Drive - Wires... And the Concept of Breathing", "rank": 31, "id": 31, "purchased": false}, {"artist": "A Skylit Drive", "title": "Balance", "album": "Wires... And the Concept of Breathing", "genre": "Alternative", "playsPerMonth": 0.51, "tier": "Proven favorite", "source": "Original Buy", "batch": "A Skylit Drive - Wires... And the Concept of Breathing", "rank": 32, "id": 32, "purchased": false}, {"artist": "The Seedy Seeds", "title": "The Push", "album": "Count the Days", "genre": "Alternative", "playsPerMonth": 0.79, "tier": "Proven favorite", "source": "Original Buy", "batch": "The Seedy Seeds - Count the Days", "rank": 33, "id": 33, "purchased": false}, {"artist": "The Seedy Seeds", "title": "Drive Me to the Center", "album": "Count the Days", "genre": "Alternative", "playsPerMonth": 0.48, "tier": "Proven favorite", "source": "Original Buy", "batch": "The Seedy Seeds - Count the Days", "rank": 34, "id": 34, "purchased": false}, {"artist": "The Seedy Seeds", "title": "Dandelion", "album": "Count the Days", "genre": "Alternative", "playsPerMonth": 0.45, "tier": "Proven favorite", "source": "Original Buy", "batch": "The Seedy Seeds - Count the Days", "rank": 35, "id": 35, "purchased": false}, {"artist": "The Seedy Seeds", "title": "Winter 04", "album": "Count the Days", "genre": "Alternative", "playsPerMonth": 0.28, "tier": "Proven favorite", "source": "Original Buy", "batch": "The Seedy Seeds - Count the Days", "rank": 36, "id": 36, "purchased": false}, {"artist": "Taylor Swift", "title": "my tears ricochet", "album": "folklore", "genre": "Alternative", "playsPerMonth": 0.9, "tier": "Proven favorite", "source": "Original Buy", "batch": "Taylor Swift - folklore", "rank": 37, "id": 37, "purchased": false}, {"artist": "Taylor Swift", "title": "epiphany", "album": "folklore", "genre": "Alternative", "playsPerMonth": 0.41, "tier": "Proven favorite", "source": "Original Buy", "batch": "Taylor Swift - folklore", "rank": 38, "id": 38, "purchased": false}, {"artist": "Taylor Swift", "title": "exile (feat. Bon Iver)", "album": "folklore", "genre": "Alternative", "playsPerMonth": 0.39, "tier": "Proven favorite", "source": "Original Buy", "batch": "Taylor Swift - folklore", "rank": 39, "id": 39, "purchased": false}, {"artist": "Taylor Swift", "title": "august", "album": "folklore", "genre": "Alternative", "playsPerMonth": 0.3, "tier": "Likely strong", "source": "Original Buy", "batch": "Taylor Swift - folklore", "rank": 40, "id": 40, "purchased": false}, {"artist": "The Tallest Man On Earth", "title": "Hotel Bar", "album": "I Love You. It's a Fever Dream.", "genre": "Alternative", "playsPerMonth": 0.83, "tier": "Proven favorite", "source": "Original Buy", "batch": "The Tallest Man On Earth - I Love You. It's a Fever Dream.", "rank": 41, "id": 41, "purchased": false}, {"artist": "The Tallest Man On Earth", "title": "I\u2019m a Stranger Now", "album": "I Love You. It's a Fever Dream.", "genre": "Alternative", "playsPerMonth": 0.73, "tier": "Proven favorite", "source": "Original Buy", "batch": "The Tallest Man On Earth - I Love You. It's a Fever Dream.", "rank": 42, "id": 42, "purchased": false}, {"artist": "The Tallest Man On Earth", "title": "I Love You. It\u2019s a Fever Dream.", "album": "I Love You. It's a Fever Dream.", "genre": "Alternative", "playsPerMonth": 0.43, "tier": "Proven favorite", "source": "Original Buy", "batch": "The Tallest Man On Earth - I Love You. It's a Fever Dream.", "rank": 43, "id": 43, "purchased": false}, {"artist": "The Tallest Man On Earth", "title": "All I Can Keep Is Now", "album": "I Love You. It's a Fever Dream.", "genre": "Alternative", "playsPerMonth": 0.41, "tier": "Proven favorite", "source": "Original Buy", "batch": "The Tallest Man On Earth - I Love You. It's a Fever Dream.", "rank": 44, "id": 44, "purchased": false}, {"artist": "The Tallest Man On Earth", "title": "Waiting for My Ghost", "album": "I Love You. It's a Fever Dream.", "genre": "Alternative", "playsPerMonth": 0.37, "tier": "Proven favorite", "source": "Original Buy", "batch": "The Tallest Man On Earth - I Love You. It's a Fever Dream.", "rank": 45, "id": 45, "purchased": false}, {"artist": "The Tallest Man On Earth", "title": "I\u2019ll Be a Sky", "album": "I Love You. It's a Fever Dream.", "genre": "Alternative", "playsPerMonth": 0.35, "tier": "Proven favorite", "source": "Original Buy", "batch": "The Tallest Man On Earth - I Love You. It's a Fever Dream.", "rank": 46, "id": 46, "purchased": false}, {"artist": "The Tallest Man On Earth", "title": "My Dear", "album": "I Love You. It's a Fever Dream.", "genre": "Alternative", "playsPerMonth": 0.32, "tier": "Proven favorite", "source": "Original Buy", "batch": "The Tallest Man On Earth - I Love You. It's a Fever Dream.", "rank": 47, "id": 47, "purchased": false}, {"artist": "The Tallest Man On Earth", "title": "What I\u2019ve Been Kicking Around", "album": "I Love You. It's a Fever Dream.", "genre": "Alternative", "playsPerMonth": 0.31, "tier": "Proven favorite", "source": "Original Buy", "batch": "The Tallest Man On Earth - I Love You. It's a Fever Dream.", "rank": 48, "id": 48, "purchased": false}, {"artist": "A Day to Remember", "title": "Mr. Highway's Thinking About The End", "album": "Homesick", "genre": "Rock", "playsPerMonth": 0.44, "tier": "Proven favorite", "source": "Original Buy", "batch": "A Day to Remember - Homesick", "rank": 49, "id": 49, "purchased": false}, {"artist": "A Day to Remember", "title": "Another Song About The Weekend", "album": "Homesick", "genre": "Rock", "playsPerMonth": 0.38, "tier": "Proven favorite", "source": "Original Buy", "batch": "A Day to Remember - Homesick", "rank": 50, "id": 50, "purchased": false}, {"artist": "A Day to Remember", "title": "Homesick", "album": "Homesick", "genre": "Rock", "playsPerMonth": 0.36, "tier": "Proven favorite", "source": "Original Buy", "batch": "A Day to Remember - Homesick", "rank": 51, "id": 51, "purchased": false}, {"artist": "A Day to Remember", "title": "The Downfall Of Us All", "album": "Homesick", "genre": "Rock", "playsPerMonth": 0.34, "tier": "Proven favorite", "source": "Original Buy", "batch": "A Day to Remember - Homesick", "rank": 52, "id": 52, "purchased": false}, {"artist": "A Day to Remember", "title": "Have Faith In Me", "album": "Homesick", "genre": "Rock", "playsPerMonth": 0.32, "tier": "Proven favorite", "source": "Original Buy", "batch": "A Day to Remember - Homesick", "rank": 53, "id": 53, "purchased": false}, {"artist": "ROSAL\u00cdA", "title": "Focu 'Ranni", "album": "LUX (Complete Works)", "genre": "Rock y Alternativo", "playsPerMonth": 4.4, "tier": "Likely strong", "source": "Original Buy", "batch": "ROSAL\u00cdA - LUX (Complete Works)", "rank": 54, "id": 54, "purchased": false}, {"artist": "ROSAL\u00cdA", "title": "La Yugular", "album": "LUX (Complete Works)", "genre": "Rock y Alternativo", "playsPerMonth": 3.08, "tier": "Likely strong", "source": "Original Buy", "batch": "ROSAL\u00cdA - LUX (Complete Works)", "rank": 55, "id": 55, "purchased": false}, {"artist": "ROSAL\u00cdA", "title": "Sauvignon Blanc", "album": "LUX (Complete Works)", "genre": "Rock y Alternativo", "playsPerMonth": 1.71, "tier": "Likely strong", "source": "Original Buy", "batch": "ROSAL\u00cdA - LUX (Complete Works)", "rank": 56, "id": 56, "purchased": false}, {"artist": "ROSAL\u00cdA", "title": "Sexo, Violencia y Llantas", "album": "LUX (Complete Works)", "genre": "Rock y Alternativo", "playsPerMonth": 1.37, "tier": "Likely strong", "source": "Original Buy", "batch": "ROSAL\u00cdA - LUX (Complete Works)", "rank": 57, "id": 57, "purchased": false}, {"artist": "ROSAL\u00cdA", "title": "Reliquia", "album": "LUX (Complete Works)", "genre": "Rock y Alternativo", "playsPerMonth": 1.37, "tier": "Likely strong", "source": "Original Buy", "batch": "ROSAL\u00cdA - LUX (Complete Works)", "rank": 58, "id": 58, "purchased": false}, {"artist": "ROSAL\u00cdA", "title": "Mio Cristo Piange Diamanti", "album": "LUX (Complete Works)", "genre": "Rock y Alternativo", "playsPerMonth": 1.37, "tier": "Likely strong", "source": "Original Buy", "batch": "ROSAL\u00cdA - LUX (Complete Works)", "rank": 59, "id": 59, "purchased": false}, {"artist": "ROSAL\u00cdA", "title": "Divinize", "album": "LUX (Complete Works)", "genre": "Rock y Alternativo", "playsPerMonth": 1.03, "tier": "Likely strong", "source": "Original Buy", "batch": "ROSAL\u00cdA - LUX (Complete Works)", "rank": 60, "id": 60, "purchased": false}, {"artist": "ROSAL\u00cdA", "title": "Magnolias", "album": "LUX (Complete Works)", "genre": "Rock y Alternativo", "playsPerMonth": 1.03, "tier": "Likely strong", "source": "Original Buy", "batch": "ROSAL\u00cdA - LUX (Complete Works)", "rank": 61, "id": 61, "purchased": false}, {"artist": "The Mountain Goats", "title": "Hast Thou Considered the Tetrapod (2025 Remaster)", "album": "The Sunset Tree (2025 Remaster)", "genre": "Alternative", "playsPerMonth": 1.86, "tier": "Likely strong", "source": "Original Buy", "batch": "The Mountain Goats - The Sunset Tree (2025 Remaster)", "rank": 62, "id": 62, "purchased": false}, {"artist": "The Mountain Goats", "title": "Love Love Love (2025 Remaster)", "album": "The Sunset Tree (2025 Remaster)", "genre": "Alternative", "playsPerMonth": 1.86, "tier": "Likely strong", "source": "Original Buy", "batch": "The Mountain Goats - The Sunset Tree (2025 Remaster)", "rank": 63, "id": 63, "purchased": false}, {"artist": "The Mountain Goats", "title": "You Or Your Memory (2025 Remaster)", "album": "The Sunset Tree (2025 Remaster)", "genre": "Alternative", "playsPerMonth": 1.49, "tier": "Likely strong", "source": "Original Buy", "batch": "The Mountain Goats - The Sunset Tree (2025 Remaster)", "rank": 64, "id": 64, "purchased": false}, {"artist": "The Mountain Goats", "title": "This Year (2025 Remaster)", "album": "The Sunset Tree (2025 Remaster)", "genre": "Alternative", "playsPerMonth": 1.49, "tier": "Likely strong", "source": "Original Buy", "batch": "The Mountain Goats - The Sunset Tree (2025 Remaster)", "rank": 65, "id": 65, "purchased": false}, {"artist": "The Mountain Goats", "title": "Up the Wolves (2025 Remaster)", "album": "The Sunset Tree (2025 Remaster)", "genre": "Alternative", "playsPerMonth": 1.49, "tier": "Likely strong", "source": "Original Buy", "batch": "The Mountain Goats - The Sunset Tree (2025 Remaster)", "rank": 66, "id": 66, "purchased": false}, {"artist": "The Mountain Goats", "title": "Broom People (2025 Remaster)", "album": "The Sunset Tree (2025 Remaster)", "genre": "Alternative", "playsPerMonth": 1.11, "tier": "Likely strong", "source": "Original Buy", "batch": "The Mountain Goats - The Sunset Tree (2025 Remaster)", "rank": 67, "id": 67, "purchased": false}, {"artist": "The Mountain Goats", "title": "Dance Music (2025 Remaster)", "album": "The Sunset Tree (2025 Remaster)", "genre": "Alternative", "playsPerMonth": 1.11, "tier": "Likely strong", "source": "Original Buy", "batch": "The Mountain Goats - The Sunset Tree (2025 Remaster)", "rank": 68, "id": 68, "purchased": false}, {"artist": "The Mountain Goats", "title": "Dinu Lipatti's Bones (2025 Remaster)", "album": "The Sunset Tree (2025 Remaster)", "genre": "Alternative", "playsPerMonth": 1.11, "tier": "Likely strong", "source": "Original Buy", "batch": "The Mountain Goats - The Sunset Tree (2025 Remaster)", "rank": 69, "id": 69, "purchased": false}, {"artist": "The Mountain Goats", "title": "Song for Dennis Brown (2025 Remaster)", "album": "The Sunset Tree (2025 Remaster)", "genre": "Alternative", "playsPerMonth": 0.74, "tier": "Likely strong", "source": "Original Buy", "batch": "The Mountain Goats - The Sunset Tree (2025 Remaster)", "rank": 70, "id": 70, "purchased": false}, {"artist": "The Mountain Goats", "title": "Pale Green Things (2025 Remaster)", "album": "The Sunset Tree (2025 Remaster)", "genre": "Alternative", "playsPerMonth": 0.74, "tier": "Likely strong", "source": "Original Buy", "batch": "The Mountain Goats - The Sunset Tree (2025 Remaster)", "rank": 71, "id": 71, "purchased": false}, {"artist": "blink-182", "title": "Anthem, Pt. 2", "album": "Take off Your Pants and Jacket", "genre": "Pop", "playsPerMonth": 0.74, "tier": "Likely strong", "source": "Original Buy", "batch": "blink-182 - Take off Your Pants and Jacket", "rank": 72, "id": 72, "purchased": false}, {"artist": "blink-182", "title": "The Rock Show", "album": "Take off Your Pants and Jacket", "genre": "Pop", "playsPerMonth": 0.74, "tier": "Likely strong", "source": "Original Buy", "batch": "blink-182 - Take off Your Pants and Jacket", "rank": 73, "id": 73, "purchased": false}, {"artist": "blink-182", "title": "First Date", "album": "Take off Your Pants and Jacket", "genre": "Rock", "playsPerMonth": 0.59, "tier": "Likely strong", "source": "Original Buy", "batch": "blink-182 - Take off Your Pants and Jacket", "rank": 74, "id": 74, "purchased": false}, {"artist": "blink-182", "title": "Stay Together for the Kids", "album": "Take off Your Pants and Jacket", "genre": "Rock", "playsPerMonth": 0.37, "tier": "Likely strong", "source": "Original Buy", "batch": "blink-182 - Take off Your Pants and Jacket", "rank": 75, "id": 75, "purchased": false}, {"artist": "blink-182", "title": "Every Time I Look for You", "album": "Take off Your Pants and Jacket", "genre": "Rock", "playsPerMonth": 0.37, "tier": "Likely strong", "source": "Original Buy", "batch": "blink-182 - Take off Your Pants and Jacket", "rank": 76, "id": 76, "purchased": false}, {"artist": "yeule", "title": "Anthems For A Seventeen Year-Old Girl", "album": "I Saw the TV Glow (Original Soundtrack)", "genre": "Soundtrack", "playsPerMonth": 3.04, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 77, "id": 77, "purchased": false}, {"artist": "Petit Biscuit", "title": "Sunset Lover (Orchestral Version)", "album": "Sunset Lover (Orchestral Version) - Single", "genre": "Classical Crossover", "playsPerMonth": 2.64, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 78, "id": 78, "purchased": false}, {"artist": "Charli xcx, The 1975 & Jon Hopkins", "title": "I might say something stupid featuring the 1975 & jon hopkins", "album": "Brat and it\u2019s completely different but also still brat", "genre": "Electronic", "playsPerMonth": 2.13, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 79, "id": 79, "purchased": false}, {"artist": "TENTS", "title": "Defender", "album": "Defender - Single", "genre": "Indie Rock", "playsPerMonth": 2.12, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 80, "id": 80, "purchased": false}, {"artist": "Creed", "title": "One Last Breath", "album": "Weathered", "genre": "Hard Rock", "playsPerMonth": 2.11, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 81, "id": 81, "purchased": false}, {"artist": "Indigo De Souza", "title": "Younger & Dumber", "album": "All of This Will End", "genre": "Alternative", "playsPerMonth": 2.01, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 82, "id": 82, "purchased": false}, {"artist": "Wild Pink & Julien Baker", "title": "Hold My Hand", "album": "ILYSM", "genre": "Alternative", "playsPerMonth": 2.01, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 83, "id": 83, "purchased": false}, {"artist": "Daft Punk & Panda Bear", "title": "Doin' it Right", "album": "Random Access Memories", "genre": "Pop", "playsPerMonth": 1.98, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 84, "id": 84, "purchased": false}, {"artist": "Relient K", "title": "Who I Am Hates Who I've Been", "album": "Mmhmm", "genre": "Alternative", "playsPerMonth": 1.93, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 85, "id": 85, "purchased": false}, {"artist": "Lola Kirke, Peter Dreams, Brian Dunphy, Darren Holden & Jack O'Connell", "title": "Will Ye Go, Lassie Go?", "album": "Sinners (Original Motion Picture Soundtrack)", "genre": "Soundtrack", "playsPerMonth": 1.9, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 86, "id": 86, "purchased": false}, {"artist": "Charli xcx", "title": "party 4 u", "album": "how i'm feeling now", "genre": "Pop", "playsPerMonth": 1.8, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 87, "id": 87, "purchased": false}, {"artist": "Relient K", "title": "Be My Escape", "album": "Mmhmm", "genre": "Alternative", "playsPerMonth": 1.8, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 88, "id": 88, "purchased": false}, {"artist": "boygenius & Ye Vagabonds", "title": "The Parting Glass", "album": "The Parting Glass - Single", "genre": "Alternative", "playsPerMonth": 1.78, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 89, "id": 89, "purchased": false}, {"artist": "The Mighty Mighty Bosstones", "title": "Someday I Suppose", "album": "Don't Know How to Party", "genre": "Rock", "playsPerMonth": 1.75, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 90, "id": 90, "purchased": false}, {"artist": "Ye Vagabonds", "title": "Blue is the Eye", "album": "Nine Waves", "genre": "Folk", "playsPerMonth": 1.64, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 91, "id": 91, "purchased": false}, {"artist": "Gregory Alan Isakov", "title": "The Parting Glass", "album": "The Life Of Chuck (Official Soundtrack)", "genre": "Original Score", "playsPerMonth": 1.46, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 92, "id": 92, "purchased": false}, {"artist": "M\u00d8", "title": "Nights with You", "album": "Nights with You - Single", "genre": "Pop", "playsPerMonth": 1.42, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 93, "id": 93, "purchased": false}, {"artist": "Allie X", "title": "Hello", "album": "Collxtion I", "genre": "Pop", "playsPerMonth": 1.39, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 94, "id": 94, "purchased": false}, {"artist": "Guided By Voices", "title": "Teenage FBI", "album": "Do the Collapse", "genre": "Rock", "playsPerMonth": 1.36, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 95, "id": 95, "purchased": false}, {"artist": "Humbird", "title": "Song for the Seeds", "album": "Right On", "genre": "Alternative Folk", "playsPerMonth": 1.33, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 96, "id": 96, "purchased": false}, {"artist": "Eric Prydz", "title": "Call on Me (Radio Mix)", "album": "Call On Me (Remixes) - EP", "genre": "Dance", "playsPerMonth": 1.25, "tier": "Proven favorite", "source": "Kept Maybe", "batch": "Individual purchase", "rank": 97, "id": 97, "purchased": false}, {"artist": "When In Rome", "title": "The Promise", "album": "When in Rome", "genre": "Rock", "playsPerMonth": 1.24, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 98, "id": 98, "purchased": false}, {"artist": "The 1975", "title": "If You\u2019re Too Shy (Let Me Know)", "album": "Notes On A Conditional Form", "genre": "Alternative", "playsPerMonth": 1.22, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 99, "id": 99, "purchased": false}, {"artist": "Caamp", "title": "By and By", "album": "By and By", "genre": "Alternative Folk", "playsPerMonth": 1.2, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 100, "id": 100, "purchased": false}, {"artist": "Son Lux", "title": "Dream State", "album": "Brighter Wounds", "genre": "Alternative", "playsPerMonth": 1.17, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 101, "id": 101, "purchased": false}, {"artist": "The Naked and Famous", "title": "Young Blood", "album": "Passive Me, Aggressive You", "genre": "Alternative", "playsPerMonth": 1.17, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 102, "id": 102, "purchased": false}, {"artist": "Gracie Abrams", "title": "Close To You", "album": "The Secret of Us (Deluxe)", "genre": "Pop", "playsPerMonth": 1.13, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 103, "id": 103, "purchased": false}, {"artist": "Max Richter, Andre de Ridder, Konzerthaus Kammerorchester Berlin & Daniel Hope", "title": "Recomposed by Max Richter: Vivaldi, The Four Seasons: Spring 1", "album": "Recomposed by Max Richter: Vivaldi, The Four Seasons (Deluxe Version)", "genre": "Classical", "playsPerMonth": 1.12, "tier": "Proven favorite", "source": "Kept Maybe", "batch": "Individual purchase", "rank": 104, "id": 104, "purchased": false}, {"artist": "Flume", "title": "Tiny Cities (feat. Beck)", "album": "Skin", "genre": "Electronic", "playsPerMonth": 1.1, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 105, "id": 105, "purchased": false}, {"artist": "Ariana Grande", "title": "Thinking Bout You", "album": "Dangerous Woman", "genre": "Pop", "playsPerMonth": 1.08, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 106, "id": 106, "purchased": false}, {"artist": "Ariana Grande", "title": "we can't be friends (wait for your love)", "album": "eternal sunshine", "genre": "Pop", "playsPerMonth": 1.07, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 107, "id": 107, "purchased": false}, {"artist": "Ariana Grande", "title": "i wish i hated you", "album": "eternal sunshine", "genre": "Pop", "playsPerMonth": 1.06, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 108, "id": 108, "purchased": false}, {"artist": "Phoebe Bridgers", "title": "Motion Sickness", "album": "Stranger in the Alps (Deluxe Edition)", "genre": "Alternative", "playsPerMonth": 1.03, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 109, "id": 109, "purchased": false}, {"artist": "Rhye", "title": "Open", "album": "Woman", "genre": "Electronic", "playsPerMonth": 1.01, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 110, "id": 110, "purchased": false}, {"artist": "Young Thug", "title": "High (feat. Elton John)", "album": "On the Rvn - EP", "genre": "Hip-Hop/Rap", "playsPerMonth": 1.0, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 111, "id": 111, "purchased": false}, {"artist": "Matt and Kim", "title": "Daylight", "album": "Grand", "genre": "Alternative", "playsPerMonth": 0.94, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 112, "id": 112, "purchased": false}, {"artist": "Knocked Loose", "title": "Suffocate (feat. Poppy)", "album": "You Won't Go Before You're Supposed To", "genre": "Metal", "playsPerMonth": 0.92, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 113, "id": 113, "purchased": false}, {"artist": "Francis and the Lights", "title": "May I Have This Dance (Remix) [feat. Chance the Rapper]", "album": "May I Have This Dance (Remix) [feat. Chance the Rapper] - Single", "genre": "Pop", "playsPerMonth": 0.91, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 114, "id": 114, "purchased": false}, {"artist": "Ariana Grande", "title": "Dangerous Woman", "album": "Dangerous Woman", "genre": "Pop", "playsPerMonth": 0.9, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 115, "id": 115, "purchased": false}, {"artist": "Emily Warren", "title": "Paranoid", "album": "Paranoid - Single", "genre": "Pop", "playsPerMonth": 0.9, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 116, "id": 116, "purchased": false}, {"artist": "Vera Blue", "title": "Hold", "album": "Fingertips - EP", "genre": "Pop", "playsPerMonth": 0.89, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 117, "id": 117, "purchased": false}, {"artist": "Bon Iver", "title": "Holocene", "album": "Bon Iver", "genre": "Alternative", "playsPerMonth": 0.87, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 118, "id": 118, "purchased": false}, {"artist": "Good Charlotte", "title": "The Anthem", "album": "The Young and the Hopeless", "genre": "Alternative", "playsPerMonth": 0.85, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 119, "id": 119, "purchased": false}, {"artist": "Lit", "title": "My Own Worst Enemy", "album": "A Place In the Sun", "genre": "Rock", "playsPerMonth": 0.83, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 120, "id": 120, "purchased": false}, {"artist": "Motion City Soundtrack", "title": "This Is for Real", "album": "Even If It Kills Me", "genre": "Alternative", "playsPerMonth": 0.81, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 121, "id": 121, "purchased": false}, {"artist": "Matt and Kim", "title": "Not That Bad", "album": "Lightning", "genre": "Alternative", "playsPerMonth": 0.81, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 122, "id": 122, "purchased": false}, {"artist": "Trampled By Turtles", "title": "Alone", "album": "Stars and Satellites", "genre": "Alternative", "playsPerMonth": 0.81, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 123, "id": 123, "purchased": false}, {"artist": "Skizzy Mars", "title": "Crash (feat. Pell)", "album": "Alone Together", "genre": "Hip Hop/Rap", "playsPerMonth": 0.79, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 124, "id": 124, "purchased": false}, {"artist": "Annie Lennox", "title": "Walking On Broken Glass", "album": "Diva", "genre": "Rock", "playsPerMonth": 0.76, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 125, "id": 125, "purchased": false}, {"artist": "Blues Traveler", "title": "Hook", "album": "Four", "genre": "Rock", "playsPerMonth": 0.76, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 126, "id": 126, "purchased": false}, {"artist": "Imogen Heap", "title": "Hide and Seek", "album": "Speak for Yourself", "genre": "Alternative", "playsPerMonth": 0.76, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 127, "id": 127, "purchased": false}, {"artist": "Donna Lewis", "title": "I Love You Always Forever", "album": "Now In a Minute", "genre": "Pop", "playsPerMonth": 0.75, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 128, "id": 128, "purchased": false}, {"artist": "The Tallest Man On Earth", "title": "Major League", "album": "Henry St.", "genre": "Alternative", "playsPerMonth": 0.74, "tier": "Proven favorite", "source": "Kept Maybe", "batch": "Individual purchase", "rank": 129, "id": 129, "purchased": false}, {"artist": "Avenged Sevenfold", "title": "Beast and the Harlot", "album": "City of Evil", "genre": "Hard Rock", "playsPerMonth": 0.73, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 130, "id": 130, "purchased": false}, {"artist": "V\u00c9RIT\u00c9", "title": "Nothing", "album": "Somewhere in Between", "genre": "Pop", "playsPerMonth": 0.73, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 131, "id": 131, "purchased": false}, {"artist": "Jos\u00e9 Gonz\u00e1lez", "title": "Heartbeats", "album": "Veneer", "genre": "Singer/Songwriter", "playsPerMonth": 0.73, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 132, "id": 132, "purchased": false}, {"artist": "J\u00f3nsi", "title": "Go Do", "album": "Go", "genre": "Alternative", "playsPerMonth": 0.72, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 133, "id": 133, "purchased": false}, {"artist": "Good Charlotte", "title": "Lifestyles of the Rich & Famous", "album": "The Young and the Hopeless", "genre": "Alternative", "playsPerMonth": 0.72, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 134, "id": 134, "purchased": false}, {"artist": "Hellogoodbye", "title": "Here (In Your Arms)", "album": "Zombies! Aliens! Vampires! Dinosaurs! and More!", "genre": "Indie Rock", "playsPerMonth": 0.72, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 135, "id": 135, "purchased": false}, {"artist": "Ryn Weaver", "title": "OctaHate", "album": "The Fool", "genre": "Alternative", "playsPerMonth": 0.71, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 136, "id": 136, "purchased": false}, {"artist": "Unwritten Law", "title": "Seein' Red", "album": "Elva", "genre": "Rock", "playsPerMonth": 0.7, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 137, "id": 137, "purchased": false}, {"artist": "CHVRCHES", "title": "Clearest Blue", "album": "Every Open Eye", "genre": "Alternative", "playsPerMonth": 0.69, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 138, "id": 138, "purchased": false}, {"artist": "Radical Face", "title": "Welcome Home, Son", "album": "Ghost", "genre": "Folk", "playsPerMonth": 0.69, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 139, "id": 139, "purchased": false}, {"artist": "Phoebe Bridgers", "title": "Sidelines", "album": "Sidelines - Single", "genre": "Alternative", "playsPerMonth": 0.69, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 140, "id": 140, "purchased": false}, {"artist": "Sigur R\u00f3s", "title": "Hopp\u00edpolla", "album": "Takk", "genre": "Alternative", "playsPerMonth": 0.69, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 141, "id": 141, "purchased": false}, {"artist": "Green Day", "title": "Good Riddance (Time of Your Life)", "album": "The Green Day Collection", "genre": "Alternative", "playsPerMonth": 0.69, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 142, "id": 142, "purchased": false}, {"artist": "a-ha", "title": "Take On Me", "album": "Hunting High and Low (Deluxe Edition)", "genre": "Pop", "playsPerMonth": 0.68, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 143, "id": 143, "purchased": false}, {"artist": "The Postal Service", "title": "Such Great Heights", "album": "Give Up (Deluxe 10th Anniversary Edition)", "genre": "Electronic", "playsPerMonth": 0.67, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 144, "id": 144, "purchased": false}, {"artist": "Passion Pit", "title": "Sleepyhead", "album": "Manners (Bonus Track Version)", "genre": "Alternative", "playsPerMonth": 0.66, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 145, "id": 145, "purchased": false}, {"artist": "Sylvan Esso", "title": "Die Young", "album": "What Now", "genre": "Alternative", "playsPerMonth": 0.65, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 146, "id": 146, "purchased": false}, {"artist": "The All-American Rejects", "title": "Swing, Swing", "album": "The All-American Rejects", "genre": "Alternative", "playsPerMonth": 0.64, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 147, "id": 147, "purchased": false}, {"artist": "J\u00f3hann J\u00f3hannsson", "title": "Heptapod B", "album": "Arrival (Original Motion Picture Soundtrack)", "genre": "Soundtrack", "playsPerMonth": 0.63, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 148, "id": 148, "purchased": false}, {"artist": "Evanescence", "title": "Bring Me To Life", "album": "Fallen", "genre": "Hard Rock", "playsPerMonth": 0.63, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 149, "id": 149, "purchased": false}, {"artist": "The Four Seasons", "title": "December, 1963 (Oh, What a Night)", "album": "The Very Best of Frankie Valli and the Four Seasons", "genre": "Rock", "playsPerMonth": 0.63, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 150, "id": 150, "purchased": false}, {"artist": "Phil Collins", "title": "Take Me Home (2016 Remastered)", "album": "No Jacket Required (Remastered)", "genre": "Pop", "playsPerMonth": 0.62, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 151, "id": 151, "purchased": false}, {"artist": "Simple Plan", "title": "Perfect", "album": "No Pads, No Helmets...Just Balls (15th Anniversary Tour Edition)", "genre": "Rock", "playsPerMonth": 0.62, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 152, "id": 152, "purchased": false}, {"artist": "Ryan Hemsworth", "title": "Snow In Newark (feat. Dawn Golden)", "album": "Snow In Newark - Single", "genre": "Electronic", "playsPerMonth": 0.62, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 153, "id": 153, "purchased": false}, {"artist": "blink-182", "title": "Man Overboard", "album": "Greatest Hits", "genre": "Rock", "playsPerMonth": 0.61, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 154, "id": 154, "purchased": false}, {"artist": "LINKIN PARK", "title": "In the End", "album": "Hybrid Theory (Deluxe Edition)", "genre": "Alternative", "playsPerMonth": 0.6, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 155, "id": 155, "purchased": false}, {"artist": "Fine Young Cannibals", "title": "She Drives Me Crazy", "album": "The Raw & the Cooked", "genre": "Pop", "playsPerMonth": 0.6, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 156, "id": 156, "purchased": false}, {"artist": "The Tallest Man On Earth", "title": "Love is All", "album": "The Wild Hunt (Bonus Track Version)", "genre": "Alternative", "playsPerMonth": 0.59, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 157, "id": 157, "purchased": false}, {"artist": "Yaz", "title": "Only You", "album": "Upstairs at Eric's", "genre": "Pop", "playsPerMonth": 0.59, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 158, "id": 158, "purchased": false}, {"artist": "The All-American Rejects", "title": "Move Along", "album": "Move Along", "genre": "Alternative", "playsPerMonth": 0.58, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 159, "id": 159, "purchased": false}, {"artist": "Yellowcard", "title": "Only One", "album": "Ocean Avenue", "genre": "Rock", "playsPerMonth": 0.58, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 160, "id": 160, "purchased": false}, {"artist": "Sum 41", "title": "With Me", "album": "Underclass Hero", "genre": "Punk", "playsPerMonth": 0.58, "tier": "Proven favorite", "source": "Kept Maybe", "batch": "Individual purchase", "rank": 161, "id": 161, "purchased": false}, {"artist": "Sum 41", "title": "In Too Deep", "album": "All Killer No Filler", "genre": "Alternative", "playsPerMonth": 0.56, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 162, "id": 162, "purchased": false}, {"artist": "Roger Bart", "title": "Go the Distance", "album": "Hercules (Original Motion Picture Soundtrack)", "genre": "Pop", "playsPerMonth": 0.56, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 163, "id": 163, "purchased": false}, {"artist": "Saosin", "title": "You're Not Alone", "album": "Saosin", "genre": "Indie Rock", "playsPerMonth": 0.56, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 164, "id": 164, "purchased": false}, {"artist": "Jon Brion", "title": "Row", "album": "Eternal Sunshine of the Spotless Mind (Soundtrack from the Motion Picture)", "genre": "Soundtrack", "playsPerMonth": 0.55, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 165, "id": 165, "purchased": false}, {"artist": "Ye Vagabonds", "title": "The Munster Jig/Tell Her I Am", "album": "Nine Waves", "genre": "Folk", "playsPerMonth": 0.54, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 166, "id": 166, "purchased": false}, {"artist": "blink-182", "title": "What's My Age Again?", "album": "Greatest Hits", "genre": "Rock", "playsPerMonth": 0.53, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 167, "id": 167, "purchased": false}, {"artist": "Building 429", "title": "Glory Defined", "album": "Space In Between Us (Expanded Edition)", "genre": "CCM", "playsPerMonth": 0.53, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 168, "id": 168, "purchased": false}, {"artist": "Taylor Swift", "title": "evermore (feat. Bon Iver)", "album": "evermore", "genre": "Alternative", "playsPerMonth": 0.52, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 169, "id": 169, "purchased": false}, {"artist": "Alphaville", "title": "Forever Young", "album": "Forever Young", "genre": "Pop", "playsPerMonth": 0.51, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 170, "id": 170, "purchased": false}, {"artist": "Ben Folds", "title": "The Luckiest", "album": "About Time (Original Motion Picture Soundtrack)", "genre": "Soundtrack", "playsPerMonth": 0.51, "tier": "Proven favorite", "source": "Kept Maybe", "batch": "Individual purchase", "rank": 171, "id": 171, "purchased": false}, {"artist": "Sum 41", "title": "Fat Lip", "album": "All Killer, No Filler", "genre": "Rock", "playsPerMonth": 0.51, "tier": "Proven favorite", "source": "Kept Maybe", "batch": "Individual purchase", "rank": 172, "id": 172, "purchased": false}, {"artist": "Senses Fail", "title": "Buried a Lie", "album": "Let It Enfold You", "genre": "Hard Rock", "playsPerMonth": 0.5, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 173, "id": 173, "purchased": false}, {"artist": "The Cranberries", "title": "Dreams", "album": "Everybody Else Is Doing It, So Why Can't We?", "genre": "Rock", "playsPerMonth": 0.5, "tier": "Proven favorite", "source": "Kept Maybe", "batch": "Individual purchase", "rank": 174, "id": 174, "purchased": false}, {"artist": "John Butler", "title": "Ocean", "album": "Ocean - EP", "genre": "Alternative", "playsPerMonth": 0.48, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 175, "id": 175, "purchased": false}, {"artist": "Bryan Adams", "title": "Heaven", "album": "Reckless (30th Anniversary)", "genre": "Rock", "playsPerMonth": 0.47, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 176, "id": 176, "purchased": false}, {"artist": "The Goo Goo Dolls", "title": "Iris", "album": "Dizzy Up the Girl", "genre": "Pop", "playsPerMonth": 0.46, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 177, "id": 177, "purchased": false}, {"artist": "Fall Out Boy", "title": "Sugar, We're Goin Down", "album": "From Under the Cork Tree (Tour Edition)", "genre": "Rock", "playsPerMonth": 0.46, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 178, "id": 178, "purchased": false}, {"artist": "Styx", "title": "Come Sail Away", "album": "Gold", "genre": "Rock", "playsPerMonth": 0.45, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 179, "id": 179, "purchased": false}, {"artist": "Paramore", "title": "Hallelujah", "album": "Riot!", "genre": "Alternative", "playsPerMonth": 0.45, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 180, "id": 180, "purchased": false}, {"artist": "Sixpence None the Richer", "title": "There She Goes", "album": "Sixpence None the Richer", "genre": "Christian Rock", "playsPerMonth": 0.45, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 181, "id": 181, "purchased": false}, {"artist": "Richard Marx", "title": "Right Here Waiting", "album": "Repeat Offender", "genre": "Pop", "playsPerMonth": 0.44, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 182, "id": 182, "purchased": false}, {"artist": "Talking Heads", "title": "Once In a Lifetime", "album": "The Best of Talking Heads", "genre": "Alternative", "playsPerMonth": 0.44, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 183, "id": 183, "purchased": false}, {"artist": "Tevin Campbell & Rosie Gaines", "title": "I 2 I", "album": "A Goofy Movie (Original Soundtrack)", "genre": "Disney", "playsPerMonth": 0.43, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 184, "id": 184, "purchased": false}, {"artist": "Skrillex", "title": "Scary Monsters and Nice Sprites", "album": "Scary Monsters and Nice Sprites", "genre": "Dance", "playsPerMonth": 0.43, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 185, "id": 185, "purchased": false}, {"artist": "Bush", "title": "Glycerine", "album": "Sixteen Stone (Remastered)", "genre": "Rock", "playsPerMonth": 0.43, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 186, "id": 186, "purchased": false}, {"artist": "The Seedy Seeds", "title": "Verb Noun", "album": "Verb Noun", "genre": "Rock", "playsPerMonth": 0.43, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 187, "id": 187, "purchased": false}, {"artist": "The Cars", "title": "You Might Think", "album": "Heartbeat City", "genre": "Rock", "playsPerMonth": 0.42, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 188, "id": 188, "purchased": false}, {"artist": "Owl City", "title": "Fireflies", "album": "Ocean Eyes", "genre": "Electronic", "playsPerMonth": 0.41, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 189, "id": 189, "purchased": false}, {"artist": "Ludovico Einaudi", "title": "Nuvole Bianche", "album": "Una Mattina", "genre": "Classical", "playsPerMonth": 0.41, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 190, "id": 190, "purchased": false}, {"artist": "Senses Fail", "title": "Can't Be Saved", "album": "Still Searching", "genre": "Hard Rock", "playsPerMonth": 0.41, "tier": "Proven favorite", "source": "Kept Maybe", "batch": "Individual purchase", "rank": 191, "id": 191, "purchased": false}, {"artist": "Son Lux", "title": "Dream State (Dark Day) [feat. WILLS]", "album": "Labor", "genre": "Alternative", "playsPerMonth": 0.39, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 192, "id": 192, "purchased": false}, {"artist": "Roxette", "title": "The Look", "album": "Look Sharp! (Deluxe Version)", "genre": "Pop/Rock", "playsPerMonth": 0.39, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 193, "id": 193, "purchased": false}, {"artist": "The La's", "title": "There She Goes", "album": "The La's", "genre": "Rock", "playsPerMonth": 0.39, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 194, "id": 194, "purchased": false}, {"artist": "The Avett Brothers", "title": "I and Love and You", "album": "I and Love and You", "genre": "Rock", "playsPerMonth": 0.38, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 195, "id": 195, "purchased": false}, {"artist": "Korn", "title": "Coming Undone", "album": "See You On the Other Side", "genre": "Rock", "playsPerMonth": 0.38, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 196, "id": 196, "purchased": false}, {"artist": "The Devil Wears Prada", "title": "Assistant to the Regional Manager", "album": "With Roots Above and Branches Below", "genre": "Metal", "playsPerMonth": 0.38, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 197, "id": 197, "purchased": false}, {"artist": "Vanessa Carlton", "title": "A Thousand Miles", "album": "Be Not Nobody", "genre": "Singer/Songwriter", "playsPerMonth": 0.38, "tier": "Proven favorite", "source": "Kept Maybe", "batch": "Individual purchase", "rank": 198, "id": 198, "purchased": false}, {"artist": "Bryan Adams", "title": "Summer of '69", "album": "Reckless (30th Anniversary)", "genre": "Rock", "playsPerMonth": 0.37, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 199, "id": 199, "purchased": false}, {"artist": "Julien Baker", "title": "Something", "album": "Sprained Ankle", "genre": "Rock", "playsPerMonth": 0.37, "tier": "Proven favorite", "source": "Kept Maybe", "batch": "Individual purchase", "rank": 200, "id": 200, "purchased": false}, {"artist": "Kim Carnes", "title": "Bette Davis Eyes", "album": "Mistaken Identity", "genre": "Country", "playsPerMonth": 0.36, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 201, "id": 201, "purchased": false}, {"artist": "Mind Tree", "title": "Mother Nature", "album": "Our Identities Lie in Glow Sticks", "genre": "Electronic", "playsPerMonth": 0.36, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 202, "id": 202, "purchased": false}, {"artist": "My Chemical Romance", "title": "Welcome to the Black Parade", "album": "The Black Parade", "genre": "Alternative", "playsPerMonth": 0.36, "tier": "Proven favorite", "source": "Kept Maybe", "batch": "Individual purchase", "rank": 203, "id": 203, "purchased": false}, {"artist": "Papa Roach", "title": "Scars", "album": "Getting Away with Murder (Expanded Edition)", "genre": "Hard Rock", "playsPerMonth": 0.35, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 204, "id": 204, "purchased": false}, {"artist": "Son Lux", "title": "Dream State (Brighter Night)", "album": "Labor", "genre": "Alternative", "playsPerMonth": 0.34, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 205, "id": 205, "purchased": false}, {"artist": "Eve 6", "title": "Inside Out", "album": "Eve 6", "genre": "Rock", "playsPerMonth": 0.32, "tier": "Proven favorite", "source": "Kept Maybe", "batch": "Individual purchase", "rank": 206, "id": 206, "purchased": false}, {"artist": "Cyndi Lauper", "title": "Time After Time", "album": "She's So Unusual", "genre": "Pop", "playsPerMonth": 0.31, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 207, "id": 207, "purchased": false}, {"artist": "Wang Chung", "title": "Dance Hall Days", "album": "20th Century Masters - The Millennium Collection: The Best of Wang Chung", "genre": "Rock", "playsPerMonth": 0.3, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 208, "id": 208, "purchased": false}, {"artist": "SafetySuit", "title": "Someone Like You", "album": "Life Left to Go", "genre": "Rock", "playsPerMonth": 0.29, "tier": "Proven favorite", "source": "Kept Maybe", "batch": "Individual purchase", "rank": 209, "id": 209, "purchased": false}, {"artist": "Arooj Aftab", "title": "Mohabbat", "album": "Vulture Prince", "genre": "Worldwide", "playsPerMonth": 0.29, "tier": "Proven favorite", "source": "Kept Maybe", "batch": "Individual purchase", "rank": 210, "id": 210, "purchased": false}, {"artist": "Pat Benatar", "title": "We Belong", "album": "Tropico", "genre": "Rock", "playsPerMonth": 0.28, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 211, "id": 211, "purchased": false}, {"artist": "Dashboard Confessional", "title": "Hands Down", "album": "A Mark, A Mission, A Brand, A Scar", "genre": "Alternative", "playsPerMonth": 0.28, "tier": "Proven favorite", "source": "Kept Maybe", "batch": "Individual purchase", "rank": 212, "id": 212, "purchased": false}, {"artist": "Duran Duran", "title": "Ordinary World", "album": "Duran Duran (The Wedding Album)", "genre": "Pop", "playsPerMonth": 0.25, "tier": "Proven favorite", "source": "Original Buy", "batch": "Individual purchase", "rank": 213, "id": 213, "purchased": false}, {"artist": "Savage Garden", "title": "I Want You", "album": "Savage Garden", "genre": "Pop", "playsPerMonth": 1.74, "tier": "Likely strong", "source": "Original Buy", "batch": "Individual purchase", "rank": 214, "id": 214, "purchased": false}, {"artist": "ROSAL\u00cdA, Bj\u00f6rk & Yves Tumor", "title": "Berghain", "album": "LUX (Complete Works)", "genre": "Rock y Alternativo", "playsPerMonth": 1.71, "tier": "Likely strong", "source": "Original Buy", "batch": "Individual purchase", "rank": 215, "id": 215, "purchased": false}, {"artist": "ATLiens", "title": "One Last Breath (Remix)", "album": "One Last Breath (Remix) - Single", "genre": "Electronic", "playsPerMonth": 1.58, "tier": "Likely strong", "source": "Original Buy", "batch": "Individual purchase", "rank": 216, "id": 216, "purchased": false}, {"artist": "Bryce Dessner", "title": "The Great Mystery", "album": "Train Dreams (Soundtrack from the Netflix Film)", "genre": "Soundtrack", "playsPerMonth": 1.27, "tier": "Likely strong", "source": "Kept Maybe", "batch": "Individual purchase", "rank": 217, "id": 217, "purchased": false}, {"artist": "Penguin Cafe Orchestra", "title": "Perpetuum Mobile", "album": "Preludes, Airs and Yodels (A Penguin Cafe Primer)", "genre": "Rock", "playsPerMonth": 1.25, "tier": "Likely strong", "source": "Original Buy", "batch": "Individual purchase", "rank": 218, "id": 218, "purchased": false}, {"artist": "Skullcrusher", "title": "March", "album": "March - Single", "genre": "Alternative", "playsPerMonth": 1.12, "tier": "Likely strong", "source": "Original Buy", "batch": "Individual purchase", "rank": 219, "id": 219, "purchased": false}, {"artist": "Nick Cave", "title": "Train Dreams", "album": "Train Dreams (Soundtrack from the Netflix Film)", "genre": "Soundtrack", "playsPerMonth": 1.06, "tier": "Likely strong", "source": "Original Buy", "batch": "Individual purchase", "rank": 220, "id": 220, "purchased": false}, {"artist": "ROSAL\u00cdA & Yahritza Y Su Esencia", "title": "La Perla", "album": "LUX (Complete Works)", "genre": "Rock y Alternativo", "playsPerMonth": 1.03, "tier": "Likely strong", "source": "Original Buy", "batch": "Individual purchase", "rank": 221, "id": 221, "purchased": false}, {"artist": "Laufey", "title": "Madwoman", "album": "A Matter of Time: The Final Hour", "genre": "Pop", "playsPerMonth": 1.01, "tier": "Likely strong", "source": "Original Buy", "batch": "Individual purchase", "rank": 222, "id": 222, "purchased": false}, {"artist": "Anberlin", "title": "Feel Good Drag", "album": "New Surrender", "genre": "Alternative", "playsPerMonth": 0.67, "tier": "Likely strong", "source": "Original Buy", "batch": "Individual purchase", "rank": 223, "id": 223, "purchased": false}, {"artist": "Owl City", "title": "Vanilla Twilight", "album": "Ocean Eyes (Deluxe Version)", "genre": "Electronic", "playsPerMonth": 0.62, "tier": "Likely strong", "source": "Original Buy", "batch": "Individual purchase", "rank": 224, "id": 224, "purchased": false}, {"artist": "Muse", "title": "Starlight", "album": "Black Holes and Revelations", "genre": "Alternative", "playsPerMonth": 0.59, "tier": "Likely strong", "source": "Original Buy", "batch": "Individual purchase", "rank": 225, "id": 225, "purchased": false}, {"artist": "The Mighty Mighty Bosstones", "title": "The Impression That I Get", "album": "Let\u2019s Face It", "genre": "Rock", "playsPerMonth": 0.46, "tier": "Likely strong", "source": "Original Buy", "batch": "Individual purchase", "rank": 226, "id": 226, "purchased": false}, {"artist": "August Burns Red", "title": "Mariana's Trench", "album": "Constellations", "genre": "Metal", "playsPerMonth": 0.43, "tier": "Likely strong", "source": "Original Buy", "batch": "Individual purchase", "rank": 227, "id": 227, "purchased": false}, {"artist": "Owl City", "title": "Fuzzy Blue Lights", "album": "Of June", "genre": "Electronic", "playsPerMonth": 0.37, "tier": "Likely strong", "source": "Original Buy", "batch": "Individual purchase", "rank": 228, "id": 228, "purchased": false}, {"artist": "Passion Pit", "title": "Little Secrets", "album": "Manners", "genre": "Alternative", "playsPerMonth": 0.35, "tier": "Likely strong", "source": "Original Buy", "batch": "Individual purchase", "rank": 229, "id": 229, "purchased": false}, {"artist": "Five for Fighting", "title": "100 Years", "album": "The Battle for Everything", "genre": "Rock", "playsPerMonth": 0.35, "tier": "Likely strong", "source": "Original Buy", "batch": "Individual purchase", "rank": 230, "id": 230, "purchased": false}, {"artist": "Pet Shop Boys", "title": "Always On My Mind (2003 Remaster)", "album": "PopArt: The Hits (Deluxe Edition) [Remastered]", "genre": "Pop", "playsPerMonth": 0.34, "tier": "Likely strong", "source": "Original Buy", "batch": "Individual purchase", "rank": 231, "id": 231, "purchased": false}, {"artist": "Simple Minds", "title": "Alive and Kicking", "album": "Once Upon a Time", "genre": "Rock", "playsPerMonth": 0.31, "tier": "Likely strong", "source": "Kept Maybe", "batch": "Individual purchase", "rank": 232, "id": 232, "purchased": false}, {"artist": "Switchfoot", "title": "Dare You to Move", "album": "The Beautiful Letdown (Deluxe Version)", "genre": "Pop", "playsPerMonth": 0.29, "tier": "Likely strong", "source": "Original Buy", "batch": "Individual purchase", "rank": 233, "id": 233, "purchased": false}, {"artist": "Bryan Adams", "title": "(Everything I Do) I Do It for You", "album": "Waking Up the Neighbours", "genre": "Rock", "playsPerMonth": 0.29, "tier": "Likely strong", "source": "Original Buy", "batch": "Individual purchase", "rank": 234, "id": 234, "purchased": false}, {"artist": "Switchfoot", "title": "Meant to Live", "album": "The Beautiful Letdown (Deluxe Version)", "genre": "Pop", "playsPerMonth": 0.26, "tier": "Likely strong", "source": "Original Buy", "batch": "Individual purchase", "rank": 235, "id": 235, "purchased": false}, {"artist": "Green Day", "title": "Boulevard of Broken Dreams", "album": "American Idiot", "genre": "Alternative", "playsPerMonth": 0.24, "tier": "Likely strong", "source": "Kept Maybe", "batch": "Individual purchase", "rank": 236, "id": 236, "purchased": false}, {"artist": "Red Hot Chili Peppers", "title": "Snow (Hey Oh)", "album": "Snow (Hey Oh) - EP", "genre": "Alternative", "playsPerMonth": 0.24, "tier": "Likely strong", "source": "Kept Maybe", "batch": "Individual purchase", "rank": 237, "id": 237, "purchased": false}, {"artist": "The Offspring", "title": "You're Gonna Go Far, Kid", "album": "Rise and Fall, Rage and Grace", "genre": "Rock", "playsPerMonth": 0.23, "tier": "Likely strong", "source": "Kept Maybe", "batch": "Individual purchase", "rank": 238, "id": 238, "purchased": false}, {"artist": "The Who", "title": "Baba O'Riley", "album": "Who's Next (Bonus Track Version)", "genre": "Hard Rock", "playsPerMonth": 0.2, "tier": "Likely strong", "source": "Original Buy", "batch": "Individual purchase", "rank": 239, "id": 239, "purchased": false}, {"artist": "boygenius", "title": "Me & My Dog", "album": "Boygenius - EP", "genre": "Alternative", "playsPerMonth": 0.2, "tier": "Likely strong", "source": "Kept Maybe", "batch": "Individual purchase", "rank": 240, "id": 240, "purchased": false}, {"artist": "Max Richter, Louisa Fuller, Natalia Bonner, John Metcalfe, Philip Sheppard & Chris Worsey", "title": "On The Nature Of Daylight", "album": "The Blue Notebooks (15 Years)", "genre": "Classical", "playsPerMonth": 0.19, "tier": "Likely strong", "source": "Original Buy", "batch": "Individual purchase", "rank": 241, "id": 241, "purchased": false}, {"artist": "Sarah Brightman", "title": "Deliver Me", "album": "Eden", "genre": "Vocal", "playsPerMonth": 0.18, "tier": "Likely strong", "source": "Original Buy", "batch": "Individual purchase", "rank": 242, "id": 242, "purchased": false}, {"artist": "The Temper Trap", "title": "Sweet Disposition", "album": "Conditions", "genre": "Rock", "playsPerMonth": 0.16, "tier": "Likely strong", "source": "Original Buy", "batch": "Individual purchase", "rank": 243, "id": 243, "purchased": false}, {"artist": "The Tallest Man On Earth", "title": "Sagres", "album": "Dark Bird Is Home", "genre": "Alternative", "playsPerMonth": 0.16, "tier": "Likely strong", "source": "Kept Maybe", "batch": "Individual purchase", "rank": 244, "id": 244, "purchased": false}, {"artist": "Madonna", "title": "Like a Prayer", "album": "Like a Prayer", "genre": "Pop", "playsPerMonth": 0.1, "tier": "Likely strong", "source": "Original Buy", "batch": "Individual purchase", "rank": 245, "id": 245, "purchased": false}, {"artist": "Falco", "title": "Rock Me Amadeus", "album": "Falco III", "genre": "Pop", "playsPerMonth": 21.74, "tier": "Too new to trust", "source": "Original Buy", "batch": "Individual purchase", "rank": 246, "id": 246, "purchased": false}, {"artist": "Phoebe Bridgers", "title": "Lost Boys", "album": "Lost Weekend", "genre": "Pop", "playsPerMonth": 9.13, "tier": "Too new to trust", "source": "Original Buy", "batch": "Individual purchase", "rank": 247, "id": 247, "purchased": false}, {"artist": "Neko Case", "title": "Wreck", "album": "Neon Grey Midnight Green", "genre": "Alternative", "playsPerMonth": 4.27, "tier": "Too new to trust", "source": "Kept Maybe", "batch": "Individual purchase", "rank": 248, "id": 248, "purchased": false}, {"artist": "Gracie Abrams", "title": "Hit the Wall", "album": "Daughter from Hell", "genre": "Pop", "playsPerMonth": 3.55, "tier": "Too new to trust", "source": "Kept Maybe", "batch": "Individual purchase", "rank": 249, "id": 249, "purchased": false}, {"artist": "Orchestral Manoeuvres In the Dark", "title": "If You Leave", "album": "The Best Of Orchestral Manoeuvres In The Dark", "genre": "Electronic", "playsPerMonth": 4.35, "tier": "Low data", "source": "Original Buy", "batch": "Individual purchase", "rank": 250, "id": 250, "purchased": false}, {"artist": "Young Wonder", "title": "To You", "album": "To You - Single", "genre": "Electronic", "playsPerMonth": 0.98, "tier": "Low data", "source": "Original Buy", "batch": "Individual purchase", "rank": 251, "id": 251, "purchased": false}, {"artist": "Elevation Worship", "title": "Praise (feat. Brandon Lake, Chris Brown & Chandler Moore)", "album": "CAN YOU IMAGINE?", "genre": "Christian", "playsPerMonth": 0.28, "tier": "Low data", "source": "Original Buy", "batch": "Individual purchase", "rank": 252, "id": 252, "purchased": false}, {"artist": "Elton John", "title": "Rocket Man (I Think It's Going to Be a Long Long Time)", "album": "Honky Ch\u00e2teau (Bonus Track Version)", "genre": "Pop", "playsPerMonth": 0.2, "tier": "Low data", "source": "Original Buy", "batch": "Individual purchase", "rank": 253, "id": 253, "purchased": false}, {"artist": "Guns N' Roses", "title": "Paradise City", "album": "Appetite For Destruction (Super Deluxe)", "genre": "Rock", "playsPerMonth": 0.06, "tier": "Low data", "source": "Original Buy", "batch": "Individual purchase", "rank": 254, "id": 254, "purchased": false}, {"artist": "Radical Face", "title": "Welcome Home, Son (Remastered)", "album": "Ghost (Anniversary Edition)", "genre": "Folk", "playsPerMonth": 0, "tier": "Never played", "source": "Original Buy", "batch": "Individual purchase", "rank": 255, "id": 255, "purchased": false}, {"artist": "Creed", "title": "With Arms Wide Open (Remastered 2024)", "album": "Human Clay (Deluxe Edition)", "genre": "Rock", "playsPerMonth": 0, "tier": "Never played", "source": "Original Buy", "batch": "Individual purchase", "rank": 256, "id": 256, "purchased": false}, {"artist": "Creed", "title": "Higher (Remastered 2024)", "album": "Human Clay (Deluxe Edition)", "genre": "Rock", "playsPerMonth": 0, "tier": "Never played", "source": "Original Buy", "batch": "Individual purchase", "rank": 257, "id": 257, "purchased": false}, {"artist": "Milky Chance", "title": "Stolen Dance", "album": "Sadnecessary (Bonus Track Version)", "genre": "Alternative", "playsPerMonth": 0, "tier": "Never played", "source": "Kept Maybe", "batch": "Individual purchase", "rank": 258, "id": 258, "purchased": false}, {"artist": "Sigur R\u00f3s", "title": "S\u00e6gl\u00f3pur", "album": "Takk...", "genre": "Alternative", "playsPerMonth": 0, "tier": "Never played", "source": "Kept Maybe", "batch": "Individual purchase", "rank": 259, "id": 259, "purchased": false}];
+const PRICE_PER_SONG = 1.25;
+const SONGS = SONGS_RAW.map(s => ({...s, removed: false}));
+
+let sortKey = 'rank';
+let sortDir = 1;
+
+function tierClass(tier){
+  if(tier.startsWith('Proven')) return 'tier-Proven';
+  if(tier.startsWith('Likely')) return 'tier-Likely';
+  if(tier.startsWith('Too new')) return 'tier-Toonew';
+  if(tier.startsWith('Low')) return 'tier-Low';
+  if(tier.startsWith('Never')) return 'tier-Never';
+  return 'tier-Unknown';
+}
+
+function bandcampUrl(artist){
+  return 'https://bandcamp.com/search?q=' + encodeURIComponent(artist);
+}
+
+function appleMusicUrl(artist, title){
+  return 'https://music.apple.com/us/search?term=' + encodeURIComponent(artist + ' ' + title);
+}
+
+function render(){
+  const q = document.getElementById('searchBox').value.toLowerCase();
+  const tierF = document.getElementById('tierFilter').value;
+  const statusF = document.getElementById('statusFilter').value;
+
+  let rows = SONGS.filter(s => {
+    if(s.removed) return false;
+    if(q && !(s.artist.toLowerCase().includes(q) || s.title.toLowerCase().includes(q) || s.album.toLowerCase().includes(q))) return false;
+    if(tierF && s.tier !== tierF) return false;
+    if(statusF === 'pending' && s.purchased) return false;
+    if(statusF === 'purchased' && !s.purchased) return false;
+    return true;
+  });
+
+  rows.sort((a,b) => {
+    let av = a[sortKey], bv = b[sortKey];
+    if(typeof av === 'string'){ av = av.toLowerCase(); bv = bv.toLowerCase(); }
+    if(av < bv) return -1 * sortDir;
+    if(av > bv) return 1 * sortDir;
+    return 0;
+  });
+
+  const tbody = document.getElementById('tbody');
+  tbody.innerHTML = rows.map(s => `
+    <tr class="${s.purchased ? 'purchased' : ''}" data-id="${s.id}">
+      <td><input type="checkbox" class="check" ${s.purchased ? 'checked' : ''} onchange="toggle(${s.id})"></td>
+      <td>${s.artist}</td>
+      <td class="title">${s.title}</td>
+      <td class="album">${s.album}</td>
+      <td class="plays">${s.playsPerMonth.toFixed(2)}</td>
+      <td><a class="bc-link" href="${bandcampUrl(s.artist)}" target="_blank" rel="noopener">search →</a></td>
+      <td><a class="bc-link" href="${appleMusicUrl(s.artist, s.title)}" target="_blank" rel="noopener">search →</a></td>
+      <td><button class="remove-btn" onclick="removeSong(${s.id})" title="Remove from list">✕</button></td>
+    </tr>
+  `).join('');
+
+  updateProgress();
+}
+
+function toggle(id){
+  const s = SONGS.find(x => x.id === id);
+  s.purchased = !s.purchased;
+  render();
+}
+
+function removeSong(id){
+  const s = SONGS.find(x => x.id === id);
+  if(!s) return;
+  if(!confirm('Remove "' + s.title + '" by ' + s.artist + ' from the list? This won\'t delete anything from your actual library — it just takes it off this tracker.')) return;
+  s.removed = true;
+  render();
+}
+
+function updateProgress(){
+  const active = SONGS.filter(s => !s.removed);
+  const total = active.length;
+  const bought = active.filter(s => s.purchased).length;
+  const pct = Math.round((bought/total)*100);
+  const remaining = total - bought;
+  const cost = (remaining * PRICE_PER_SONG).toFixed(2);
+
+  document.getElementById('pctText').textContent = pct + '%';
+  document.getElementById('countText').textContent = bought + ' / ' + total;
+  document.getElementById('metaBought').textContent = bought;
+  document.getElementById('metaRemaining').textContent = remaining;
+  document.getElementById('metaCost').textContent = '$' + cost;
+
+  const circumference = 289;
+  const offset = circumference - (pct/100)*circumference;
+  document.getElementById('progressRing').style.strokeDashoffset = offset;
+}
+
+document.querySelectorAll('thead th[data-key]').forEach(th => {
+  th.addEventListener('click', () => {
+    const key = th.getAttribute('data-key');
+    if(sortKey === key){ sortDir *= -1; } else { sortKey = key; sortDir = 1; }
+    document.querySelectorAll('thead th').forEach(h => h.classList.remove('sorted'));
+    th.classList.add('sorted');
+    th.querySelector('.arrow').textContent = sortDir === 1 ? '↑' : '↓';
+    render();
+  });
+});
+
+document.getElementById('searchBox').addEventListener('input', render);
+document.getElementById('tierFilter').addEventListener('change', render);
+document.getElementById('statusFilter').addEventListener('change', render);
+
+document.getElementById('exportBtn').addEventListener('click', () => {
+  const progressData = SONGS.map(s => ({id: s.id, purchased: s.purchased, removed: s.removed}));
+  const blob = new Blob([JSON.stringify(progressData, null, 2)], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const date = new Date().toISOString().split('T')[0];
+  a.href = url;
+  a.download = 'buy-list-progress-' + date + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
+document.getElementById('importBtn').addEventListener('click', () => {
+  document.getElementById('fileInput').click();
+});
+
+document.getElementById('fileInput').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = (evt) => {
+    try{
+      const progressData = JSON.parse(evt.target.result);
+      progressData.forEach(p => {
+        const s = SONGS.find(x => x.id === p.id);
+        if(s){ s.purchased = p.purchased; s.removed = !!p.removed; }
+      });
+      render();
+    } catch(err){
+      alert('Could not read that file — make sure it is a progress file saved from this page.');
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+});
+
+render();
+</script>
+</body>
+</html>
