@@ -304,7 +304,6 @@
           <th data-key="album">Album<span class="arrow"></span></th>
           <th data-key="playsPerMonth" style="text-align:right;">Plays/mo<span class="arrow"></span></th>
           <th>Bandcamp</th>
-          <th>Apple Music</th>
           <th style="width:70px;">Remove</th>
         </tr>
       </thead>
@@ -381,7 +380,6 @@ function render(){
       <td class="album">${s.album}</td>
       <td class="plays">${s.playsPerMonth.toFixed(2)}</td>
       <td><a class="bc-link" href="${bandcampUrl(s.artist)}" target="_blank" rel="noopener">search →</a></td>
-      <td><a class="bc-link" href="${appleMusicUrl(s.artist, s.title)}" target="_blank" rel="noopener">search →</a></td>
       <td><button class="remove-btn" onclick="removeSong(${s.id})" title="Remove from list">✕</button></td>
     </tr>
   `).join('');
