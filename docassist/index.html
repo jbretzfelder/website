@@ -69,8 +69,10 @@ body {
   flex-shrink: 0;
 }
 .brand-mark svg { width: 16px; height: 16px; stroke: var(--accent-light); fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
-.app-title { font-size: 16px; font-weight: 700; color: #ffffff; letter-spacing: 0.01em; }
-.app-title-accent { color: #7ec8a0; }
+.app-title { font-size: 16px; font-weight: 700; color: #ffffff; letter-spacing: 0.01em; transition: color .15s, text-shadow .15s; }
+.header-left:hover .app-title { color: #cdeedd; text-shadow: 0 0 10px rgba(126,200,160,0.7); }
+.app-title-accent { color: #7ec8a0; transition: color .15s; }
+.header-left:hover .app-title-accent { color: #a3e6c0; }
 .reset-btn {
   background: none;
   border: 1px solid #2a4a35;
