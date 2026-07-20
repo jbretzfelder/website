@@ -9847,7 +9847,7 @@ function dsCopyBlock(id) {
     flashResult(fallbackCopy());
   }
 
-  gcTrack(id.startsWith('de-') ? 'generate-discharge-email' : 'generate-discharge-summary');
+  gcTrack(id.startsWith('de-') ? 'copy-discharge-email' : 'copy-discharge-summary');
 }
 
 // Count weekdays and weekend days in a date range [startStr, endStr)
@@ -12736,7 +12736,7 @@ const TUT_TOOL_STEPS = [
 
 const TUT_OUTRO_STEPS = [
   { view:'home', sel:null, section:null, navigate:'home',
-    action: function() { tutConfetti(); },
+    action: function() { gcTrack('tutorial-complete'); tutConfetti(); },
     title:'You\'re all set',
     body:'That is DocAssist. Come back to this walkthrough anytime from the home screen, or use the Walkthrough button inside any individual tool for a focused review of just that one. If you have questions about a specific situation or anything in the tool, reach out to your supervisor. This was built to give you more time with your clients.',
     last: true },
@@ -12784,11 +12784,16 @@ function startTutorial() {
   tutToolView = 'home';
   tutSteps = TUT_INTRO_STEPS;
   tutStep = 0;
+  gcTrack('tutorial-start');
   tutPreload(function() {
     navigateTo('home');
     document.getElementById('tut-overlay').style.display = 'block';
     setTimeout(function() { tutShowStep(0); }, 150);
   });
+}
+
+function tutSlug(sectionName) {
+  return sectionName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 }
 
 function startToolTutorial(sectionName, returnToPicker) {
@@ -12797,6 +12802,7 @@ function startToolTutorial(sectionName, returnToPicker) {
   tutSteps = TUT_TOOL_STEPS.filter(function(s) { return s.section === sectionName; });
   tutStep = 0;
   tutToolView = tutSteps.length ? tutSteps[0].view : 'home';
+  gcTrack('tutorial-tool-' + tutSlug(sectionName));
   tutPreload(function() {
     navigateTo(tutToolView);
     document.getElementById('tut-overlay').style.display = 'block';
@@ -13048,7 +13054,7 @@ function tutConfetti() {
     <p id="tut-body" style="margin:0 0 16px"></p>
     <div class="tut-btn-row">
       <button id="tut-exit-btn" onclick="tutExit()">Exit tutorial</button>
-      <button id="tut-skip-btn" onclick="tutShowPicker()" style="display:none">Skip to tool list →</button>
+      <button id="tut-skip-btn" onclick="gcTrack('tutorial-skip-intro');tutShowPicker()" style="display:none">Skip to tool list →</button>
       <button id="tut-back-btn" onclick="tutBack()">← Back</button>
       <button id="tut-next-btn" onclick="tutNext()">Next →</button>
     </div>
