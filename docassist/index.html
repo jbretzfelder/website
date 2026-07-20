@@ -71,7 +71,6 @@ body {
 .brand-mark svg { width: 16px; height: 16px; stroke: var(--accent-light); fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
 .app-title { font-size: 16px; font-weight: 700; color: #ffffff; letter-spacing: 0.01em; }
 .app-title-accent { color: #7ec8a0; }
-.app-subtitle { font-size: 11px; color: #5a826a; }
 .reset-btn {
   background: none;
   border: 1px solid #2a4a35;
@@ -551,7 +550,6 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     max-width: 640px;
   }
   .home-greeting { margin-bottom: 40px; }
-  .home-greeting-title { font-size: 22px; }
   #tut-tooltip {
     position: fixed !important;
     bottom: 16px !important;
@@ -572,8 +570,6 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   }
   .home-screen { padding: 28px 20px; }
   .home-greeting { margin-bottom: 28px; }
-  .home-greeting-title { font-size: 20px; }
-  .home-greeting-sub { font-size: 13px; }
   .home-card { padding: 16px 16px 16px 14px; }
 }
 @media (max-width: 680px) {
@@ -585,7 +581,6 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   .home-quick-access { max-width: 100%; flex-wrap: wrap; padding: 14px 16px; }
   .home-screen { padding: 18px 14px; }
   .home-greeting { margin-bottom: 18px; }
-  .home-greeting-title { font-size: 18px; }
 }
 
 /* ─── TOOL NAV ────────────────────────────── */
@@ -1968,7 +1963,12 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 .req-star {
   color: #c0392b;
   margin-left: 3px;
-  font-size: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  vertical-align: middle;
+  line-height: 1;
+  position: relative;
+  top: -1px;
 }
 .field-error .form-select,
 .field-error .form-textarea,
@@ -2118,6 +2118,17 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   margin: 0 0 8px;
   line-height: 1.3;
 }
+.tut-icon-mark {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  background: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.tut-icon-mark svg { width: 12px; height: 12px; stroke: var(--accent-light); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 #tut-body {
   font-size: 13px;
   line-height: 1.65;
@@ -2141,6 +2152,19 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   transition: color .15s;
 }
 #tut-exit-btn:hover { color: #6b7870; }
+#tut-skip-btn {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px 2px;
+  text-decoration: underline;
+  transition: color .15s;
+}
+#tut-skip-btn:hover { color: #1e4d38; }
 #tut-back-btn, #tut-next-btn {
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: 12px;
@@ -2174,8 +2198,6 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <div class="brand-mark"><svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><polyline points="9 14 11 16 15 12"/></svg></div>
     <div style="display:flex;align-items:baseline;gap:12px;">
       <div class="app-title">Doc<span class="app-title-accent">Assist</span></div>
-      <div onclick="openChangelogModal()" style="font-size:9px;font-weight:600;padding:1px 6px;border-radius:8px;background:#1a3d22;color:#7ec8a0;border:1px solid #2d6a4f;letter-spacing:.07em;display:inline-block;margin:1px 0 2px;cursor:pointer;" onmouseover="this.style.background='#2d6a4f'" onmouseout="this.style.background='#1a3d22'">v1.8</div>
-      <div class="app-subtitle">Woodhaven Documentation Tool</div>
     </div>
   </div>
   <div style="display:flex;align-items:center;gap:14px">
@@ -2191,7 +2213,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       <button class="sn-timer-btn sn-timer-btn-stop" id="snTimerStopBtn" onclick="snTimerStop()" disabled style="opacity:0.4;height:26px;width:26px;padding:0;font-size:16px;text-align:center;line-height:1;padding-bottom:4px">■</button>
       <button class="sn-timer-btn sn-timer-btn-reset" onclick="snTimerReset()" style="height:26px;width:26px;padding:0;font-size:10px;text-align:center">↺</button>
     </div>
-    <div style="width:1px;height:20px;background:#1e3352"></div>
+    <div style="width:1px;height:20px;background:#2a4a35"></div>
     <button class="feedback-btn" onclick="openFeedbackModal()">💬 Give Feedback</button>
     <button class="reset-btn" onclick="confirmReset()">↺ Reset</button>
     <div class="header-badge" id="clinicalBadge" onclick="demoClick()" style="cursor:default;user-select:none">Staff Use Only</div>
@@ -2268,6 +2290,30 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <div style="display:flex;gap:10px;justify-content:flex-end">
       <button class="btn btn-ghost" onclick="document.getElementById('tutorialConfirmModal').style.display='none'">Cancel</button>
       <button class="btn" style="background:var(--accent);color:white" onclick="tutorialConfirmProceed()">Start Walkthrough</button>
+    </div>
+  </div>
+</div>
+
+<div id="tut-picker-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;align-items:center;justify-content:center">
+  <div style="background:white;border-radius:10px;padding:28px 32px;max-width:460px;width:92%;box-shadow:0 20px 60px rgba(0,0,0,0.2);position:relative">
+    <button onclick="tutExit()" style="position:absolute;top:14px;right:16px;background:none;border:none;font-size:16px;color:#999;cursor:pointer;line-height:1" title="Exit walkthrough">✕</button>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+      <div class="tut-icon-mark"><svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><polyline points="9 14 11 16 15 12"/></svg></div>
+      <div style="font-size:15px;font-weight:600;color:var(--text)">Which tool would you like to walk through?</div>
+    </div>
+    <div style="font-size:13px;color:var(--text-secondary);line-height:1.5;margin-bottom:18px">Pick one at a time — you'll land back here after each so you can pick another, or stop whenever you're done.</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:18px">
+      <button class="btn btn-ghost" style="text-align:left;justify-content:flex-start" onclick="tutPickerChoose('ASAM Documentation')">ASAM Documentation</button>
+      <button class="btn btn-ghost" style="text-align:left;justify-content:flex-start" onclick="tutPickerChoose('ITP Development')">ITP Development</button>
+      <button class="btn btn-ghost" style="text-align:left;justify-content:flex-start" onclick="tutPickerChoose('Individual Note')">Individual Note</button>
+      <button class="btn btn-ghost" style="text-align:left;justify-content:flex-start" onclick="tutPickerChoose('Group Notes')">Group Notes</button>
+      <button class="btn btn-ghost" style="text-align:left;justify-content:flex-start" onclick="tutPickerChoose('ASA Intervention Note')">ASA Intervention Note</button>
+      <button class="btn btn-ghost" style="text-align:left;justify-content:flex-start" onclick="tutPickerChoose('Discharge Summary')">Discharge Summary</button>
+      <button class="btn btn-ghost" style="text-align:left;justify-content:flex-start" onclick="tutPickerChoose('Discharge Email')">Discharge Email</button>
+      <button class="btn btn-ghost" style="text-align:left;justify-content:flex-start" onclick="tutPickerChoose('Nursing Note')">Nursing Note</button>
+    </div>
+    <div style="display:flex;justify-content:flex-end;border-top:1px solid var(--border);padding-top:16px">
+      <button class="btn" style="background:var(--accent);color:white" onclick="tutPickerFinish()">I'm all set for now →</button>
     </div>
   </div>
 </div>
@@ -4156,6 +4202,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <button class="tool-nav-back" onclick="navigateTo('home')">← Back</button>
     <span class="tool-nav-divider">|</span>
     <span class="tool-nav-title">Discharge Email</span>
+    <button class="tool-help-btn" onclick="confirmToolTutorial('Discharge Email')">Walkthrough</button>
   </div>
   <div id="de-workflow-notice" style="display:none;position:relative;background:#fff3cd;border:2px solid #d9822b;border-left:8px solid #d9822b;border-radius:6px;margin:14px 16px 0 16px;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
     <div id="de-workflow-notice-full" style="padding:14px 18px;">
@@ -4177,13 +4224,13 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:12px;">Client & Discharge</div>
 
         <div style="margin-bottom:10px;">
-          <label class="form-label">Client Full Name *</label>
+          <label class="form-label">Client Full Name<span class="req-star">*</span></label>
           <input class="form-input" id="de-client-name" type="text" placeholder="Full name" oninput="deState.clientName=this.value;deRenderOutput()">
         </div>
 
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
           <div>
-            <label class="form-label">Date of Discharge *</label>
+            <label class="form-label">Date of Discharge<span class="req-star">*</span></label>
             <input class="form-input" id="de-discharge-date" type="date" oninput="deState.dischargeDate=this.value;deRenderOutput()">
           </div>
           <div>
@@ -4193,7 +4240,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
 
         <div style="margin-bottom:10px;">
-          <label class="form-label">Unit *</label>
+          <label class="form-label">Unit<span class="req-star">*</span></label>
           <select class="form-select" id="de-unit" onchange="deSetUnit(this.value)">
             <option value="">Select unit</option>
             <option value="5th Floor">5th Floor</option>
@@ -4206,8 +4253,8 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
 
         <div style="margin-bottom:10px;">
-          <label class="form-label">Type of Discharge *</label>
-          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
+          <label class="form-label">Type of Discharge<span class="req-star">*</span></label>
+          <div id="de-dischargetype-wrap" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
             <button class="ds-pill" onclick="deSetDischargeType('successful')" id="de-dt-successful">Successful</button>
             <button class="ds-pill" onclick="deSetDischargeType('unsuccessful')" id="de-dt-unsuccessful">Unsuccessful</button>
             <button class="ds-pill" onclick="deSetDischargeType('neutral')" id="de-dt-neutral">Neutral</button>
@@ -4222,23 +4269,23 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
 
         <div id="de-unsuccessful-reason-wrap" style="display:none;margin-bottom:10px;">
-          <label class="form-label">Reason for Leaving *</label>
+          <label class="form-label">Reason for Leaving<span class="req-star">*</span></label>
           <textarea class="form-textarea" id="de-unsuccessful-reason" rows="2" placeholder="Why did the client leave ASA, or why were they administratively discharged?" oninput="deState.unsuccessfulReason=this.value;deRenderOutput()" style="min-height:55px;"></textarea>
         </div>
 
         <div id="de-neutral-reason-wrap" style="display:none;margin-bottom:10px;">
-          <label class="form-label">Reason for Neutral Discharge *</label>
+          <label class="form-label">Reason for Neutral Discharge<span class="req-star">*</span></label>
           <input class="form-input" id="de-neutral-reason" type="text" placeholder="e.g., insurance denial, mental health, probation" oninput="deState.neutralReason=this.value;deRenderOutput()">
         </div>
 
         <div id="de-bridge-wrap" style="display:none;margin-bottom:6px;">
-          <label class="form-label">Was The Bridge Contacted? *</label>
+          <label class="form-label">Was The Bridge Contacted?<span class="req-star">*</span></label>
           <div style="display:flex;gap:6px;margin-bottom:6px;">
             <button class="ds-pill" onclick="deSetYN('bridgeContacted','yes','de-bridge')" id="de-bridge-yes">Yes</button>
             <button class="ds-pill" onclick="deSetYN('bridgeContacted','no','de-bridge')" id="de-bridge-no">No</button>
           </div>
           <div id="de-bridge-reason-wrap" style="display:none;">
-            <label class="form-label">Why Not? What Other Attempts Were Made? *</label>
+            <label class="form-label">Why Not? What Other Attempts Were Made?<span class="req-star">*</span></label>
             <textarea class="form-textarea" id="de-bridge-reason" rows="2" placeholder="Explain why The Bridge wasn't contacted and what other intervention attempts were made…" oninput="deState.bridgeNotContactedReason=this.value;deRenderOutput()" style="min-height:55px;"></textarea>
           </div>
           <div id="de-bridge-alert" style="display:none;background:#fdecea;border:2px solid #c0392b;border-radius:6px;padding:8px 10px;margin-bottom:8px;font-size:12px;color:#7a1f1f;font-weight:600;align-items:flex-start;gap:6px;">
@@ -4258,7 +4305,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 
         <div id="de-destination-wrap" style="margin-bottom:10px;">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
-            <label class="form-label" style="margin-bottom:0;">Where Is the Client Going? *</label>
+            <label class="form-label" style="margin-bottom:0;">Where Is the Client Going?<span class="req-star">*</span></label>
             <label class="ds-skill-row" style="font-size:11px;color:var(--text-secondary);white-space:nowrap;">
               <input type="checkbox" id="de-destination-unknown" onchange="deToggleDestinationUnknown(this.checked)">
               Unknown
@@ -4268,7 +4315,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
 
         <div id="de-resource-sheet-wrap" style="margin-bottom:10px;">
-          <label class="form-label">Resource Sheet Provided? *</label>
+          <label class="form-label">Resource Sheet Provided?<span class="req-star">*</span></label>
           <div style="display:flex;gap:6px;margin-bottom:6px;">
             <button class="ds-pill" onclick="deSetYN('resourceSheetProvided','yes','de-rs')" id="de-rs-yes">Yes</button>
             <button class="ds-pill" onclick="deSetYN('resourceSheetProvided','no','de-rs')" id="de-rs-no">No</button>
@@ -4356,14 +4403,14 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:12px;">Probation & Outpatient</div>
 
         <div style="margin-bottom:10px;">
-          <label class="form-label">Is the Client on Probation? *</label>
+          <label class="form-label">Is the Client on Probation?<span class="req-star">*</span></label>
           <div style="display:flex;gap:6px;">
             <button class="ds-pill" onclick="deSetTri('onProbation','yes','de-prob')" id="de-prob-yes">Yes</button>
             <button class="ds-pill" onclick="deSetTri('onProbation','no','de-prob')" id="de-prob-no">No</button>
             <button class="ds-pill" onclick="deSetTri('onProbation','unknown','de-prob')" id="de-prob-unknown">Unknown</button>
           </div>
           <div id="de-po-wrap" style="display:none;margin-top:8px;">
-            <label class="form-label">Has the Probation Officer Been Notified? *</label>
+            <label class="form-label">Has the Probation Officer Been Notified?<span class="req-star">*</span></label>
             <div style="display:flex;gap:6px;">
               <button class="ds-pill" onclick="deSetYN('poNotified','yes','de-po')" id="de-po-yes">Yes</button>
               <button class="ds-pill" onclick="deSetYN('poNotified','no','de-po')" id="de-po-no">No</button>
@@ -4372,7 +4419,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
 
         <div id="de-outpatient-wrap">
-          <label class="form-label">Was Client Offered Woodhaven Outpatient Services? *</label>
+          <label class="form-label">Was Client Offered Woodhaven Outpatient Services?<span class="req-star">*</span></label>
           <div style="display:flex;gap:6px;">
             <button class="ds-pill" onclick="deSetTri('outpatientOffered','yes','de-op')" id="de-op-yes">Yes</button>
             <button class="ds-pill" onclick="deSetTri('outpatientOffered','no','de-op')" id="de-op-no">No</button>
@@ -4460,6 +4507,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <button class="tool-nav-back" onclick="navigateTo('home')">← Back</button>
     <span class="tool-nav-divider">|</span>
     <span class="tool-nav-title">Nursing Note</span>
+    <button class="tool-help-btn" onclick="confirmToolTutorial('Nursing Note')">Walkthrough</button>
   </div>
   <div class="session-tab-inner" style="flex:1;min-height:0">
 
@@ -4675,6 +4723,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <button class="tool-nav-back" onclick="navigateTo('home')">← Back</button>
     <span class="tool-nav-divider">|</span>
     <span class="tool-nav-title">ASA Intervention Note</span>
+    <button class="tool-help-btn" onclick="confirmToolTutorial('ASA Intervention Note')">Walkthrough</button>
   </div>
   <div class="session-tab-inner" style="flex:1;min-height:0">
 
@@ -4819,9 +4868,12 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 <div id="changelogModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;align-items:center;justify-content:center;" onclick="if(event.target===this)closeChangelogModal()">
   <div style="background:#f8faf9;border-radius:10px;max-width:640px;width:92%;max-height:82vh;box-shadow:0 20px 60px rgba(0,0,0,0.2);display:flex;flex-direction:column;">
     <div style="display:flex;justify-content:space-between;align-items:center;padding:20px 24px 16px;border-bottom:1px solid var(--border);flex-shrink:0;">
-      <div>
-        <div style="font-size:16px;font-weight:600;color:#1b4332;">Changelog</div>
-        <div style="font-size:12px;color:#5a6a62;margin-top:2px;">Clinical and workflow changes to DocAssist — most recent first.</div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="tut-icon-mark" style="width:26px;height:26px;border-radius:7px;"><svg viewBox="0 0 24 24" style="width:15px;height:15px;"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><polyline points="9 14 11 16 15 12"/></svg></div>
+        <div>
+          <div style="font-size:16px;font-weight:600;color:#1b4332;">Changelog</div>
+          <div style="font-size:12px;color:#5a6a62;margin-top:2px;">Clinical and workflow changes to DocAssist — most recent first.</div>
+        </div>
       </div>
       <button onclick="closeChangelogModal()" style="background:none;border:none;font-size:18px;color:#999;cursor:pointer;line-height:1;padding:0 0 0 12px;" title="Close">✕</button>
     </div>
@@ -4830,7 +4882,6 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <!-- v1.8 -->
     <div style="margin-bottom:28px;">
       <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px;">
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;background:var(--accent);color:#fff;padding:2px 8px;border-radius:4px;">v1.8</span>
         <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5a6a62;">July 15, 2026</span>
         <span style="font-size:14px;font-weight:600;color:#1b4332;">ASA Intervention Note tool</span>
       </div>
@@ -4845,7 +4896,6 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <!-- v1.7 -->
     <div style="margin-bottom:28px;">
       <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px;">
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;background:var(--accent);color:#fff;padding:2px 8px;border-radius:4px;">v1.7</span>
         <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5a6a62;">July 4, 2026</span>
         <span style="font-size:14px;font-weight:600;color:#1b4332;">Nursing Note tool</span>
       </div>
@@ -4860,7 +4910,6 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <!-- v1.6 -->
     <div style="margin-bottom:28px;">
       <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px;">
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;background:var(--accent);color:#fff;padding:2px 8px;border-radius:4px;">v1.6</span>
         <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5a6a62;">June 30, 2026</span>
         <span style="font-size:14px;font-weight:600;color:#1b4332;">Discharge Email tool</span>
       </div>
@@ -4875,7 +4924,6 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <!-- v1.5 -->
     <div style="margin-bottom:28px;">
       <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px;">
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;background:var(--accent);color:#fff;padding:2px 8px;border-radius:4px;">v1.5</span>
         <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5a6a62;">June 18, 2026</span>
         <span style="font-size:14px;font-weight:600;color:#1b4332;">Client statements and homework assignments</span>
       </div>
@@ -4894,7 +4942,6 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <!-- v1.4 -->
     <div style="margin-bottom:28px;">
       <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px;">
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;background:var(--accent);color:#fff;padding:2px 8px;border-radius:4px;">v1.4</span>
         <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5a6a62;">June 16, 2026</span>
         <span style="font-size:14px;font-weight:600;color:#1b4332;">Built-in training and tool guides</span>
       </div>
@@ -4913,7 +4960,6 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <!-- v1.3 -->
     <div style="margin-bottom:28px;">
       <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px;">
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;background:var(--accent);color:#fff;padding:2px 8px;border-radius:4px;">v1.3</span>
         <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5a6a62;">June 11, 2026</span>
         <span style="font-size:14px;font-weight:600;color:#1b4332;">Clinical flags, consultation prompts, discharge refinements</span>
       </div>
@@ -4940,7 +4986,6 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <!-- v1.2 -->
     <div style="margin-bottom:28px;">
       <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px;">
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;background:var(--accent);color:#fff;padding:2px 8px;border-radius:4px;">v1.2</span>
         <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5a6a62;">June 10, 2026</span>
         <span style="font-size:14px;font-weight:600;color:#1b4332;">ITP enhancements; ASAM LOC-conditional fields</span>
       </div>
@@ -4963,7 +5008,6 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <!-- v1.1 -->
     <div style="margin-bottom:28px;">
       <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px;">
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;background:var(--accent);color:#fff;padding:2px 8px;border-radius:4px;">v1.1</span>
         <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5a6a62;">June 9, 2026</span>
         <span style="font-size:14px;font-weight:600;color:#1b4332;">Group Notes and Discharge Summary launched</span>
       </div>
@@ -4982,7 +5026,6 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <!-- v1.0 -->
     <div style="margin-bottom:28px;">
       <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px;">
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;background:var(--accent);color:#fff;padding:2px 8px;border-radius:4px;">v1.0</span>
         <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5a6a62;">June 8, 2026</span>
         <span style="font-size:14px;font-weight:600;color:#1b4332;">Initial launch</span>
         <span style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:#7a4f00;background:#fff4d6;border:1px solid #e8c96a;padding:2px 8px;border-radius:3px;">Launch</span>
@@ -12288,21 +12331,21 @@ document.addEventListener('DOMContentLoaded', () => {
 // TUTORIAL
 // ─────────────────────────────────────────────────────────────────────────────
 
-const TUT_STEPS = [
+const TUT_INTRO_STEPS = [
 
   // ── WELCOME ───────────────────────────────────────────────────────────────
   { view:'home', sel:null, section:null,
     title:'Welcome to DocAssist',
-    body:'Documentation takes real time away from the work that matters most — your face-to-face moments with clients. I built this tool because I wanted you to be able to focus on those moments, not on paperwork. It also replaces the collection of Word documents we have been using for templates, instructions, and documentation guidance — all of that is built into DocAssist now. I made the tool I would have wanted when I was counseling. Please take a few minutes with this walkthrough — the better you know this tool, the more it works for you.' },
+    body:'Documentation takes real time away from the work that matters most — your face-to-face moments with clients. I built this tool because I wanted you to be able to focus on those moments, not on paperwork. I made the tool I would have wanted when I was counseling. This is a short introduction — after it, you can pick which tool you want to walk through in more depth.' },
 
   { view:'home', sel:null, section:null,
     title:'How DocAssist works',
-    body:'DocAssist generates the clinical documentation you need for Remarkable. You fill out the tool, generate the text, review it, and paste it into the right fields in Remarkable. That is the complete workflow — nothing this tool produces gets submitted anywhere automatically. You are always in control of what goes into the record. There are five tools organized by documentation type: ASAM narratives, treatment plans, session notes, group notes, and discharge summaries.' },
+    body:'DocAssist generates the documentation you need for Remarkable. You fill out a tool, generate the text, review it, and paste it into the right fields in Remarkable. That is the complete workflow — nothing this tool produces gets submitted anywhere automatically. You are always in control of what goes into the record. Each card on the home screen is a different tool, organized by documentation type.' },
 
   // ── HOME SCREEN ───────────────────────────────────────────────────────────
   { view:'home', sel:'.home-tools-area', section:'Home Screen',
     title:'Your documentation tools',
-    body:'Each card opens a different tool. You will often use several of them for the same client — an ASAM narrative, then a treatment plan, then session notes over time. Your work is saved as you move between tools, so you can start an ASAM, switch to the ITP tool to align your treatment plan, and come back to the ASAM without losing anything.' },
+    body:'Each card opens a different tool. You will often use several of them for the same client over time — an ASAM narrative, then a treatment plan, then session notes. Your work is saved as you move between tools, so you can start one, switch to another, and come back without losing anything.' },
 
   { view:'home', sel:'#timerGroup', section:'Home Screen',
     title:'Session timer',
@@ -12311,6 +12354,9 @@ const TUT_STEPS = [
   { view:'home', sel:'.reset-btn', section:'Home Screen',
     title:'Reset button',
     body:'The ↺ Reset button clears all data across every tool and returns DocAssist to a blank state. It will ask you to confirm before clearing anything. Use this when you are done with one client and starting fresh for another, or any time you want a clean slate. It does not affect anything in Remarkable — only what is currently open in DocAssist.' },
+];
+
+const TUT_TOOL_STEPS = [
 
   // ── ASAM DOCUMENTATION ────────────────────────────────────────────────────
   { view:'asam', sel:'#view-asam .tool-nav', section:'ASAM Documentation', navigate:'asam',
@@ -12616,19 +12662,92 @@ const TUT_STEPS = [
     title:'Discharge Summary walkthrough complete',
     body:'That covers the Discharge Summary tool. Fill in the left panel, review each output block on the right before copying, and use the reference card at the bottom for the fields that go directly into Remarkable. If anything looks off in the output, check your inputs first — the generated text reflects exactly what you put in. The Walkthrough button is here whenever you need it.' },
 
-  // ── FINISH ────────────────────────────────────────────────────────────────
+  // ── ASA INTERVENTION NOTE ─────────────────────────────────────────────────
+  { view:'asa', sel:'#view-asa .tool-nav', section:'ASA Intervention Note', navigate:'asa',
+    title:'ASA Intervention Note',
+    body:'Use this tool when a client leaves against staff advice. It documents the precipitant, the staff intervention, and your clinical judgement at the time of departure — and it captures billing for the day. This is separate from the Discharge Email, which you will still need to send once the discharge itself is processed.' },
+
+  { view:'asa', sel:'#asa-precipitant', section:'ASA Intervention Note', navigate:'asa',
+    title:'Precipitant and staff intervention',
+    body:'Precipitant, Describe Staff Intervention, and Response — Clinical Judgement are all required fields, marked with a red asterisk. Write what led to the client leaving, what staff did to engage and de-escalate, and your clinical read on the client\'s presentation and safety at the time.' },
+
+  { view:'asa', sel:'#asa-contact-basis', section:'ASA Intervention Note', navigate:'asa',
+    title:'Contact with a support person',
+    body:'An ASA departure by itself is never a reason to contact anyone outside the facility — 42 CFR Part 2 requires either a signed Release of Information on file or a genuine medical emergency. If you did make contact, select the correct basis here first. Choosing "medical emergency exception" will ask you to specify the emergency basis before you can describe the contact.' },
+
+  { view:'asa', sel:'#asa-incomplete', section:'ASA Intervention Note', navigate:'asa',
+    title:'Risk and safety',
+    body:'If the client left before a risk assessment could be completed, check that box first — it changes how this section documents the situation. Otherwise, document what was assessed: SI/HI status, whether a safety plan was reviewed, and any concerns that need further narrative detail.' },
+
+  { view:'asa', sel:null, section:'ASA Intervention Note', navigate:'asa',
+    title:'ASA Intervention Note walkthrough complete',
+    body:'That covers the ASA Intervention Note tool. Generate produces two blocks matching Remarkable\'s note structure, the same as the Individual Note tool. Remember: this note covers the intervention itself. You will still need to complete the Discharge Email once the discharge is processed.' },
+
+  // ── DISCHARGE EMAIL ───────────────────────────────────────────────────────
+  { view:'discharge-email', sel:'#view-discharge-email .tool-nav', section:'Discharge Email', navigate:'discharge-email',
+    title:'Discharge Email',
+    body:'Every discharge — successful, unsuccessful, or neutral — needs one of these sent to discharge@woodhavenohio.com. This is required for all staff, not just counselors, whenever a client leaves the program.' },
+
+  { view:'discharge-email', sel:null, section:'Discharge Email', navigate:'discharge-email',
+    title:'Required fields',
+    body:'Fields marked with an asterisk (*) are required to generate; everything else is optional, and anything left blank is simply omitted from the email.' },
+
+  { view:'discharge-email', sel:'#de-dischargetype-wrap', section:'Discharge Email', navigate:'discharge-email',
+    title:'Type of discharge',
+    body:'Successful, Unsuccessful, or Neutral changes which fields appear below. Choosing Unsuccessful asks you to specify Left ASA or Admin Discharge and enter a reason — these drive the language in the generated email.' },
+
+  { view:'discharge-email', sel:'#de-bridge-wrap', section:'Discharge Email', navigate:'discharge-email',
+    title:'The Bridge contact',
+    body:'For unsuccessful discharges, document whether The Bridge was contacted. If not, you will need to explain why and what other intervention was attempted — this shows up as an alert if left blank, since it is a common documentation gap.' },
+
+  { view:'discharge-email', sel:'#de-generate-btn', section:'Discharge Email', navigate:'discharge-email',
+    title:'Generate',
+    body:'Once the required fields are filled in, click Generate Email. This builds both a subject line and the email body below, formatted for the discharge@woodhavenohio.com inbox.' },
+
+  { view:'discharge-email', sel:'#de-out-subject-block', section:'Discharge Email', navigate:'discharge-email',
+    title:'Copying the subject and body',
+    body:'The subject line and the email body are copied separately — use Copy Subject above the subject block, then Copy Email above the body block below it, and paste each into the matching part of your email. If you change anything after generating, click Generate again before copying — a banner will let you know if the output is stale.' },
+
+  { view:'discharge-email', sel:null, section:'Discharge Email', navigate:'discharge-email',
+    title:'Discharge Email walkthrough complete',
+    body:'Proofread names and dates, then send to discharge@woodhavenohio.com.' },
+
+  // ── NURSING NOTE ──────────────────────────────────────────────────────────
+  { view:'nn', sel:'#view-nn .tool-nav', section:'Nursing Note', navigate:'nn',
+    title:'Nursing Note',
+    body:'The Nursing Note tool formats shift assessment documentation for nursing staff — built together with the nursing coordinator. It covers withdrawal symptoms, objective findings, medications, and continued need for 3.7-WM level of care.' },
+
+  { view:'nn', sel:'.nn-jump-nav', section:'Nursing Note', navigate:'nn',
+    title:'Jump navigation',
+    body:'This note has more sections than most — Details, Symptoms, Findings, Meds, Stability, Psych, Sleep, Cravings, and Continued Need. Use these links to jump straight to a section instead of scrolling through the whole form.' },
+
+  { view:'nn', sel:'#nn-wd-type', section:'Nursing Note', navigate:'nn',
+    title:'Withdrawal type',
+    body:'Selecting the withdrawal type here tailors the suggested closing statement for the Continued Need section later on. Set this first — it affects what shows up as you go.' },
+
+  { view:'nn', sel:'#nn-sec-continued', section:'Nursing Note', navigate:'nn',
+    title:'Continued need for 3.7-WM',
+    body:'This is the section payer review will scrutinize most closely — it needs to answer why the client cannot safely step down today. Write your own clinical language, or use "+ Insert suggested closing statement" for a starting point tailored to the withdrawal type you selected, then edit it to reflect this client.' },
+
+  { view:'nn', sel:null, section:'Nursing Note', navigate:'nn',
+    title:'Nursing Note walkthrough complete',
+    body:'That covers the Nursing Note tool. Fill in whichever sections apply to this shift — fields left blank are omitted from the note — and click Generate when you are ready. The progress hint at the bottom tracks how many sections you have started.' },
+];
+
+const TUT_OUTRO_STEPS = [
   { view:'home', sel:null, section:null, navigate:'home',
     action: function() { tutConfetti(); },
     title:'You\'re all set',
-    body:'You made it through. You now know this tool well enough to use it — the rest builds with practice. Return to this walkthrough anytime from the home screen, or use the Walkthrough button inside any individual tool for a focused review. If you have questions about a specific situation or anything in the tool, reach out to your supervisor. This was built to give you more time with your clients. That is what this was built to protect.',
+    body:'That is DocAssist. Come back to this walkthrough anytime from the home screen, or use the Walkthrough button inside any individual tool for a focused review of just that one. If you have questions about a specific situation or anything in the tool, reach out to your supervisor. This was built to give you more time with your clients.',
     last: true },
 ];
 
 
-let tutSteps = TUT_STEPS;
+let tutSteps = TUT_INTRO_STEPS;
 let tutStep = 0;
 let tutMode = 'full';
 let tutToolView = 'home';
+let tutReturnToPicker = false;
 
 function tutPreload(callback) {
   fillSampleClient();
@@ -12656,14 +12775,14 @@ function confirmStartTutorial() {
 }
 
 function confirmToolTutorial(sectionName) {
-  _tutorialPendingCallback = function() { startToolTutorial(sectionName); };
+  _tutorialPendingCallback = function() { startToolTutorial(sectionName, false); };
   document.getElementById('tutorialConfirmModal').style.display = 'flex';
 }
 
 function startTutorial() {
   tutMode = 'full';
   tutToolView = 'home';
-  tutSteps = TUT_STEPS;
+  tutSteps = TUT_INTRO_STEPS;
   tutStep = 0;
   tutPreload(function() {
     navigateTo('home');
@@ -12672,9 +12791,10 @@ function startTutorial() {
   });
 }
 
-function startToolTutorial(sectionName) {
+function startToolTutorial(sectionName, returnToPicker) {
   tutMode = 'tool';
-  tutSteps = TUT_STEPS.filter(function(s) { return s.section === sectionName; });
+  tutReturnToPicker = !!returnToPicker;
+  tutSteps = TUT_TOOL_STEPS.filter(function(s) { return s.section === sectionName; });
   tutStep = 0;
   tutToolView = tutSteps.length ? tutSteps[0].view : 'home';
   tutPreload(function() {
@@ -12684,8 +12804,31 @@ function startToolTutorial(sectionName) {
   });
 }
 
+function tutShowPicker() {
+  document.getElementById('tut-overlay').style.display = 'none';
+  navigateTo('home');
+  document.getElementById('tut-picker-modal').style.display = 'flex';
+}
+
+function tutPickerChoose(sectionName) {
+  document.getElementById('tut-picker-modal').style.display = 'none';
+  startToolTutorial(sectionName, true);
+}
+
+function tutPickerFinish() {
+  document.getElementById('tut-picker-modal').style.display = 'none';
+  tutMode = 'full';
+  tutSteps = TUT_OUTRO_STEPS;
+  tutStep = 0;
+  navigateTo('home');
+  document.getElementById('tut-overlay').style.display = 'block';
+  setTimeout(function() { tutShowStep(0); }, 150);
+}
+
 function tutExit() {
   document.getElementById('tut-overlay').style.display = 'none';
+  var picker = document.getElementById('tut-picker-modal');
+  if (picker) picker.style.display = 'none';
   doReset();
 }
 
@@ -12693,6 +12836,10 @@ function tutNext() {
   if (tutStep < tutSteps.length - 1) {
     tutStep++;
     tutShowStep(tutStep);
+  } else if (tutSteps === TUT_INTRO_STEPS) {
+    tutShowPicker();
+  } else if (tutMode === 'tool' && tutReturnToPicker) {
+    tutShowPicker();
   } else {
     tutExit();
     navigateTo(tutMode === 'tool' ? tutToolView : 'home');
@@ -12718,6 +12865,7 @@ function tutShowStep(n) {
   document.getElementById('tut-progress-fill').style.width = ((n + 1) / total * 100) + '%';
 
   document.getElementById('tut-back-btn').style.visibility = n === 0 ? 'hidden' : 'visible';
+  document.getElementById('tut-skip-btn').style.display = (tutSteps === TUT_INTRO_STEPS) ? 'inline-block' : 'none';
   document.getElementById('tut-next-btn').textContent = (n === tutSteps.length - 1) ? 'Finish' : 'Next →';
 
   const activeView = document.querySelector('.tool-view.active');
@@ -12893,10 +13041,14 @@ function tutConfetti() {
     <div class="tut-progress-bar"><div class="tut-progress-fill" id="tut-progress-fill"></div></div>
     <div id="tut-counter">Step 1 of 26</div>
     <div id="tut-section-label" style="display:none"></div>
-    <h3 id="tut-title" style="margin:0 0 8px"></h3>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+      <div class="tut-icon-mark"><svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><polyline points="9 14 11 16 15 12"/></svg></div>
+      <h3 id="tut-title" style="margin:0"></h3>
+    </div>
     <p id="tut-body" style="margin:0 0 16px"></p>
     <div class="tut-btn-row">
       <button id="tut-exit-btn" onclick="tutExit()">Exit tutorial</button>
+      <button id="tut-skip-btn" onclick="tutShowPicker()" style="display:none">Skip to tool list →</button>
       <button id="tut-back-btn" onclick="tutBack()">← Back</button>
       <button id="tut-next-btn" onclick="tutNext()">Next →</button>
     </div>
