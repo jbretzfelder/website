@@ -10136,7 +10136,7 @@ function deDirectToGenerate(btn) {
   if (btn) {
     const original = btn.dataset.origLabel || btn.innerHTML;
     btn.dataset.origLabel = original;
-    btn.textContent = '↓ Generate first';
+    btn.textContent = 'Generate first ↘';
     setTimeout(() => { btn.innerHTML = original; }, 1800);
   }
 }
