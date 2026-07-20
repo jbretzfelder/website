@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DocAssist</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%232d6a4f'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='14' font-weight='700' fill='white' text-anchor='middle' letter-spacing='-0.5'%3EDA%3C/text%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%232d6a4f'/%3E%3Cg transform='translate(4,4)' fill='none' stroke='%23d4eadd' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2'/%3E%3Crect x='9' y='3' width='6' height='4' rx='1'/%3E%3Cpolyline points='9 14 11 16 15 12'/%3E%3C/g%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -57,8 +57,20 @@ body {
   padding: 0 20px;
   flex-shrink: 0;
 }
-.header-left { display: flex; align-items: baseline; gap: 12px; }
-.app-title { font-size: 14px; font-weight: 600; color: #ffffff; letter-spacing: 0.01em; }
+.header-left { display: flex; align-items: center; gap: 10px; }
+.brand-mark {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  background: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.brand-mark svg { width: 16px; height: 16px; stroke: var(--accent-light); fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+.app-title { font-size: 16px; font-weight: 700; color: #ffffff; letter-spacing: 0.01em; }
+.app-title-accent { color: #7ec8a0; }
 .app-subtitle { font-size: 11px; color: #5a826a; }
 .reset-btn {
   background: none;
@@ -211,19 +223,44 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(3px); }
 }
+.home-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: clamp(6px, 1.2vh, 10px);
+}
+.home-brand-mark {
+  width: clamp(30px, 4.5vh, 38px);
+  height: clamp(30px, 4.5vh, 38px);
+  border-radius: 9px;
+  background: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.home-brand-mark svg { width: 55%; height: 55%; stroke: var(--accent-light); fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+.home-brand-title {
+  font-size: clamp(22px, 3.4vh, 30px);
+  font-weight: 700;
+  color: #1a3d22;
+  letter-spacing: 0.01em;
+}
+.home-brand-title-accent { color: var(--accent); }
 .home-greeting {
   text-align: center;
   margin-bottom: clamp(16px, 4vh, 60px);
 }
 .home-greeting-title {
-  font-size: clamp(19px, 2.6vh, 26px);
-  font-weight: 500;
-  color: var(--text);
-  margin-bottom: 6px;
+  font-size: clamp(14px, 1.7vh, 16px);
+  font-weight: 400;
+  color: #7a8a82;
+  margin-bottom: 4px;
 }
 .home-greeting-sub {
-  font-size: clamp(12px, 1.6vh, 14px);
-  color: #4a5550;
+  font-size: clamp(11px, 1.4vh, 13px);
+  color: #9aa8a0;
   letter-spacing: 0.01em;
 }
 .home-grid {
@@ -2134,9 +2171,12 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 <!-- ═══ HEADER ═══════════════════════════════════════ -->
 <div class="app-header">
   <div class="header-left">
-    <div class="app-title">DocAssist</div>
-    <div onclick="openChangelogModal()" style="font-size:9px;font-weight:600;padding:1px 6px;border-radius:8px;background:#1a3d22;color:#7ec8a0;border:1px solid #2d6a4f;letter-spacing:.07em;display:inline-block;margin:1px 0 2px;cursor:pointer;" onmouseover="this.style.background='#2d6a4f'" onmouseout="this.style.background='#1a3d22'">v1.8</div>
-    <div class="app-subtitle">Woodhaven Documentation Tool</div>
+    <div class="brand-mark"><svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><polyline points="9 14 11 16 15 12"/></svg></div>
+    <div style="display:flex;align-items:baseline;gap:12px;">
+      <div class="app-title">Doc<span class="app-title-accent">Assist</span></div>
+      <div onclick="openChangelogModal()" style="font-size:9px;font-weight:600;padding:1px 6px;border-radius:8px;background:#1a3d22;color:#7ec8a0;border:1px solid #2d6a4f;letter-spacing:.07em;display:inline-block;margin:1px 0 2px;cursor:pointer;" onmouseover="this.style.background='#2d6a4f'" onmouseout="this.style.background='#1a3d22'">v1.8</div>
+      <div class="app-subtitle">Woodhaven Documentation Tool</div>
+    </div>
   </div>
   <div style="display:flex;align-items:center;gap:14px">
     <!-- Session Timer -->
@@ -2236,6 +2276,10 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 <div id="view-home" class="tool-view active">
   <div class="home-screen">
     <div class="home-scroll-area">
+    <div class="home-brand">
+      <div class="home-brand-mark"><svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><polyline points="9 14 11 16 15 12"/></svg></div>
+      <div class="home-brand-title">Doc<span class="home-brand-title-accent">Assist</span></div>
+    </div>
     <div class="home-greeting">
       <div class="home-greeting-title" id="homeGreetingTitle"></div>
       <div class="home-greeting-sub" id="homeGreetingSub"></div>
