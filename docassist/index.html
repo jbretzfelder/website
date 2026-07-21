@@ -2033,6 +2033,21 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   align-items: center;
   gap: 6px;
 }
+.stale-banner {
+  display: none;
+  align-items: flex-start;
+  gap: 10px;
+  background: #fff0f0;
+  border: 1px solid #f5c6c6;
+  border-left: 4px solid #c0392b;
+  border-radius: 6px;
+  padding: 12px 14px;
+  margin-bottom: 16px;
+}
+.stale-banner.visible { display: flex; }
+.stale-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; color: #c0392b; }
+.stale-text { font-size: 12px; color: #7a1f1f; line-height: 1.5; flex: 1; }
+.stale-text strong { color: #5c1414; font-weight: 600; }
 .error-list li::before {
   content: '';
   width: 4px;
@@ -2190,7 +2205,6 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 #tut-next-btn:hover { background: #1e4d38; border-color: #1e4d38; }
 </style>
 
-<script data-goatcounter="https://docassist.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
 <body>
 
@@ -2966,6 +2980,14 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
             <ul class="error-list" id="errorList"></ul>
           </div>
 
+          <div class="stale-banner" id="asamStaleBanner">
+            <div class="stale-icon">⚠</div>
+            <div class="stale-text">
+              <strong>Inputs have changed since this was generated.</strong>
+              Click Generate again to update the narrative before copying into Remarkable.
+            </div>
+          </div>
+
           <div class="proofread-banner" id="proofreadBanner" style="display:none">
             <div class="proofread-icon">⚠</div>
             <div class="proofread-text">
@@ -3345,6 +3367,13 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
             <div style="font-size:13px;line-height:1.6;color:var(--text-secondary)">Fill in the session details and click<br><strong>Generate</strong> to format your progress note.</div>
           </div>
           <div id="snNoteWrap" style="display:none;flex-direction:column;gap:16px;flex:1">
+            <div class="stale-banner" id="snStaleBanner">
+              <div class="stale-icon">⚠</div>
+              <div class="stale-text">
+                <strong>Inputs have changed since this was generated.</strong>
+                Click Generate again to update the note before copying into Remarkable.
+              </div>
+            </div>
             <div class="sn-preview-header">
               <span class="sn-preview-title">Session Progress Note</span>
             </div>
@@ -4700,6 +4729,13 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         <div style="font-size:13px;line-height:1.6;color:var(--text-secondary)">Fill in the shift assessment and click<br><strong>Generate</strong> to format the nursing progress note.</div>
       </div>
       <div id="nnNoteWrap" style="display:none;flex-direction:column;gap:16px;flex:1">
+        <div class="stale-banner" id="nnStaleBanner">
+          <div class="stale-icon">⚠</div>
+          <div class="stale-text">
+            <strong>Inputs have changed since this was generated.</strong>
+            Click Generate again to update the note before copying into Remarkable.
+          </div>
+        </div>
         <div class="sn-preview-header">
           <span class="sn-preview-title" id="nnMetaLine">Nursing Progress Note</span>
           <button class="tab-copy-btn" onclick="nnCopyNote(this)">Copy</button>
@@ -6148,7 +6184,6 @@ function generate() {
   }
 
   document.getElementById('errorPanel').style.display = 'none';
-  gcTrack('generate-asam');
   renderGeneratedOutput();
 }
 
@@ -6184,6 +6219,8 @@ function renderGeneratedOutput() {
   renderCriteria();
   renderRiskRatings();
   switchTab(1);
+  asamOutputSnapshot = JSON.stringify(state);
+  checkOutputStaleness();
 }
 
 // ═══════════════════════════════════════════════════
@@ -6249,12 +6286,6 @@ function copyOutput(btn) {
 const TAB_COPY_LABELS = { 1:'Copy Narrative', 2:'Copy Criteria' };
 let activeTab = 1;
 
-function gcTrack(path) {
-  if (window.goatcounter && typeof window.goatcounter.count === 'function') {
-    window.goatcounter.count({ path: path, event: true });
-  }
-}
-
 function updateHomeScrollHint() {
   const area = document.querySelector('.home-scroll-area');
   const hint = document.getElementById('home-scroll-hint');
@@ -6273,7 +6304,6 @@ document.addEventListener('DOMContentLoaded', function() {
 function navigateTo(view) {
   document.querySelectorAll('.tool-view').forEach(v => v.classList.remove('active'));
   document.getElementById('view-' + view).classList.add('active');
-  gcTrack('tool-' + view);
   if (view === 'itp') renderAsamRef();
   if (view === 'discharge') dsInit();
   if (view === 'discharge-email') { deRenderOutput(); deInitWorkflowNotice(); }
@@ -8475,7 +8505,6 @@ function formatITPOutput(btn) {
   });
 
   if (btn) { const orig = btn.textContent; btn.textContent = '✓ Formatted'; btn.classList.add('copied'); setTimeout(()=>{btn.textContent=orig;btn.classList.remove('copied');},1800); }
-  gcTrack('generate-itp');
 }
 
 function makeOutputBox(container, label, text) {
@@ -9234,7 +9263,6 @@ function gnGenerateAll() {
   });
 
   gnRenderOutputView();
-  gcTrack('generate-group-notes');
 
   // Switch to output view
   document.getElementById('gn-clients-area').style.display = 'none';
@@ -9868,8 +9896,6 @@ function dsCopyBlock(id) {
   } else {
     flashResult(fallbackCopy());
   }
-
-  gcTrack(id.startsWith('de-') ? 'copy-discharge-email' : 'copy-discharge-summary');
 }
 
 // Count weekdays and weekend days in a date range [startStr, endStr)
@@ -10401,7 +10427,6 @@ function deGenerate() {
   }
 
   errorPanel.style.display = 'none';
-  gcTrack('generate-discharge-email');
 
   const C = s.clientName || '[Client Name]';
   const dateStr = deFmtDate(s.dischargeDate) || '[Date of Discharge]';
@@ -11537,7 +11562,8 @@ function snGenerate() {
   document.getElementById('snDescribeOutput').textContent = snFormatDescribe();
   document.getElementById('snResponseOutput').textContent = snFormatResponse();
   document.getElementById('snPreviewPanel').scrollTop = 0;
-  gcTrack('generate-individual-note');
+  snOutputSnapshot = JSON.stringify(snState);
+  checkOutputStaleness();
 }
 
 function snCopyDescribe(btn) {
@@ -12074,7 +12100,8 @@ function nnGenerate() {
   document.getElementById('nnMetaLine').textContent = dateLabel ? `${nameLabel} — ${dateLabel}` : nameLabel;
   document.getElementById('nnNoteOutput').textContent = nnFormatNote();
   document.getElementById('nnPreviewPanel').scrollTop = 0;
-  gcTrack('generate-nursing-note');
+  nnOutputSnapshot = JSON.stringify(nnState);
+  checkOutputStaleness();
 }
 
 function nnCopyNote(btn) {
@@ -12271,7 +12298,6 @@ function asaGenerate() {
   document.getElementById('asaDescribeOutput').textContent = asaFormatDescribe();
   document.getElementById('asaResponseOutput').textContent = asaFormatResponse();
   document.getElementById('asaPreviewPanel').scrollTop = 0;
-  gcTrack('generate-asa-note');
 }
 
 function asaCopyDescribe(btn) {
@@ -12759,7 +12785,7 @@ const TUT_TOOL_STEPS = [
 
 const TUT_OUTRO_STEPS = [
   { view:'home', sel:null, section:null, navigate:'home',
-    action: function() { gcTrack('tutorial-complete'); tutConfetti(); },
+    action: function() { tutConfetti(); },
     title:'You\'re all set',
     body:'That is DocAssist. Come back to this walkthrough anytime from the home screen, or use the Walkthrough button inside any individual tool for a focused review of just that one. If you have questions about a specific situation or anything in the tool, reach out to your supervisor. This was built to give you more time with your clients.',
     last: true },
@@ -12807,7 +12833,6 @@ function startTutorial() {
   tutToolView = 'home';
   tutSteps = TUT_INTRO_STEPS;
   tutStep = 0;
-  gcTrack('tutorial-start');
   tutPreload(function() {
     navigateTo('home');
     document.getElementById('tut-overlay').style.display = 'block';
@@ -12825,7 +12850,6 @@ function startToolTutorial(sectionName, returnToPicker) {
   tutSteps = TUT_TOOL_STEPS.filter(function(s) { return s.section === sectionName; });
   tutStep = 0;
   tutToolView = tutSteps.length ? tutSteps[0].view : 'home';
-  gcTrack('tutorial-tool-' + tutSlug(sectionName));
   tutPreload(function() {
     navigateTo(tutToolView);
     document.getElementById('tut-overlay').style.display = 'block';
@@ -13066,6 +13090,41 @@ function tutConfetti() {
 // AUTOSAVE / CRASH RECOVERY
 // ═══════════════════════════════════════════════════
 const AUTOSAVE_KEY = 'docassist_autosave_v1';
+
+// ── STALE OUTPUT DETECTION ──
+// Tracks whether ASAM, the Individual Note, or the Nursing Note have been
+// edited since their output was last generated, so a counselor never copies
+// documentation that's quietly out of sync with the inputs behind it.
+let asamOutputSnapshot = null;
+let snOutputSnapshot = null;
+let nnOutputSnapshot = null;
+
+function checkOutputStaleness() {
+  const asamBanner = document.getElementById('asamStaleBanner');
+  if (asamBanner) {
+    const isVisible = document.getElementById('outputDoc').classList.contains('visible');
+    const stale = isVisible && asamOutputSnapshot !== null && JSON.stringify(state) !== asamOutputSnapshot;
+    asamBanner.classList.toggle('visible', stale);
+  }
+  const snBanner = document.getElementById('snStaleBanner');
+  if (snBanner) {
+    const isVisible = document.getElementById('snNoteWrap').style.display === 'flex';
+    const stale = isVisible && snOutputSnapshot !== null && JSON.stringify(snState) !== snOutputSnapshot;
+    snBanner.classList.toggle('visible', stale);
+  }
+  const nnBanner = document.getElementById('nnStaleBanner');
+  if (nnBanner) {
+    const isVisible = document.getElementById('nnNoteWrap').style.display === 'flex';
+    const stale = isVisible && nnOutputSnapshot !== null && JSON.stringify(nnState) !== nnOutputSnapshot;
+    nnBanner.classList.toggle('visible', stale);
+  }
+}
+
+document.addEventListener('input', checkOutputStaleness);
+document.addEventListener('change', checkOutputStaleness);
+document.addEventListener('click', checkOutputStaleness);
+
+
 // Snapshots expire 8 hours after they were saved (a rolling window, not a
 // calendar-day cutoff — Woodhaven runs overnight shifts, so a save just
 // before midnight needs to survive past it, not expire the moment the date
@@ -13474,7 +13533,7 @@ document.addEventListener('DOMContentLoaded', () => {
     <p id="tut-body" style="margin:0 0 16px"></p>
     <div class="tut-btn-row">
       <button id="tut-exit-btn" onclick="tutExit()">Exit tutorial</button>
-      <button id="tut-skip-btn" onclick="gcTrack('tutorial-skip-intro');tutShowPicker()" style="display:none">Skip to tool list →</button>
+      <button id="tut-skip-btn" onclick="tutShowPicker()" style="display:none">Skip to tool list →</button>
       <button id="tut-back-btn" onclick="tutBack()">← Back</button>
       <button id="tut-next-btn" onclick="tutNext()">Next →</button>
     </div>
