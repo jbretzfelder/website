@@ -4890,7 +4890,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       <div style="display:flex;flex-direction:column;gap:7px;">
         <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 13px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;">
           <span style="font-size:9px;font-weight:600;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">NEW</span>
-          <span style="font-size:13px;line-height:1.55;">In-progress work now autosaves locally as you type, across every tool. If the page closes unexpectedly — a browser crash, a tablet timeout, an accidental refresh — DocAssist offers to restore everything from where you left off the next time it loads, as long as it's the same day it was saved. A small "Saved" indicator in the bottom-right corner confirms autosave is working.</span>
+          <span style="font-size:13px;line-height:1.55;">In-progress work now autosaves locally as you type, across every tool. If the page closes unexpectedly — a browser crash, a tablet timeout, an accidental refresh — DocAssist offers to restore everything from where you left off the next time it loads, as long as it's been less than 8 hours. A small "Saved" indicator in the bottom-right corner confirms autosave is working.</span>
         </div>
       </div>
     </div>
@@ -13066,14 +13066,14 @@ function tutConfetti() {
 // AUTOSAVE / CRASH RECOVERY
 // ═══════════════════════════════════════════════════
 const AUTOSAVE_KEY = 'docassist_autosave_v1';
-// Snapshots expire at the next calendar day, not after a fixed number of
-// hours — a save from any point "today" is still valid later today, but
-// nothing carries over once the date changes (e.g. into the next shift).
+// Snapshots expire 8 hours after they were saved (a rolling window, not a
+// calendar-day cutoff — Woodhaven runs overnight shifts, so a save just
+// before midnight needs to survive past it, not expire the moment the date
+// changes).
+const AUTOSAVE_MAX_AGE_MS = 8 * 60 * 60 * 1000;
 function autosaveIsStale(snap) {
   if (!snap || !snap.ts) return true;
-  const saved = new Date(snap.ts);
-  const now = new Date();
-  return saved.toDateString() !== now.toDateString();
+  return (Date.now() - snap.ts) > AUTOSAVE_MAX_AGE_MS;
 }
 let autosaveTimer = null;
 
