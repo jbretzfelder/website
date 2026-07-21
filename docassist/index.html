@@ -4881,6 +4881,20 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     </div>
     <div style="overflow-y:auto;padding:20px 24px 28px;">
 
+    <!-- v1.9 -->
+    <div style="margin-bottom:28px;">
+      <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px;">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5a6a62;">July 21, 2026</span>
+        <span style="font-size:14px;font-weight:600;color:#1b4332;">Autosave and crash recovery</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:7px;">
+        <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 13px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;">
+          <span style="font-size:9px;font-weight:600;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">NEW</span>
+          <span style="font-size:13px;line-height:1.55;">In-progress work now autosaves locally as you type, across every tool. If the page closes unexpectedly — a browser crash, a tablet timeout, an accidental refresh — DocAssist offers to restore everything from where you left off the next time it loads, as long as it's the same day it was saved. A small "Saved" indicator in the bottom-right corner confirms autosave is working.</span>
+        </div>
+      </div>
+    </div>
+
     <!-- v1.8 -->
     <div style="margin-bottom:28px;">
       <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px;">
@@ -6133,9 +6147,15 @@ function generate() {
     return;
   }
 
-  errorPanel.style.display = 'none';
+  document.getElementById('errorPanel').style.display = 'none';
   gcTrack('generate-asam');
+  renderGeneratedOutput();
+}
 
+// Core ASAM narrative/criteria/risk-rating rendering, split out from generate()
+// so it can be re-run silently (e.g. after an autosave restore) without
+// re-triggering the required-field validation gate or its scroll/error UI.
+function renderGeneratedOutput() {
   const cfg = LOC_CONFIG[state.loc];
   const d1 = genDim1(), d2 = genDim2(), d3 = genDim3(), d4 = genDim4(), d5 = genDim5(), d6 = genDim6();
   const dims = [d1,d2,d3,d4,d5,d6];
@@ -10562,6 +10582,7 @@ function deReset() {
 
 function doReset() {
   document.getElementById('resetModal').style.display = 'none';
+  if (typeof autosaveClear === 'function') autosaveClear();
 
   // Reset toolbar
   document.getElementById('locSelect').value = '';
@@ -13040,9 +13061,406 @@ function tutConfetti() {
   }
   animate();
 }
+
+// ═══════════════════════════════════════════════════
+// AUTOSAVE / CRASH RECOVERY
+// ═══════════════════════════════════════════════════
+const AUTOSAVE_KEY = 'docassist_autosave_v1';
+// Snapshots expire at the next calendar day, not after a fixed number of
+// hours — a save from any point "today" is still valid later today, but
+// nothing carries over once the date changes (e.g. into the next shift).
+function autosaveIsStale(snap) {
+  if (!snap || !snap.ts) return true;
+  const saved = new Date(snap.ts);
+  const now = new Date();
+  return saved.toDateString() !== now.toDateString();
+}
+let autosaveTimer = null;
+
+function autosaveHasContent() {
+  // Quick check so we don't save/prompt-restore an entirely empty session
+  if (state.clientName || state.loc) return true;
+  if (snState.clientName || snState.describe || snState.progress) return true;
+  if (gnState.counselor || gnClients.some(c => c.name || c.responseTopic || c.responseReading || c.responseMindfulness || c.cjText)) return true;
+  if (dsState.clientName) return true;
+  if (deState.clientName) return true;
+  if (nnState.clientName) return true;
+  if (asaState.clientName) return true;
+  if (itpSelected.A.size || itpSelected.B.size || itpSelected.C.size) return true;
+  return false;
+}
+
+function autosaveCollectDom() {
+  // Generic capture of every value-bearing element that has a stable id.
+  // This covers the large majority of free-text/select/checkbox fields
+  // across every tool, since most inputs in this file carry an id.
+  const dom = {};
+  document.querySelectorAll('input[id], select[id], textarea[id]').forEach(el => {
+    if (el.type === 'checkbox' || el.type === 'radio') dom[el.id] = { c: el.checked };
+    else dom[el.id] = { v: el.value };
+  });
+  return dom;
+}
+
+function autosaveCollect() {
+  return {
+    ts: Date.now(),
+    state: JSON.parse(JSON.stringify(state)),
+    snState: JSON.parse(JSON.stringify(snState)),
+    gnState: JSON.parse(JSON.stringify(gnState)),
+    gnClients: JSON.parse(JSON.stringify(gnClients)),
+    gnClientIdCounter: gnClientIdCounter,
+    nnState: JSON.parse(JSON.stringify(nnState)),
+    asaState: JSON.parse(JSON.stringify(asaState)),
+    dsState: Object.assign({}, dsState, {
+      skills: Array.from(dsState.skills),
+      aftercareElements: Array.from(dsState.aftercareElements),
+      referrals: Array.from(dsState.referrals),
+    }),
+    deState: JSON.parse(JSON.stringify(deState)),
+    itpSelected: { A: Array.from(itpSelected.A), B: Array.from(itpSelected.B), C: Array.from(itpSelected.C) },
+    itpCustomGoals: JSON.parse(JSON.stringify(itpCustomGoals)),
+    itpCMEnabled: itpCMEnabled,
+    itpCMSelected: Array.from(itpCMSelected),
+    riskRatings: Object.assign({}, riskRatings),
+    dom: autosaveCollectDom(),
+  };
+}
+
+function autosaveSave() {
+  try {
+    if (!autosaveHasContent()) { autosaveSetIndicator('idle'); return; }
+    localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(autosaveCollect()));
+    autosaveSetIndicator('saved');
+  } catch (err) {
+    autosaveSetIndicator('error');
+  }
+}
+
+let autosaveIndicatorFadeTimer = null;
+function autosaveSetIndicator(status) {
+  const el = document.getElementById('autosaveIndicator');
+  if (!el) return;
+  const dot = document.getElementById('autosaveDot');
+  const text = document.getElementById('autosaveText');
+  clearTimeout(autosaveIndicatorFadeTimer);
+  if (status === 'idle') {
+    el.style.opacity = '0';
+    return;
+  }
+  if (status === 'saving') {
+    el.style.opacity = '1';
+    dot.style.background = '#c9a227';
+    text.textContent = 'Saving…';
+    el.title = 'Saving your in-progress work locally so it can be restored if the page closes unexpectedly.';
+    return;
+  }
+  if (status === 'error') {
+    el.style.opacity = '1';
+    dot.style.background = '#c0392b';
+    text.textContent = 'Autosave unavailable';
+    el.title = 'Local storage is full or unavailable — in-progress work will not be recoverable after a crash or refresh.';
+    return;
+  }
+  // saved
+  el.style.opacity = '1';
+  dot.style.background = '#7ec8a0';
+  text.textContent = 'Saved';
+  const now = new Date();
+  el.title = 'Autosaves your in-progress work locally so it can be restored if the page closes unexpectedly. Last saved ' +
+    now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }) + '.';
+  autosaveIndicatorFadeTimer = setTimeout(() => { el.style.opacity = '0.5'; }, 2500);
+}
+
+function autosaveScheduleSave() {
+  if (autosaveHasContent()) autosaveSetIndicator('saving');
+  clearTimeout(autosaveTimer);
+  autosaveTimer = setTimeout(autosaveSave, 1500);
+}
+
+function autosaveClear() {
+  try { localStorage.removeItem(AUTOSAVE_KEY); } catch (err) { /* ignore */ }
+  autosaveSetIndicator('idle');
+}
+
+// Debounced save on any interaction, anywhere in the document.
+document.addEventListener('input', autosaveScheduleSave, true);
+document.addEventListener('change', autosaveScheduleSave, true);
+// Periodic fallback in case of long pauses between edits.
+setInterval(autosaveSave, 30000);
+
+function autosaveApplyDom(dom) {
+  Object.keys(dom).forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const entry = dom[id];
+    if ('c' in entry) el.checked = entry.c;
+    else el.value = entry.v;
+  });
+}
+
+function autosaveSetGroupField(groupId, value) {
+  if (value === undefined || value === null) return;
+  const grp = document.getElementById(groupId);
+  if (!grp) return;
+  const el = grp.querySelector('input, select, textarea');
+  if (el) el.value = value;
+}
+
+function autosaveRestoreSeverityPills() {
+  document.querySelectorAll('.severity-pill').forEach(pill => {
+    const oc = pill.getAttribute('onclick') || '';
+    const m = oc.match(/^setSeverity\('([^']+)','([^']+)','([^']+)'/);
+    if (!m) return;
+    const [, dim, field, value] = m;
+    if (state[dim] && state[dim][field] === value) setSeverity(dim, field, value, pill);
+  });
+}
+
+function autosaveRestoreCheckboxGroup(containerId, valuesArr) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  const values = valuesArr || [];
+  container.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+    cb.checked = values.includes(cb.value);
+  });
+}
+
+function autosaveRestoreDsSetGroup(containerId, setValues) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  container.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+    const label = cb.closest('label');
+    const text = label ? label.textContent.trim() : '';
+    cb.checked = setValues.includes(text);
+  });
+}
+
+function autosaveApply(snap) {
+  // ── ASAM state ──
+  Object.assign(state, snap.state);
+  document.getElementById('locSelect').value = state.loc || '';
+  document.getElementById('noLocOverlay').style.display = state.loc ? 'none' : 'flex';
+  document.getElementById('clientName').value = state.clientName || '';
+  document.getElementById('docDate').value = state.date || document.getElementById('docDate').value;
+  setAdmissionType(state.admissionType || 'initial');
+  updateDimBadges();
+  updateRequiredMarkers();
+  autosaveRestoreSeverityPills();
+  autosaveRestoreCheckboxGroup('dim1-symptoms', state.dim1.symptoms);
+  autosaveRestoreCheckboxGroup('dim3-symptoms', state.dim3.symptoms);
+  autosaveRestoreCheckboxGroup('dim5-triggers', state.dim5.triggers);
+  autosaveRestoreCheckboxGroup('dim6-risks', state.dim6.risks);
+  if (state.dim3.noDx) {
+    const noDxCb = document.getElementById('dim3-no-dx');
+    if (noDxCb) noDxCb.checked = true;
+    const dxInput = document.getElementById('dim3-dx-input');
+    if (dxInput) { dxInput.disabled = true; dxInput.style.opacity = '0.4'; dxInput.style.pointerEvents = 'none'; }
+  }
+  autosaveSetGroupField('grp-dim1-substances', state.dim1.substances);
+  autosaveSetGroupField('grp-dim1-lastuse', state.dim1.lastUse);
+  const dim1Scores = document.querySelectorAll('#grp-dim1-scores input');
+  if (dim1Scores[0]) dim1Scores[0].value = state.dim1.ciwa || '';
+  if (dim1Scores[1]) dim1Scores[1].value = state.dim1.cows || '';
+  autosaveSetGroupField('grp-dim1-complicated', state.dim1.complicatedHistory);
+  autosaveSetGroupField('grp-dim1-notes', state.dim1.notes);
+  autosaveSetGroupField('grp-dim1-cs-status', state.dim1.csStatus);
+  autosaveSetGroupField('grp-dim1-cs-progress', state.dim1.csProgress);
+  autosaveSetGroupField('dim1-dc', state.dim1.dcStatus);
+  autosaveSetGroupField('grp-dim2-conditions', state.dim2.conditions);
+  autosaveSetGroupField('grp-dim2-impact', state.dim2.impact);
+  autosaveSetGroupField('grp-dim2-medications', state.dim2.medications);
+  autosaveSetGroupField('grp-dim2-notes', state.dim2.notes);
+  autosaveSetGroupField('grp-dim2-cs-status', state.dim2.csStatus);
+  autosaveSetGroupField('grp-dim2-cs-progress', state.dim2.csProgress);
+  autosaveSetGroupField('dim2-dc', state.dim2.dcStatus);
+  if (!state.dim3.noDx) {
+    const dxInput = document.getElementById('dim3-dx-input');
+    if (dxInput) dxInput.value = state.dim3.diagnoses || '';
+  }
+  autosaveSetGroupField('grp-dim3-impact', state.dim3.impact);
+  autosaveSetGroupField('grp-dim3-notes', state.dim3.notes);
+  autosaveSetGroupField('grp-dim3-cs-status', state.dim3.csStatus);
+  autosaveSetGroupField('grp-dim3-cs-goals', state.dim3.csGoals);
+  autosaveSetGroupField('dim3-dc', state.dim3.dcStatus);
+  checkDim3ConsultFlag();
+  autosaveSetGroupField('grp-dim4-stage', state.dim4.stage);
+  autosaveSetGroupField('grp-dim4-engagement', state.dim4.engagement);
+  autosaveSetGroupField('grp-dim4-barriers', state.dim4.barriers);
+  autosaveSetGroupField('grp-dim4-rationale', state.dim4.locRationale);
+  autosaveSetGroupField('grp-dim4-cs-status', state.dim4.csStatus);
+  autosaveSetGroupField('grp-dim4-cs-goals', state.dim4.csGoals);
+  autosaveSetGroupField('dim4-dc', state.dim4.dcStatus);
+  autosaveSetGroupField('grp-dim5-priortx', state.dim5.priorTx);
+  autosaveSetGroupField('grp-dim5-notes', state.dim5.notes);
+  autosaveSetGroupField('grp-dim5-cs-status', state.dim5.csStatus);
+  autosaveSetGroupField('grp-dim5-cs-progress', state.dim5.csProgress);
+  autosaveSetGroupField('dim5-dc', state.dim5.dcStatus);
+  autosaveSetGroupField('grp-dim6-living', state.dim6.living);
+  autosaveSetGroupField('grp-dim6-support', state.dim6.support);
+  autosaveSetGroupField('grp-dim6-notes', state.dim6.notes);
+  autosaveSetGroupField('grp-dim6-cs-status', state.dim6.csStatus);
+  autosaveSetGroupField('grp-dim6-cs-progress', state.dim6.csProgress);
+  autosaveSetGroupField('dim6-dc', state.dim6.dcStatus);
+
+  // ── ITP ──
+  itpSelected.A = new Set(snap.itpSelected.A);
+  itpSelected.B = new Set(snap.itpSelected.B);
+  itpSelected.C = new Set(snap.itpSelected.C);
+  Object.assign(itpCustomGoals, snap.itpCustomGoals);
+  itpCMEnabled = !!snap.itpCMEnabled;
+  itpCMSelected.clear();
+  (snap.itpCMSelected || []).forEach(i => itpCMSelected.add(i));
+  renderITPGoals();
+
+  // ── Individual Note ──
+  Object.assign(snState, snap.snState);
+  document.getElementById('sn-date').value = snState.date || '';
+  document.getElementById('sn-type').value = snState.sessionType || 'itp_review';
+  snUpdateSessionType();
+  snRenderReviewed();
+  snRenderNext();
+  document.querySelectorAll('#sn-intervention-chips .sn-chip').forEach(btn => {
+    btn.classList.toggle('active', snState.interventions.includes(btn.textContent));
+  });
+
+  // ── Group Notes ──
+  Object.assign(gnState, snap.gnState);
+  gnClients = snap.gnClients || [];
+  gnClientIdCounter = snap.gnClientIdCounter || gnClientIdCounter;
+  const gnDateEl = document.getElementById('gn-date');
+  if (gnDateEl) gnDateEl.value = gnState.date || '';
+  gnRenderClients();
+  gnCheckRatio();
+
+  // ── Nursing Note ──
+  Object.assign(nnState, snap.nnState);
+  const nnDateEl = document.getElementById('nn-date');
+  if (nnDateEl) nnDateEl.value = nnState.date || '';
+  nnBuildAllChips();
+  if (typeof nnUpdateCloserButton === 'function') nnUpdateCloserButton();
+
+  // ── ASA Intervention Note ──
+  Object.assign(asaState, snap.asaState);
+  const asaDateEl = document.getElementById('asa-date');
+  if (asaDateEl) asaDateEl.value = asaState.date || '';
+  asaBuildChips();
+  if (typeof asaUpdateContactBasis === 'function') asaUpdateContactBasis();
+
+  // ── Discharge Summary ──
+  Object.assign(dsState, snap.dsState, {
+    skills: new Set(snap.dsState.skills || []),
+    aftercareElements: new Set(snap.dsState.aftercareElements || []),
+    referrals: new Set(snap.dsState.referrals || []),
+  });
+  dsInit();
+  if (dsState.dischargeType) dsSetDischargeType(dsState.dischargeType);
+  if (dsState.dischargeSubtype) dsSetSubtype(dsState.dischargeSubtype);
+  if (dsState.eligibility) dsSetEligibility(dsState.eligibility);
+  if (dsState.successLevel) dsSetSuccessLevel(dsState.successLevel);
+  if (dsState.resourceSheet) dsSetResourceSheet(dsState.resourceSheet);
+  autosaveRestoreDsSetGroup('ds-skill-checkboxes', Array.from(dsState.skills));
+  autosaveRestoreDsSetGroup('ds-aftercare-checkboxes', Array.from(dsState.aftercareElements));
+  autosaveRestoreDsSetGroup('ds-referral-checkboxes', Array.from(dsState.referrals));
+
+  // ── Discharge Email ──
+  // deSetYN / deSetYNA / deSetTri / deSetDischargeType / deSetSubtype all
+  // TOGGLE: calling them with a value that's already current clears it.
+  // So each field must be blanked immediately before its setter runs, or
+  // restoring deState first (which already holds the target value) causes
+  // the very next setter call to flip it back off.
+  const savedDe = snap.deState;
+  Object.assign(deState, savedDe);
+  if (savedDe.unit) deSetUnit(savedDe.unit);
+  if (savedDe.dischargeType) { deState.dischargeType = ''; deSetDischargeType(savedDe.dischargeType); }
+  if (savedDe.dischargeSubtype) { deState.dischargeSubtype = ''; deSetSubtype(savedDe.dischargeSubtype); }
+  if (savedDe.bridgeContacted) { deState.bridgeContacted = ''; deSetYN('bridgeContacted', savedDe.bridgeContacted, 'de-bridge'); }
+  if (savedDe.resourceSheetProvided) { deState.resourceSheetProvided = ''; deSetYN('resourceSheetProvided', savedDe.resourceSheetProvided, 'de-rs'); }
+  if (savedDe.medsReceived) { deState.medsReceived = ''; deSetYNA('medsReceived', savedDe.medsReceived, 'de-meds'); }
+  if (savedDe.propertyReceived) { deState.propertyReceived = ''; deSetYNA('propertyReceived', savedDe.propertyReceived, 'de-prop'); }
+  if (savedDe.phoneReceived) { deState.phoneReceived = ''; deSetYNA('phoneReceived', savedDe.phoneReceived, 'de-phn'); }
+  if (savedDe.woodhavenPropertyCollected) { deState.woodhavenPropertyCollected = ''; deSetYN('woodhavenPropertyCollected', savedDe.woodhavenPropertyCollected, 'de-whprop'); }
+  if (savedDe.paperworkSigned) { deState.paperworkSigned = ''; deSetYN('paperworkSigned', savedDe.paperworkSigned, 'de-paperwork'); }
+  if (savedDe.phoneCallMade) { deState.phoneCallMade = ''; deSetYN('phoneCallMade', savedDe.phoneCallMade, 'de-callmade'); }
+  if (savedDe.onProbation) { deState.onProbation = ''; deSetTri('onProbation', savedDe.onProbation, 'de-po'); }
+  if (savedDe.poNotified) { deState.poNotified = ''; deSetYN('poNotified', savedDe.poNotified, 'de-ponotify'); }
+  if (savedDe.outpatientOffered) { deState.outpatientOffered = ''; deSetYN('outpatientOffered', savedDe.outpatientOffered, 'de-op'); }
+  if (savedDe.roomCleanedSearched) { deState.roomCleanedSearched = ''; deSetYN('roomCleanedSearched', savedDe.roomCleanedSearched, 'de-room'); }
+  // Restore whichever fields the toggle calls above didn't touch (free text etc.)
+  Object.assign(deState, savedDe);
+  if (deState.destinationUnknown) deToggleDestinationUnknown(true);
+  if (deState.forwardingNone) deToggleForwardingNone(true);
+  if (typeof deRenderOutput === 'function') deRenderOutput();
+
+  // ── Risk ratings (carried over; regenerate the narrative to refresh fully) ──
+  Object.assign(riskRatings, snap.riskRatings);
+
+  // ── Final pass: generic id-keyed DOM restore fills in any remaining
+  // free-text/select/checkbox fields not explicitly handled above,
+  // and reconciles ITP goal/quote/objective fields now that renderITPGoals()
+  // has rebuilt the relevant cards. ──
+  autosaveApplyDom(snap.dom);
+
+  // ── Regenerate output where it's safe to do so silently ──
+  // ASAM, the Individual Note, and the Nursing Note render purely from state
+  // with no validation side effects, so it's safe to rebuild their output
+  // automatically. The ASA Intervention Note and the ITP "Format for ITP"
+  // step both paint red borders on incomplete required fields as part of
+  // generating — auto-triggering those right after a restore would look like
+  // an error the counselor never caused, so those two stay manual.
+  if (state.loc) {
+    try { renderGeneratedOutput(); } catch (err) { console.error('Autosave: ASAM regenerate failed', err); }
+  }
+  if (snState.clientName || snState.describe || snState.progress) {
+    try { snGenerate(); } catch (err) { console.error('Autosave: Individual Note regenerate failed', err); }
+  }
+  if (nnState.clientName || nnState.wdType || nnState.symptomDetail) {
+    try { nnGenerate(); } catch (err) { console.error('Autosave: Nursing Note regenerate failed', err); }
+  }
+
+  autosaveSave();
+}
+
+function autosaveShowRestorePrompt(snap) {
+  const modal = document.createElement('div');
+  modal.id = 'autosaveRestoreModal';
+  modal.style.cssText = 'display:flex;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:200;align-items:center;justify-content:center;';
+  const mins = Math.max(1, Math.round((Date.now() - snap.ts) / 60000));
+  const whenText = mins < 60 ? `${mins} minute${mins === 1 ? '' : 's'} ago` : `${Math.round(mins / 60)} hour${Math.round(mins / 60) === 1 ? '' : 's'} ago`;
+  modal.innerHTML = `
+    <div style="background:white;border-radius:10px;padding:28px 32px;max-width:400px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.2)">
+      <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:10px">Restore previous session?</div>
+      <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;margin-bottom:24px">DocAssist found in-progress work from ${whenText}. Would you like to restore it?</div>
+      <div style="display:flex;gap:10px;justify-content:flex-end">
+        <button class="btn btn-ghost" id="autosaveDiscardBtn">Discard</button>
+        <button class="btn" style="background:var(--accent);color:white" id="autosaveRestoreBtn">Restore</button>
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
+  document.getElementById('autosaveDiscardBtn').onclick = () => { autosaveClear(); modal.remove(); };
+  document.getElementById('autosaveRestoreBtn').onclick = () => {
+    try { autosaveApply(snap); } catch (err) { console.error('Autosave restore failed:', err); }
+    modal.remove();
+  };
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  try {
+    const raw = localStorage.getItem(AUTOSAVE_KEY);
+    if (!raw) return;
+    const snap = JSON.parse(raw);
+    if (autosaveIsStale(snap)) { autosaveClear(); return; }
+    setTimeout(() => autosaveShowRestorePrompt(snap), 200);
+  } catch (err) { autosaveClear(); }
+});
 </script>
 
 <!-- ═══ TUTORIAL OVERLAY ═════════════════════════════════════ -->
+<div id="autosaveIndicator" style="position:fixed;bottom:62px;right:18px;z-index:40;display:flex;align-items:center;gap:6px;font-size:11px;color:#5a826a;opacity:0;transition:opacity .4s;white-space:nowrap;pointer-events:none;background:rgba(255,255,255,0.92);padding:5px 11px;border-radius:20px;box-shadow:0 2px 8px rgba(0,0,0,0.08);border:1px solid #dde6e0;">
+  <span id="autosaveDot" style="width:6px;height:6px;border-radius:50%;background:#7ec8a0;flex-shrink:0;transition:background .2s;"></span>
+  <span id="autosaveText">Saved</span>
+</div>
+
 <div id="tut-overlay">
   <div id="tut-spotlight"></div>
   <div id="tut-tooltip">
