@@ -224,6 +224,25 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(3px); }
 }
+@keyframes home-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.home-brand, .home-greeting, .home-quick-access, .home-card {
+  animation: home-fade-in 0.45s ease-out both;
+}
+.home-brand { animation-delay: 0s; }
+.home-greeting { animation-delay: 0.07s; }
+.home-quick-access { animation-delay: 0.14s; }
+.home-grid .home-card:nth-child(1) { animation-delay: 0.20s; }
+.home-grid .home-card:nth-child(2) { animation-delay: 0.25s; }
+.home-grid .home-card:nth-child(3) { animation-delay: 0.30s; }
+.home-grid .home-card:nth-child(4) { animation-delay: 0.35s; }
+.home-grid .home-card:nth-child(5) { animation-delay: 0.40s; }
+.home-grid .home-card:nth-child(6) { animation-delay: 0.45s; }
+@media (prefers-reduced-motion: reduce) {
+  .home-brand, .home-greeting, .home-quick-access, .home-card { animation: none; }
+}
 .home-brand {
   display: flex;
   align-items: center;
@@ -299,6 +318,10 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   box-shadow: 0 4px 16px rgba(45,106,79,0.16);
   transform: translateY(-2px);
 }
+.home-quick-icon svg { transition: transform 0.2s ease; }
+.home-quick-access:hover .home-quick-icon svg { transform: translateY(-1px) scale(1.08); }
+.home-quick-access .home-card-arrow { transition: transform 0.2s ease, opacity 0.2s ease; opacity: 0.75; }
+.home-quick-access:hover .home-card-arrow { transform: translateX(3px); opacity: 1; }
 .home-quick-icon {
   width: clamp(36px, 5.5vh, 44px);
   height: clamp(36px, 5.5vh, 44px);
@@ -364,6 +387,10 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   box-shadow: 0 4px 16px rgba(45,106,79,0.14);
   transform: translateY(-2px);
 }
+.home-card-icon svg { transition: transform 0.2s ease; }
+.home-card:hover .home-card-icon svg { transform: translateY(-1px) scale(1.08); }
+.home-card .home-card-arrow { transition: transform 0.2s ease, opacity 0.2s ease; opacity: 0.75; }
+.home-card:hover .home-card-arrow { transform: translateX(3px); opacity: 1; }
 .home-card.coming-soon {
   cursor: default;
   opacity: 0.65;
@@ -375,11 +402,8 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   box-shadow: none;
   transform: none;
 }
-@keyframes home-card-attention-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(45,106,79,0.35); }
-  50% { box-shadow: 0 0 0 8px rgba(45,106,79,0); }
-}
-.home-card-pulse-temp { animation: home-card-attention-pulse 2.4s ease-in-out infinite; }
+.home-card.coming-soon:hover .home-card-icon svg,
+.home-card.coming-soon:hover .home-card-arrow { transform: none; opacity: 0.65; }
 
 /* ─── DISCHARGE TOOL ──────────────────────── */
 .ds-pill {
@@ -2383,7 +2407,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
           <span class="home-card-arrow">Open →</span>
         </div>
         <div class="home-card" onclick="navigateTo('asa')">
-          <div class="home-card-icon"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div>
+          <div class="home-card-icon"><svg viewBox="0 0 24 24"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></div>
           <div class="home-card-title">ASA Intervention Note</div>
           <span class="home-card-arrow">Open →</span>
         </div>
@@ -4237,16 +4261,6 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <span class="tool-nav-divider">|</span>
     <span class="tool-nav-title">Discharge Email</span>
     <button class="tool-help-btn" onclick="confirmToolTutorial('Discharge Email')">Walkthrough</button>
-  </div>
-  <div id="de-workflow-notice" style="display:none;position:relative;background:#fff3cd;border:2px solid #d9822b;border-left:8px solid #d9822b;border-radius:6px;margin:14px 16px 0 16px;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
-    <div id="de-workflow-notice-full" style="padding:14px 18px;">
-      <div style="font-size:15px;font-weight:800;color:#7a4a00;margin-bottom:4px;">⚡ This tool has changed — it no longer updates automatically</div>
-      <div style="font-size:13px;color:#7a4a00;line-height:1.5;margin-bottom:10px;">Fill in the fields on the left, then click <strong>Generate Email</strong> at the bottom of the page. Nothing will appear in the boxes on the right until you do — that's expected, not a bug. If you change anything after generating, click Generate again before copying.</div>
-      <button onclick="deToggleWorkflowNotice()" style="background:#fff;border:1px solid #d9822b;color:#7a4a00;font-size:12px;font-weight:700;padding:6px 14px;border-radius:5px;cursor:pointer;font-family:'IBM Plex Sans',sans-serif;">▴ Shrink this reminder</button>
-    </div>
-    <div id="de-workflow-notice-compact" onclick="deToggleWorkflowNotice()" style="display:none;padding:6px 14px;font-size:11px;font-weight:600;color:#7a4a00;cursor:pointer;">
-      ⚡ Reminder: this tool needs Generate clicked before copying — click to expand
-    </div>
   </div>
   <div style="display:flex;gap:16px;flex:1;min-height:0;padding:16px 16px 0 16px;">
 
@@ -6309,7 +6323,7 @@ function navigateTo(view) {
   document.getElementById('view-' + view).classList.add('active');
   if (view === 'itp') renderAsamRef();
   if (view === 'discharge') dsInit();
-  if (view === 'discharge-email') { deRenderOutput(); deInitWorkflowNotice(); }
+  if (view === 'discharge-email') { deRenderOutput(); }
   if (view === 'home') setTimeout(updateHomeScrollHint, 30);
 }
 
@@ -9328,19 +9342,6 @@ document.addEventListener('DOMContentLoaded', function() {
   gnInitClients(0);
 });
 
-// ─── TEMPORARY: pulse on the Discharge Email home card ─────
-// Added 2026-07-16 to draw attention to the new Generate workflow.
-// Auto-expires on its own — safe to delete this whole block anytime
-// after DE_HOME_PULSE_EXPIRES, or sooner if it's no longer wanted.
-const DE_HOME_PULSE_EXPIRES = '2026-07-24';
-document.addEventListener('DOMContentLoaded', function() {
-  const card = document.getElementById('home-card-discharge-email');
-  if (!card) return;
-  if (new Date() < new Date(DE_HOME_PULSE_EXPIRES + 'T00:00:00')) {
-    card.classList.add('home-card-pulse-temp');
-  }
-});
-
 // ═══════════════════════════════════════════════════
 // ═══════════════════════════════════════════════════
 // DISCHARGE SUMMARY TOOL
@@ -10277,31 +10278,6 @@ function deDirectToGenerate(btn) {
     btn.textContent = 'Generate first ↘';
     setTimeout(() => { btn.innerHTML = original; }, 1800);
   }
-}
-
-const DE_WORKFLOW_NOTICE_KEY = 'docassist_de_workflow_notice_compact';
-let deWorkflowNoticeCompact = false;
-try { deWorkflowNoticeCompact = localStorage.getItem(DE_WORKFLOW_NOTICE_KEY) === '1'; } catch (err) { deWorkflowNoticeCompact = false; }
-
-function deInitWorkflowNotice() {
-  const notice = document.getElementById('de-workflow-notice');
-  if (!notice) return;
-  notice.style.display = 'block';
-  deRenderWorkflowNoticeState();
-}
-
-function deRenderWorkflowNoticeState() {
-  const full = document.getElementById('de-workflow-notice-full');
-  const compact = document.getElementById('de-workflow-notice-compact');
-  if (!full || !compact) return;
-  full.style.display = deWorkflowNoticeCompact ? 'none' : 'block';
-  compact.style.display = deWorkflowNoticeCompact ? 'block' : 'none';
-}
-
-function deToggleWorkflowNotice() {
-  deWorkflowNoticeCompact = !deWorkflowNoticeCompact;
-  try { localStorage.setItem(DE_WORKFLOW_NOTICE_KEY, deWorkflowNoticeCompact ? '1' : '0'); } catch (err) { /* ignore */ }
-  deRenderWorkflowNoticeState();
 }
 
 function deBridgeStatus() {
