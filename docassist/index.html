@@ -56,6 +56,8 @@ body {
   justify-content: space-between;
   padding: 0 20px;
   flex-shrink: 0;
+  user-select: none;
+  -webkit-user-select: none;
 }
 .header-left { display: flex; align-items: center; gap: 10px; }
 .brand-mark {
@@ -202,6 +204,8 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   padding: clamp(16px, 4vh, 48px) 24px clamp(12px, 3vh, 40px);
   background: linear-gradient(160deg, #f7f9f0 0%, #fdf8e1 100%);
   overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
 }
 .home-scroll-area {
   flex: 1;
@@ -235,21 +239,12 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   50% { transform: translateY(3px); }
 }
 @keyframes home-fade-in {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
 }
 .home-brand, .home-greeting, .home-quick-access, .home-card {
-  animation: home-fade-in 0.45s ease-out both;
+  animation: home-fade-in 0.2s ease-out both;
 }
-.home-brand { animation-delay: 0s; }
-.home-greeting { animation-delay: 0.07s; }
-.home-quick-access { animation-delay: 0.14s; }
-.home-grid .home-card:nth-child(1) { animation-delay: 0.20s; }
-.home-grid .home-card:nth-child(2) { animation-delay: 0.25s; }
-.home-grid .home-card:nth-child(3) { animation-delay: 0.30s; }
-.home-grid .home-card:nth-child(4) { animation-delay: 0.35s; }
-.home-grid .home-card:nth-child(5) { animation-delay: 0.40s; }
-.home-grid .home-card:nth-child(6) { animation-delay: 0.45s; }
 @media (prefers-reduced-motion: reduce) {
   .home-brand, .home-greeting, .home-quick-access, .home-card { animation: none; }
 }
@@ -259,6 +254,8 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   justify-content: center;
   gap: 10px;
   margin-bottom: clamp(6px, 1.2vh, 10px);
+  user-select: none;
+  -webkit-user-select: none;
 }
 .home-brand-mark {
   width: clamp(34px, 5vh, 42px);
@@ -269,7 +266,9 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  overflow: hidden;
   box-shadow: 0 2px 6px rgba(45,106,79,0.35);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 .home-brand-mark svg { width: 56%; height: 56%; stroke: #ffffff; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .home-brand-title {
@@ -277,8 +276,18 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   font-weight: 800;
   color: #1a3d22;
   letter-spacing: -0.015em;
+  cursor: default;
 }
-.home-brand-title-accent { color: var(--accent); }
+.home-brand-title-accent { color: var(--accent); transition: color 0.25s ease; }
+.home-brand:hover .home-brand-mark {
+  transform: translateY(-2px) scale(1.06);
+  box-shadow: 0 6px 14px rgba(45,106,79,0.45);
+}
+.home-brand:hover .home-brand-title-accent { color: #1e4d38; }
+@media (prefers-reduced-motion: reduce) {
+  .home-brand-mark, .home-brand-title-accent { transition: none; }
+  .home-brand:hover .home-brand-mark { transform: none; box-shadow: 0 2px 6px rgba(45,106,79,0.35); }
+}
 .home-greeting {
   text-align: center;
   margin-bottom: clamp(16px, 4vh, 60px);
@@ -2245,7 +2254,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 
 <!-- ═══ HEADER ═══════════════════════════════════════ -->
 <div class="app-header">
-  <div class="header-left" onclick="navigateTo('home')" style="cursor:pointer" title="Back to home">
+  <div class="header-left" onclick="goHome()" style="cursor:pointer" title="Back to home">
     <div class="brand-mark"><svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><polyline points="9 14 11 16 15 12"/></svg></div>
     <div style="display:flex;align-items:baseline;gap:12px;">
       <div class="app-title">Doc<span class="app-title-accent">Assist</span></div>
@@ -6328,6 +6337,10 @@ document.addEventListener('DOMContentLoaded', function() {
   window.addEventListener('resize', updateHomeScrollHint);
   setTimeout(updateHomeScrollHint, 100);
 });
+
+function goHome() {
+  if (!document.getElementById('view-home').classList.contains('active')) navigateTo('home');
+}
 
 function navigateTo(view) {
   document.querySelectorAll('.tool-view').forEach(v => v.classList.remove('active', 'view-transitioning', 'view-transition-in'));
