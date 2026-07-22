@@ -6,7 +6,7 @@
 <title>DocAssist</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%232d6a4f'/%3E%3Cg transform='translate(4,4)' fill='none' stroke='%23d4eadd' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2'/%3E%3Crect x='9' y='3' width='6' height='4' rx='1'/%3E%3Cpolyline points='9 14 11 16 15 12'/%3E%3C/g%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg: #f0f2f0;
@@ -35,7 +35,7 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'Public Sans', sans-serif;
   background: var(--bg);
   color: var(--text);
   height: 100vh;
@@ -77,7 +77,7 @@ body {
   background: none;
   border: 1px solid #2a4a35;
   color: #7ec8a0;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'Public Sans', sans-serif;
   font-size: 11px;
   font-weight: 500;
   padding: 3px 10px;
@@ -90,7 +90,7 @@ body {
   background: #e8f5ee;
   border: 1.5px solid #2d6a4f;
   color: #2d6a4f;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'Public Sans', sans-serif;
   font-size: 12px;
   font-weight: 700;
   padding: 5px 14px;
@@ -107,7 +107,7 @@ body {
   background: none;
   border: 1px solid #ccc;
   color: #555;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'Public Sans', sans-serif;
   font-size: 12px;
   padding: 4px 12px;
   border-radius: 20px;
@@ -153,7 +153,7 @@ select.ctrl, input.ctrl {
   border: 1px solid var(--border);
   border-radius: 5px;
   padding: 6px 10px;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'Public Sans', sans-serif;
   font-size: 13px;
   color: var(--text);
   background: white;
@@ -167,7 +167,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   padding: 0 14px;
   border: none;
   background: white;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'Public Sans', sans-serif;
   font-size: 12px;
   font-weight: 500;
   cursor: pointer;
@@ -181,6 +181,16 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 /* ─── VIEWS ───────────────────────────────── */
 .tool-view { display: none; flex-direction: column; flex: 1; min-height: 0; }
 .tool-view.active { display: flex; }
+.tool-view.view-transitioning { opacity: 0; transform: translateY(6px); }
+.tool-view.view-transitioning.view-transition-in {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .tool-view.view-transitioning,
+  .tool-view.view-transitioning.view-transition-in { opacity: 1; transform: none; transition: none; }
+}
 
 /* ─── HOME SCREEN ─────────────────────────── */
 .home-screen {
@@ -251,21 +261,22 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   margin-bottom: clamp(6px, 1.2vh, 10px);
 }
 .home-brand-mark {
-  width: clamp(30px, 4.5vh, 38px);
-  height: clamp(30px, 4.5vh, 38px);
-  border-radius: 9px;
+  width: clamp(34px, 5vh, 42px);
+  height: clamp(34px, 5vh, 42px);
+  border-radius: 10px;
   background: var(--accent);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(45,106,79,0.35);
 }
-.home-brand-mark svg { width: 55%; height: 55%; stroke: var(--accent-light); fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+.home-brand-mark svg { width: 56%; height: 56%; stroke: #ffffff; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .home-brand-title {
-  font-size: clamp(22px, 3.4vh, 30px);
-  font-weight: 700;
+  font-size: clamp(24px, 3.7vh, 32px);
+  font-weight: 800;
   color: #1a3d22;
-  letter-spacing: 0.01em;
+  letter-spacing: -0.015em;
 }
 .home-brand-title-accent { color: var(--accent); }
 .home-greeting {
@@ -414,7 +425,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   color: var(--text-secondary);
   font-size: 12px;
   cursor: pointer;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'Public Sans', sans-serif;
   transition: all .15s;
 }
 .ds-pill:hover { border-color: var(--accent); color: var(--accent); }
@@ -440,13 +451,13 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   line-height: 1.6;
   color: var(--text);
   white-space: pre-wrap;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'DM Mono', monospace;
   min-height: 32px;
 }
 .ds-out-empty {
   color: var(--text-secondary);
   font-style: italic;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'Public Sans', sans-serif;
   font-size: 12px;
 }
 .ds-copy-btn {
@@ -458,7 +469,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   border: 1px solid var(--accent);
   border-radius: 4px;
   cursor: pointer;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'Public Sans', sans-serif;
 }
 .ds-copy-btn:hover { background: var(--accent); color: #fff; }
 .ds-copy-btn-lg {
@@ -492,7 +503,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   border-radius: 4px;
   background: var(--surface);
   color: var(--text);
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'Public Sans', sans-serif;
 }
 .ds-phase-entry select:focus, .ds-phase-entry input:focus {
   outline: none;
@@ -622,7 +633,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 .tool-nav-back {
   background: none;
   border: none;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'Public Sans', sans-serif;
   font-size: 12px;
   font-weight: 500;
   color: var(--accent);
@@ -642,7 +653,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   color: var(--text);
 }
 .tool-help-btn {
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'Public Sans', sans-serif;
   font-size: 11px;
   font-weight: 700;
   padding: 5px 13px;
@@ -703,7 +714,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   border: none;
   background: none;
   cursor: pointer;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'Public Sans', sans-serif;
   font-size: 11px;
   font-weight: 500;
   color: var(--dim-inactive);
@@ -762,7 +773,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   padding: 7px 9px;
   border: 1px solid var(--border);
   border-radius: 5px;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'Public Sans', sans-serif;
   font-size: 12px;
   color: var(--text);
   background: white;
@@ -782,7 +793,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   padding: 7px 9px;
   border: 1px solid var(--border);
   border-radius: 5px;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'Public Sans', sans-serif;
   font-size: 12px;
   color: var(--text);
   background: white;
@@ -877,7 +888,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   font-weight: 500;
   cursor: pointer;
   transition: all 0.12s;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'Public Sans', sans-serif;
   color: var(--text-secondary);
 }
 .severity-pill.selected {
@@ -1013,7 +1024,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   border: 1px solid var(--border);
   border-radius: 4px;
   padding: 2px 8px;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'Public Sans', sans-serif;
   font-size: 10px;
   font-weight: 500;
   color: var(--text-secondary);
@@ -1036,7 +1047,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   padding: 7px 15px;
   border-radius: 5px;
   border: none;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'Public Sans', sans-serif;
   font-size: 12px;
   font-weight: 500;
   cursor: pointer;
@@ -1068,7 +1079,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   padding: 12px 16px;
   border: none;
   background: none;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'Public Sans', sans-serif;
   font-size: 12px;
   font-weight: 500;
   color: var(--text-secondary);
@@ -1085,7 +1096,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   border-radius: 5px;
   border: 1px solid var(--border);
   background: white;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'Public Sans', sans-serif;
   font-size: 11px;
   font-weight: 500;
   color: var(--text-secondary);
@@ -1129,7 +1140,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   border-radius: 5px;
   border: 1px solid var(--border);
   background: white;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'DM Mono', monospace;
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
@@ -1240,7 +1251,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   font-weight: 500;
   cursor: pointer;
   transition: all 0.12s;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'Public Sans', sans-serif;
   color: var(--text-secondary);
   line-height: 1.3;
 }
@@ -1272,7 +1283,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   padding: 7px 9px;
   border: 1px solid var(--border);
   border-radius: 5px;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'Public Sans', sans-serif;
   font-size: 12px;
   color: var(--text);
   background: white;
@@ -1285,7 +1296,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   padding: 7px 9px;
   border: 1px solid var(--border);
   border-radius: 5px;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'Public Sans', sans-serif;
   font-size: 12px;
   color: var(--text);
   background: white;
@@ -1358,7 +1369,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   font-weight: 600;
   color: var(--accent);
   cursor: pointer;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'Public Sans', sans-serif;
 }
 .sn-add-obj-btn:hover { border-color: var(--accent); background: var(--accent-light); }
 
@@ -1378,7 +1389,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   border: 1px solid var(--border);
   border-radius: 6px;
   padding: 20px 24px;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'DM Mono', monospace;
   font-size: 11.5px;
   line-height: 1.75;
   color: var(--text);
@@ -1409,7 +1420,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   gap: 12px;
 }
 .sn-timer-display {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'DM Mono', monospace;
   font-size: 22px;
   font-weight: 600;
   color: #7ec8a0;
@@ -1442,14 +1453,14 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 }
 .sn-timer-time-val {
   color: #c5e8d5;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'DM Mono', monospace;
   font-size: 11px;
 }
 .sn-timer-btn {
   padding: 5px 12px;
   border-radius: 5px;
   border: none;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'Public Sans', sans-serif;
   font-size: 11px;
   font-weight: 600;
   cursor: pointer;
@@ -1487,7 +1498,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   padding: 7px 9px;
   border: 1px solid var(--border);
   border-radius: 5px;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'Public Sans', sans-serif;
   font-size: 12px;
   color: var(--text);
   background: white;
@@ -1708,7 +1719,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   border: 1px solid var(--border);
   border-radius: 5px;
   padding: 7px 10px;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'Public Sans', sans-serif;
   font-size: 12px;
   color: var(--text);
   background: white;
@@ -1721,7 +1732,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   border: 1px solid var(--border);
   border-radius: 5px;
   padding: 7px 10px;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'Public Sans', sans-serif;
   font-size: 12px;
   color: var(--text);
   background: white;
@@ -1742,7 +1753,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   font-size: 10px;
   font-weight: 500;
   cursor: pointer;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'Public Sans', sans-serif;
   color: var(--text-secondary);
   transition: all 0.12s;
   white-space: nowrap;
@@ -1753,7 +1764,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   border: 1px solid var(--border);
   border-radius: 5px;
   padding: 7px 10px;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'Public Sans', sans-serif;
   font-size: 12px;
   color: var(--text);
   background: white;
@@ -1780,7 +1791,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   border-radius: 5px;
   padding: 10px 12px;
   white-space: pre-wrap;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'DM Mono', monospace;
 }
 .tj-divider {
   border: none;
@@ -1836,12 +1847,12 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 .itp-add-row { display: flex; gap: 8px; margin-bottom: 4px; }
 .itp-add-select {
   flex: 1; padding: 6px 9px; border: 1px solid var(--border);
-  border-radius: 5px; font-family: 'IBM Plex Sans', sans-serif;
+  border-radius: 5px; font-family: 'Public Sans', sans-serif;
   font-size: 12px; color: var(--text); background: white; outline: none;
 }
 .itp-add-btn {
   padding: 6px 12px; border-radius: 5px; border: 1px solid var(--accent);
-  background: var(--accent-light); color: var(--accent); font-family: 'IBM Plex Sans', sans-serif;
+  background: var(--accent-light); color: var(--accent); font-family: 'Public Sans', sans-serif;
   font-size: 12px; font-weight: 500; cursor: pointer; white-space: nowrap;
 }
 .itp-add-btn:hover { background: var(--accent); color: white; }
@@ -1869,7 +1880,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 .itp-goal-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-secondary); margin-bottom: 5px; }
 .itp-goal-select {
   width: 100%; padding: 7px 9px; border: 1px solid var(--border);
-  border-radius: 5px; font-family: 'IBM Plex Sans', sans-serif;
+  border-radius: 5px; font-family: 'Public Sans', sans-serif;
   font-size: 12px; color: var(--text); background: white; outline: none; margin-bottom: 10px;
 }
 .itp-pairs-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-secondary); margin-bottom: 6px; }
@@ -2084,7 +2095,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   background: none;
   border: none;
   color: #2d6a4f;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'Public Sans', sans-serif;
   font-size: 12px;
   cursor: pointer;
   text-decoration: underline;
@@ -2121,7 +2132,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   padding: 20px 22px 16px;
   width: 340px;
   max-width: calc(100vw - 32px);
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'Public Sans', sans-serif;
 }
 .tut-progress-bar {
   height: 3px;
@@ -2182,7 +2193,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   align-items: center;
 }
 #tut-exit-btn {
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'Public Sans', sans-serif;
   font-size: 12px;
   color: #9aa3a0;
   background: none;
@@ -2194,7 +2205,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 }
 #tut-exit-btn:hover { color: #6b7870; }
 #tut-skip-btn {
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'Public Sans', sans-serif;
   font-size: 12px;
   font-weight: 600;
   color: var(--accent);
@@ -2207,7 +2218,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 }
 #tut-skip-btn:hover { color: #1e4d38; }
 #tut-back-btn, #tut-next-btn {
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'Public Sans', sans-serif;
   font-size: 12px;
   font-weight: 600;
   padding: 7px 15px;
@@ -2244,7 +2255,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <!-- Session Timer -->
     <div id="timerGroup" style="display:flex;align-items:center;gap:6px;position:relative;" onmouseenter="document.getElementById('timer-tooltip').style.opacity='1'" onmouseleave="document.getElementById('timer-tooltip').style.opacity='0'">
       <div id="timer-tooltip" style="position:absolute;bottom:-38px;left:50%;transform:translateX(-50%);background:#0d1f13;color:#a0b8a8;font-size:10px;padding:5px 9px;border-radius:5px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .15s;z-index:100;border:1px solid #1e3d28;">Reference only — does not affect documentation</div>
-      <div style="font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;color:#7ec8a0;min-width:40px" id="snTimerDisplay">00:00</div>
+      <div style="font-family:'DM Mono',monospace;font-size:14px;font-weight:600;color:#7ec8a0;min-width:40px" id="snTimerDisplay">00:00</div>
       <div style="display:flex;flex-direction:column;gap:1px;font-size:9px;color:#5a826a;min-width:80px;line-height:1.3">
         <span id="snTimerStart">—</span>
         <span id="snTimerEnd">—</span>
@@ -2271,7 +2282,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 
     <div style="margin-bottom:14px">
       <label style="font-size:11px;font-weight:600;color:#555;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.04em">Which tool does this relate to?</label>
-      <select id="feedbackTool" style="width:100%;box-sizing:border-box;padding:8px 11px;border:1px solid #ccc;border-radius:5px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;color:#1a1a1a;background:white;outline:none;cursor:pointer;transition:border 0.15s" onfocus="this.style.borderColor='#2d6a4f'" onblur="this.style.borderColor='#ccc'">
+      <select id="feedbackTool" style="width:100%;box-sizing:border-box;padding:8px 11px;border:1px solid #ccc;border-radius:5px;font-family:'Public Sans',sans-serif;font-size:13px;color:#1a1a1a;background:white;outline:none;cursor:pointer;transition:border 0.15s" onfocus="this.style.borderColor='#2d6a4f'" onblur="this.style.borderColor='#ccc'">
         <option value="">General / All tools</option>
         <option value="ASAM Documentation">ASAM Documentation</option>
         <option value="ITP Development">ITP Development</option>
@@ -2296,14 +2307,14 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 
     <div style="margin-bottom:16px">
       <label style="font-size:11px;font-weight:600;color:#555;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.04em">Your feedback</label>
-      <textarea id="feedbackText" rows="4" placeholder="Describe what you experienced, what you'd like to see, or anything that would make the tool work better for you…" style="width:100%;box-sizing:border-box;padding:9px 11px;border:1px solid #ccc;border-radius:5px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;color:#1a1a1a;resize:vertical;outline:none;line-height:1.5;transition:border 0.15s" onfocus="this.style.borderColor='#2d6a4f'" onblur="this.style.borderColor='#ccc'"></textarea>
+      <textarea id="feedbackText" rows="4" placeholder="Describe what you experienced, what you'd like to see, or anything that would make the tool work better for you…" style="width:100%;box-sizing:border-box;padding:9px 11px;border:1px solid #ccc;border-radius:5px;font-family:'Public Sans',sans-serif;font-size:13px;color:#1a1a1a;resize:vertical;outline:none;line-height:1.5;transition:border 0.15s" onfocus="this.style.borderColor='#2d6a4f'" onblur="this.style.borderColor='#ccc'"></textarea>
     </div>
 
     <div id="feedbackCopySection" style="display:none;margin-bottom:16px">
       <label style="font-size:11px;font-weight:600;color:#555;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.04em">Copy this into your email</label>
       <div style="position:relative">
-        <textarea id="feedbackCopyBox" readonly rows="6" style="width:100%;box-sizing:border-box;padding:9px 11px;border:1px solid #ddd;border-radius:5px 5px 0 0;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#333;background:#f8f8f8;resize:none;outline:none;line-height:1.5"></textarea>
-        <button id="feedbackCopyBtn" onclick="copyFeedbackText(this)" style="width:100%;box-sizing:border-box;background:#2d6a4f;color:white;border:none;border-radius:0 0 5px 5px;font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:600;padding:8px;cursor:pointer;transition:background 0.15s">Copy Message</button>
+        <textarea id="feedbackCopyBox" readonly rows="6" style="width:100%;box-sizing:border-box;padding:9px 11px;border:1px solid #ddd;border-radius:5px 5px 0 0;font-family:'DM Mono',monospace;font-size:12px;color:#333;background:#f8f8f8;resize:none;outline:none;line-height:1.5"></textarea>
+        <button id="feedbackCopyBtn" onclick="copyFeedbackText(this)" style="width:100%;box-sizing:border-box;background:#2d6a4f;color:white;border:none;border-radius:0 0 5px 5px;font-family:'Public Sans',sans-serif;font-size:12px;font-weight:600;padding:8px;cursor:pointer;transition:background 0.15s">Copy Message</button>
       </div>
       <div style="font-size:11px;color:#666;margin-top:8px">Send to: <strong>joseph.bretzfelder@woodhavenohio.com</strong> &nbsp;·&nbsp; Subject: <strong>DocAssist Feedback</strong></div>
     </div>
@@ -2435,8 +2446,8 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       <span>More below</span><span class="home-scroll-hint-arrow">↓</span>
     </div>
     <div class="home-bottom-links" style="text-align:center;margin-top:clamp(12px, 3vh, 28px);display:flex;gap:8px;justify-content:center;align-items:center;flex-wrap:wrap;">
-      <button onclick="confirmStartTutorial()" style="font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:600;color:#2d6a4f;cursor:pointer;padding:6px 16px;border-radius:20px;border:1px solid #b8d9c4;background:var(--accent-light);line-height:1;transition:background .15s,border-color .15s;" onmouseover="this.style.background='#c8e6d4';this.style.borderColor='#2d6a4f'" onmouseout="this.style.background='var(--accent-light)';this.style.borderColor='#b8d9c4'">▶ How to Use DocAssist</button>
-      <button onclick="openChangelogModal()" style="font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:600;color:#2d6a4f;cursor:pointer;padding:6px 16px;border-radius:20px;border:1px solid #b8d9c4;background:var(--accent-light);line-height:1;transition:background .15s,border-color .15s;" onmouseover="this.style.background='#c8e6d4';this.style.borderColor='#2d6a4f'" onmouseout="this.style.background='var(--accent-light)';this.style.borderColor='#b8d9c4'">What's New in DocAssist</button>
+      <button onclick="confirmStartTutorial()" style="font-family:'Public Sans',sans-serif;font-size:12px;font-weight:600;color:#2d6a4f;cursor:pointer;padding:6px 16px;border-radius:20px;border:1px solid #b8d9c4;background:var(--accent-light);line-height:1;transition:background .15s,border-color .15s;" onmouseover="this.style.background='#c8e6d4';this.style.borderColor='#2d6a4f'" onmouseout="this.style.background='var(--accent-light)';this.style.borderColor='#b8d9c4'">▶ How to Use DocAssist</button>
+      <button onclick="openChangelogModal()" style="font-family:'Public Sans',sans-serif;font-size:12px;font-weight:600;color:#2d6a4f;cursor:pointer;padding:6px 16px;border-radius:20px;border:1px solid #b8d9c4;background:var(--accent-light);line-height:1;transition:background .15s,border-color .15s;" onmouseover="this.style.background='#c8e6d4';this.style.borderColor='#2d6a4f'" onmouseout="this.style.background='var(--accent-light)';this.style.borderColor='#b8d9c4'">What's New in DocAssist</button>
     </div>
   </div>
 </div>
@@ -3191,7 +3202,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
             <div class="asam-ref-toggle" id="hwLibraryToggle">▾ expand</div>
           </div>
           <div id="hwLibraryBody" style="display:none;padding:12px 14px;">
-            <select id="hwLibrarySelect" onchange="openHwPdf(this)" style="width:100%;box-sizing:border-box;border:1px solid var(--border);border-radius:5px;padding:7px 10px;font-family:'IBM Plex Sans',sans-serif;font-size:12px;color:var(--text);background:white;outline:none;cursor:pointer;">
+            <select id="hwLibrarySelect" onchange="openHwPdf(this)" style="width:100%;box-sizing:border-box;border:1px solid var(--border);border-radius:5px;padding:7px 10px;font-family:'Public Sans',sans-serif;font-size:12px;color:var(--text);background:white;outline:none;cursor:pointer;">
               <option value="">— Select a worksheet to open —</option>
             </select>
             <div style="font-size:10px;color:var(--text-secondary);margin-top:6px;">Opens in a new tab. Worksheets are from the Wiley Addiction Treatment and Adult Psychotherapy Homework Planners.</div>
@@ -3490,7 +3501,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   border: 1px solid var(--border);
   border-radius: 5px;
   padding: 7px 10px;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'Public Sans', sans-serif;
   font-size: 12px;
   color: var(--text);
   background: white;
@@ -3503,7 +3514,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   border: 1px solid var(--border);
   border-radius: 5px;
   padding: 7px 10px;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'Public Sans', sans-serif;
   font-size: 12px;
   color: var(--text);
   background: white;
@@ -3528,7 +3539,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   border: 1px solid var(--border);
   border-radius: 5px;
   padding: 7px 10px;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'Public Sans', sans-serif;
   font-size: 12px;
   color: var(--text);
   background: white;
@@ -3635,7 +3646,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   border: 1px solid var(--border);
   border-radius: 5px;
   padding: 10px 12px;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'DM Mono', monospace;
   font-size: 11px;
   line-height: 1.7;
   color: var(--text);
@@ -3674,7 +3685,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   border-radius: 5px;
   border: 1px solid var(--border);
   background: white;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'Public Sans', sans-serif;
   font-size: 11px;
   font-weight: 600;
   cursor: pointer;
@@ -3716,7 +3727,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   border: 1px solid var(--border);
   border-radius: 5px;
   padding: 5px 8px;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'DM Mono', monospace;
   font-size: 13px;
   color: var(--text);
   background: white;
@@ -3754,7 +3765,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   background: rgba(255,255,255,0.07);
   border-radius: 5px;
   padding: 10px 12px;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'DM Mono', monospace;
   font-size: 11px;
   line-height: 1.7;
   color: #c8ddd2;
@@ -3792,7 +3803,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   border: 1px solid var(--border);
   border-radius: 5px;
   padding: 10px 12px;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'DM Mono', monospace;
   font-size: 11px;
   line-height: 1.7;
   color: var(--text);
@@ -3804,7 +3815,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   border: none;
   border-radius: 5px;
   padding: 6px 16px;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'Public Sans', sans-serif;
   font-size: 11px;
   font-weight: 600;
   cursor: pointer;
@@ -3830,7 +3841,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   background: var(--bg);
   border-bottom: 1px solid var(--border);
   padding: 6px 10px;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'DM Mono', monospace;
   font-size: 11px;
   color: var(--text-secondary);
   line-height: 1.5;
@@ -3840,7 +3851,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   border: none;
   outline: none;
   padding: 6px 10px;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'DM Mono', monospace;
   font-size: 11px;
   color: var(--text);
   line-height: 1.5;
@@ -3992,7 +4003,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
           </div>
           <div>
             <label class="form-label">Days in Treatment</label>
-            <div id="ds-days-display" style="height:34px;display:flex;align-items:center;padding:0 10px;background:var(--output-bg);border:1px solid var(--border);border-radius:5px;font-size:13px;color:var(--text-secondary);font-family:'IBM Plex Mono',monospace;">—</div>
+            <div id="ds-days-display" style="height:34px;display:flex;align-items:center;padding:0 10px;background:var(--output-bg);border:1px solid var(--border);border-radius:5px;font-size:13px;color:var(--text-secondary);font-family:'DM Mono',monospace;">—</div>
             <input type="hidden" id="ds-days-tx">
           </div>
         </div>
@@ -4047,8 +4058,8 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         <div style="background:var(--accent-light);border:1px solid var(--accent);border-radius:6px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;">
           <div>
             <div style="font-size:10px;color:var(--accent);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px;">Total Dosage Hours</div>
-            <div id="ds-dh-result" style="font-size:22px;font-weight:600;color:var(--accent);font-family:'IBM Plex Mono',monospace;">—</div>
-            <div id="ds-dh-individual" style="font-size:10px;color:var(--text-secondary);margin-top:2px;font-family:'IBM Plex Mono',monospace;"></div>
+            <div id="ds-dh-result" style="font-size:22px;font-weight:600;color:var(--accent);font-family:'DM Mono',monospace;">—</div>
+            <div id="ds-dh-individual" style="font-size:10px;color:var(--text-secondary);margin-top:2px;font-family:'DM Mono',monospace;"></div>
           </div>
           <button class="ds-copy-btn" id="ds-dh-copy-btn" onclick="dscopyDosageHours()" style="display:none;">Copy</button>
         </div>
@@ -4937,12 +4948,12 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <!-- v1.9 -->
     <div style="margin-bottom:28px;">
       <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px;">
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5a6a62;">July 21, 2026</span>
+        <span style="font-family:'DM Mono',monospace;font-size:11px;color:#5a6a62;">July 21, 2026</span>
         <span style="font-size:14px;font-weight:600;color:#1b4332;">Autosave and crash recovery</span>
       </div>
       <div style="display:flex;flex-direction:column;gap:7px;">
         <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 13px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;">
-          <span style="font-size:9px;font-weight:600;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">NEW</span>
+          <span style="font-size:9px;font-weight:600;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">NEW</span>
           <span style="font-size:13px;line-height:1.55;">In-progress work now autosaves locally as you type, across every tool. If the page closes unexpectedly — a browser crash, the page refreshing by accident — DocAssist offers to restore everything from where you left off the next time it loads, as long as it's been less than 8 hours. A small "Saved" indicator in the bottom-right corner confirms autosave is working.</span>
         </div>
       </div>
@@ -4951,12 +4962,12 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <!-- v1.8 -->
     <div style="margin-bottom:28px;">
       <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px;">
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5a6a62;">July 15, 2026</span>
+        <span style="font-family:'DM Mono',monospace;font-size:11px;color:#5a6a62;">July 15, 2026</span>
         <span style="font-size:14px;font-weight:600;color:#1b4332;">ASA Intervention Note tool</span>
       </div>
       <div style="display:flex;flex-direction:column;gap:7px;">
         <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 13px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;">
-          <span style="font-size:9px;font-weight:600;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">NEW</span>
+          <span style="font-size:9px;font-weight:600;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">NEW</span>
           <span style="font-size:13px;line-height:1.55;">New ASA Intervention Note tool added to the home screen. Documents the staff intervention and clinical judgement when a client leaves against staff advice, capturing billing for the day. Includes a Part 2–aware contact section that requires either an existing Release of Information or a genuine medical emergency basis before generating contact language, and requires precipitant, intervention, and clinical judgement fields to be completed before generating.</span>
         </div>
       </div>
@@ -4965,12 +4976,12 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <!-- v1.7 -->
     <div style="margin-bottom:28px;">
       <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px;">
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5a6a62;">July 4, 2026</span>
+        <span style="font-family:'DM Mono',monospace;font-size:11px;color:#5a6a62;">July 4, 2026</span>
         <span style="font-size:14px;font-weight:600;color:#1b4332;">Nursing Note tool</span>
       </div>
       <div style="display:flex;flex-direction:column;gap:7px;">
         <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 13px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;">
-          <span style="font-size:9px;font-weight:600;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">NEW</span>
+          <span style="font-size:9px;font-weight:600;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">NEW</span>
           <span style="font-size:13px;line-height:1.55;">New Nursing Note tool added to the home screen, built with the nursing coordinator, for nursing staff to use for shift documentation.</span>
         </div>
       </div>
@@ -4979,12 +4990,12 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <!-- v1.6 -->
     <div style="margin-bottom:28px;">
       <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px;">
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5a6a62;">June 30, 2026</span>
+        <span style="font-family:'DM Mono',monospace;font-size:11px;color:#5a6a62;">June 30, 2026</span>
         <span style="font-size:14px;font-weight:600;color:#1b4332;">Discharge Email tool</span>
       </div>
       <div style="display:flex;flex-direction:column;gap:7px;">
         <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 13px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;">
-          <span style="font-size:9px;font-weight:600;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">NEW</span>
+          <span style="font-size:9px;font-weight:600;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">NEW</span>
           <span style="font-size:13px;line-height:1.55;">New Discharge Email tool added to the home screen. Captures discharge logistics — type of discharge, ASA intervention attempts, destination, property and paperwork, probation notification, and unit status — and formats it into a standardized email ready to send to discharge@woodhavenohio.com.</span>
         </div>
       </div>
@@ -4993,16 +5004,16 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <!-- v1.5 -->
     <div style="margin-bottom:28px;">
       <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px;">
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5a6a62;">June 18, 2026</span>
+        <span style="font-family:'DM Mono',monospace;font-size:11px;color:#5a6a62;">June 18, 2026</span>
         <span style="font-size:14px;font-weight:600;color:#1b4332;">Client statements and homework assignments</span>
       </div>
       <div style="display:flex;flex-direction:column;gap:7px;">
         <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 13px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;">
-          <span style="font-size:9px;font-weight:600;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">ITP</span>
+          <span style="font-size:9px;font-weight:600;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">ITP</span>
           <span style="font-size:13px;line-height:1.55;">Each ITP goal now requires a direct client statement — a verbatim quote from the client connecting their own words to the goal being created. This documents collaborative treatment planning, which is both a clinical standard and an authorization requirement. The statement appears in the Goal copy box above the goal text.</span>
         </div>
         <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 13px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;">
-          <span style="font-size:9px;font-weight:600;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">ITP</span>
+          <span style="font-size:9px;font-weight:600;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">ITP</span>
           <span style="font-size:13px;line-height:1.55;">Homework assignment downloads added to ITP output. When objectives with corresponding Wiley Homework Planner worksheets are selected, the relevant assignments appear automatically as clickable links after formatting. Assignments open directly in the browser — no separate document needed. Coverage spans 66 objective/intervention pairs across 27 goal categories. A separate Homework Assignment Library panel is also available on the left side of the ITP tool, allowing any of the 91 worksheets to be opened directly by category without needing to select an objective first.</span>
         </div>
       </div>
@@ -5011,16 +5022,16 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <!-- v1.4 -->
     <div style="margin-bottom:28px;">
       <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px;">
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5a6a62;">June 16, 2026</span>
+        <span style="font-family:'DM Mono',monospace;font-size:11px;color:#5a6a62;">June 16, 2026</span>
         <span style="font-size:14px;font-weight:600;color:#1b4332;">Built-in training and tool guides</span>
       </div>
       <div style="display:flex;flex-direction:column;gap:7px;">
         <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 13px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;">
-          <span style="font-size:9px;font-weight:600;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">Platform</span>
+          <span style="font-size:9px;font-weight:600;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">Platform</span>
           <span style="font-size:13px;line-height:1.55;">Full walkthrough tutorial added, accessible from the home screen. Covers all five tools with step-by-step spotlight guidance — ASAM documentation, ITP, individual and group notes, and discharge summary. A sample client loads automatically so every field is populated during training.</span>
         </div>
         <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 13px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;">
-          <span style="font-size:9px;font-weight:600;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">Platform</span>
+          <span style="font-size:9px;font-weight:600;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">Platform</span>
           <span style="font-size:13px;line-height:1.55;">"Walkthrough" button added to each tool's header. Runs a focused walkthrough of just that tool without requiring the full training sequence. Useful for counselors who need a refresher on one specific tool.</span>
         </div>
       </div>
@@ -5029,24 +5040,24 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <!-- v1.3 -->
     <div style="margin-bottom:28px;">
       <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px;">
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5a6a62;">June 11, 2026</span>
+        <span style="font-family:'DM Mono',monospace;font-size:11px;color:#5a6a62;">June 11, 2026</span>
         <span style="font-size:14px;font-weight:600;color:#1b4332;">Clinical flags, consultation prompts, discharge refinements</span>
       </div>
       <div style="display:flex;flex-direction:column;gap:7px;">
         <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 13px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;">
-          <span style="font-size:9px;font-weight:600;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">ASAM</span>
+          <span style="font-size:9px;font-weight:600;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">ASAM</span>
           <span style="font-size:13px;line-height:1.55;">Discharge added as a third document type alongside Initial Admission and Continued Stay. Each of the six ASAM dimensions now has discharge-specific fields capturing clinical status at the time of discharge, generating a narrative structured for discharge documentation rather than continued stay justification.</span>
         </div>
         <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 13px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;">
-          <span style="font-size:9px;font-weight:600;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">ASAM</span>
+          <span style="font-size:9px;font-weight:600;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">ASAM</span>
           <span style="font-size:13px;line-height:1.55;">Severe Dimension 3 concerns now trigger a consultation flag, prompting supervisor review to confirm the client is appropriate for the current level of care before documentation is finalized.</span>
         </div>
         <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 13px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;">
-          <span style="font-size:9px;font-weight:600;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">Group Notes</span>
+          <span style="font-size:9px;font-weight:600;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">Group Notes</span>
           <span style="font-size:13px;line-height:1.55;">Non-participation checkbox added for individual clients. When checked, the note reflects poor prognosis and includes a prompt to follow up personally with the client after group.</span>
         </div>
         <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 13px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;">
-          <span style="font-size:9px;font-weight:600;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">Discharge</span>
+          <span style="font-size:9px;font-weight:600;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">Discharge</span>
           <span style="font-size:13px;line-height:1.55;">Days in treatment now calculates automatically from admission date and date of last contact. Resource sheet documentation added — records whether the client received a sheet at discharge, and requires an explanation if not.</span>
         </div>
       </div>
@@ -5055,20 +5066,20 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <!-- v1.2 -->
     <div style="margin-bottom:28px;">
       <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px;">
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5a6a62;">June 10, 2026</span>
+        <span style="font-family:'DM Mono',monospace;font-size:11px;color:#5a6a62;">June 10, 2026</span>
         <span style="font-size:14px;font-weight:600;color:#1b4332;">ITP enhancements; ASAM LOC-conditional fields</span>
       </div>
       <div style="display:flex;flex-direction:column;gap:7px;">
         <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 13px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;">
-          <span style="font-size:9px;font-weight:600;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">ITP</span>
+          <span style="font-size:9px;font-weight:600;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">ITP</span>
           <span style="font-size:13px;line-height:1.55;">Section C now includes standard Case Management objectives. Select which apply via a checkbox panel; a master toggle collapses the entire CM block for clients with these already established in Remarkable.</span>
         </div>
         <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 13px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;">
-          <span style="font-size:9px;font-weight:600;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">ITP</span>
+          <span style="font-size:9px;font-weight:600;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">ITP</span>
           <span style="font-size:13px;line-height:1.55;">Justification for Transition added for five LOC transitions: 3.7WM→3.5, 3.7→3.5, 3.5→2.5, 2.5→2.1, and 2.1→1.0. Supports documenting skipped levels when a client declines the recommended next LOC.</span>
         </div>
         <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 13px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;">
-          <span style="font-size:9px;font-weight:600;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">ASAM</span>
+          <span style="font-size:9px;font-weight:600;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">ASAM</span>
           <span style="font-size:13px;line-height:1.55;">CIWA-Ar, COWS, and withdrawal symptom fields now only appear when 3.7WM is selected. They are hidden for all other levels of care.</span>
         </div>
       </div>
@@ -5077,16 +5088,16 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <!-- v1.1 -->
     <div style="margin-bottom:28px;">
       <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px;">
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5a6a62;">June 9, 2026</span>
+        <span style="font-family:'DM Mono',monospace;font-size:11px;color:#5a6a62;">June 9, 2026</span>
         <span style="font-size:14px;font-weight:600;color:#1b4332;">Group Notes and Discharge Summary launched</span>
       </div>
       <div style="display:flex;flex-direction:column;gap:7px;">
         <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 13px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;">
-          <span style="font-size:9px;font-weight:600;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">Group Notes</span>
+          <span style="font-size:9px;font-weight:600;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">Group Notes</span>
           <span style="font-size:13px;line-height:1.55;">Group Notes tool launched. Set up a session once and generate individual notes for each client. Includes prognosis selection (Poor/Fair/Good), a shared intervention block copied once for all clients, and billing warnings for Good prognosis and ratios over 12:1.</span>
         </div>
         <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 13px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;">
-          <span style="font-size:9px;font-weight:600;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">Discharge</span>
+          <span style="font-size:9px;font-weight:600;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">Discharge</span>
           <span style="font-size:13px;line-height:1.55;">Discharge Summary tool launched. Generates the free-text fields in Remarkable not auto-populated from the ITP, including progress summary, continuity of care, and aftercare plan. Includes a phase history builder with auto-calculated Dosage Hours for Sublocade/Vivitrol documentation.</span>
         </div>
       </div>
@@ -5095,21 +5106,21 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <!-- v1.0 -->
     <div style="margin-bottom:28px;">
       <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px;">
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5a6a62;">June 8, 2026</span>
+        <span style="font-family:'DM Mono',monospace;font-size:11px;color:#5a6a62;">June 8, 2026</span>
         <span style="font-size:14px;font-weight:600;color:#1b4332;">Initial launch</span>
         <span style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:#7a4f00;background:#fff4d6;border:1px solid #e8c96a;padding:2px 8px;border-radius:3px;">Launch</span>
       </div>
       <div style="display:flex;flex-direction:column;gap:7px;">
         <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 13px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;">
-          <span style="font-size:9px;font-weight:600;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">ASAM</span>
+          <span style="font-size:9px;font-weight:600;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">ASAM</span>
           <span style="font-size:13px;line-height:1.55;">ASAM Documentation tool with six dimension tabs, severity selectors, LOC and document type selection, required field validation, and two output tabs: Narrative and Criteria &amp; Risk Ratings.</span>
         </div>
         <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 13px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;">
-          <span style="font-size:9px;font-weight:600;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">ITP</span>
+          <span style="font-size:9px;font-weight:600;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">ITP</span>
           <span style="font-size:13px;line-height:1.55;">ITP Development tool with 29 goal categories across Sections A, B, and C, preset goal templates with SMART warnings, and opt-in objectives and interventions.</span>
         </div>
         <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 13px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;">
-          <span style="font-size:9px;font-weight:600;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">Ind. Notes</span>
+          <span style="font-size:9px;font-weight:600;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">Ind. Notes</span>
           <span style="font-size:13px;line-height:1.55;">Individual Session Notes tool with two output blocks matching Remarkable's note fields. Supports four session types: Working off ITP, Updating ITP, First Meeting, and Crisis Intervention.</span>
         </div>
       </div>
@@ -6319,8 +6330,17 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function navigateTo(view) {
-  document.querySelectorAll('.tool-view').forEach(v => v.classList.remove('active'));
-  document.getElementById('view-' + view).classList.add('active');
+  document.querySelectorAll('.tool-view').forEach(v => v.classList.remove('active', 'view-transitioning', 'view-transition-in'));
+  const target = document.getElementById('view-' + view);
+  target.classList.add('active', 'view-transitioning');
+  void target.offsetWidth; // force reflow so the opacity:0 starting state is registered before animating
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => target.classList.add('view-transition-in'));
+  });
+  clearTimeout(navigateTo._cleanupTimer);
+  navigateTo._cleanupTimer = setTimeout(() => {
+    target.classList.remove('view-transitioning', 'view-transition-in');
+  }, 260);
   if (view === 'itp') renderAsamRef();
   if (view === 'discharge') dsInit();
   if (view === 'discharge-email') { deRenderOutput(); }
@@ -7707,7 +7727,7 @@ function renderITPGoals() {
       cmQuoteInput.type = 'text';
       cmQuoteInput.id = 'itp-cm-quote';
       cmQuoteInput.placeholder = 'e.g., I want to find a home AA group and connect with an IOP before I leave.';
-      cmQuoteInput.style.cssText = 'width:100%;box-sizing:border-box;border:1px solid var(--border);border-radius:5px;padding:7px 10px;font-family:"IBM Plex Sans",sans-serif;font-size:12px;color:var(--text);background:white;outline:none;margin-bottom:4px;';
+      cmQuoteInput.style.cssText = 'width:100%;box-sizing:border-box;border:1px solid var(--border);border-radius:5px;padding:7px 10px;font-family:"Public Sans",sans-serif;font-size:12px;color:var(--text);background:white;outline:none;margin-bottom:4px;';
       cmQuoteInput.onfocus = () => cmQuoteInput.style.borderColor = 'var(--border-focus)';
       cmQuoteInput.onblur = () => cmQuoteInput.style.borderColor = 'var(--border)';
       cmBody.appendChild(cmQuoteInput);
@@ -7909,7 +7929,7 @@ function rebuildSection(section) {
     quoteInput.type = 'text';
     quoteInput.id = `itp-quote-${cat.id}`;
     quoteInput.placeholder = 'e.g., I want to work on my anger.';
-    quoteInput.style.cssText = 'width:100%;box-sizing:border-box;border:1px solid var(--border);border-radius:5px;padding:7px 10px;font-family:"IBM Plex Sans",sans-serif;font-size:12px;color:var(--text);background:white;outline:none;margin-bottom:4px;';
+    quoteInput.style.cssText = 'width:100%;box-sizing:border-box;border:1px solid var(--border);border-radius:5px;padding:7px 10px;font-family:"Public Sans",sans-serif;font-size:12px;color:var(--text);background:white;outline:none;margin-bottom:4px;';
     quoteInput.onfocus = () => quoteInput.style.borderColor = 'var(--border-focus)';
     quoteInput.onblur = () => quoteInput.style.borderColor = 'var(--border)';
     body.appendChild(quoteInput);
@@ -8505,7 +8525,7 @@ function formatITPOutput(btn) {
         pill.href = 'pdfs/' + encodeURIComponent(pdf);
         pill.target = '_blank';
         pill.rel = 'noopener';
-        pill.style.cssText = 'display:inline-flex;align-items:center;padding:4px 12px;background:white;border:1px solid var(--accent);border-radius:20px;font-size:11px;font-family:"IBM Plex Sans",sans-serif;color:var(--accent);text-decoration:none;font-weight:500;cursor:pointer;transition:background 0.15s,color 0.15s;';
+        pill.style.cssText = 'display:inline-flex;align-items:center;padding:4px 12px;background:white;border:1px solid var(--accent);border-radius:20px;font-size:11px;font-family:"Public Sans",sans-serif;color:var(--accent);text-decoration:none;font-weight:500;cursor:pointer;transition:background 0.15s,color 0.15s;';
         pill.onmouseover = () => { pill.style.background = 'var(--accent)'; pill.style.color = 'white'; };
         pill.onmouseout = () => { pill.style.background = 'white'; pill.style.color = 'var(--accent)'; };
         pill.textContent = hwFilenameToLabel(pdf);
@@ -8542,7 +8562,7 @@ function makeOutputBox(container, label, text) {
   wrap.appendChild(header);
 
   const box = document.createElement('div');
-  box.style.cssText = 'background:white;border:1px solid var(--border);border-radius:5px;padding:10px 12px;font-family:"IBM Plex Mono",monospace;font-size:11px;line-height:1.7;color:var(--text);white-space:pre-wrap;';
+  box.style.cssText = 'background:white;border:1px solid var(--border);border-radius:5px;padding:10px 12px;font-family:"DM Mono",monospace;font-size:11px;line-height:1.7;color:var(--text);white-space:pre-wrap;';
   box.textContent = text;
   wrap.appendChild(box);
   container.appendChild(wrap);
@@ -9995,11 +10015,11 @@ function dsCalcDosageHours() {
     breakdownEl.innerHTML = lines.map(l => `
       <div style="display:flex;justify-content:space-between;font-size:11px;padding:3px 0;border-bottom:1px solid var(--border);">
         <span style="color:var(--accent);font-weight:600;min-width:60px;">${l.loc}</span>
-        <span style="color:var(--text-secondary);font-family:'IBM Plex Mono',monospace;">${l.desc}</span>
+        <span style="color:var(--text-secondary);font-family:'DM Mono',monospace;">${l.desc}</span>
       </div>`).join('') + `
       <div style="display:flex;justify-content:space-between;font-size:11px;padding:3px 0;">
         <span style="color:var(--text-secondary);font-style:italic;">Individual sessions</span>
-        <span style="color:var(--text-secondary);font-family:'IBM Plex Mono',monospace;">${totalDays}d ÷ 7 = ${dsFmt(indivHours)} hrs</span>
+        <span style="color:var(--text-secondary);font-family:'DM Mono',monospace;">${totalDays}d ÷ 7 = ${dsFmt(indivHours)} hrs</span>
       </div>`;
   } else {
     breakdownEl.style.display = 'none';
