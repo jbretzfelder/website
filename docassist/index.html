@@ -2253,7 +2253,10 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         <option value="ITP Development">ITP Development</option>
         <option value="Individual Note">Individual Note</option>
         <option value="Group Notes">Group Notes</option>
+        <option value="Nursing Note">Nursing Note</option>
+        <option value="ASA Intervention Note">ASA Intervention Note</option>
         <option value="Discharge Summary">Discharge Summary</option>
+        <option value="Discharge Email">Discharge Email</option>
       </select>
     </div>
 
@@ -2291,7 +2294,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 <div id="resetModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;align-items:center;justify-content:center">
   <div style="background:white;border-radius:10px;padding:28px 32px;max-width:380px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.2)">
     <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:10px">Reset everything?</div>
-    <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;margin-bottom:24px">This will clear all ASAM inputs, generated documentation, ITP selections, and the individual note. This cannot be undone.</div>
+    <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;margin-bottom:24px">This will clear all inputs and generated documentation across every tool — ASAM, ITP, Individual Note, Group Notes, Nursing Note, ASA Intervention Note, Discharge Summary, and Discharge Email — along with anything saved for autosave recovery. This cannot be undone.</div>
     <div style="display:flex;gap:10px;justify-content:flex-end">
       <button class="btn btn-ghost" onclick="document.getElementById('resetModal').style.display='none'">Cancel</button>
       <button class="btn" style="background:#c0392b;color:white" onclick="doReset()">Reset All</button>
@@ -4926,7 +4929,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       <div style="display:flex;flex-direction:column;gap:7px;">
         <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 13px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;">
           <span style="font-size:9px;font-weight:600;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">NEW</span>
-          <span style="font-size:13px;line-height:1.55;">In-progress work now autosaves locally as you type, across every tool. If the page closes unexpectedly — a browser crash, a tablet timeout, an accidental refresh — DocAssist offers to restore everything from where you left off the next time it loads, as long as it's been less than 8 hours. A small "Saved" indicator in the bottom-right corner confirms autosave is working.</span>
+          <span style="font-size:13px;line-height:1.55;">In-progress work now autosaves locally as you type, across every tool. If the page closes unexpectedly — a browser crash, the page refreshing by accident — DocAssist offers to restore everything from where you left off the next time it loads, as long as it's been less than 8 hours. A small "Saved" indicator in the bottom-right corner confirms autosave is working.</span>
         </div>
       </div>
     </div>
@@ -12396,13 +12399,21 @@ const TUT_INTRO_STEPS = [
     title:'Your documentation tools',
     body:'Each card opens a different tool. You will often use several of them for the same client over time — an ASAM narrative, then a treatment plan, then session notes. Your work is saved as you move between tools, so you can start one, switch to another, and come back without losing anything.' },
 
+  { view:'home', sel:'#autosaveIndicator', section:'Home Screen',
+    title:'Autosave',
+    body:'DocAssist also saves your work locally as you type, in the background. If something interrupts you mid-session — the browser crashes, the page refreshes by accident — reopening DocAssist will offer to restore everything from where you left off, as long as it has been less than 8 hours. This small indicator confirms it is working. It never submits anything to Remarkable on its own; it only protects the work you have already done from getting lost.',
+    action: function() {
+      var el = document.getElementById('autosaveIndicator');
+      if (el) { el.style.opacity = '1'; document.getElementById('autosaveDot').style.background = '#7ec8a0'; document.getElementById('autosaveText').textContent = 'Saved'; }
+    } },
+
   { view:'home', sel:'#timerGroup', section:'Home Screen',
     title:'Session timer',
     body:'The session timer tracks how long you spend on documentation. Start it when you begin, stop it when you are done. It persists across all tools as you move between them. It does not feed into any generated documentation or output — it is for your own reference and time awareness only.' },
 
   { view:'home', sel:'.reset-btn', section:'Home Screen',
     title:'Reset button',
-    body:'The ↺ Reset button clears all data across every tool and returns DocAssist to a blank state. It will ask you to confirm before clearing anything. Use this when you are done with one client and starting fresh for another, or any time you want a clean slate. It does not affect anything in Remarkable — only what is currently open in DocAssist.' },
+    body:'The ↺ Reset button clears all data across every tool, including anything saved for autosave recovery, and returns DocAssist to a blank state. It will ask you to confirm before clearing anything. Use this when you are done with one client and starting fresh for another, or any time you want a clean slate. It does not affect anything in Remarkable — only what is currently open in DocAssist.' },
 ];
 
 const TUT_TOOL_STEPS = [
