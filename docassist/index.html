@@ -788,7 +788,11 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 .dim-content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 
 .dim-panel { display: none; }
-.dim-panel.active { display: block; }
+.dim-panel.active { display: block; transition: opacity 0.18s ease; }
+.pane-fade-init { opacity: 0 !important; }
+@media (prefers-reduced-motion: reduce) {
+  .dim-panel.active { transition: none; }
+}
 
 .dim-header { margin-bottom: 14px; }
 .primary-badge {
@@ -1044,8 +1048,12 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 .placeholder-text { font-size: 13px; line-height: 1.6; }
 
 /* OUTPUT DOC */
-.output-doc { display: none; max-width: 820px; }
+.output-doc { display: none; max-width: 820px; transition: opacity 0.18s ease; }
 .output-doc.visible { display: block; }
+.fade-reveal { transition: opacity 0.18s ease; }
+@media (prefers-reduced-motion: reduce) {
+  .output-doc, .fade-reveal { transition: none; }
+}
 
 .doc-header { padding-bottom: 14px; margin-bottom: 20px; border-bottom: 2px solid var(--text); }
 .doc-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 5px; }
@@ -1159,8 +1167,11 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 .tab-copy-btn.copied { background: var(--primary-badge-bg); border-color: #1a6b35; color: #1a6b35; }
 
 .tab-panel { display: none; }
-.tab-panel.active { display: flex; flex-direction: column; flex: 1; min-height: 0; overflow: hidden; }
+.tab-panel.active { display: flex; flex-direction: column; flex: 1; min-height: 0; overflow: hidden; transition: opacity 0.18s ease; }
 .tab-panel > * { min-height: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .tab-panel.active { transition: none; }
+}
 
 /* ─── RISK RATINGS ────────────────────────── */
 .risk-ratings-block { padding: 24px; max-width: 820px; }
@@ -2104,6 +2115,10 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   border-radius: 6px;
   padding: 14px 16px;
   margin-bottom: 20px;
+  transition: opacity 0.18s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .error-panel { transition: none; }
 }
 .error-panel-title {
   font-size: 12px;
@@ -2213,6 +2228,10 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   text-transform: uppercase;
   color: #1a6b35;
   margin-bottom: 5px;
+}
+#tut-content { transition: opacity 0.15s ease; }
+@media (prefers-reduced-motion: reduce) {
+  #tut-content { transition: none; }
 }
 #tut-section-label {
   font-size: 10px;
@@ -3373,7 +3392,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
           <div><svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.45"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none"/><line x1="12" y1="3" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="21"/></svg></div>
           <div style="font-size:13px;line-height:1.6;">Add goals and click <strong>Generate</strong><br>to produce formatted output.</div>
         </div>
-        <div id="itpOutputBoxes" style="display:none;display:flex;flex-direction:column;gap:20px;"></div>
+        <div id="itpOutputBoxes" class="fade-reveal" style="display:none;display:flex;flex-direction:column;gap:20px;"></div>
       </div>
     </div><!-- /right panel -->
 
@@ -3485,7 +3504,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
             <div><svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.45"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
             <div style="font-size:13px;line-height:1.6;color:var(--text-secondary)">Fill in the session details and click<br><strong>Generate</strong> to format your progress note.</div>
           </div>
-          <div id="snNoteWrap" style="display:none;flex-direction:column;gap:16px;flex:1">
+          <div id="snNoteWrap" class="fade-reveal" style="display:none;flex-direction:column;gap:16px;flex:1">
             <div class="stale-banner" id="snStaleBanner">
               <div class="stale-icon">⚠</div>
               <div class="stale-text">
@@ -4030,7 +4049,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     </div><!-- /gn-clients-area -->
 
     <!-- RIGHT: OUTPUT VIEW (shown after generating) -->
-    <div class="gn-clients-area" id="gn-output-area" style="display:none;">
+    <div class="gn-clients-area fade-reveal" id="gn-output-area" style="display:none;">
       <div class="gn-clients-toolbar">
         <button class="tool-nav-back" style="font-size:12px" onclick="gnShowInputs()">← Back to editing</button>
         <button class="btn btn-primary" style="font-size:11px;padding:5px 14px" onclick="gnGenerateAll()">Regenerate</button>
@@ -4837,7 +4856,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         <div><svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.45"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/><path d="M12 6v6"/><path d="M9 9h6"/></svg></div>
         <div style="font-size:13px;line-height:1.6;color:var(--text-secondary)">Fill in the shift assessment and click<br><strong>Generate</strong> to format the nursing progress note.</div>
       </div>
-      <div id="nnNoteWrap" style="display:none;flex-direction:column;gap:16px;flex:1">
+      <div id="nnNoteWrap" class="fade-reveal" style="display:none;flex-direction:column;gap:16px;flex:1">
         <div class="stale-banner" id="nnStaleBanner">
           <div class="stale-icon">⚠</div>
           <div class="stale-text">
@@ -4978,7 +4997,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         <div><svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.45"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div>
         <div style="font-size:13px;line-height:1.6;color:var(--text-secondary)">Fill in the departure details and click<br><strong>Generate</strong> to format the ASA note.</div>
       </div>
-      <div id="asaNoteWrap" style="display:none;flex-direction:column;gap:16px;flex:1">
+      <div id="asaNoteWrap" class="fade-reveal" style="display:none;flex-direction:column;gap:16px;flex:1">
         <div class="sn-preview-header">
           <span class="sn-preview-title">ASA Departure Note</span>
         </div>
@@ -5668,8 +5687,10 @@ function setAdmissionType(type) {
 function showDim(num, el) {
   document.querySelectorAll('.dim-panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.dim-tab').forEach(t => t.classList.remove('active'));
-  document.getElementById(`dim-${num}`).classList.add('active');
+  const panel = document.getElementById(`dim-${num}`);
+  panel.classList.add('active');
   el.classList.add('active');
+  fadeInPane(panel);
 }
 
 document.getElementById('locSelect').addEventListener('change', function() {
@@ -6286,6 +6307,7 @@ function generate() {
       `<li><button class="error-jump" onclick="showDim(${e.dim}, document.querySelector('.dim-tab[data-dim=\\'${e.dim}\\']'))">${e.label}</button></li>`
     ).join('');
     errorPanel.style.display = 'block';
+    fadeInPane(errorPanel);
     document.getElementById('outputPlaceholder').style.display = 'none';
     document.getElementById('outputDoc').classList.remove('visible');
     errorPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -6324,6 +6346,7 @@ function renderGeneratedOutput() {
   document.getElementById('outDetermination').textContent = genDetermination();
   document.getElementById('outputPlaceholder').style.display = 'none';
   document.getElementById('outputDoc').classList.add('visible');
+  fadeInPane(document.getElementById('outputDoc'));
   document.getElementById('proofreadBanner').style.display = 'flex';
   renderCriteria();
   renderRiskRatings();
@@ -6410,6 +6433,13 @@ document.addEventListener('DOMContentLoaded', function() {
   setTimeout(updateHomeScrollHint, 100);
 });
 
+function fadeInPane(el) {
+  if (!el) return;
+  el.classList.add('pane-fade-init');
+  void el.offsetWidth; // force reflow so opacity:0 registers before it's removed
+  requestAnimationFrame(() => requestAnimationFrame(() => el.classList.remove('pane-fade-init')));
+}
+
 function showModal(id) {
   const el = document.getElementById(id);
   if (!el) return;
@@ -6429,32 +6459,13 @@ function hideModal(id) {
   }, 160);
 }
 
-let _brandClickCount = 0;
-let _brandEggDisabled = false;
 function brandEasterEgg() {
-  if (_brandEggDisabled) return;
   const bubble = document.getElementById('brandBubble');
   if (!bubble) return;
+  bubble.textContent = "Built by Joseph, so you'd have more time for clients";
+  bubble.classList.add('show');
   const greetTitle = document.getElementById('homeGreetingTitle');
   const greetSub = document.getElementById('homeGreetingSub');
-  _brandClickCount++;
-
-  if (_brandClickCount > 3) {
-    clearTimeout(brandEasterEgg._timer);
-    bubble.classList.remove('show');
-    if (greetTitle) greetTitle.style.opacity = '1';
-    if (greetSub) greetSub.style.opacity = '1';
-    _brandEggDisabled = true;
-    return;
-  }
-
-  const messages = [
-    'Hi, you found me',
-    'Built by Joseph with <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:-1px;margin-left:1px;"><path d="M12 21s-6.7-4.35-9.3-8.28C1.02 10.1 1.6 6.9 4.2 5.3c2.1-1.3 4.7-.7 6.1 1.1.5.6.9 1.3 1.7 1.3.8 0 1.2-.7 1.7-1.3 1.4-1.8 4-2.4 6.1-1.1 2.6 1.6 3.18 4.8 1.5 7.42C18.7 16.65 12 21 12 21z"/></svg>',
-    'I contain multitudes. And also ASAM criteria'
-  ];
-  bubble.innerHTML = messages[_brandClickCount - 1];
-  bubble.classList.add('show');
   if (greetTitle) greetTitle.style.opacity = '0';
   if (greetSub) greetSub.style.opacity = '0';
   clearTimeout(brandEasterEgg._timer);
@@ -6494,6 +6505,7 @@ function switchTab(n) {
     document.getElementById('tab-panel-' + i).classList.toggle('active', i === n);
   });
   document.getElementById('tabCopyBtn').textContent = TAB_COPY_LABELS[n] || 'Copy';
+  fadeInPane(document.getElementById('tab-panel-' + n));
 }
 
 // ─── TRANSITION JUSTIFICATION ──────────────────────
@@ -8599,6 +8611,7 @@ function formatITPOutput(btn) {
 
   placeholder.style.display = 'none';
   boxesContainer.style.display = 'flex';
+  fadeInPane(boxesContainer);
   boxesContainer.innerHTML = '';
 
   // Group goals by section for headers
@@ -9443,6 +9456,7 @@ function gnGenerateAll() {
   // Switch to output view
   document.getElementById('gn-clients-area').style.display = 'none';
   document.getElementById('gn-output-area').style.display = 'flex';
+  fadeInPane(document.getElementById('gn-output-area'));
 }
 
 function gnReset() {
@@ -11703,6 +11717,7 @@ function snGenerate() {
   document.getElementById('snPlaceholder').style.display = 'none';
   const wrap = document.getElementById('snNoteWrap');
   wrap.style.display = 'flex';
+  fadeInPane(wrap);
   document.getElementById('snDescribeOutput').textContent = snFormatDescribe();
   document.getElementById('snResponseOutput').textContent = snFormatResponse();
   document.getElementById('snPreviewPanel').scrollTop = 0;
@@ -12239,6 +12254,7 @@ function nnGenerate() {
   document.getElementById('nnPlaceholder').style.display = 'none';
   const wrap = document.getElementById('nnNoteWrap');
   wrap.style.display = 'flex';
+  fadeInPane(wrap);
   const nameLabel = nnState.clientName || '[Client]';
   const dateLabel = nnState.date ? fmtDate(nnState.date) : '';
   document.getElementById('nnMetaLine').textContent = dateLabel ? `${nameLabel} — ${dateLabel}` : nameLabel;
@@ -12439,6 +12455,7 @@ function asaGenerate() {
   document.getElementById('asaPlaceholder').style.display = 'none';
   const wrap = document.getElementById('asaNoteWrap');
   wrap.style.display = 'flex';
+  fadeInPane(wrap);
   document.getElementById('asaDescribeOutput').textContent = asaFormatDescribe();
   document.getElementById('asaResponseOutput').textContent = asaFormatResponse();
   document.getElementById('asaPreviewPanel').scrollTop = 0;
@@ -13061,13 +13078,25 @@ function tutBack() {
 function tutShowStep(n) {
   const step = tutSteps[n];
   const total = tutSteps.length;
+  const content = document.getElementById('tut-content');
 
-  document.getElementById('tut-counter').textContent = '';
-  document.getElementById('tut-section-label').textContent = step.section || '';
-  document.getElementById('tut-section-label').style.display = step.section ? 'block' : 'none';
-  document.getElementById('tut-title').textContent = step.title;
-  document.getElementById('tut-body').textContent = step.body;
-  document.getElementById('tut-progress-fill').style.width = ((n + 1) / total * 100) + '%';
+  function applyStepText() {
+    document.getElementById('tut-counter').textContent = '';
+    document.getElementById('tut-section-label').textContent = step.section || '';
+    document.getElementById('tut-section-label').style.display = step.section ? 'block' : 'none';
+    document.getElementById('tut-title').textContent = step.title;
+    document.getElementById('tut-body').textContent = step.body;
+    document.getElementById('tut-progress-fill').style.width = ((n + 1) / total * 100) + '%';
+    if (content) fadeInPane(content);
+  }
+
+  if (content && content.dataset.everShown === '1') {
+    content.classList.add('pane-fade-init');
+    setTimeout(applyStepText, 130);
+  } else {
+    if (content) content.dataset.everShown = '1';
+    applyStepText();
+  }
 
   document.getElementById('tut-back-btn').style.visibility = n === 0 ? 'hidden' : 'visible';
   document.getElementById('tut-skip-btn').style.display = (tutSteps === TUT_INTRO_STEPS) ? 'inline-block' : 'none';
@@ -13683,12 +13712,14 @@ document.addEventListener('DOMContentLoaded', () => {
   <div id="tut-tooltip">
     <div class="tut-progress-bar"><div class="tut-progress-fill" id="tut-progress-fill"></div></div>
     <div id="tut-counter">Step 1 of 26</div>
-    <div id="tut-section-label" style="display:none"></div>
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-      <div class="tut-icon-mark"><svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><polyline points="9 14 11 16 15 12"/></svg></div>
-      <h3 id="tut-title" style="margin:0"></h3>
+    <div id="tut-content">
+      <div id="tut-section-label" style="display:none"></div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+        <div class="tut-icon-mark"><svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><polyline points="9 14 11 16 15 12"/></svg></div>
+        <h3 id="tut-title" style="margin:0"></h3>
+      </div>
+      <p id="tut-body" style="margin:0 0 16px"></p>
     </div>
-    <p id="tut-body" style="margin:0 0 16px"></p>
     <div class="tut-btn-row">
       <button id="tut-exit-btn" onclick="tutExit()">Exit tutorial</button>
       <button id="tut-skip-btn" onclick="tutShowPicker()" style="display:none">Skip to tool list →</button>
