@@ -216,14 +216,20 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 5px;
   font-size: 11px;
   font-weight: 700;
   color: var(--accent);
-  padding: 2px 0 4px;
+  background: var(--accent-light);
+  border: 1px solid #b8d9c4;
+  border-radius: 20px;
+  padding: 5px 12px;
   cursor: pointer;
+  transition: background .15s, border-color .15s;
 }
+.home-scroll-hint:hover { background: #c8e6d4; border-color: #2d6a4f; }
 .home-scroll-hint-arrow {
+  display: block;
   animation: home-scroll-hint-bounce 1.3s ease-in-out infinite;
 }
 @keyframes home-scroll-hint-bounce {
@@ -248,6 +254,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   margin-bottom: clamp(6px, 1.2vh, 10px);
   user-select: none;
   -webkit-user-select: none;
+  position: relative;
 }
 .home-brand-mark {
   width: clamp(34px, 5vh, 42px);
@@ -277,6 +284,33 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 }
 .home-brand-title .hb-l { display: inline-block; transition: transform 0.25s ease, color 0.25s ease; }
 .home-brand-title .hb-a { color: var(--accent); }
+.brand-bubble {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-6px);
+  background: #1a3d22;
+  color: #d4eadd;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 8px;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity .25s ease, transform .25s ease;
+  pointer-events: none;
+  margin-top: 10px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+}
+.brand-bubble::after {
+  content: '';
+  position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%);
+  border: 5px solid transparent; border-bottom-color: #1a3d22;
+}
+.brand-bubble.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+@media (prefers-reduced-motion: reduce) {
+  .brand-bubble { transition: none; }
+}
 .home-brand:hover .home-brand-mark svg { transform: translate(1.2px, -0.8px) scale(1.18) rotate(-6deg); }
 .home-brand:hover .home-brand-title .hb-l { color: #1e4d38; }
 .home-brand:hover .home-brand-title .hb-l:nth-child(1) { transition-delay: 0s;    transform: translateY(-4px); }
@@ -302,11 +336,16 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   font-weight: 400;
   color: #7a8a82;
   margin-bottom: 4px;
+  transition: opacity .25s ease;
 }
 .home-greeting-sub {
   font-size: clamp(11px, 1.4vh, 13px);
   color: #9aa8a0;
   letter-spacing: 0.01em;
+  transition: opacity .25s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-greeting-title, .home-greeting-sub { transition: none; }
 }
 .home-grid {
   display: grid;
@@ -324,6 +363,17 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   color: var(--text-secondary);
   margin-bottom: clamp(6px, 1.2vh, 12px);
   padding-left: 2px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.home-section-label::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
 }
 .home-quick-access {
   display: flex;
@@ -416,19 +466,6 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 .home-card:hover .home-card-icon svg { transform: translateY(-1px) scale(1.08); }
 .home-card .home-card-arrow { transition: transform 0.2s ease, opacity 0.2s ease; opacity: 0.75; }
 .home-card:hover .home-card-arrow { transform: translateX(3px); opacity: 1; }
-.home-card.coming-soon {
-  cursor: default;
-  opacity: 0.65;
-  border-left-color: var(--border);
-}
-.home-card.coming-soon:hover {
-  border-color: var(--border);
-  border-left-color: var(--border);
-  box-shadow: none;
-  transform: none;
-}
-.home-card.coming-soon:hover .home-card-icon svg,
-.home-card.coming-soon:hover .home-card-arrow { transform: none; opacity: 0.65; }
 
 /* ─── DISCHARGE TOOL ──────────────────────── */
 .ds-pill {
@@ -2082,6 +2119,14 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   align-items: center;
   gap: 6px;
 }
+.modal-fade {
+  opacity: 0;
+  transition: opacity 0.16s ease;
+}
+.modal-fade.modal-visible { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .modal-fade { transition: none; }
+}
 .stale-banner {
   display: none;
   align-items: flex-start;
@@ -2355,8 +2400,8 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:10px">Load sample client?</div>
     <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;margin-bottom:24px">This will load a sample client (Marcus) across every tool for testing or training. It will reset anything currently entered, the same as clicking Reset. This cannot be undone.</div>
     <div style="display:flex;gap:10px;justify-content:flex-end">
-      <button class="btn btn-ghost" onclick="document.getElementById('sampleClientModal').style.display='none'">Cancel</button>
-      <button class="btn" style="background:var(--accent);color:white" onclick="document.getElementById('sampleClientModal').style.display='none';doReset();fillSampleClient()">Load Sample Client</button>
+      <button class="btn btn-ghost" onclick="hideModal('sampleClientModal')">Cancel</button>
+      <button class="btn" style="background:var(--accent);color:white" onclick="hideModal('sampleClientModal');doReset();fillSampleClient()">Load Sample Client</button>
     </div>
   </div>
 </div>
@@ -2366,7 +2411,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:10px">Reset everything?</div>
     <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;margin-bottom:24px">This will clear all inputs and generated documentation across every tool — ASAM, ITP, Individual Note, Group Notes, Nursing Note, ASA Intervention Note, Discharge Summary, and Discharge Email — along with anything saved for autosave recovery. This cannot be undone.</div>
     <div style="display:flex;gap:10px;justify-content:flex-end">
-      <button class="btn btn-ghost" onclick="document.getElementById('resetModal').style.display='none'">Cancel</button>
+      <button class="btn btn-ghost" onclick="hideModal('resetModal')">Cancel</button>
       <button class="btn" style="background:#c0392b;color:white" onclick="doReset()">Reset All</button>
     </div>
   </div>
@@ -2377,7 +2422,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:10px">Start walkthrough?</div>
     <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;margin-bottom:24px">This will load a sample client and replace any entries you have already made. Your current work will be cleared.</div>
     <div style="display:flex;gap:10px;justify-content:flex-end">
-      <button class="btn btn-ghost" onclick="document.getElementById('tutorialConfirmModal').style.display='none'">Cancel</button>
+      <button class="btn btn-ghost" onclick="hideModal('tutorialConfirmModal')">Cancel</button>
       <button class="btn" style="background:var(--accent);color:white" onclick="tutorialConfirmProceed()">Start Walkthrough</button>
     </div>
   </div>
@@ -2411,7 +2456,8 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 <div id="view-home" class="tool-view active">
   <div class="home-screen">
     <div class="home-scroll-area">
-    <div class="home-brand">
+    <div class="home-brand" onclick="brandEasterEgg()">
+      <div id="brandBubble" class="brand-bubble"></div>
       <div class="home-brand-mark"><svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1.5"/><polyline points="9 14 11 16 15 12"/></svg></div>
       <div class="home-brand-title"><span class="hb-l">D</span><span class="hb-l">o</span><span class="hb-l">c</span><span class="hb-l hb-a">A</span><span class="hb-l hb-a">s</span><span class="hb-l hb-a">s</span><span class="hb-l hb-a">i</span><span class="hb-l hb-a">s</span><span class="hb-l hb-a">t</span></div>
     </div>
@@ -2478,11 +2524,11 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     </div><!-- /home-tools-area -->
     </div><!-- /home-scroll-area -->
     <div id="home-scroll-hint" class="home-scroll-hint" onclick="document.querySelector('.home-scroll-area').scrollBy({top: 200, behavior: 'smooth'})">
-      <span>More below</span><span class="home-scroll-hint-arrow">↓</span>
+      <span>More below</span><svg class="home-scroll-hint-arrow" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
     </div>
     <div class="home-bottom-links" style="text-align:center;margin-top:clamp(12px, 3vh, 28px);display:flex;gap:8px;justify-content:center;align-items:center;flex-wrap:wrap;">
-      <button onclick="confirmStartTutorial()" style="font-family:'Public Sans',sans-serif;font-size:12px;font-weight:600;color:#2d6a4f;cursor:pointer;padding:6px 16px;border-radius:20px;border:1px solid #b8d9c4;background:var(--accent-light);line-height:1;transition:background .15s,border-color .15s;" onmouseover="this.style.background='#c8e6d4';this.style.borderColor='#2d6a4f'" onmouseout="this.style.background='var(--accent-light)';this.style.borderColor='#b8d9c4'">▶ How to Use DocAssist</button>
-      <button onclick="openChangelogModal()" style="font-family:'Public Sans',sans-serif;font-size:12px;font-weight:600;color:#2d6a4f;cursor:pointer;padding:6px 16px;border-radius:20px;border:1px solid #b8d9c4;background:var(--accent-light);line-height:1;transition:background .15s,border-color .15s;" onmouseover="this.style.background='#c8e6d4';this.style.borderColor='#2d6a4f'" onmouseout="this.style.background='var(--accent-light)';this.style.borderColor='#b8d9c4'">What's New in DocAssist</button>
+      <button onclick="confirmStartTutorial()" style="font-family:'Public Sans',sans-serif;font-size:12px;font-weight:600;color:#2d6a4f;cursor:pointer;padding:6px 16px;border-radius:20px;border:1px solid #b8d9c4;background:var(--accent-light);line-height:1;transition:background .15s,border-color .15s;" onmouseover="this.style.background='#c8e6d4';this.style.borderColor='#2d6a4f'" onmouseout="this.style.background='var(--accent-light)';this.style.borderColor='#b8d9c4'">How to Use</button>
+      <button onclick="openChangelogModal()" style="font-family:'Public Sans',sans-serif;font-size:12px;font-weight:600;color:#2d6a4f;cursor:pointer;padding:6px 16px;border-radius:20px;border:1px solid #b8d9c4;background:var(--accent-light);line-height:1;transition:background .15s,border-color .15s;" onmouseover="this.style.background='#c8e6d4';this.style.borderColor='#2d6a4f'" onmouseout="this.style.background='var(--accent-light)';this.style.borderColor='#b8d9c4'">What's New</button>
     </div>
   </div>
 </div>
@@ -6364,6 +6410,61 @@ document.addEventListener('DOMContentLoaded', function() {
   setTimeout(updateHomeScrollHint, 100);
 });
 
+function showModal(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.add('modal-fade');
+  el.classList.remove('modal-visible');
+  el.style.display = 'flex';
+  void el.offsetWidth; // force reflow so the opacity:0 starting state registers before animating
+  requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('modal-visible')));
+}
+
+function hideModal(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.remove('modal-visible');
+  setTimeout(() => {
+    if (!el.classList.contains('modal-visible')) el.style.display = 'none';
+  }, 160);
+}
+
+let _brandClickCount = 0;
+let _brandEggDisabled = false;
+function brandEasterEgg() {
+  if (_brandEggDisabled) return;
+  const bubble = document.getElementById('brandBubble');
+  if (!bubble) return;
+  const greetTitle = document.getElementById('homeGreetingTitle');
+  const greetSub = document.getElementById('homeGreetingSub');
+  _brandClickCount++;
+
+  if (_brandClickCount > 3) {
+    clearTimeout(brandEasterEgg._timer);
+    bubble.classList.remove('show');
+    if (greetTitle) greetTitle.style.opacity = '1';
+    if (greetSub) greetSub.style.opacity = '1';
+    _brandEggDisabled = true;
+    return;
+  }
+
+  const messages = [
+    'Hi, you found me',
+    'Built by Joseph with <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:-1px;margin-left:1px;"><path d="M12 21s-6.7-4.35-9.3-8.28C1.02 10.1 1.6 6.9 4.2 5.3c2.1-1.3 4.7-.7 6.1 1.1.5.6.9 1.3 1.7 1.3.8 0 1.2-.7 1.7-1.3 1.4-1.8 4-2.4 6.1-1.1 2.6 1.6 3.18 4.8 1.5 7.42C18.7 16.65 12 21 12 21z"/></svg>',
+    'I contain multitudes. And also ASAM criteria'
+  ];
+  bubble.innerHTML = messages[_brandClickCount - 1];
+  bubble.classList.add('show');
+  if (greetTitle) greetTitle.style.opacity = '0';
+  if (greetSub) greetSub.style.opacity = '0';
+  clearTimeout(brandEasterEgg._timer);
+  brandEasterEgg._timer = setTimeout(() => {
+    bubble.classList.remove('show');
+    if (greetTitle) greetTitle.style.opacity = '1';
+    if (greetSub) greetSub.style.opacity = '1';
+  }, 2200);
+}
+
 function goHome() {
   if (!document.getElementById('view-home').classList.contains('active')) navigateTo('home');
 }
@@ -8616,11 +8717,11 @@ window.addEventListener('beforeunload', function(e) {
 });
 // ═══════════════════════════════════════════════════
 function confirmReset() {
-  document.getElementById('resetModal').style.display = 'flex';
+  showModal('resetModal');
 }
 
 function openFeedbackModal() {
-  document.getElementById('feedbackModal').style.display = 'flex';
+  showModal('feedbackModal');
 }
 
 function selectFeedbackType(pill) {
@@ -8669,7 +8770,7 @@ function copyFeedbackText(btn) {
 }
 
 function closeFeedbackModal() {
-  document.getElementById('feedbackModal').style.display = 'none';
+  hideModal('feedbackModal');
   document.getElementById('feedbackCopySection').style.display = 'none';
   document.getElementById('feedbackPrepareBtn').style.display = 'inline-flex';
   document.getElementById('feedbackTool').value = '';
@@ -8681,12 +8782,11 @@ function closeFeedbackModal() {
 }
 
 function openChangelogModal() {
-  const m = document.getElementById('changelogModal');
-  m.style.display = 'flex';
+  showModal('changelogModal');
 }
 
 function closeChangelogModal() {
-  document.getElementById('changelogModal').style.display = 'none';
+  hideModal('changelogModal');
 }
 
 // ═══════════════════════════════════════════════════
@@ -10644,7 +10744,7 @@ function deReset() {
 // ─── END DISCHARGE EMAIL TOOL ──────────────────────
 
 function doReset() {
-  document.getElementById('resetModal').style.display = 'none';
+  hideModal('resetModal');
   if (typeof autosaveClear === 'function') autosaveClear();
 
   // Reset toolbar
@@ -10757,7 +10857,7 @@ function demoClick() {
   demoClickTimer = setTimeout(() => { demoClickCount = 0; }, 2000);
   if (demoClickCount >= 3) {
     demoClickCount = 0;
-    document.getElementById('sampleClientModal').style.display = 'flex';
+    showModal('sampleClientModal');
   }
 }
 
@@ -12866,18 +12966,18 @@ function tutPreload(callback) {
 let _tutorialPendingCallback = null;
 
 function tutorialConfirmProceed() {
-  document.getElementById('tutorialConfirmModal').style.display = 'none';
+  hideModal('tutorialConfirmModal');
   if (_tutorialPendingCallback) { _tutorialPendingCallback(); _tutorialPendingCallback = null; }
 }
 
 function confirmStartTutorial() {
   _tutorialPendingCallback = startTutorial;
-  document.getElementById('tutorialConfirmModal').style.display = 'flex';
+  showModal('tutorialConfirmModal');
 }
 
 function confirmToolTutorial(sectionName) {
   _tutorialPendingCallback = function() { startToolTutorial(sectionName, false); };
-  document.getElementById('tutorialConfirmModal').style.display = 'flex';
+  showModal('tutorialConfirmModal');
 }
 
 function startTutorial() {
@@ -13535,6 +13635,7 @@ function autosaveApply(snap) {
 function autosaveShowRestorePrompt(snap) {
   const modal = document.createElement('div');
   modal.id = 'autosaveRestoreModal';
+  modal.className = 'modal-fade';
   modal.style.cssText = 'display:flex;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:200;align-items:center;justify-content:center;';
   const mins = Math.max(1, Math.round((Date.now() - snap.ts) / 60000));
   const whenText = mins < 60 ? `${mins} minute${mins === 1 ? '' : 's'} ago` : `${Math.round(mins / 60)} hour${Math.round(mins / 60) === 1 ? '' : 's'} ago`;
@@ -13548,11 +13649,16 @@ function autosaveShowRestorePrompt(snap) {
       </div>
     </div>`;
   document.body.appendChild(modal);
-  document.getElementById('autosaveDiscardBtn').onclick = () => { autosaveClear(); modal.remove(); };
-  document.getElementById('autosaveRestoreBtn').onclick = () => {
+  void modal.offsetWidth;
+  requestAnimationFrame(() => requestAnimationFrame(() => modal.classList.add('modal-visible')));
+  function dismiss(after) {
+    modal.classList.remove('modal-visible');
+    setTimeout(() => { modal.remove(); if (after) after(); }, 160);
+  }
+  document.getElementById('autosaveDiscardBtn').onclick = () => dismiss(() => autosaveClear());
+  document.getElementById('autosaveRestoreBtn').onclick = () => dismiss(() => {
     try { autosaveApply(snap); } catch (err) { console.error('Autosave restore failed:', err); }
-    modal.remove();
-  };
+  });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
