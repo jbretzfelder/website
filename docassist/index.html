@@ -59,26 +59,28 @@ body {
   user-select: none;
   -webkit-user-select: none;
 }
-.header-left { display: flex; align-items: center; gap: 10px; }
+.header-left { display: flex; align-items: center; gap: 7px; }
 .brand-mark {
   width: 28px;
   height: 28px;
-  border-radius: 7px;
+  border-radius: 32%;
   background: var(--accent);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  overflow: visible;
 }
-.brand-mark svg { width: 16px; height: 16px; stroke: var(--accent-light); fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+.brand-mark svg { width: 16px; height: 16px; stroke: #ffffff; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transform: translate(0.6px, -0.4px); transition: transform 0.3s cubic-bezier(.34,1.56,.64,1); }
+.header-left:hover .brand-mark svg { transform: translate(0.6px, -0.4px) scale(1.18) rotate(-6deg); }
 .app-title { font-size: 16px; font-weight: 700; color: #ffffff; letter-spacing: 0.01em; transition: color .15s, text-shadow .15s; }
 .header-left:hover .app-title { color: #cdeedd; text-shadow: 0 0 10px rgba(126,200,160,0.7); }
 .app-title-accent { color: #7ec8a0; transition: color .15s; }
 .header-left:hover .app-title-accent { color: #a3e6c0; }
 .reset-btn {
-  background: none;
-  border: 1px solid #2a4a35;
-  color: #7ec8a0;
+  background: rgba(45,106,79,0.22);
+  border: 1px solid #2d6a4f;
+  color: #a3e6c0;
   font-family: 'Public Sans', sans-serif;
   font-size: 11px;
   font-weight: 500;
@@ -86,17 +88,18 @@ body {
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.15s;
+  letter-spacing: 0.01em;
 }
-.reset-btn:hover { background: #1a3a25; border-color: #7ec8a0; }
+.reset-btn:hover { background: #2d6a4f; color: white; }
 .feedback-btn {
-  background: #e8f5ee;
-  border: 1.5px solid #2d6a4f;
-  color: #2d6a4f;
+  background: rgba(45,106,79,0.22);
+  border: 1px solid #2d6a4f;
+  color: #a3e6c0;
   font-family: 'Public Sans', sans-serif;
-  font-size: 12px;
-  font-weight: 700;
-  padding: 5px 14px;
-  border-radius: 5px;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 4px;
   cursor: pointer;
   transition: all 0.15s;
   display: flex;
@@ -120,17 +123,6 @@ body {
 }
 .feedback-type-pill:hover { border-color: #2d6a4f; color: #2d6a4f; }
 .feedback-type-pill.active { background: #2d6a4f; border-color: #2d6a4f; color: white; }
-.header-badge {
-  background: #143322;
-  border: 1px solid #235c3a;
-  color: #7ec8a0;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  padding: 2px 8px;
-  border-radius: 3px;
-}
 
 /* ─── TOOLBAR ─────────────────────────────── */
 .toolbar {
@@ -260,33 +252,46 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 .home-brand-mark {
   width: clamp(34px, 5vh, 42px);
   height: clamp(34px, 5vh, 42px);
-  border-radius: 10px;
+  border-radius: 32%;
   background: var(--accent);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  overflow: hidden;
+  position: relative;
+  overflow: visible;
   box-shadow: 0 2px 6px rgba(45,106,79,0.35);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
-.home-brand-mark svg { width: 56%; height: 56%; stroke: #ffffff; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.home-brand-mark svg {
+  display: block; width: 58%; height: 58%; stroke: #ffffff; fill: none;
+  stroke-width: 2.25; stroke-linecap: round; stroke-linejoin: round;
+  transform: translate(1.2px, -0.8px);
+  transition: transform 0.3s cubic-bezier(.34,1.56,.64,1);
+}
 .home-brand-title {
   font-size: clamp(24px, 3.7vh, 32px);
-  font-weight: 800;
+  font-weight: 900;
   color: #1a3d22;
   letter-spacing: -0.015em;
   cursor: default;
 }
-.home-brand-title-accent { color: var(--accent); transition: color 0.25s ease; }
-.home-brand:hover .home-brand-mark {
-  transform: translateY(-2px) scale(1.06);
-  box-shadow: 0 6px 14px rgba(45,106,79,0.45);
-}
-.home-brand:hover .home-brand-title-accent { color: #1e4d38; }
+.home-brand-title .hb-l { display: inline-block; transition: transform 0.25s ease, color 0.25s ease; }
+.home-brand-title .hb-a { color: var(--accent); }
+.home-brand:hover .home-brand-mark svg { transform: translate(1.2px, -0.8px) scale(1.18) rotate(-6deg); }
+.home-brand:hover .home-brand-title .hb-l { color: #1e4d38; }
+.home-brand:hover .home-brand-title .hb-l:nth-child(1) { transition-delay: 0s;    transform: translateY(-4px); }
+.home-brand:hover .home-brand-title .hb-l:nth-child(2) { transition-delay: .03s; transform: translateY(-4px); }
+.home-brand:hover .home-brand-title .hb-l:nth-child(3) { transition-delay: .06s; transform: translateY(-4px); }
+.home-brand:hover .home-brand-title .hb-l:nth-child(4) { transition-delay: .09s; transform: translateY(-4px); }
+.home-brand:hover .home-brand-title .hb-l:nth-child(5) { transition-delay: .12s; transform: translateY(-4px); }
+.home-brand:hover .home-brand-title .hb-l:nth-child(6) { transition-delay: .15s; transform: translateY(-4px); }
+.home-brand:hover .home-brand-title .hb-l:nth-child(7) { transition-delay: .18s; transform: translateY(-4px); }
+.home-brand:hover .home-brand-title .hb-l:nth-child(8) { transition-delay: .21s; transform: translateY(-4px); }
+.home-brand:hover .home-brand-title .hb-l:nth-child(9) { transition-delay: .24s; transform: translateY(-4px); }
 @media (prefers-reduced-motion: reduce) {
-  .home-brand-mark, .home-brand-title-accent { transition: none; }
-  .home-brand:hover .home-brand-mark { transform: none; box-shadow: 0 2px 6px rgba(45,106,79,0.35); }
+  .home-brand-mark svg, .home-brand-title .hb-l { transition: none; }
+  .home-brand:hover .home-brand-mark svg { transform: none; }
+  .home-brand:hover .home-brand-title .hb-l { transform: none; }
 }
 .home-greeting {
   text-align: center;
@@ -1482,7 +1487,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 .sn-timer-btn-stop { background: #d97706; color: white; }
 .sn-timer-btn-stop:hover { background: #b45309; }
 .sn-timer-btn-reset { background: #2a3a30; color: #7ec8a0; border: 1px solid #2a4a35; }
-.sn-timer-btn-reset:hover { background: #1a3a25; }
+.sn-timer-btn-reset:hover { background: #35544a; border-color: #4a7a5f; color: #a3e6c0; }
 /* ─── SMART GOAL ──────────────────────────── */
 .smart-reminder {
   display: flex;
@@ -2139,7 +2144,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   border-radius: 12px;
   box-shadow: 0 8px 40px rgba(0,0,0,0.30), 0 1px 0 rgba(0,0,0,0.05);
   padding: 20px 22px 16px;
-  width: 340px;
+  width: 380px;
   max-width: calc(100vw - 32px);
   font-family: 'Public Sans', sans-serif;
 }
@@ -2198,8 +2203,9 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 }
 .tut-btn-row {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   align-items: center;
+  flex-wrap: nowrap;
 }
 #tut-exit-btn {
   font-family: 'Public Sans', sans-serif;
@@ -2211,6 +2217,8 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   padding: 6px 2px;
   margin-right: auto;
   transition: color .15s;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 #tut-exit-btn:hover { color: #6b7870; }
 #tut-skip-btn {
@@ -2224,16 +2232,20 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   padding: 6px 2px;
   text-decoration: underline;
   transition: color .15s;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 #tut-skip-btn:hover { color: #1e4d38; }
 #tut-back-btn, #tut-next-btn {
   font-family: 'Public Sans', sans-serif;
   font-size: 12px;
   font-weight: 600;
-  padding: 7px 15px;
+  padding: 7px 12px;
   border-radius: 6px;
   cursor: pointer;
   transition: background .15s, border-color .15s;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 #tut-back-btn {
   background: #f7faf8;
@@ -2255,28 +2267,31 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 <!-- ═══ HEADER ═══════════════════════════════════════ -->
 <div class="app-header">
   <div class="header-left" onclick="goHome()" style="cursor:pointer" title="Back to home">
-    <div class="brand-mark"><svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><polyline points="9 14 11 16 15 12"/></svg></div>
+    <div class="brand-mark"><svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1.5"/><polyline points="9 14 11 16 15 12"/></svg></div>
     <div style="display:flex;align-items:baseline;gap:12px;">
       <div class="app-title">Doc<span class="app-title-accent">Assist</span></div>
     </div>
   </div>
   <div style="display:flex;align-items:center;gap:14px">
     <!-- Session Timer -->
-    <div id="timerGroup" style="display:flex;align-items:center;gap:6px;position:relative;" onmouseenter="document.getElementById('timer-tooltip').style.opacity='1'" onmouseleave="document.getElementById('timer-tooltip').style.opacity='0'">
-      <div id="timer-tooltip" style="position:absolute;bottom:-38px;left:50%;transform:translateX(-50%);background:#0d1f13;color:#a0b8a8;font-size:10px;padding:5px 9px;border-radius:5px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .15s;z-index:100;border:1px solid #1e3d28;">Reference only — does not affect documentation</div>
-      <div style="font-family:'DM Mono',monospace;font-size:14px;font-weight:600;color:#7ec8a0;min-width:40px" id="snTimerDisplay">00:00</div>
-      <div style="display:flex;flex-direction:column;gap:1px;font-size:9px;color:#5a826a;min-width:80px;line-height:1.3">
-        <span id="snTimerStart">—</span>
-        <span id="snTimerEnd">—</span>
+    <div id="timerGroup" style="display:flex;align-items:center;position:relative;">
+      <button id="timerToggleBtn" class="feedback-btn" onclick="toggleTimerExpanded()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 14"/></svg><span id="timerToggleLabel">Timer</span></button>
+      <div id="timerExpandedGroup" style="display:none;align-items:center;gap:6px;position:relative;" onmouseenter="document.getElementById('timer-tooltip').style.opacity='1'" onmouseleave="document.getElementById('timer-tooltip').style.opacity='0'">
+        <div id="timer-tooltip" style="position:absolute;bottom:-38px;left:50%;transform:translateX(-50%);background:#0d1f13;color:#a0b8a8;font-size:10px;padding:5px 9px;border-radius:5px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .15s;z-index:100;border:1px solid #1e3d28;">Reference only — does not affect documentation</div>
+        <div style="font-family:'DM Mono',monospace;font-size:14px;font-weight:500;color:#7ec8a0;min-width:40px" id="snTimerDisplay" onclick="demoClick()">00:00</div>
+        <div style="display:flex;flex-direction:column;gap:1px;font-size:9px;color:#5a826a;min-width:48px;line-height:1.3">
+          <span id="snTimerStart">—</span>
+          <span id="snTimerEnd">—</span>
+        </div>
+        <button class="sn-timer-btn sn-timer-btn-start" id="snTimerStartBtn" onclick="snTimerStart()" style="height:21px;width:21px;padding:0;display:flex;align-items:center;justify-content:center"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4.5v15l13-7.5-13-7.5z"/></svg></button>
+        <button class="sn-timer-btn sn-timer-btn-stop" id="snTimerStopBtn" onclick="snTimerStop()" disabled style="opacity:0.4;height:21px;width:21px;padding:0;display:flex;align-items:center;justify-content:center"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="16" height="16" rx="2.5"/></svg></button>
+        <button class="sn-timer-btn sn-timer-btn-reset" onclick="snTimerReset()" style="height:21px;width:21px;padding:0;display:flex;align-items:center;justify-content:center"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 2.64-6.36L3 8"/><path d="M3 3v5h5"/></svg></button>
+        <button class="reset-btn" onclick="toggleTimerExpanded()" style="padding:3px 7px" title="Collapse timer">✕</button>
       </div>
-      <button class="sn-timer-btn sn-timer-btn-start" id="snTimerStartBtn" onclick="snTimerStart()" style="height:26px;width:26px;padding:0;font-size:10px;text-align:center">▶</button>
-      <button class="sn-timer-btn sn-timer-btn-stop" id="snTimerStopBtn" onclick="snTimerStop()" disabled style="opacity:0.4;height:26px;width:26px;padding:0;font-size:16px;text-align:center;line-height:1;padding-bottom:4px">■</button>
-      <button class="sn-timer-btn sn-timer-btn-reset" onclick="snTimerReset()" style="height:26px;width:26px;padding:0;font-size:10px;text-align:center">↺</button>
     </div>
     <div style="width:1px;height:20px;background:#2a4a35"></div>
-    <button class="feedback-btn" onclick="openFeedbackModal()">💬 Give Feedback</button>
-    <button class="reset-btn" onclick="confirmReset()">↺ Reset</button>
-    <div class="header-badge" id="clinicalBadge" onclick="demoClick()" style="cursor:default;user-select:none">Staff Use Only</div>
+    <button class="feedback-btn" onclick="openFeedbackModal()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>Feedback</button>
+    <button class="reset-btn" id="mainResetBtn" onclick="confirmReset()">↺ Reset</button>
   </div>
 </div>
 
@@ -2335,6 +2350,17 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 </div>
 
 <!-- Reset confirmation modal -->
+<div id="sampleClientModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;align-items:center;justify-content:center">
+  <div style="background:white;border-radius:10px;padding:28px 32px;max-width:380px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.2)">
+    <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:10px">Load sample client?</div>
+    <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;margin-bottom:24px">This will load a sample client (Marcus) across every tool for testing or training. It will reset anything currently entered, the same as clicking Reset. This cannot be undone.</div>
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button class="btn btn-ghost" onclick="document.getElementById('sampleClientModal').style.display='none'">Cancel</button>
+      <button class="btn" style="background:var(--accent);color:white" onclick="document.getElementById('sampleClientModal').style.display='none';doReset();fillSampleClient()">Load Sample Client</button>
+    </div>
+  </div>
+</div>
+
 <div id="resetModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;align-items:center;justify-content:center">
   <div style="background:white;border-radius:10px;padding:28px 32px;max-width:380px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.2)">
     <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:10px">Reset everything?</div>
@@ -2386,8 +2412,8 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   <div class="home-screen">
     <div class="home-scroll-area">
     <div class="home-brand">
-      <div class="home-brand-mark"><svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><polyline points="9 14 11 16 15 12"/></svg></div>
-      <div class="home-brand-title">Doc<span class="home-brand-title-accent">Assist</span></div>
+      <div class="home-brand-mark"><svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1.5"/><polyline points="9 14 11 16 15 12"/></svg></div>
+      <div class="home-brand-title"><span class="hb-l">D</span><span class="hb-l">o</span><span class="hb-l">c</span><span class="hb-l hb-a">A</span><span class="hb-l hb-a">s</span><span class="hb-l hb-a">s</span><span class="hb-l hb-a">i</span><span class="hb-l hb-a">s</span><span class="hb-l hb-a">t</span></div>
     </div>
     <div class="home-greeting">
       <div class="home-greeting-title" id="homeGreetingTitle"></div>
@@ -10731,7 +10757,7 @@ function demoClick() {
   demoClickTimer = setTimeout(() => { demoClickCount = 0; }, 2000);
   if (demoClickCount >= 3) {
     demoClickCount = 0;
-    fillSampleClient();
+    document.getElementById('sampleClientModal').style.display = 'flex';
   }
 }
 
@@ -10892,6 +10918,7 @@ function fillSampleClient() {
 
   // ── SESSION NOTE ──
   snState.clientName = 'Marcus';
+  document.getElementById('sn-client').value = 'Marcus';
   document.getElementById('sn-date').value = today;
   snState.date = today;
   document.getElementById('sn-type').value = 'itp_review';
@@ -11213,11 +11240,6 @@ function fillSampleClient() {
   asaState.contactDetail = asaContactText;
 
   tjSampleClientLoaded = true;
-
-  // ── Flash badge ──
-  const badge = document.getElementById('clinicalBadge');
-  badge.textContent = '✓ Sample Loaded';
-  setTimeout(() => { badge.textContent = 'Staff Use Only'; }, 2500);
 }
 
 // ═══════════════════════════════════════════════════
@@ -11260,6 +11282,13 @@ function snFmtElapsed(ms) {
   return `${String(min).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
 }
 
+let timerExpanded = false;
+function toggleTimerExpanded() {
+  timerExpanded = !timerExpanded;
+  document.getElementById('timerToggleBtn').style.display = timerExpanded ? 'none' : 'flex';
+  document.getElementById('timerExpandedGroup').style.display = timerExpanded ? 'flex' : 'none';
+}
+
 function snTimerStart() {
   if (snTimerRunning) return;
   snTimerRunning = true;
@@ -11270,7 +11299,7 @@ function snTimerStart() {
 
   document.getElementById('snTimerStart').textContent = `▶ ${snFmtTime(snTimerStartTs)}`;
   document.getElementById('snTimerEnd').textContent = '—';
-  document.getElementById('snTimerDisplay').style.color = 'var(--accent)';
+  document.getElementById('snTimerDisplay').style.color = '#4ade80';
   document.getElementById('snTimerStartBtn').disabled = true;
   document.getElementById('snTimerStartBtn').style.opacity = '0.4';
   document.getElementById('snTimerStopBtn').disabled = false;
@@ -11278,7 +11307,9 @@ function snTimerStart() {
 
   snTimerInterval = setInterval(() => {
     const elapsed = Date.now() - snTimerStartTs.getTime();
-    document.getElementById('snTimerDisplay').textContent = snFmtElapsed(elapsed);
+    const fmt = snFmtElapsed(elapsed);
+    document.getElementById('snTimerDisplay').textContent = fmt;
+    document.getElementById('timerToggleLabel').textContent = fmt;
   }, 1000);
 }
 
@@ -11306,7 +11337,8 @@ function snTimerReset() {
   snState.timerStart = null;
   snState.timerEnd = null;
   document.getElementById('snTimerDisplay').textContent = '00:00';
-  document.getElementById('snTimerDisplay').style.color = 'var(--text)';
+  document.getElementById('snTimerDisplay').style.color = '#7ec8a0';
+  document.getElementById('timerToggleLabel').textContent = 'Timer';
   document.getElementById('snTimerStart').textContent = '—';
   document.getElementById('snTimerEnd').textContent = '—';
   document.getElementById('snTimerStartBtn').disabled = false;
@@ -12408,7 +12440,7 @@ const TUT_INTRO_STEPS = [
     title:'Your documentation tools',
     body:'Each card opens a different tool. You will often use several of them for the same client over time — an ASAM narrative, then a treatment plan, then session notes. Your work is saved as you move between tools, so you can start one, switch to another, and come back without losing anything.' },
 
-  { view:'home', sel:'#autosaveIndicator', section:'Home Screen',
+  { view:'home', sel:'#autosaveIndicator', section:'Home Screen', side:'left',
     title:'Autosave',
     body:'DocAssist also saves your work locally as you type, in the background. If something interrupts you mid-session — the browser crashes, the page refreshes by accident — reopening DocAssist will offer to restore everything from where you left off, as long as it has been less than 8 hours. This small indicator confirms it is working. It never submits anything to Remarkable on its own; it only protects the work you have already done from getting lost.',
     action: function() {
@@ -12418,9 +12450,9 @@ const TUT_INTRO_STEPS = [
 
   { view:'home', sel:'#timerGroup', section:'Home Screen',
     title:'Session timer',
-    body:'The session timer tracks how long you spend on documentation. Start it when you begin, stop it when you are done. It persists across all tools as you move between them. It does not feed into any generated documentation or output — it is for your own reference and time awareness only.' },
+    body:'Click Timer to open the session timer. Start it when you begin, stop it when you are done, and click the ✕ to collapse it again. It persists across all tools as you move between them, and shows elapsed time even while collapsed if it is running. It does not feed into any generated documentation or output — it is for your own reference and time awareness only.' },
 
-  { view:'home', sel:'.reset-btn', section:'Home Screen',
+  { view:'home', sel:'#mainResetBtn', section:'Home Screen',
     title:'Reset button',
     body:'The ↺ Reset button clears all data across every tool, including anything saved for autosave recovery, and returns DocAssist to a blank state. It will ask you to confirm before clearing anything. Use this when you are done with one client and starting fresh for another, or any time you want a clean slate. It does not affect anything in Remarkable — only what is currently open in DocAssist.' },
 ];
@@ -13004,7 +13036,7 @@ function tutPositionStep(step) {
 
     // Tooltip width
     tooltip.style.transform = 'none';
-    var tW = Math.min(340, window.innerWidth - 32);
+    var tW = Math.min(380, window.innerWidth - 32);
     tooltip.style.width = tW + 'px';
 
     if (step.side === 'right') {
