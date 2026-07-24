@@ -13323,7 +13323,8 @@ function autosaveHasContent() {
   if (snState.clientName || snState.describe || snState.progress) return true;
   if (gnState.counselor || gnClients.some(c => c.name || c.responseTopic || c.responseReading || c.responseMindfulness || c.cjText)) return true;
   if (dsState.clientName) return true;
-  if (deState.clientName) return true;
+  if (deState.clientName || deState.dischargeType || deState.dischargeSubtype || deState.dischargeDate ||
+      deState.unsuccessfulReason || deState.neutralReason || deState.staffInvolved || deState.additionalInfo) return true;
   if (nnState.clientName) return true;
   if (asaState.clientName) return true;
   if (itpSelected.A.size || itpSelected.B.size || itpSelected.C.size) return true;
