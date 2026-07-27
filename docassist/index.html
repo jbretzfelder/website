@@ -5045,7 +5045,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     </div>
     <div style="overflow-y:auto;padding:20px 24px 28px;">
 
-    <!-- v1.9 -->
+    <!-- July 21, 2026 -->
     <div style="margin-bottom:28px;">
       <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px;">
         <span style="font-family:'DM Mono',monospace;font-size:11px;color:#5a6a62;">July 21, 2026</span>
@@ -5059,7 +5059,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       </div>
     </div>
 
-    <!-- v1.8 -->
+    <!-- July 15, 2026 -->
     <div style="margin-bottom:28px;">
       <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px;">
         <span style="font-family:'DM Mono',monospace;font-size:11px;color:#5a6a62;">July 15, 2026</span>
@@ -5073,7 +5073,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       </div>
     </div>
 
-    <!-- v1.7 -->
+    <!-- July 4, 2026 -->
     <div style="margin-bottom:28px;">
       <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px;">
         <span style="font-family:'DM Mono',monospace;font-size:11px;color:#5a6a62;">July 4, 2026</span>
@@ -5087,7 +5087,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       </div>
     </div>
 
-    <!-- v1.6 -->
+    <!-- June 30, 2026 -->
     <div style="margin-bottom:28px;">
       <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px;">
         <span style="font-family:'DM Mono',monospace;font-size:11px;color:#5a6a62;">June 30, 2026</span>
@@ -5101,7 +5101,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       </div>
     </div>
 
-    <!-- v1.5 -->
+    <!-- June 18, 2026 -->
     <div style="margin-bottom:28px;">
       <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px;">
         <span style="font-family:'DM Mono',monospace;font-size:11px;color:#5a6a62;">June 18, 2026</span>
@@ -5119,7 +5119,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       </div>
     </div>
 
-    <!-- v1.4 -->
+    <!-- June 16, 2026 -->
     <div style="margin-bottom:28px;">
       <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px;">
         <span style="font-family:'DM Mono',monospace;font-size:11px;color:#5a6a62;">June 16, 2026</span>
@@ -5137,7 +5137,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       </div>
     </div>
 
-    <!-- v1.3 -->
+    <!-- June 11, 2026 -->
     <div style="margin-bottom:28px;">
       <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px;">
         <span style="font-family:'DM Mono',monospace;font-size:11px;color:#5a6a62;">June 11, 2026</span>
@@ -5163,7 +5163,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       </div>
     </div>
 
-    <!-- v1.2 -->
+    <!-- June 10, 2026 -->
     <div style="margin-bottom:28px;">
       <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px;">
         <span style="font-family:'DM Mono',monospace;font-size:11px;color:#5a6a62;">June 10, 2026</span>
@@ -5185,7 +5185,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       </div>
     </div>
 
-    <!-- v1.1 -->
+    <!-- June 9, 2026 -->
     <div style="margin-bottom:28px;">
       <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px;">
         <span style="font-family:'DM Mono',monospace;font-size:11px;color:#5a6a62;">June 9, 2026</span>
@@ -5203,7 +5203,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       </div>
     </div>
 
-    <!-- v1.0 -->
+    <!-- June 8, 2026 -->
     <div style="margin-bottom:28px;">
       <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px;">
         <span style="font-family:'DM Mono',monospace;font-size:11px;color:#5a6a62;">June 8, 2026</span>
@@ -6358,21 +6358,41 @@ function renderGeneratedOutput() {
 // ═══════════════════════════════════════════════════
 // COPY
 // ═══════════════════════════════════════════════════
+// Shared clipboard helper used by every copy button in the app.
+// Tries the async Clipboard API first, falls back to a hidden-textarea
+// execCommand copy if that's unavailable or throws (older browsers,
+// non-secure contexts, permissions issues). Always resolves to a
+// true/false success flag so callers can show a real failure state
+// instead of silently doing nothing.
+function copyToClipboardFallback(text) {
+  try {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    const ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    return ok;
+  } catch (err) {
+    return false;
+  }
+}
+
+function copyToClipboard(text) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    return navigator.clipboard.writeText(text)
+      .then(() => true)
+      .catch(() => copyToClipboardFallback(text));
+  }
+  return Promise.resolve(copyToClipboardFallback(text));
+}
+
 function doCopy(text, btn) {
-  const promise = navigator.clipboard
-    ? navigator.clipboard.writeText(text)
-    : new Promise((res) => {
-        const ta = document.createElement('textarea');
-        ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
-        document.body.appendChild(ta); ta.select(); document.execCommand('copy');
-        document.body.removeChild(ta); res();
-      });
-  promise.then(() => {
+  copyToClipboard(text).then((ok) => {
     if (btn) {
       const orig = btn.textContent;
-      btn.textContent = '✓ Copied';
-      btn.classList.add('copied');
-      setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 2000);
+      btn.textContent = ok ? '✓ Copied' : '✗ Copy failed';
+      btn.classList.toggle('copied', ok);
+      setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, ok ? 2000 : 3000);
     }
   });
 }
@@ -6944,10 +6964,10 @@ function tjGenerate() {
 function tjCopy(btn) {
   const text = document.getElementById('tjOutputText').textContent;
   if (!text) return;
-  navigator.clipboard.writeText(text).then(() => {
-    btn.textContent = 'Copied!';
-    btn.classList.add('copied');
-    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1800);
+  copyToClipboard(text).then((ok) => {
+    btn.textContent = ok ? 'Copied!' : 'Copy failed';
+    btn.classList.toggle('copied', ok);
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, ok ? 1800 : 3000);
   });
 }
 
@@ -8768,18 +8788,14 @@ function prepareFeedback() {
 
 function copyFeedbackText(btn) {
   const box = document.getElementById('feedbackCopyBox');
-  box.select();
-  try {
-    document.execCommand('copy');
-  } catch(e) {
-    navigator.clipboard.writeText(box.value);
-  }
-  btn.textContent = '✓ Copied — paste into a new email';
-  btn.style.background = '#1a5c3a';
-  setTimeout(() => {
-    btn.textContent = 'Copy Message';
-    btn.style.background = '#2d6a4f';
-  }, 3000);
+  copyToClipboard(box.value).then((ok) => {
+    btn.textContent = ok ? '✓ Copied — paste into a new email' : '✗ Copy failed — select the text above manually';
+    btn.style.background = ok ? '#1a5c3a' : '#c0392b';
+    setTimeout(() => {
+      btn.textContent = 'Copy Message';
+      btn.style.background = '#2d6a4f';
+    }, 3000);
+  });
 }
 
 function closeFeedbackModal() {
@@ -10049,30 +10065,7 @@ function dsCopyBlock(id) {
     setTimeout(() => { btn.innerHTML = original; }, success ? 1800 : 3000);
   }
 
-  function fallbackCopy() {
-    try {
-      const range = document.createRange();
-      range.selectNodeContents(el);
-      const sel = window.getSelection();
-      sel.removeAllRanges();
-      sel.addRange(range);
-      const ok = document.execCommand('copy');
-      sel.removeAllRanges();
-      return ok;
-    } catch (err) {
-      return false;
-    }
-  }
-
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(text).then(() => {
-      flashResult(true);
-    }).catch(() => {
-      flashResult(fallbackCopy());
-    });
-  } else {
-    flashResult(fallbackCopy());
-  }
+  copyToClipboard(text).then(flashResult);
 }
 
 // Count weekdays and weekend days in a date range [startStr, endStr)
@@ -10190,9 +10183,9 @@ function dscopyDosageHours() {
   const btn = document.getElementById('ds-dh-copy-btn');
   const val = btn.dataset.value;
   if (!val) return;
-  navigator.clipboard.writeText(val).then(() => {
-    btn.textContent = 'Copied!';
-    setTimeout(() => btn.textContent = 'Copy', 1800);
+  copyToClipboard(val).then((ok) => {
+    btn.textContent = ok ? 'Copied!' : 'Copy failed';
+    setTimeout(() => btn.textContent = 'Copy', ok ? 1800 : 3000);
   });
 }
 
