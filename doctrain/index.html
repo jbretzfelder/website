@@ -353,9 +353,18 @@
     .mistake-grid{grid-template-columns:1fr;}
   }
   @media print{
+    @page{ margin:0.35in; }
     body *{ visibility:hidden; }
     #cheatSheetPrintArea, #cheatSheetPrintArea *{ visibility:visible; }
-    #cheatSheetPrintArea{ position:absolute; left:0; top:0; width:100%; padding:20px; }
+    #cheatSheetPrintArea{ position:absolute; left:0; top:0; width:100%; padding:0; margin:0; }
+    #cheatSheetPrintArea h2{ font-size:13.5px; margin:10px 0 4px; page-break-after:avoid; }
+    #cheatSheetPrintArea h2:first-of-type{ margin-top:6px; }
+    #cheatSheetPrintArea .callout{ font-size:10.5px; line-height:1.3; padding:8px 10px; margin:0 0 6px; }
+    #cheatSheetPrintArea .cheat-grid{ gap:4px; margin:4px 0; }
+    #cheatSheetPrintArea .cheat-item{ font-size:9.5px; line-height:1.3; padding:5px 8px; break-inside:avoid; }
+    #cheatSheetPrintArea .checklist{ margin-top:4px; }
+    #cheatSheetPrintArea .checklist li{ font-size:9.5px; line-height:1.3; padding:2px 0 2px 18px; break-inside:avoid; }
+    #cheatSheetPrintArea .checklist li::before{ top:2px; }
   }
 
   /* Glossary terms */
