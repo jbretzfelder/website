@@ -517,7 +517,13 @@
 
   /* Home view specific */
   #view-home{max-width:920px; margin:0 auto; padding:56px 32px 100px;}
-  body:has(#view-home.active){background:linear-gradient(160deg, #f7f9f0 0%, #fdf8e1 100%);}
+  html:has(#view-home.active),
+  body:has(#view-home.active){
+    background:linear-gradient(160deg, #f7f9f0 0%, #fdf8e1 100%);
+    background-repeat:no-repeat;
+    background-size:100% 100%;
+    background-attachment:fixed;
+  }
   #view-home, #view-home *{
     user-select:none; -webkit-user-select:none; -moz-user-select:none; -ms-user-select:none;
   }
