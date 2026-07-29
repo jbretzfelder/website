@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DocTrain</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green-900:#122a1e;
+    --green-800:#1b3a2b;
+    --green-700:#2a5940;
+    --green-600:#3a7856;
+    --green-500:#4c9a6f;
+    --green-100:#e6efe8;
+    --green-050:#f4f8f5;
+    --cream:#faf8f3;
+    --ink:#1e2622;
+    --ink-soft:#4c5850;
+    --amber:#b8860b;
+    --amber-bg:#fdf3dd;
+    --amber-border:#e6c477;
+    --red:#a3382f;
+    --red-bg:#fbeceb;
+    --border:#d8ded9;
+    --white:#ffffff;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'IBM Plex Sans', sans-serif;
+    background:var(--cream);
+    color:var(--ink);
+    line-height:1.55;
+  }
+  mono, .mono{font-family:'IBM Plex Mono', monospace;}
+
+  a{color:var(--green-700);}
+
+  /* Layout */
+  .app{
+    display:flex;
+    min-height:100vh;
+  }
+  .sidebar{
+    width:280px;
+    flex-shrink:0;
+    background:var(--green-900);
+    color:var(--green-050);
+    padding:28px 22px;
+    position:sticky;
+    top:0;
+    height:100vh;
+    overflow-y:auto;
+  }
+  .sidebar-title{
+    font-size:15px;
+    font-weight:700;
+    letter-spacing:0.02em;
+    color:var(--white);
+  }
+  .sidebar-sub{
+    font-size:12px;
+    color:#9fb8a8;
+    margin-top:2px;
+    margin-bottom:22px;
+  }
+  .sidebar-back{
+    display:inline-block;
+    font-size:12px;
+    color:#9fb8a8;
+    text-decoration:none;
+    margin-bottom:18px;
+    border:1px solid #33513f;
+    padding:5px 10px;
+    border-radius:6px;
+  }
+  .sidebar-back:hover{background:#1f3d2c;}
+
+  .nav-list{list-style:none;margin:0;padding:0;}
+  .nav-item{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    padding:9px 8px;
+    border-radius:7px;
+    cursor:pointer;
+    font-size:13.5px;
+    color:#cfe0d5;
+    margin-bottom:2px;
+  }
+  .nav-item:hover{background:#1f3d2c;}
+  .nav-item.active{background:#26492f; color:var(--white); font-weight:600;}
+  .nav-check{
+    width:16px;height:16px;flex-shrink:0;border-radius:50%;
+    border:1.5px solid #4a6b57;margin-top:2px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:10px;
+  }
+  .nav-check.done{background:var(--green-500); border-color:var(--green-500); color:var(--green-900);}
+
+  .progress-track{
+    margin-top:20px;
+    padding-top:16px;
+    border-top:1px solid #2c4a38;
+    font-size:11.5px;
+    color:#8fa89b;
+  }
+  .progress-bar-bg{
+    height:5px;background:#26402f;border-radius:3px;margin-top:8px;overflow:hidden;
+  }
+  .progress-bar-fill{
+    height:100%;background:var(--green-500);transition:width .3s ease;
+  }
+  .reset-link{
+    display:inline-block;margin-top:14px;font-size:11.5px;color:#7b9587;cursor:pointer;text-decoration:underline;
+  }
+
+  .main{
+    flex:1;
+    max-width:820px;
+    padding:44px 48px 120px;
+  }
+  section.module{display:none;}
+  section.module.active{display:block;}
+
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--green-600);
+    font-weight:500;
+  }
+  h1{font-size:28px; margin:6px 0 14px; color:var(--green-900); font-weight:700;}
+  h2{font-size:19px; color:var(--green-800); margin-top:36px;}
+  h3{font-size:15.5px; color:var(--green-800); margin-top:26px;}
+  p{color:var(--ink); font-size:15px;}
+  .lede{font-size:16.5px; color:var(--ink-soft); max-width:640px;}
+
+  .card{
+    background:var(--white);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:22px 24px;
+    margin:18px 0;
+  }
+  .card-label{
+    font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--green-600); margin-bottom:8px;
+  }
+
+  /* Hero comparison (signature element for intro) */
+  .hero-compare{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+    margin:24px 0 8px;
+  }
+  .hero-col{
+    border-radius:var(--radius);
+    padding:18px 20px;
+    font-size:13.5px;
+  }
+  .hero-col.deny{
+    background:var(--red-bg);
+    border:1px solid #e3bcb8;
+  }
+  .hero-col.survive{
+    background:var(--green-050);
+    border:1px solid #b9d4c3;
+  }
+  .hero-tag{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    font-weight:600;
+    margin-bottom:8px;
+    display:inline-block;
+  }
+  .hero-col.deny .hero-tag{color:var(--red);}
+  .hero-col.survive .hero-tag{color:var(--green-700);}
+  .hero-col p{font-family:'IBM Plex Mono', monospace; font-size:13px; color:var(--ink); margin:0;}
+  .hero-note{font-size:12.5px; color:var(--ink-soft); margin-top:10px;}
+
+  textarea{
+    width:100%;
+    min-height:110px;
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:14.5px;
+    padding:12px 14px;
+    border:1px solid var(--border);
+    border-radius:8px;
+    resize:vertical;
+    background:var(--white);
+  }
+  textarea:focus{outline:2px solid var(--green-500); outline-offset:1px;}
+
+  button.btn{
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:13.5px;
+    font-weight:600;
+    border-radius:7px;
+    padding:9px 16px;
+    border:1px solid var(--green-700);
+    background:var(--green-700);
+    color:white;
+    cursor:pointer;
+  }
+  button.btn:hover{background:var(--green-800);}
+  button.btn.secondary{
+    background:white; color:var(--green-700);
+  }
+  button.btn.secondary:hover{background:var(--green-050);}
+  button.btn:disabled{opacity:.5; cursor:not-allowed;}
+
+  .classify-row{
+    display:flex; align-items:center; gap:14px;
+    padding:12px 0; border-bottom:1px solid var(--border);
+  }
+  .classify-row:last-child{border-bottom:none;}
+  .classify-text{flex:1; font-size:14.5px;}
+  .classify-buttons{display:flex; gap:6px; flex-shrink:0;}
+  .pill-btn{
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:12.5px; font-weight:600;
+    padding:6px 12px; border-radius:20px;
+    border:1px solid var(--border); background:white; cursor:pointer;
+  }
+  .pill-btn:hover{border-color:var(--green-600);}
+  .pill-btn.chosen-correct{background:var(--green-100); border-color:var(--green-500); color:var(--green-800);}
+  .pill-btn.chosen-wrong{background:var(--red-bg); border-color:#e3bcb8; color:var(--red);}
+  .classify-explain{
+    font-size:13px; color:var(--ink-soft); margin-top:6px; display:none;
+  }
+  .classify-explain.show{display:block;}
+
+  .scenario-box{
+    background:var(--green-050);
+    border:1px solid #cfe1d6;
+    border-radius:8px;
+    padding:16px 18px;
+    font-size:14px;
+    margin-bottom:14px;
+  }
+  .scenario-box .who{font-weight:700; color:var(--green-800); font-size:13px; margin-bottom:4px;}
+
+  .reveal{
+    display:none;
+    margin-top:16px;
+    border-top:1px dashed var(--border);
+    padding-top:16px;
+  }
+  .reveal.show{display:block;}
+  .model-answer{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13.5px;
+    background:#f4f2ea;
+    border:1px solid #e3ddc8;
+    border-radius:8px;
+    padding:14px 16px;
+    white-space:pre-wrap;
+  }
+  .checklist{margin-top:12px; padding-left:0; list-style:none;}
+  .checklist li{
+    font-size:13.5px; padding:5px 0 5px 24px; position:relative; color:var(--ink);
+  }
+  .checklist li::before{
+    content:"✓"; position:absolute; left:0; top:5px; color:var(--green-600); font-weight:700;
+  }
+
+  .callout{
+    background:var(--amber-bg); border:1px solid var(--amber-border);
+    border-radius:8px; padding:12px 16px; font-size:13.5px; color:#6b4f0a; margin:14px 0;
+  }
+  .callout strong{color:#5c4308;}
+
+  .rating-row{display:flex; gap:8px; margin:14px 0;}
+  .rating-pill{
+    flex:1; text-align:center; padding:10px 4px; border-radius:8px;
+    border:1px solid var(--border); background:white; cursor:pointer; font-size:13px; font-weight:600;
+  }
+  .rating-pill:hover{border-color:var(--green-600);}
+  .rating-pill.selected{background:var(--green-700); color:white; border-color:var(--green-700);}
+  .rating-feedback{margin-top:12px; font-size:13.5px; display:none;}
+  .rating-feedback.show{display:block;}
+  .rating-feedback.match{color:var(--green-700);}
+  .rating-feedback.mismatch{color:var(--red);}
+
+  .criteria-grid{display:flex; flex-direction:column; gap:6px; margin:14px 0;}
+  .criteria-opt{
+    display:flex; align-items:flex-start; gap:10px; font-size:13.5px;
+    padding:8px 10px; border-radius:6px; border:1px solid var(--border); cursor:pointer;
+  }
+  .criteria-opt:hover{background:var(--green-050);}
+  .criteria-opt input{margin-top:3px;}
+  .criteria-opt.correct-yes{background:var(--green-100); border-color:var(--green-500);}
+  .criteria-opt.correct-no.checked-wrong{background:var(--red-bg); border-color:#e3bcb8;}
+  .criteria-opt.missed{border-color:var(--amber-border); background:var(--amber-bg);}
+
+  .section-nav-btns{
+    display:flex; justify-content:space-between; margin-top:44px; padding-top:22px; border-top:1px solid var(--border);
+  }
+
+  .badge-done{
+    display:inline-block; font-size:11.5px; font-weight:600; color:var(--green-700);
+    background:var(--green-100); padding:3px 10px; border-radius:12px; margin-left:10px;
+  }
+
+  /* Golden Thread diagram */
+  .thread-diagram{
+    display:flex; align-items:stretch; gap:10px; margin:26px 0 14px;
+  }
+  .thread-box{
+    flex:1; background:var(--green-050); border:1px solid #cfe1d6; border-radius:10px;
+    padding:18px 15px; text-align:center;
+  }
+  .thread-box-label{
+    font-family:'IBM Plex Mono', monospace; font-weight:700; font-size:15px; color:var(--green-800);
+  }
+  .thread-box-sub{font-size:12.5px; font-weight:600; color:var(--green-700); margin-top:5px;}
+  .thread-box-detail{font-size:12px; color:var(--ink-soft); margin-top:9px; line-height:1.4;}
+  .thread-arrow{display:flex; align-items:center; font-size:22px; color:var(--green-500); font-weight:700;}
+  .thread-loop{
+    margin-top:6px; font-size:13px; color:#6b4f0a; background:var(--amber-bg);
+    border:1px solid var(--amber-border); border-radius:8px; padding:12px 16px;
+  }
+  @media (max-width: 700px){
+    .thread-diagram{flex-direction:column;}
+    .thread-arrow{transform:rotate(90deg); align-self:center; padding:2px 0;}
+  }
+
+  /* Quiz */
+  .quiz-card{
+    background:var(--white); border:1px solid var(--border); border-radius:var(--radius);
+    padding:20px 22px; margin:16px 0;
+  }
+  .quiz-q{margin-bottom:22px;}
+  .quiz-q:last-child{margin-bottom:4px;}
+  .quiz-q-text{font-size:14.5px; font-weight:600; color:var(--ink); margin-bottom:10px;}
+  .quiz-options{display:flex; flex-direction:column; gap:7px;}
+  .quiz-option{
+    display:block; text-align:left; font-family:'IBM Plex Sans', sans-serif; font-size:13.5px;
+    padding:10px 14px; border-radius:7px; border:1px solid var(--border); background:white; cursor:pointer;
+  }
+  .quiz-option:hover{border-color:var(--green-600);}
+  .quiz-option.correct{background:var(--green-100); border-color:var(--green-500); color:var(--green-800); font-weight:600;}
+  .quiz-option.wrong{background:var(--red-bg); border-color:#e3bcb8; color:var(--red);}
+  .quiz-option:disabled{cursor:default;}
+  .quiz-explain{font-size:13px; color:var(--ink-soft); margin-top:8px; display:none;}
+  .quiz-explain.show{display:block;}
+
+  @media (max-width: 860px){
+    .sidebar{display:none;}
+    .main{padding:28px 20px 100px;}
+    .hero-compare{grid-template-columns:1fr;}
+  }
+
+  /* Home view specific */
+  #view-home{max-width:920px; margin:0 auto; padding:56px 32px 100px;}
+  #view-home h1{font-size:34px; margin:8px 0 10px;}
+  #view-home .sub{font-size:13.5px; color:var(--ink-soft); margin-bottom:44px;}
+  .track-label{
+    font-family:'IBM Plex Mono', monospace; font-size:11.5px; text-transform:uppercase;
+    letter-spacing:.06em; color:var(--green-700); font-weight:600; margin:36px 0 14px;
+  }
+  .home-card{
+    display:flex; align-items:center; gap:18px; cursor:pointer;
+    background:var(--white); border:1px solid var(--border); border-radius:12px;
+    padding:20px 22px; margin-bottom:12px; text-decoration:none; color:inherit;
+    transition:border-color .15s ease;
+  }
+  .home-card:hover{border-color:var(--green-500);}
+  .home-card.disabled{
+    background:#f2f1ec; color:var(--ink-soft); cursor:default; pointer-events:none;
+  }
+  .home-card-icon{
+    width:44px; height:44px; border-radius:9px; background:var(--green-100); color:var(--green-700);
+    display:flex; align-items:center; justify-content:center; font-weight:700; font-size:16px;
+    flex-shrink:0; font-family:'IBM Plex Mono', monospace;
+  }
+  .home-card.disabled .home-card-icon{background:#e5e3da; color:#9a9689;}
+  .home-card-body{flex:1;}
+  .home-card-title{font-size:15.5px; font-weight:700; color:var(--green-900);}
+  .home-card.disabled .home-card-title{color:#8a8677;}
+  .home-card-desc{font-size:13.5px; color:var(--ink-soft); margin-top:2px;}
+  .home-card-status{
+    font-size:11.5px; font-weight:600; padding:3px 10px; border-radius:12px; flex-shrink:0;
+    white-space:nowrap;
+  }
+  .home-card-status.complete{background:var(--green-100); color:var(--green-700);}
+  .home-card-status.progress{background:#fdf3dd; color:#8a6a12;}
+  .home-card-status.soon{background:#e5e3da; color:#8a8677;}
+  .home-card-arrow{font-size:18px; color:var(--green-500); flex-shrink:0;}
+  .home-card.disabled .home-card-arrow{color:#c9c6b9;}
+
+  /* Top-level view switching */
+  .top-view{display:none;}
+  .top-view.active{display:block;}
+</style>
+</head>
+<body>
+<div id="view-home" class="top-view active">
+  <div class="eyebrow">Woodhaven · Clinical Documentation Training</div>
+  <h1>DocTrain</h1>
+  <p class="lede">Training built alongside DocAssist — not just what goes in each document, but why, and how to write a strong one. DocAssist helps you draft the documentation quickly; this training builds the judgment behind what you draft.</p>
+  <p class="sub">Start with The Golden Thread if you're new to ASAMs and ITPs. Then work through each module.</p>
+
+  <div class="track-label">Start here</div>
+  <div class="home-card" onclick="openModule('view-bigpicture')" id="cardThread">
+    <div class="home-card-icon">GT</div>
+    <div class="home-card-body">
+      <div class="home-card-title">The Golden Thread</div>
+      <div class="home-card-desc">Why ASAM, ITP, and Individual Notes are one connected system — not three separate forms</div>
+    </div>
+    <span class="home-card-status" id="statusThread"></span>
+    <span class="home-card-arrow">→</span>
+  </div>
+
+  <div class="track-label">Modules</div>
+  <div class="home-card" onclick="openModule('view-asam')" id="cardAsam">
+    <div class="home-card-icon">A</div>
+    <div class="home-card-body">
+      <div class="home-card-title">ASAM Documentation</div>
+      <div class="home-card-desc">Writing narratives, risk ratings, and criteria that survive payer review, then drafting them in DocAssist</div>
+    </div>
+    <span class="home-card-status" id="statusAsam"></span>
+    <span class="home-card-arrow">→</span>
+  </div>
+
+  <div class="home-card disabled">
+    <div class="home-card-icon">I</div>
+    <div class="home-card-body">
+      <div class="home-card-title">ITP Development</div>
+      <div class="home-card-desc">Turning ASAM findings into individualized, defensible goals and objectives</div>
+    </div>
+    <span class="home-card-status soon">Coming soon</span>
+  </div>
+
+  <div class="home-card disabled">
+    <div class="home-card-icon">N</div>
+    <div class="home-card-body">
+      <div class="home-card-title">Individual Notes</div>
+      <div class="home-card-desc">Documenting session progress that ties back to the ITP</div>
+    </div>
+    <span class="home-card-status soon">Coming soon</span>
+  </div>
+</div>
+
+<div id="view-bigpicture" class="top-view">
+  <div class="app">
+    <nav class="sidebar">
+      <a class="sidebar-back" href="#" onclick="goHome(); return false;">← Back to DocTrain</a>
+      <div class="sidebar-title">DocTrain</div>
+      <div class="sidebar-sub">The Golden Thread</div>
+      <ul class="nav-list" id="navList-bp"></ul>
+      <div class="progress-track">
+        <span id="progressLabel-bp">0 of 2 complete</span>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill-bp" style="width:0%"></div></div>
+        <span class="reset-link" id="resetProgress-bp">Reset progress</span>
+      </div>
+    </nav>
+
+    <main class="main">
+
+    <!-- SECTION -1: GOLDEN THREAD -->
+    <section class="module active" data-id="thread">
+      <div class="eyebrow">Golden Thread overview</div>
+      <h1>The Golden Thread</h1>
+      <p class="lede">If you've never seen an ASAM or an ITP before, start here. Everything else in this training — every rule about wording, every checkbox, every field — exists to serve one idea. Once you have this idea, the rest stops feeling like paperwork and starts feeling obvious.</p>
+      <p>You'll actually draft all three of these documents inside DocAssist, which structures its fields to match this same thread — but the tool only helps you write faster. It can't decide what belongs in each field. That judgment is what this training builds.</p>
+
+      <h2>Three documents, one job each</h2>
+      <p>Woodhaven's clinical record is built from three documents. Each one has exactly one job. In plain terms, before any clinical jargon:</p>
+
+      <div class="thread-diagram">
+        <div class="thread-box">
+          <div class="thread-box-label">ASAM</div>
+          <div class="thread-box-sub">Identifies the problem</div>
+          <div class="thread-box-detail">What's actually wrong with this client, how severe it is, and why they need this level of care right now</div>
+        </div>
+        <div class="thread-arrow">→</div>
+        <div class="thread-box">
+          <div class="thread-box-label">ITP</div>
+          <div class="thread-box-sub">Plans the solution</div>
+          <div class="thread-box-detail">Turns each identified problem into a specific goal, with objectives and interventions to get there</div>
+        </div>
+        <div class="thread-arrow">→</div>
+        <div class="thread-box">
+          <div class="thread-box-label">Individual Note</div>
+          <div class="thread-box-sub">Proves the work</div>
+          <div class="thread-box-detail">Documents, session by session, what actually happened toward each objective</div>
+        </div>
+      </div>
+      <div class="thread-loop">↩ What gets documented in the Individual Note becomes the evidence for the next Continued Stay ASAM — which re-identifies the problem, updates the plan, and the loop starts again. This is why it's called a <em>thread</em>: it never actually ends while the client is in treatment.</div>
+
+      <h2>Why the order matters — and why you can't skip a link</h2>
+      <p>You cannot write a meaningful treatment plan for a problem that hasn't been documented anywhere. If an ITP goal doesn't trace back to something identified in the ASAM, it looks invented — because, procedurally, it was. You also can't write a meaningful session note if there's no objective for that session to be working toward. A note that isn't connected to a plan isn't documentation of treatment; it's just a record that a conversation happened.</p>
+
+      <div class="callout"><strong>This is the single most important idea in this whole training:</strong> a reviewer — or an auditor, months later — should be able to take any one Individual Note and trace it backward, link by link, to a specific ASAM finding, with nothing missing in between. If they can't, that note (and the billing behind it) is vulnerable, no matter how well-written the note is on its own.</div>
+
+      <h3>What "the thread breaks" actually looks like</h3>
+      <ul>
+        <li><strong>ASAM without a matching ITP goal:</strong> a documented problem that nobody is treating. Raises the question of why the client is still here if the identified issue isn't part of the plan.</li>
+        <li><strong>ITP goal without a matching ASAM finding:</strong> a goal that looks arbitrary — like it was copied from a template rather than built for this client.</li>
+        <li><strong>Individual Note without a referenced objective:</strong> reads as unstructured conversation, not billable treatment toward an established plan.</li>
+        <li><strong>Continued Stay ASAM that doesn't reflect what the notes actually showed:</strong> the record contradicts itself — the notes said one thing happened, the reassessment says something else.</li>
+      </ul>
+      <p>Every rule you'll learn in the rest of this training — why narratives need specific language, why ITP goals need to be edited instead of left as template text, why Individual Notes reference an exact goal letter and objective number — exists to keep this thread intact.</p>
+
+      <div class="section-nav-btns">
+        <span></span>
+        <button class="btn" onclick="bpMarkComplete('thread'); bpGoTo('thread-example')">Next: Follow one thread end to end →</button>
+      </div>
+    </section>
+
+    <!-- SECTION -0.5: THREAD EXAMPLE -->
+    <section class="module" data-id="thread-example">
+      <div class="eyebrow">Golden Thread overview</div>
+      <h1>Follow one thread, start to finish</h1>
+      <p class="lede">Here is the same piece of clinical reality, followed through all three documents, for one client. Read it top to bottom. Notice what stays the same, and what changes form, at each step.</p>
+
+      <div class="card">
+        <div class="card-label">Step 1 — What the ASAM identifies</div>
+        <div class="model-answer">Client reports nightly cravings, currently managed only through peer support available in the residential milieu. When asked directly to identify a coping response to a craving occurring without staff or peers present, client was unable to name one... Client's current craving management is structurally dependent on this level of care and has not yet transferred to an independent coping plan.</div>
+        <p style="font-size:13px; color:var(--ink-soft); margin-bottom:0;">Dimension 5, Continued Stay — this is the <strong>problem</strong>: no independent coping plan, one identified risky contact, no alternative supports named.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Step 2 — What the ITP plans to do about it</div>
+        <div class="model-answer">Goal E (Dimension 5 — Relapse / Continued Use Potential)
+Client will reduce relapse potential by developing an independent coping plan for cravings occurring outside of program structure.
+
+   Objective 1E: Client will identify two people, other than her previously identified using contact, that she can call when experiencing cravings, by next treatment plan review.
+   Intervention 1E: This clinician will use motivational interviewing to help client identify and commit to alternative support contacts.</div>
+        <p style="font-size:13px; color:var(--ink-soft); margin-bottom:0;">Notice this goal didn't come from a template pulled at random — every clause in it answers a specific gap named in Step 1. That's what "individualized" means in an ITP: <em>if you can't point to the ASAM sentence that justifies this goal, the goal doesn't belong here yet.</em></p>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Step 3 — What the Individual Note proves happened</div>
+        <div class="model-answer">Describe Therapeutic Interventions Provided:
+- This clinician met with client to review objective 1E of Goal E.
+- Client was asked to identify support contacts other than her previously identified using contact.
+
+Response — Intervention/Progress/Clinical Judgement:
+- Client identified her sister and a former sponsor as two alternative contacts she is willing to reach out to during cravings.
+- Client rated her confidence in following through as 6/10.
+- Objective 1E: not yet completed. Next objective: same, continue reinforcing.</div>
+        <p style="font-size:13px; color:var(--ink-soft); margin-bottom:0;">"Objective 1E" is not a stylistic choice — it's the literal string that lets someone trace this note back to the exact goal it belongs to. That label is the thread, made visible. This is also exactly the two-box structure DocAssist's Individual Note tool generates, ready to paste into these two Remarkable fields.</p>
+      </div>
+
+      <div class="callout"><strong>Where the loop closes:</strong> if the next Continued Stay ASAM's Dimension 5 update doesn't mention whether client actually followed through on contacting her sister or her sponsor, the thread breaks right here — the plan existed, the note exists, but nobody connected the note's progress back to the reassessment of risk. That single missing sentence is often the difference between a Continued Stay ASAM that reads as justified and one that reads as copy-pasted.</div>
+
+      <h2>Check your understanding</h2>
+      <div class="quiz-card" id="quizCard"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="bpGoTo('thread')">← Back</button>
+        <button class="btn" onclick="openModule('view-asam')">Next: Start ASAM Module →</button>
+      </div>
+    </section>
+    </main>
+  </div>
+</div>
+
+<div id="view-asam" class="top-view">
+  <div class="app">
+    <nav class="sidebar">
+      <a class="sidebar-back" href="#" onclick="goHome(); return false;">← Back to DocTrain</a>
+      <div class="sidebar-title">DocTrain</div>
+      <div class="sidebar-sub">ASAM Module</div>
+      <ul class="nav-list" id="navList-asam"></ul>
+      <div class="progress-track">
+        <span id="progressLabel-asam">0 of 7 complete</span>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill-asam" style="width:0%"></div></div>
+        <span class="reset-link" id="resetProgress-asam">Reset progress</span>
+      </div>
+    </nav>
+
+    <main class="main">
+
+    <!-- SECTION 0: WHY -->
+    <section class="module active" data-id="why">
+      <div class="eyebrow">Start here</div>
+      <h1>Why ASAM documentation is written the way it is</h1>
+      <p class="lede">This module assumes you've already been through <a href="#" onclick="openModule('view-bigpicture'); return false;">The Golden Thread</a> — if you haven't, start there first. Here, we go deep on writing the ASAM link of that thread well. This isn't a style preference — the words in an ASAM narrative are the evidence a reviewer uses to decide whether continued residential care is medically necessary. Two clinicians can describe the same client and produce a note that gets approved — or one that gets denied.</p>
+
+      <div class="hero-compare">
+        <div class="hero-col deny">
+          <span class="hero-tag">Gets challenged</span>
+          <p>Client continues to struggle with cravings. Client has some insight into their disease but needs more time to solidify recovery skills. Client is doing okay overall.</p>
+        </div>
+        <div class="hero-col survive">
+          <span class="hero-tag">Survives review</span>
+          <p>Client reports cravings 4–5x/day, unprompted, occurring most acutely in unstructured evening hours. Client could not identify a coping skill when asked directly during session on 7/22, relying instead on staff redirection. Without 24-hour structure, client's stated plan is to "go back to the same friends," which client identifies as their primary using environment.</p>
+        </div>
+      </div>
+      <p class="hero-note">Same client. The left version is reassuring and vague — a reviewer reads it as "stable enough to step down." The right version is specific and behavioral — it gives the reviewer a reason this level of care is still needed <em>today</em>.</p>
+
+      <h2>The core problem reviewers are trained to look for</h2>
+      <p>A payer reviewer's job is to find reasons to authorize a lower, cheaper level of care. Every sentence you write either gives them ammunition to do that, or takes it away. Reviewers are pattern-matching against two things:</p>
+      <ul>
+        <li><strong>Genericness</strong> — language that could describe any client, on any day, at any facility. If a sentence would still be true with the name swapped out, it does no work.</li>
+        <li><strong>Positive framing without specificity</strong> — "good insight," "motivated," "supportive family" — these read as reasons to discharge, not reasons to continue. That's exactly why DocAssist throws a challenge message when you select them: it's not second-guessing your clinical judgment, it's stopping you before that sentence gets used against the client.</li>
+      </ul>
+
+      <div class="callout"><strong>The skill this training builds:</strong> turning true clinical observations into specific, dated, behaviorally-anchored language — without inventing anything or overstating severity.</div>
+
+      <h3>What "individualized" actually means</h3>
+      <p>It doesn't mean unique words. It means the sentence contains something that could only be true of <em>this</em> client, on <em>this</em> day: a number, a quote, a named trigger, a specific failed attempt, a time of day, a refusal, a behavior a staff member witnessed. Anything a reviewer can picture is evidence. Anything they have to take your word for is an opinion.</p>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="openModule('view-bigpicture')">← Back to The Golden Thread</button>
+        <button class="btn" onclick="asamGoTo('specificity')">Next: Spot the difference →</button>
+      </div>
+    </section>
+
+    <!-- SECTION 1: SPECIFICITY CLASSIFY EXERCISE -->
+    <section class="module" data-id="specificity">
+      <div class="eyebrow">Practice · Section 1</div>
+      <h1>Specific or generic?</h1>
+      <p class="lede">For each statement, decide whether it would survive payer review on its own, or whether a reviewer would read it as filler. Click your answer, then read why.</p>
+
+      <div class="card" id="classifyCard">
+        <!-- rows injected by JS -->
+      </div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="asamGoTo('why')">← Back</button>
+        <button class="btn" onclick="asamGoTo('dim4')">Next: Dimension 4 deep dive →</button>
+      </div>
+    </section>
+
+    <!-- SECTION 2: DIMENSION 4 -->
+    <section class="module" data-id="dim4">
+      <div class="eyebrow">Deep dive · Dimension 4</div>
+      <h1>Readiness to Change</h1>
+      <p class="lede">This is the dimension most likely to accidentally argue <em>against</em> your client. "Client is motivated" is true almost every week, for almost every client — which is exactly why it carries no weight with a reviewer.</p>
+
+      <h3>What a reviewer is actually asking</h3>
+      <p>Not "is this client trying?" but "does this client's current stage of change require the structure of this level of care to avoid relapse, or could a lower level of care meet the same need?" Ambivalence, minimization, and inconsistency between stated intent and observed behavior are what justify continued stay — not the presence or absence of motivation as a personality trait.</p>
+
+      <div class="callout"><strong>Why "good insight and motivation" triggers a challenge message in DocAssist:</strong> if true and unqualified, it's a reason to discharge. The fix isn't to avoid the topic — it's to describe the <em>gap</em> between insight and action.</div>
+
+      <h3>Try it: write the Dimension 4 narrative</h3>
+      <div class="scenario-box">
+        <div class="who">Client: Danielle, 3.5 Residential, Continued Stay — Week 3</div>
+        Danielle tells her counselor she "knows she needs to stay sober for her kids." In group, she has said twice this week that she's "not like the other people here" and doesn't think she has a "real problem" with opioids — she calls it "a bad habit." She agreed to complete a relapse prevention worksheet on Tuesday and did not turn it in. When reminded Thursday, she said she'd "get to it." She has attended all groups and is polite with staff.
+      </div>
+      <textarea id="dim4Answer" placeholder="Write your Dimension 4 narrative here..."></textarea>
+      <div style="margin-top:10px;">
+        <button class="btn" onclick="revealModel('dim4')">Reveal model answer</button>
+      </div>
+      <div class="reveal" id="dim4Reveal">
+        <div class="card-label">Model answer</div>
+        <div class="model-answer">Client verbalizes intent to maintain sobriety, citing her children as motivation, but minimizes the severity of her opioid use, referring to it as "a bad habit" rather than a substance use disorder, and distinguishes herself from peers in group ("not like the other people here") on two occasions this week. This stated insight is inconsistent with follow-through: client did not complete an assigned relapse prevention worksheet due 7/22, and when reminded 7/24 responded she would "get to it," without a specific plan. Client's compliance with the structure of the program (group attendance, cooperative affect) is not accompanied by internalization of relapse risk, indicating continued need for the structure and accountability of this level of care to address ambivalence before a lower level of care is appropriate.</div>
+        <ul class="checklist">
+          <li>Uses the client's own words as evidence, not the counselor's interpretation stated as fact</li>
+          <li>Names the specific gap: stated intent vs. missed worksheet vs. minimizing language</li>
+          <li>Includes dates so it reads as this week, not "generally"</li>
+          <li>Explicitly ties the gap back to why this LOC is still needed — doesn't just describe the client, argues the case</li>
+          <li>Doesn't overstate — it doesn't call her "resistant" or "non-compliant," which isn't supported by the facts</li>
+        </ul>
+      </div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="asamGoTo('specificity')">← Back</button>
+        <button class="btn" onclick="asamGoTo('dim5')">Next: Dimension 5 deep dive →</button>
+      </div>
+    </section>
+
+    <!-- SECTION 3: DIMENSION 5 -->
+    <section class="module" data-id="dim5">
+      <div class="eyebrow">Deep dive · Dimension 5</div>
+      <h1>Relapse, Continued Use, Continued Problem Potential</h1>
+      <p class="lede">This is where most Continued Stay ASAMs win or lose. Progress in treatment and continued relapse potential are not opposites — a client can be doing well in the program and still have almost no ability to resist use outside it. Documentation has to hold both at once.</p>
+
+      <h3>The mistake this dimension invites</h3>
+      <p>Because clients often are engaging well by week 2–3, counselors describe engagement in Dimension 5 instead of relapse risk. Engagement belongs in Dimension 4. Dimension 5 needs evidence about what happens when structure is removed: cravings, triggers, coping skill application (or failure to apply one), and the client's own account of what they'd do differently if given unstructured time today.</p>
+
+      <h3>Try it: write the Dimension 5 narrative</h3>
+      <div class="scenario-box">
+        <div class="who">Client: Danielle, 3.5 Residential, Continued Stay — Week 3</div>
+        Danielle reports cravings most evenings, which she rates as "manageable" with peer support in the milieu. When her counselor asked directly what she would do if she had a craving alone in her apartment, she paused and said she "hadn't thought about it." She identifies her ex-boyfriend, who still uses, as someone she'd likely reach out to "just to talk" if she felt lonely. She has not yet identified a specific person she could call instead.
+      </div>
+      <textarea id="dim5Answer" placeholder="Write your Dimension 5 narrative here..."></textarea>
+      <div style="margin-top:10px;">
+        <button class="btn" onclick="revealModel('dim5')">Reveal model answer</button>
+      </div>
+      <div class="reveal" id="dim5Reveal">
+        <div class="card-label">Model answer</div>
+        <div class="model-answer">Client reports nightly cravings, currently managed only through peer support available in the residential milieu. When asked directly to identify a coping response to a craving occurring without staff or peers present, client was unable to name one, stating she "hadn't thought about it." Client identifies her ex-boyfriend, an active user, as a likely contact "just to talk" during periods of loneliness, and has not yet identified an alternative support to call in his place. Client's current craving management is structurally dependent on this level of care and has not yet transferred to an independent coping plan, indicating continued relapse risk if stepped down at this time.</div>
+        <ul class="checklist">
+          <li>Separates "managing well here" from "could manage without here" — the actual clinical question</li>
+          <li>Uses the client's own gap ("hadn't thought about it") instead of the counselor concluding "poor coping skills"</li>
+          <li>Names the specific relapse pathway (the ex-boyfriend) without editorializing about him</li>
+          <li>Ends by connecting directly to level-of-care need, not just describing the client</li>
+        </ul>
+      </div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="asamGoTo('dim4')">← Back</button>
+        <button class="btn" onclick="asamGoTo('dim6')">Next: Dimension 6 deep dive →</button>
+      </div>
+    </section>
+
+    <!-- SECTION 4: DIMENSION 6 -->
+    <section class="module" data-id="dim6">
+      <div class="eyebrow">Deep dive · Dimension 6</div>
+      <h1>Recovery Environment</h1>
+      <p class="lede">This dimension has the same trap as Dimension 4: a "supportive" environment sounds like good news, and to a reviewer, good news at home reads as "doesn't need residential." The narrative has to describe the environment specifically enough to show why it isn't yet safe to return to — even when the people in it care about the client.</p>
+
+      <h3>What actually carries weight here</h3>
+      <p>Not whether family "loves" the client — whether the physical environment contains active use, whether household members can or will enforce boundaries, whether the client has anywhere to go that isn't the environment tied to their using pattern, and what specifically would happen in the first 48 hours if discharged today.</p>
+
+      <h3>Try it: write the Dimension 6 narrative</h3>
+      <div class="scenario-box">
+        <div class="who">Client: Danielle, 3.5 Residential, Continued Stay — Week 3</div>
+        Danielle's mother, who she would return to, is supportive and attends family sessions, but has said she "doesn't want to police" Danielle and will not agree to a no-use household policy. Danielle's ex-boyfriend lives two blocks away. Danielle has no current housing alternative and no sober support identified within walking distance of her mother's home. She states she "loves her mom's house" and wants to go back there.
+      </div>
+      <textarea id="dim6Answer" placeholder="Write your Dimension 6 narrative here..."></textarea>
+      <div style="margin-top:10px;">
+        <button class="btn" onclick="revealModel('dim6')">Reveal model answer</button>
+      </div>
+      <div class="reveal" id="dim6Reveal">
+        <div class="card-label">Model answer</div>
+        <div class="model-answer">Client's identified discharge residence is her mother's home. While supportive of client emotionally and consistently present for family sessions, mother has declined to enforce a no-use household policy, stating she "doesn't want to police" client. Client's ex-boyfriend, an active user and identified relapse contact, resides two blocks from this address. Client has no alternative housing option and has not identified sober support within proximity to this residence. Client's stated preference to return to this environment ("loves her mom's house") does not reflect an assessment of its recovery risk. Current environment does not provide the structural barriers to use necessary to support step-down at this time.</div>
+        <ul class="checklist">
+          <li>Describes the environment's structural features (proximity, enforceable boundaries), not just family sentiment</li>
+          <li>Reports mother's stance as fact, without characterizing her as uncaring</li>
+          <li>Distinguishes what the client wants from what the environment supports — a key distinction reviewers look for</li>
+          <li>Explicit "why this LOC" conclusion at the end</li>
+        </ul>
+      </div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="asamGoTo('dim5')">← Back</button>
+        <button class="btn" onclick="asamGoTo('rating')">Next: Risk rating calibration →</button>
+      </div>
+    </section>
+
+    <!-- SECTION 5: RISK RATING CALIBRATION -->
+    <section class="module" data-id="rating">
+      <div class="eyebrow">Practice · Section 5</div>
+      <h1>Calibrating a dimensional risk rating</h1>
+      <p class="lede">The 0–4 rating isn't a summary of how the client is doing overall — it's a measure of acuity in that dimension specifically. A client can be a 3 on Dimension 5 while being a 1 on Dimension 4 in the same week. Read the scenario, then choose the rating you'd assign for Dimension 5, and see the reasoning.</p>
+
+      <div class="scenario-box">
+        <div class="who">Same Dimension 5 scenario as before — Danielle, Week 3</div>
+        Nightly cravings, no independent coping plan, identified relapse contact two blocks from discharge residence, unable to name an alternative support.
+      </div>
+
+      <div class="rating-row" id="ratingRow">
+        <div class="rating-pill" data-val="0">0</div>
+        <div class="rating-pill" data-val="1">1</div>
+        <div class="rating-pill" data-val="2">2</div>
+        <div class="rating-pill" data-val="3">3</div>
+        <div class="rating-pill" data-val="4">4</div>
+      </div>
+      <div class="rating-feedback" id="ratingFeedback"></div>
+
+      <div class="callout">DocAssist will auto-suggest a rating based on the inputs you select, and tag it "Auto-suggested." That's a starting point, not a verdict — you should always be able to defend whatever number ends up in Remarkable, whether it's the suggestion or your own adjustment.</div>
+
+      <div class="reveal show" style="border-top:none; padding-top:0; margin-top:20px;">
+        <div class="card-label">Rating scale reference</div>
+        <ul class="checklist" style="margin-top:4px;">
+          <li><strong>0</strong> — No signs or symptoms in this dimension</li>
+          <li><strong>1</strong> — Mild; unlikely to interfere with treatment</li>
+          <li><strong>2</strong> — Moderate; requires monitoring, some interference likely</li>
+          <li><strong>3</strong> — Significant impairment; requires active intervention at this LOC</li>
+          <li><strong>4</strong> — Severe/imminent; requires the highest available structure</li>
+        </ul>
+      </div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="asamGoTo('dim6')">← Back</button>
+        <button class="btn" onclick="asamGoTo('criteria')">Next: Criteria checklist practice →</button>
+      </div>
+    </section>
+
+    <!-- SECTION 6: CRITERIA CHECKLIST -->
+    <section class="module" data-id="criteria">
+      <div class="eyebrow">Practice · Section 6</div>
+      <h1>Mapping a narrative to criteria letters</h1>
+      <p class="lede">The criteria checklist in DocAssist isn't decoration — it's what you'll click against in Remarkable while the narrative is open next to it. This only works if you can read your own narrative and identify which specific criteria it supports. Read the Dimension 5 model answer again, then check every criterion it actually provides evidence for.</p>
+
+      <div class="scenario-box">
+        <div class="who">Reference: Dimension 5 model answer</div>
+        Client reports nightly cravings, currently managed only through peer support available in the residential milieu... client was unable to name one coping response... identifies her ex-boyfriend, an active user, as a likely contact... has not yet identified an alternative support... craving management is structurally dependent on this level of care.
+      </div>
+
+      <div class="criteria-grid" id="criteriaGrid">
+        <!-- injected -->
+      </div>
+      <button class="btn" onclick="checkCriteria()">Check my answer</button>
+      <div class="reveal" id="criteriaReveal">
+        <p style="font-size:13.5px; color:var(--ink-soft);">Correct answers are highlighted green. Anything you checked that wasn't supported is highlighted red. Anything you missed is highlighted amber.</p>
+      </div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="asamGoTo('rating')">← Back</button>
+        <span class="badge-done" id="finalBadge" style="display:none;">All sections complete</span>
+      </div>
+
+      <div class="callout" style="margin-top:30px;">
+        <strong>Coming next:</strong> Dimensions 1–3, and a full-narrative assembly exercise where you build a complete ASAM Continued Stay document end to end. Send feedback on this version first — what was too easy, too hard, or missing — before that gets built.
+      </div>
+    </section>
+
+    </main>
+  </div>
+</div>
+
+<script>
+/* ---- Top-level view switching ---- */
+function showView(viewId){
+  document.querySelectorAll('.top-view').forEach(v=>v.classList.toggle('active', v.id===viewId));
+  window.scrollTo({top:0, behavior:'instant'});
+  if(viewId === 'view-home') refreshHomeStatus();
+}
+function goHome(){ showView('view-home'); }
+function openModule(viewId){ showView(viewId); }
+
+function refreshHomeStatus(){
+  function setStatus(el, doneCount, total){
+    if(!el) return;
+    if(doneCount === 0){ el.style.display = 'none'; return; }
+    el.style.display = 'inline-block';
+    if(doneCount >= total){
+      el.textContent = 'Complete';
+      el.className = 'home-card-status complete';
+    } else {
+      el.textContent = doneCount + ' of ' + total;
+      el.className = 'home-card-status progress';
+    }
+  }
+  setStatus(document.getElementById('statusThread'), Object.values(bpProgress).filter(Boolean).length, bpSECTIONS.length);
+  setStatus(document.getElementById('statusAsam'), Object.values(asamProgress).filter(Boolean).length, asamSECTIONS.length);
+}
+
+/* =====================================================
+   BIG PICTURE MODULE
+   ===================================================== */
+const bpCHAPTERS = [
+  {title:'The Golden Thread', sections:[
+    {id:'thread', label:'The Golden Thread'},
+    {id:'thread-example', label:'Follow one thread end to end'},
+  ]},
+];
+const bpSECTIONS = bpCHAPTERS.flatMap(c => c.sections);
+
+let bpProgress = {};
+try{ bpProgress = JSON.parse(localStorage.getItem('doctrain-bigpicture-progress') || '{}'); }catch(e){ bpProgress = {}; }
+
+function bpSaveProgress(){
+  localStorage.setItem('doctrain-bigpicture-progress', JSON.stringify(bpProgress));
+  renderBPNav();
+}
+function bpMarkComplete(id){
+  bpProgress[id] = true;
+  bpSaveProgress();
+}
+
+let bpCurrentSection = 'thread';
+function renderBPNav(){
+  const navList = document.getElementById('navList-bp');
+  navList.innerHTML = '';
+  bpCHAPTERS.forEach(chapter=>{
+    chapter.sections.forEach(s=>{
+      const li = document.createElement('li');
+      li.className = 'nav-item' + (bpCurrentSection===s.id ? ' active':'');
+      li.onclick = ()=>bpGoTo(s.id);
+      const check = document.createElement('span');
+      check.className = 'nav-check' + (bpProgress[s.id] ? ' done':'');
+      check.textContent = bpProgress[s.id] ? '✓' : '';
+      li.appendChild(check);
+      const label = document.createElement('span');
+      label.textContent = s.label;
+      li.appendChild(label);
+      navList.appendChild(li);
+    });
+  });
+  const doneCount = bpSECTIONS.filter(s=>bpProgress[s.id]).length;
+  document.getElementById('progressLabel-bp').textContent = doneCount + ' of ' + bpSECTIONS.length + ' complete';
+  document.getElementById('progressFill-bp').style.width = (doneCount/bpSECTIONS.length*100) + '%';
+}
+
+function bpGoTo(id){
+  bpCurrentSection = id;
+  document.querySelectorAll('#view-bigpicture section.module').forEach(sec=>{
+    sec.classList.toggle('active', sec.dataset.id === id);
+  });
+  renderBPNav();
+  window.scrollTo({top:0, behavior:'instant'});
+}
+
+document.getElementById('resetProgress-bp').onclick = ()=>{
+  if(confirm('Reset your progress on the Golden Thread overview?')){
+    localStorage.removeItem('doctrain-bigpicture-progress');
+    bpProgress = {};
+    bpSaveProgress();
+  }
+};
+
+const QUIZ_ITEMS = [
+  {
+    q: "An Individual Note describes good work on a goal that doesn't appear anywhere in the client's ITP. What does a reviewer conclude?",
+    options: [
+      "The clinician went above and beyond — this strengthens the record",
+      "The documented service may not be tied to an identified need, and could be denied",
+      "It doesn't matter, since the note itself is well written",
+    ],
+    correctIdx: 1,
+    explain: "Billable treatment has to trace back to an identified problem and an established plan. A note describing work with no matching ITP goal looks like unstructured conversation, not treatment toward a documented need — regardless of how well it's written."
+  },
+  {
+    q: "Which document has to exist first, for the thread to hold together?",
+    options: ["The Individual Note", "The ITP", "The ASAM"],
+    correctIdx: 2,
+    explain: "The ASAM identifies the problem. Without it, there's nothing for the ITP to build a goal around, and nothing for a note to eventually justify progress against."
+  },
+  {
+    q: "An ASAM finding says a client has 'no independent coping plan' and one named risky contact. Which ITP objective is actually built on that finding?",
+    options: [
+      "\"Client will feel more confident in recovery.\"",
+      "\"Client will identify two people, other than her named contact, to call during cravings, by next review.\"",
+      "\"Client will attend all groups this week.\"",
+    ],
+    correctIdx: 1,
+    explain: "The objective has to answer the specific gap named in the ASAM — no alternative supports identified, one named risky contact. A vague confidence goal or a generic attendance goal isn't built from this finding at all; it could apply to any client."
+  },
+  {
+    q: "The next Continued Stay ASAM doesn't mention whether the client followed through on the ITP objective from her last note. What just happened to the thread?",
+    options: [
+      "Nothing — the ASAM and the note are separate documents by design",
+      "It broke — the note's progress was never connected back to the reassessment of risk",
+      "It's fine as long as the note itself was accurate",
+    ],
+    correctIdx: 1,
+    explain: "The loop is supposed to close here: what happened in the note becomes part of what the next ASAM reassesses. If the ASAM update ignores it, the record shows a plan and a note that never actually informed the next clinical decision — a visible gap in the thread."
+  },
+];
+
+function renderQuiz(){
+  const card = document.getElementById('quizCard');
+  if(!card) return;
+  card.innerHTML = '';
+  let answeredCount = 0;
+  QUIZ_ITEMS.forEach((item, qIdx)=>{
+    const qDiv = document.createElement('div');
+    qDiv.className = 'quiz-q';
+    const qText = document.createElement('div');
+    qText.className = 'quiz-q-text';
+    qText.textContent = (qIdx+1) + '. ' + item.q;
+    qDiv.appendChild(qText);
+    const optsDiv = document.createElement('div');
+    optsDiv.className = 'quiz-options';
+    item.options.forEach((optText, optIdx)=>{
+      const btn = document.createElement('button');
+      btn.className = 'quiz-option';
+      btn.textContent = optText;
+      btn.addEventListener('click', ()=>{
+        const allBtns = optsDiv.querySelectorAll('.quiz-option');
+        allBtns.forEach(b=>b.disabled = true);
+        if(optIdx === item.correctIdx){
+          btn.classList.add('correct');
+        } else {
+          btn.classList.add('wrong');
+          allBtns[item.correctIdx].classList.add('correct');
+        }
+        qDiv.querySelector('.quiz-explain').classList.add('show');
+        answeredCount++;
+        if(answeredCount === QUIZ_ITEMS.length){
+          bpMarkComplete('thread-example');
+        }
+      });
+      optsDiv.appendChild(btn);
+    });
+    qDiv.appendChild(optsDiv);
+    const explain = document.createElement('div');
+    explain.className = 'quiz-explain';
+    explain.textContent = item.explain;
+    qDiv.appendChild(explain);
+    card.appendChild(qDiv);
+  });
+}
+
+/* =====================================================
+   ASAM MODULE
+   ===================================================== */
+const asamCHAPTERS = [
+  {title:'ASAM Module', sections:[
+    {id:'why', label:'Why this matters'},
+    {id:'specificity', label:'Specific vs. generic'},
+    {id:'dim4', label:'Dimension 4 deep dive'},
+    {id:'dim5', label:'Dimension 5 deep dive'},
+    {id:'dim6', label:'Dimension 6 deep dive'},
+    {id:'rating', label:'Risk rating calibration'},
+    {id:'criteria', label:'Criteria checklist'},
+  ]},
+];
+const asamSECTIONS = asamCHAPTERS.flatMap(c => c.sections);
+
+let asamProgress = {};
+try{ asamProgress = JSON.parse(localStorage.getItem('doctrain-asam-progress') || '{}'); }catch(e){ asamProgress = {}; }
+
+function asamSaveProgress(){
+  localStorage.setItem('doctrain-asam-progress', JSON.stringify(asamProgress));
+  renderASAMNav();
+}
+function markComplete(id){
+  asamProgress[id] = true;
+  asamSaveProgress();
+}
+
+let asamCurrentSection = 'why';
+function renderASAMNav(){
+  const navList = document.getElementById('navList-asam');
+  navList.innerHTML = '';
+  asamCHAPTERS.forEach(chapter=>{
+    chapter.sections.forEach(s=>{
+      const li = document.createElement('li');
+      li.className = 'nav-item' + (asamCurrentSection===s.id ? ' active':'');
+      li.onclick = ()=>asamGoTo(s.id);
+      const check = document.createElement('span');
+      check.className = 'nav-check' + (asamProgress[s.id] ? ' done':'');
+      check.textContent = asamProgress[s.id] ? '✓' : '';
+      li.appendChild(check);
+      const label = document.createElement('span');
+      label.textContent = s.label;
+      li.appendChild(label);
+      navList.appendChild(li);
+    });
+  });
+  const doneCount = asamSECTIONS.filter(s=>asamProgress[s.id]).length;
+  document.getElementById('progressLabel-asam').textContent = doneCount + ' of ' + asamSECTIONS.length + ' complete';
+  document.getElementById('progressFill-asam').style.width = (doneCount/asamSECTIONS.length*100) + '%';
+  const finalBadge = document.getElementById('finalBadge');
+  if(finalBadge) finalBadge.style.display = (doneCount === asamSECTIONS.length) ? 'inline-block' : 'none';
+}
+
+function asamGoTo(id){
+  asamCurrentSection = id;
+  document.querySelectorAll('#view-asam section.module').forEach(sec=>{
+    sec.classList.toggle('active', sec.dataset.id === id);
+  });
+  renderASAMNav();
+  window.scrollTo({top:0, behavior:'instant'});
+}
+
+document.getElementById('resetProgress-asam').onclick = ()=>{
+  if(confirm('Reset all ASAM module progress? This clears completion checkmarks and your written answers.')){
+    localStorage.removeItem('doctrain-asam-progress');
+    asamProgress = {};
+    asamSaveProgress();
+    document.querySelectorAll('#view-asam textarea').forEach(t=>t.value='');
+    document.querySelectorAll('#view-asam .reveal').forEach(r=>{ if(!r.classList.contains('show') || r.id) r.classList.remove('show'); });
+  }
+};
+
+/* ---- Specificity classify exercise ---- */
+const CLASSIFY_ITEMS = [
+  {text:"Client is doing well overall and engaging in treatment.", answer:'generic', explain:"No behavioral evidence, no date, could describe almost any client on almost any day."},
+  {text:"Client left group twice this week (7/21, 7/24) when peers discussed relapse triggers, and declined to process why when approached individually.", answer:'specific', explain:"Dated, behavioral, observable — a reviewer can picture exactly what happened."},
+  {text:"Client has good insight into their disease and is highly motivated to stay sober.", answer:'generic', explain:"This is the classic challenge-message pattern — unqualified positive framing reads as a reason to discharge, not continue."},
+  {text:"Client stated she has 'no plan' for what she would do if she relapsed after discharge, when asked directly during individual session on 7/23.", answer:'specific', explain:"Direct quote, dated, and answers the actual clinical question (relapse plan) rather than describing mood."},
+  {text:"Client's family is supportive and provides a safe home environment.", answer:'generic', explain:"‘Safe’ and ‘supportive’ are conclusions, not evidence — what specifically makes it safe? A reviewer will read this as evidence for discharge."},
+  {text:"Client's brother, who lives in the home client will return to, is currently in active use and has declined to leave during client's residency, per client report 7/20.", answer:'specific', explain:"Specific person, specific fact, dated — gives a concrete reason the environment is not yet safe."},
+];
+
+function renderClassify(){
+  const card = document.getElementById('classifyCard');
+  if(!card) return;
+  card.innerHTML = '';
+  let answeredCount = 0;
+  CLASSIFY_ITEMS.forEach((item, idx)=>{
+    const row = document.createElement('div');
+    row.className = 'classify-row';
+    row.innerHTML = `
+      <div style="flex:1;">
+        <div class="classify-text">${item.text}</div>
+        <div class="classify-explain" id="explain-${idx}">${item.explain}</div>
+      </div>
+      <div class="classify-buttons">
+        <button class="pill-btn" data-val="specific" data-idx="${idx}">Specific</button>
+        <button class="pill-btn" data-val="generic" data-idx="${idx}">Generic</button>
+      </div>
+    `;
+    card.appendChild(row);
+  });
+  card.querySelectorAll('.pill-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const idx = btn.dataset.idx;
+      const item = CLASSIFY_ITEMS[idx];
+      const rowBtns = card.querySelectorAll(`[data-idx="${idx}"]`);
+      rowBtns.forEach(b=>b.disabled = true);
+      const correct = btn.dataset.val === item.answer;
+      btn.classList.add(correct ? 'chosen-correct' : 'chosen-wrong');
+      if(!correct){
+        rowBtns.forEach(b=>{ if(b.dataset.val === item.answer) b.classList.add('chosen-correct'); });
+      }
+      document.getElementById(`explain-${idx}`).classList.add('show');
+      answeredCount++;
+      if(answeredCount === CLASSIFY_ITEMS.length){
+        markComplete('specificity');
+      }
+    });
+  });
+}
+
+/* ---- Dimension deep-dive reveal ---- */
+function revealModel(id){
+  document.getElementById(id + 'Reveal').classList.add('show');
+  markComplete(id);
+}
+
+/* ---- Risk rating exercise ---- */
+const CORRECT_RATING = 3;
+document.querySelectorAll('#ratingRow .rating-pill').forEach(pill=>{
+  pill.addEventListener('click', ()=>{
+    document.querySelectorAll('#ratingRow .rating-pill').forEach(p=>p.classList.remove('selected'));
+    pill.classList.add('selected');
+    const val = parseInt(pill.dataset.val, 10);
+    const fb = document.getElementById('ratingFeedback');
+    fb.classList.add('show');
+    if(val === CORRECT_RATING){
+      fb.className = 'rating-feedback show match';
+      fb.textContent = "That matches. A 3 reflects significant impairment requiring active intervention at this level of care — nightly cravings with no independent coping plan and an identified, proximate relapse contact is more than mild or moderate, but she isn't reporting imminent intent to use, which would push toward a 4.";
+    } else if(val < CORRECT_RATING){
+      fb.className = 'rating-feedback show mismatch';
+      fb.textContent = "This scenario likely warrants a 3, not a " + val + ". Nightly cravings, no independent coping plan, and a named, nearby relapse contact go beyond mild/moderate — this is significant impairment requiring active intervention at this LOC.";
+    } else {
+      fb.className = 'rating-feedback show mismatch';
+      fb.textContent = "This scenario likely warrants a 3, not a " + val + ". A 4 implies imminent risk — there's no report here of active intent or a specific plan to use right now, which is what would push it to the top of the scale.";
+    }
+    markComplete('rating');
+  });
+});
+
+/* ---- Criteria checklist exercise ---- */
+const CRITERIA_OPTIONS = [
+  {key:'a', label:'a — Craving reported at a frequency/intensity that impairs functioning', correct:true},
+  {key:'b', label:'b — Client demonstrates independent application of coping skills', correct:false},
+  {key:'c', label:'c — Client unable to identify a coping response when directly assessed', correct:true},
+  {key:'d', label:'d — Identified, proximate relapse trigger/contact', correct:true},
+  {key:'e', label:'e — Client reports no current desire to use', correct:false},
+  {key:'f', label:'f — Coping/relapse prevention is structurally dependent on current LOC', correct:true},
+];
+
+function renderCriteria(){
+  const grid = document.getElementById('criteriaGrid');
+  if(!grid) return;
+  grid.innerHTML = '';
+  CRITERIA_OPTIONS.forEach(opt=>{
+    const label = document.createElement('label');
+    label.className = 'criteria-opt';
+    label.innerHTML = `<input type="checkbox" data-key="${opt.key}"> <span>${opt.label}</span>`;
+    grid.appendChild(label);
+  });
+}
+
+function checkCriteria(){
+  const grid = document.getElementById('criteriaGrid');
+  CRITERIA_OPTIONS.forEach(opt=>{
+    const input = grid.querySelector(`input[data-key="${opt.key}"]`);
+    const label = input.closest('.criteria-opt');
+    label.classList.remove('correct-yes','correct-no','checked-wrong','missed');
+    if(opt.correct && input.checked){
+      label.classList.add('correct-yes');
+    } else if(opt.correct && !input.checked){
+      label.classList.add('missed');
+    } else if(!opt.correct && input.checked){
+      label.classList.add('checked-wrong');
+    }
+  });
+  document.getElementById('criteriaReveal').classList.add('show');
+  markComplete('criteria');
+}
+
+/* ---- Init ---- */
+renderQuiz();
+renderBPNav();
+renderClassify();
+renderCriteria();
+renderASAMNav();
+showView('view-home');
+</script>
+</body>
+</html>
