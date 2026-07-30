@@ -263,6 +263,11 @@
     margin-bottom:14px;
   }
   .scenario-box .who{font-weight:700; color:var(--green-800); font-size:13px; margin-bottom:4px;}
+  .scenario-box .meta{
+    font-family:'IBM Plex Mono', monospace; font-size:11.5px; color:var(--ink-soft);
+    background:var(--white); border:1px solid var(--border); border-radius:6px;
+    padding:6px 10px; margin-bottom:10px; display:inline-block;
+  }
 
   .reveal{
     display:none;
@@ -584,6 +589,20 @@
   .home-card-status.soon{background:#e5e3da; color:#8a8677;}
   .home-card-arrow{font-size:18px; color:var(--green-500); flex-shrink:0;}
   .home-card.disabled .home-card-arrow{color:#c9c6b9;}
+  .home-card-time{
+    font-family:'IBM Plex Mono', monospace; font-size:11px; font-weight:500;
+    color:var(--ink-soft); margin-left:8px;
+  }
+  .home-pacing-note{
+    font-size:13.5px; color:var(--ink-soft); background:var(--green-100);
+    border-radius:10px; padding:12px 16px; margin-bottom:8px; max-width:640px;
+    line-height:1.5;
+  }
+  .home-pacing-note a{font-weight:600;}
+  .home-docassist-link{
+    margin-top:28px; font-size:13.5px; color:var(--ink-soft); text-align:center;
+  }
+  .home-docassist-link a{font-weight:600;}
 
   /* Top-level view switching */
   .top-view{display:none;}
@@ -598,12 +617,13 @@
   </div>
   <p class="lede">You got into this work to help people, not to fill out forms. This tool covers why documentation matters, and how to do it well.</p>
   <div class="home-meta">Self-paced — picks up where you left off</div>
+  <div class="home-pacing-note">This isn't built to finish in one sitting. Most people go through it over several sessions in their first week or two — each module saves your place, so there's no penalty for stopping mid-section. When it's time to write for real, <a href="https://bretzfelder.com/docassist" target="_blank" rel="noopener">DocAssist</a> is the tool you'll actually draft in.</div>
 
   <div class="track-label">Start here</div>
   <div class="home-card" onclick="openModule('view-bigpicture')" id="cardThread">
     <div class="home-card-icon">GT</div>
     <div class="home-card-body">
-      <div class="home-card-title">The Golden Thread</div>
+      <div class="home-card-title">The Golden Thread <span class="home-card-time">~10 min</span></div>
       <div class="home-card-desc">Why ASAM, ITP, and Individual Notes are one connected system — not three separate forms</div>
     </div>
     <span class="home-card-status" id="statusThread"></span>
@@ -614,29 +634,46 @@
   <div class="home-card" onclick="openModule('view-asam')" id="cardAsam">
     <div class="home-card-icon">A</div>
     <div class="home-card-body">
-      <div class="home-card-title">ASAM Documentation</div>
+      <div class="home-card-title">ASAM Documentation <span class="home-card-time">~35–45 min</span></div>
       <div class="home-card-desc">Writing narratives, risk ratings, and criteria that survive payer review, then drafting them in DocAssist</div>
     </div>
     <span class="home-card-status" id="statusAsam"></span>
     <span class="home-card-arrow">→</span>
   </div>
 
-  <div class="home-card disabled">
+  <div class="home-card" onclick="openModule('view-itp')" id="cardItp">
     <div class="home-card-icon">I</div>
     <div class="home-card-body">
-      <div class="home-card-title">ITP Development</div>
+      <div class="home-card-title">ITP Development <span class="home-card-time">~30 min</span></div>
       <div class="home-card-desc">Turning ASAM findings into individualized, defensible goals and objectives</div>
     </div>
-    <span class="home-card-status soon">Coming soon</span>
+    <span class="home-card-status" id="statusItp"></span>
+    <span class="home-card-arrow">→</span>
   </div>
 
-  <div class="home-card disabled">
+  <div class="home-card" onclick="openModule('view-note')" id="cardNote">
     <div class="home-card-icon">N</div>
     <div class="home-card-body">
-      <div class="home-card-title">Individual Notes</div>
+      <div class="home-card-title">Individual Notes <span class="home-card-time">~25 min</span></div>
       <div class="home-card-desc">Documenting session progress that ties back to the ITP</div>
     </div>
-    <span class="home-card-status soon">Coming soon</span>
+    <span class="home-card-status" id="statusNote"></span>
+    <span class="home-card-arrow">→</span>
+  </div>
+
+  <div class="track-label">Wrap-up</div>
+  <div class="home-card" onclick="openModule('view-conclusion')" id="cardConclusion">
+    <div class="home-card-icon">✓</div>
+    <div class="home-card-body">
+      <div class="home-card-title">Bringing It Together <span class="home-card-time">~10 min</span></div>
+      <div class="home-card-desc">Danielle's full thread, start to finish — and what actually changes now that you know it</div>
+    </div>
+    <span class="home-card-status" id="statusConclusion"></span>
+    <span class="home-card-arrow">→</span>
+  </div>
+
+  <div class="home-docassist-link">
+    When it's time for the real thing: <a href="https://bretzfelder.com/docassist" target="_blank" rel="noopener">bretzfelder.com/docassist →</a>
   </div>
 </div>
 
@@ -854,7 +891,7 @@
     <section class="module" data-id="cheatsheet">
       <div class="eyebrow">Reference · look at this anytime</div>
       <h1>ASAM quick reference</h1>
-      <p class="lede">One page, all six dimensions, the rating scale, and the core reminders — meant to be open next to Remarkable while you're actually writing, not read start to finish.</p>
+      <p class="lede">One page, all six dimensions, the rating scale, and the core reminders — meant to be open next to Remarkable, alongside <a href="https://bretzfelder.com/docassist" target="_blank" rel="noopener">DocAssist</a>, while you're actually writing, not read start to finish.</p>
       <div style="margin:14px 0 24px;">
         <button class="btn secondary" onclick="window.print()">🖨️ Print / Save as PDF</button>
       </div>
@@ -988,6 +1025,609 @@
   </div>
 </div>
 
+<div id="view-itp" class="top-view">
+  <div class="app">
+    <div class="mobile-topbar">
+      <button onclick="toggleMobileNav()" type="button" aria-label="Open menu">☰</button>
+      <span class="mobile-topbar-title">ITP Module</span>
+      <button onclick="goHome()" type="button" aria-label="Back to DocTrain">🏠</button>
+    </div>
+    <div class="sidebar-backdrop" onclick="toggleMobileNav()"></div>
+    <nav class="sidebar">
+      <button class="sidebar-back" onclick="goHome()" type="button">← Back to DocTrain</button>
+      <div class="sidebar-title">DocTrain</div>
+      <div class="sidebar-sub">ITP Module</div>
+      <ul class="nav-list" id="navList-itp"></ul>
+      <div class="progress-track">
+        <span id="progressLabel-itp">0 of 9 complete</span>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill-itp" style="width:0%"></div></div>
+        <span class="reset-link" id="resetProgress-itp">Reset progress</span>
+      </div>
+    </nav>
+
+    <main class="main">
+
+    <!-- SECTION 0: WHY -->
+    <section class="module active" data-id="itpwhy">
+      <div class="eyebrow">Start here</div>
+      <h1>What an ITP actually is, and why it matters</h1>
+      <div class="beat-flow wide" id="itpWhyBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="openModule('view-bigpicture')">← Back to The Golden Thread</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION 1: ANATOMY -->
+    <section class="module" data-id="itpanatomy">
+      <div class="eyebrow">Foundations · Section 1</div>
+      <h1>The anatomy of a goal</h1>
+      <div class="beat-flow wide" id="itpAnatomyBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="itpGoTo('itpwhy')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION 1b: ANATOMY WORKED EXAMPLE -->
+    <section class="module" data-id="itpanatomyexample">
+      <div class="eyebrow">Foundations · Section 2</div>
+      <h1>A goal, worked through</h1>
+      <div class="beat-flow wide" id="itpAnatomyExampleBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="itpGoTo('itpanatomy')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION 2: FROM FINDING TO GOAL -->
+    <section class="module" data-id="itpfromfinding">
+      <div class="eyebrow">Practice · Section 3</div>
+      <h1>Turning a finding into a goal</h1>
+      <div class="beat-flow wide" id="itpFromFindingBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="itpGoTo('itpanatomyexample')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION 3: OBJECTIVES -->
+    <section class="module" data-id="itpobjectives">
+      <div class="eyebrow">Practice · Section 4</div>
+      <h1>Writing measurable objectives</h1>
+      <div class="beat-flow wide" id="itpObjectivesBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="itpGoTo('itpfromfinding')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION 4: INTERVENTIONS -->
+    <section class="module" data-id="itpinterventions">
+      <div class="eyebrow">Practice · Section 5</div>
+      <h1>Writing interventions that are actually yours to do</h1>
+      <div class="beat-flow wide" id="itpInterventionsBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="itpGoTo('itpobjectives')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION 5: INDIVIDUALIZED VS BOILERPLATE -->
+    <section class="module" data-id="itpindividualized">
+      <div class="eyebrow">Practice · Section 6</div>
+      <h1>Making it hers, not a template</h1>
+      <div class="beat-flow wide" id="itpIndividualizedBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="itpGoTo('itpinterventions')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION 6: HOW MANY GOALS -->
+    <section class="module" data-id="itpgoals">
+      <div class="eyebrow">Section 7</div>
+      <h1>How many goals, and which findings earn one</h1>
+      <div class="beat-flow wide" id="itpGoalsBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="itpGoTo('itpindividualized')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION 7: TREATMENT PLAN REVIEWS -->
+    <section class="module" data-id="itpreviews">
+      <div class="eyebrow">Section 8</div>
+      <h1>Treatment plan reviews: keeping the plan alive</h1>
+      <div class="beat-flow wide" id="itpReviewsBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="itpGoTo('itpgoals')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION 8: FULL ASSEMBLY -->
+    <section class="module" data-id="itpassembly">
+      <div class="eyebrow">Practice · Final section</div>
+      <h1>Put it all together</h1>
+      <div class="beat-flow wide" id="itpAssemblyBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="itpGoTo('itpreviews')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- REFERENCE: CHEAT SHEET -->
+    <section class="module" data-id="itpcheatsheet">
+      <div class="eyebrow">Reference · look at this anytime</div>
+      <h1>ITP quick reference</h1>
+      <p class="lede">One page — the anatomy, the numbering system, and the core reminders — meant to be open next to Remarkable, alongside <a href="https://bretzfelder.com/docassist" target="_blank" rel="noopener">DocAssist</a>, while you're actually writing an ITP, not read start to finish.</p>
+      <div style="margin:14px 0 24px;">
+        <button class="btn secondary" onclick="window.print()">🖨️ Print / Save as PDF</button>
+      </div>
+
+      <div id="itpCheatSheetPrintArea">
+        <div class="callout"><strong>Before anything else:</strong> if you can't point to the ASAM sentence that justifies a goal, the goal doesn't belong in the plan yet. Every goal, objective, and intervention should trace back to something already documented.</div>
+
+        <h2 style="margin-top:28px;">Three sections, matched to dimension pairs</h2>
+        <div class="cheat-grid">
+          <div class="cheat-item"><strong>Section A</strong> — Dimensions 1 &amp; 2 (e.g., Substance Use Disorders, Opioid Dependence, Chronic Pain)</div>
+          <div class="cheat-item"><strong>Section B</strong> — Dimensions 3 &amp; 4 (e.g., PTSD, Anxiety, Depression, Family Conflicts, Treatment Resistance, and many more)</div>
+          <div class="cheat-item"><strong>Section C</strong> — Dimensions 5 &amp; 6 (Relapse Proneness, Living Environment Deficiency, Parent-Child/Partner Relational Problems, Peer Group Negativity), plus an optional Case Management goal block</div>
+        </div>
+        <div class="callout">Letters (A, B, C...) reset at the start of every section. A goal's real identity is <strong>Section + Letter together</strong> — "Section C, Goal A" is not the same goal as "Section A, Goal A."</div>
+
+        <h2 style="margin-top:28px;">The three layers</h2>
+        <div class="cheat-grid">
+          <div class="cheat-item"><strong>Goal:</strong> Picked from a category's preset options and edited, or written from scratch as a custom goal — never left as unedited library text. Gets a letter within its section. Never "completed" — it's a direction, not a checkbox. Requires a direct client quote. Carries one date: <strong>Established</strong> (auto-filled to today at generation).</div>
+          <div class="cheat-item"><strong>Objective:</strong> Checked off from the category's preset pairs, or added custom when nothing standard fits. Numbered to its goal's letter (1A, 2A, 1B...). Carries two dates: <strong>Start Date</strong> (auto-filled to today) and <strong>Target Date</strong> (the one field you actually choose).</div>
+          <div class="cheat-item"><strong>Intervention:</strong> Paired automatically with its objective when checked. Shares the objective's number/letter (Intervention 1A). Describes clinician action, not client behavior.</div>
+        </div>
+
+        <h2 style="margin-top:28px;">Every goal, three tests</h2>
+        <ul class="checklist">
+          <li>Traceable: does it answer a specific gap named in the ASAM, or could you not point to where it came from?</li>
+          <li>Individualized: has it been edited from the library default, and does it have a client quote attached?</li>
+          <li>Measurable: does the objective have a real Target Date (not "TBD") and a condition a reviewer could check off as done or not done?</li>
+        </ul>
+
+        <h2 style="margin-top:28px;">Quick gut-checks</h2>
+        <ul class="checklist">
+          <li>If the objective could be true forever and never "complete," it's a goal wearing an objective's number.</li>
+          <li>If the intervention describes what the <em>client</em> will do, rewrite it as what the <em>clinician</em> will do.</li>
+          <li>Not every ASAM dimension needs a goal — write one where there's an active, unresolved need driving the current level of care.</li>
+          <li>DocAssist doesn't track review history — Established and Start Date just reflect the day you generate the plan. At review time, update the Target Date and document progress in the record yourself; the tool won't do it for you.</li>
+        </ul>
+      </div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="itpGoTo('itpassembly')">← Back to ITP Module</button>
+        <button class="btn" onclick="itpGoTo('itpmistakes')">Next: Common mistakes recap →</button>
+      </div>
+    </section>
+
+    <!-- REFERENCE: COMMON MISTAKES -->
+    <section class="module" data-id="itpmistakes">
+      <div class="eyebrow">Reference · look at this anytime</div>
+      <h1>Common ITP mistakes, at a glance</h1>
+      <p class="lede">Every pitfall from this module, gathered in one place.</p>
+
+      <div class="mistake-grid">
+        <div class="mistake-card">
+          <div class="mistake-dim">Anatomy</div>
+          <div class="mistake-title">Writing a goal where an objective belongs</div>
+          <div class="mistake-body">If it has no target date and could be true forever, it's a restated goal — not a measurable step.</div>
+        </div>
+        <div class="mistake-card">
+          <div class="mistake-dim">Sections</div>
+          <div class="mistake-title">Forgetting letters reset per section</div>
+          <div class="mistake-body">"Goal A" alone is ambiguous — always say which section. Section B's Goal A and Section C's Goal A are different goals.</div>
+        </div>
+        <div class="mistake-card">
+          <div class="mistake-dim">Objectives</div>
+          <div class="mistake-title">Leaving the Target Date at "TBD"</div>
+          <div class="mistake-body">"TBD" is really no target at all. Set a real date — even "next treatment plan review" works if that's a defined checkpoint.</div>
+        </div>
+        <div class="mistake-card">
+          <div class="mistake-dim">Interventions</div>
+          <div class="mistake-title">Describing what the client will do, not the clinician</div>
+          <div class="mistake-body">An intervention is your action — the technique or modality you'll use. The client's action belongs in the objective.</div>
+        </div>
+        <div class="mistake-card">
+          <div class="mistake-dim">Individualizing</div>
+          <div class="mistake-title">Accepting the library goal unedited, with no client quote</div>
+          <div class="mistake-body">This is exactly what triggers DocAssist's SMART warning and quote warning. Edit the text, and add her own words.</div>
+        </div>
+        <div class="mistake-card">
+          <div class="mistake-dim">Goal count</div>
+          <div class="mistake-title">A goal for every dimension, whether it needs one or not</div>
+          <div class="mistake-body">Write goals where there's an active, unresolved need — not as a box-checking exercise across all six dimensions.</div>
+        </div>
+        <div class="mistake-card mistake-wide">
+          <div class="mistake-dim">Reviews</div>
+          <div class="mistake-title">Assuming DocAssist tracks review history for you</div>
+          <div class="mistake-body">It doesn't — Established and Start Date just reflect the day you last generated the plan. If you regenerate a goal at a later review, its Established date will show that later day, not the original. Keeping track of history is on you and the record, not the tool.</div>
+        </div>
+      </div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="itpGoTo('itpcheatsheet')">← Back</button>
+        <button class="btn" onclick="itpGoTo('itpfaq')">Next: FAQ →</button>
+      </div>
+    </section>
+
+    <!-- REFERENCE: FAQ -->
+    <section class="module" data-id="itpfaq">
+      <div class="eyebrow">Reference · look at this anytime</div>
+      <h1>Frequently asked questions</h1>
+      <p class="lede">The questions staff actually ask about writing ITPs, answered directly. Click each one.</p>
+
+      <div class="break-cards">
+        <div class="break-card" onclick="this.classList.toggle('expanded')">
+          <div class="break-card-title"><span class="break-card-icon">+</span> What if a client has a real need, but I'm not sure it rises to a whole goal?</div>
+          <div class="break-card-body">Not every true statement about a client needs its own goal — that's what the rest of the ASAM narrative is for. Ask: is this actively driving the need for this level of care right now? If yes, it earns a goal. If it's stable or resolving on its own, it may just need continued monitoring noted in the ASAM.</div>
+        </div>
+        <div class="break-card" onclick="this.classList.toggle('expanded')">
+          <div class="break-card-title"><span class="break-card-icon">+</span> Do I have to use one of the library's goal categories?</div>
+          <div class="break-card-body">No. Every section has a "+ Add Custom Goal" option, letting you write the goal name, text, objectives, and interventions entirely from scratch. This isn't a workaround for edge cases — it's just as normal a path as the library, and often the right call when a client's situation doesn't map cleanly onto a preset category.</div>
+        </div>
+        <div class="break-card" onclick="this.classList.toggle('expanded')">
+          <div class="break-card-title"><span class="break-card-icon">+</span> Can I just use one of the library's preset goal options as-is?</div>
+          <div class="break-card-body">You can start there, but it has to be edited before it's ready — DocAssist will flag a goal left exactly as the library wrote it with a SMART warning before you can submit. The library gives you a clinically sound starting point; making it true of this specific client is still your job.</div>
+        </div>
+        <div class="break-card" onclick="this.classList.toggle('expanded')">
+          <div class="break-card-title"><span class="break-card-icon">+</span> Why does every goal need a client quote?</div>
+          <div class="break-card-body">It documents collaborative treatment planning — that the goal was built with the client, not just written about her. DocAssist will flag a goal that's missing one before you can submit.</div>
+        </div>
+        <div class="break-card" onclick="this.classList.toggle('expanded')">
+          <div class="break-card-title"><span class="break-card-icon">+</span> What if none of the preset objective/intervention pairs fit?</div>
+          <div class="break-card-body">Add a custom one. This is a normal, expected part of the process — the library covers common ground, but a client's specific circumstances (like a specific person to avoid calling) sometimes need a pair written just for them.</div>
+        </div>
+        <div class="break-card" onclick="this.classList.toggle('expanded')">
+          <div class="break-card-title"><span class="break-card-icon">+</span> What Target Date should I use if I'm not sure how long something will take?</div>
+          <div class="break-card-body">Pick the next treatment plan review date, or another real, defined checkpoint. Don't leave it at "TBD" — that's not a target, it's the absence of one.</div>
+        </div>
+        <div class="break-card" onclick="this.classList.toggle('expanded')">
+          <div class="break-card-title"><span class="break-card-icon">+</span> If I regenerate an existing goal at a later review, does DocAssist remember when it was first written?</div>
+          <div class="break-card-body">No. Established and Start Date are always auto-filled to today, whenever you generate the output. If you regenerate a goal at a later review, its Established date will show that later day, not the original — so document the original date elsewhere in the record if it matters.</div>
+        </div>
+        <div class="break-card" onclick="this.classList.toggle('expanded')">
+          <div class="break-card-title"><span class="break-card-icon">+</span> Do I need a separate goal for every ASAM dimension that has any rating above 0?</div>
+          <div class="break-card-body">No. A dimension can be actively monitored without a dedicated ITP goal if it isn't the thing driving continued need for this level of care. Goals belong to the findings doing the most clinical work.</div>
+        </div>
+        <div class="break-card" onclick="this.classList.toggle('expanded')">
+          <div class="break-card-title"><span class="break-card-icon">+</span> Why is "Goal A" in Section B a different goal from "Goal A" in Section C?</div>
+          <div class="break-card-body">Letters reset at the start of every section, since each section is scoped to its own pair of dimensions. A goal's real identity is the section and the letter together — always reference both.</div>
+        </div>
+        <div class="break-card" onclick="this.classList.toggle('expanded')">
+          <div class="break-card-title"><span class="break-card-icon">+</span> Who actually writes the intervention — me, or the client?</div>
+          <div class="break-card-body">You. The intervention is always the clinician's action — the specific technique or modality you'll use. What the client will do in response is the objective, one layer up.</div>
+        </div>
+      </div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="itpGoTo('itpmistakes')">← Back</button>
+        <button class="btn" onclick="itpGoTo('itpassembly')">Back to the module →</button>
+      </div>
+    </section>
+
+    </main>
+  </div>
+</div>
+
+<div id="view-note" class="top-view">
+  <div class="app">
+    <div class="mobile-topbar">
+      <button onclick="toggleMobileNav()" type="button" aria-label="Open menu">☰</button>
+      <span class="mobile-topbar-title">Individual Notes Module</span>
+      <button onclick="goHome()" type="button" aria-label="Back to DocTrain">🏠</button>
+    </div>
+    <div class="sidebar-backdrop" onclick="toggleMobileNav()"></div>
+    <nav class="sidebar">
+      <button class="sidebar-back" onclick="goHome()" type="button">← Back to DocTrain</button>
+      <div class="sidebar-title">DocTrain</div>
+      <div class="sidebar-sub">Individual Notes Module</div>
+      <ul class="nav-list" id="navList-note"></ul>
+      <div class="progress-track">
+        <span id="progressLabel-note">0 of 7 complete</span>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill-note" style="width:0%"></div></div>
+        <span class="reset-link" id="resetProgress-note">Reset progress</span>
+      </div>
+    </nav>
+
+    <main class="main">
+
+    <!-- SECTION 0: WHY -->
+    <section class="module active" data-id="notewhy">
+      <div class="eyebrow">Start here</div>
+      <h1>What an Individual Note actually proves</h1>
+      <div class="beat-flow wide" id="noteWhyBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="openModule('view-itp')">← Back to ITP Module</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION 1: ANATOMY -->
+    <section class="module" data-id="noteanatomy">
+      <div class="eyebrow">Foundations · Section 1</div>
+      <h1>The anatomy of a note</h1>
+      <div class="beat-flow wide" id="noteAnatomyBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="noteGoTo('notewhy')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION 2: SESSION TYPES -->
+    <section class="module" data-id="notetypes">
+      <div class="eyebrow">Practice · Section 2</div>
+      <h1>Four session types, four different notes</h1>
+      <div class="beat-flow wide" id="noteTypesBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="noteGoTo('noteanatomy')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION 3: SESSION DESCRIPTION -->
+    <section class="module" data-id="notedescribe">
+      <div class="eyebrow">Practice · Section 3</div>
+      <h1>Writing the session description</h1>
+      <div class="beat-flow wide" id="noteDescribeBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="noteGoTo('notetypes')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION 4: RESPONSE -->
+    <section class="module" data-id="noteresponse">
+      <div class="eyebrow">Practice · Section 4</div>
+      <h1>Writing the response and progress</h1>
+      <div class="beat-flow wide" id="noteResponseBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="noteGoTo('notedescribe')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION 5: RISK & SAFETY -->
+    <section class="module" data-id="noterisk">
+      <div class="eyebrow">Section 5</div>
+      <h1>Risk &amp; safety: the line you can't skip</h1>
+      <div class="beat-flow wide" id="noteRiskBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="noteGoTo('noteresponse')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION 6: FULL ASSEMBLY -->
+    <section class="module" data-id="noteassembly">
+      <div class="eyebrow">Practice · Final section</div>
+      <h1>Put it all together</h1>
+      <div class="beat-flow wide" id="noteAssemblyBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="noteGoTo('noterisk')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- REFERENCE: CHEAT SHEET -->
+    <section class="module" data-id="notecheatsheet">
+      <div class="eyebrow">Reference · look at this anytime</div>
+      <h1>Individual Note quick reference</h1>
+      <p class="lede">One page — the two output boxes, the reference format, the four session types, and the risk line — meant to be open next to Remarkable, alongside <a href="https://bretzfelder.com/docassist" target="_blank" rel="noopener">DocAssist</a>, while you're actually writing a note.</p>
+      <div style="margin:14px 0 24px;">
+        <button class="btn secondary" onclick="window.print()">🖨️ Print / Save as PDF</button>
+      </div>
+
+      <div id="noteCheatSheetPrintArea">
+        <div class="callout"><strong>Before anything else:</strong> a progress note is not a therapy note. Document progress toward the objective — not a transcript of everything discussed. Overly detailed personal disclosures can be subpoenaed and used against the client; they don't belong here.</div>
+        <div class="callout" style="margin-top:10px;"><strong>Second reminder:</strong> if a note doesn't reference a specific goal letter and objective number, it isn't documentation of treatment toward a plan — it's just a record that a conversation happened.</div>
+
+        <h2 style="margin-top:28px;">Progress note, not therapy note</h2>
+        <ul class="checklist">
+          <li>Ask: does this document progress toward the objective, or does it just repeat what she told me? If it's the second, leave it out.</li>
+          <li>Acknowledge clinical relevance without transcribing the disclosure — "client identified a trigger connected to a past event" not the details of the event itself.</li>
+          <li>This record can be subpoenaed. Anything written here beyond what's needed to show progress can end up used against the client, not for them.</li>
+        </ul>
+
+        <h2 style="margin-top:28px;">Two output boxes</h2>
+        <div class="cheat-grid">
+          <div class="cheat-item"><strong>Describe Therapeutic Interventions Provided:</strong> what objective(s) you worked on and what you did in session — built from your Session Description plus auto-generated lines about which objectives were reviewed or assigned.</div>
+          <div class="cheat-item"><strong>Response — Intervention/Progress/Clinical Judgement:</strong> how the client responded, whether reviewed objectives were completed, what's next, and the risk &amp; safety line — every note gets one, even if nothing is wrong.</div>
+        </div>
+
+        <h2 style="margin-top:28px;">The reference format</h2>
+        <ul class="checklist">
+          <li>Objective reference = Goal Letter + Objective Number: "1A of Goal A" — but the note never states which <em>section</em> that goal belongs to.</li>
+          <li>Since letters reset per section, you have to keep straight which section's Goal A you mean — the tool won't catch a mismatch for you.</li>
+          <li>"Objective(s) Reviewed" rows can be marked Completed; "Objective(s) Assigned Next" rows cannot — they haven't happened yet.</li>
+        </ul>
+
+        <h2 style="margin-top:28px;">Four session types</h2>
+        <ul class="checklist">
+          <li><strong>Working off ITP (Reviewing)</strong> — the default, routine session type.</li>
+          <li><strong>Updating/Revising ITP</strong> — when the plan itself is changing, not just being worked.</li>
+          <li><strong>First Meeting/Initial ITP</strong> — no "reviewed" objectives yet; only "assigned next."</li>
+          <li><strong>Crisis Intervention</strong> — hides ITP reference fields entirely; today's note isn't measured against the existing plan.</li>
+        </ul>
+
+        <h2 style="margin-top:28px;">Risk &amp; safety</h2>
+        <ul class="checklist">
+          <li>Leave every risk checkbox unchecked and the note still generates: "No risk or safety concerns identified this session." That's a real clinical claim — only let it stand if it's true.</li>
+          <li>If something concerning happened, check "Concerns present" <em>and</em> write it out — a checkbox alone says nothing about what occurred.</li>
+        </ul>
+      </div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="noteGoTo('noteassembly')">← Back to Individual Notes Module</button>
+        <button class="btn" onclick="noteGoTo('notemistakes')">Next: Common mistakes recap →</button>
+      </div>
+    </section>
+
+    <!-- REFERENCE: COMMON MISTAKES -->
+    <section class="module" data-id="notemistakes">
+      <div class="eyebrow">Reference · look at this anytime</div>
+      <h1>Common Individual Note mistakes, at a glance</h1>
+      <p class="lede">Every pitfall from this module, gathered in one place.</p>
+
+      <div class="mistake-grid">
+        <div class="mistake-card mistake-wide">
+          <div class="mistake-dim">Scope</div>
+          <div class="mistake-title">Writing it like a therapy transcript</div>
+          <div class="mistake-body">Documenting everything discussed, every disclosure, every backstory detail. This is part of the discoverable legal record — it can be subpoenaed and used against the client. Document progress toward the objective, not the session's full emotional content.</div>
+        </div>
+        <div class="mistake-card">
+          <div class="mistake-dim">Reference format</div>
+          <div class="mistake-title">Forgetting which section a goal letter belongs to</div>
+          <div class="mistake-body">The note only says "Goal A" — it's on you to know whether that's Section A's Goal A or Section C's Goal A.</div>
+        </div>
+        <div class="mistake-card">
+          <div class="mistake-dim">Session types</div>
+          <div class="mistake-title">Using "Reviewing" for a first meeting</div>
+          <div class="mistake-body">A first session has nothing to review yet. Use First Meeting/Initial ITP so the note doesn't claim progress that hasn't happened.</div>
+        </div>
+        <div class="mistake-card">
+          <div class="mistake-dim">Session description</div>
+          <div class="mistake-title">Letting the auto-text stand alone</div>
+          <div class="mistake-body">The generated line just says an objective was reviewed — your free text is what proves what actually happened in the room.</div>
+        </div>
+        <div class="mistake-card">
+          <div class="mistake-dim">Response</div>
+          <div class="mistake-title">Marking an objective "Completed" without evidence</div>
+          <div class="mistake-body">The checkbox generates a clean sentence either way. Only check it when your progress notes actually back it up.</div>
+        </div>
+        <div class="mistake-card">
+          <div class="mistake-dim">Risk &amp; safety</div>
+          <div class="mistake-title">Leaving concerns unchecked out of habit</div>
+          <div class="mistake-body">The default line reassures a reviewer nothing is wrong. If something is, "Concerns present" plus real detail is the only way that shows up.</div>
+        </div>
+        <div class="mistake-card">
+          <div class="mistake-dim">Every note</div>
+          <div class="mistake-title">A note with no goal or objective reference at all</div>
+          <div class="mistake-body">Without a reference, the note reads as an unstructured conversation, not treatment toward a documented plan.</div>
+        </div>
+      </div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="noteGoTo('notecheatsheet')">← Back</button>
+        <button class="btn" onclick="noteGoTo('notefaq')">Next: FAQ →</button>
+      </div>
+    </section>
+
+    <!-- REFERENCE: FAQ -->
+    <section class="module" data-id="notefaq">
+      <div class="eyebrow">Reference · look at this anytime</div>
+      <h1>Frequently asked questions</h1>
+      <p class="lede">The questions staff actually ask about writing Individual Notes, answered directly. Click each one.</p>
+
+      <div class="break-cards">
+        <div class="break-card" onclick="this.classList.toggle('expanded')">
+          <div class="break-card-title"><span class="break-card-icon">+</span> Can I include everything the client told me in session?</div>
+          <div class="break-card-body">No — and this matters more than it might seem. A progress note is not a therapy note. It documents progress toward a specific objective, not a transcript of the session. These notes are part of the legal medical record and can be subpoenaed in court proceedings — a note full of extensive personal disclosures can end up used against the client, not for them. If something is clinically relevant, acknowledge it briefly and connect it to the objective; don't reproduce the disclosure itself.</div>
+        </div>
+        <div class="break-card" onclick="this.classList.toggle('expanded')">
+          <div class="break-card-title"><span class="break-card-icon">+</span> What if a session touched on more than one goal?</div>
+          <div class="break-card-body">Add a row for each objective you reviewed or assigned — the tool supports multiple. Reference each one by its own goal letter and objective number.</div>
+        </div>
+        <div class="break-card" onclick="this.classList.toggle('expanded')">
+          <div class="break-card-title"><span class="break-card-icon">+</span> Does selecting "Motivational Interviewing" or "CBT" write anything into the note?</div>
+          <div class="break-card-body">Not directly — those selections don't currently generate their own sentences. Pick whichever technique the session actually centered on for your own record; if it mattered clinically, say so in your free text too.</div>
+        </div>
+        <div class="break-card" onclick="this.classList.toggle('expanded')">
+          <div class="break-card-title"><span class="break-card-icon">+</span> What if nothing eventful happened this session?</div>
+          <div class="break-card-body">Same rule as everywhere else in this training: "nothing eventful" is still information, if you say what it means. Client attended, engaged with the assigned objective, no new concerns — that's a complete, honest note.</div>
+        </div>
+        <div class="break-card" onclick="this.classList.toggle('expanded')">
+          <div class="break-card-title"><span class="break-card-icon">+</span> Do I have to assign a new objective at the end of every session?</div>
+          <div class="break-card-body">No. If the client is still actively working the same objective, leave "Assigned Next" pointed at it, or blank if genuinely nothing changed. Don't invent a new one just to fill the field.</div>
+        </div>
+        <div class="break-card" onclick="this.classList.toggle('expanded')">
+          <div class="break-card-title"><span class="break-card-icon">+</span> Why does Crisis Intervention hide the ITP reference fields entirely?</div>
+          <div class="break-card-body">A crisis note is documenting an acute event, not routine progress on the existing plan — the tool's own auto-text says as much: the client's original ITP goals aren't a reflection of the crisis note.</div>
+        </div>
+      </div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="noteGoTo('notemistakes')">← Back</button>
+        <button class="btn" onclick="noteGoTo('noteassembly')">Back to the module →</button>
+      </div>
+    </section>
+
+    </main>
+  </div>
+</div>
+
+<div id="view-conclusion" class="top-view">
+  <div class="app">
+    <div class="mobile-topbar">
+      <button onclick="toggleMobileNav()" type="button" aria-label="Open menu">☰</button>
+      <span class="mobile-topbar-title">Bringing It Together</span>
+      <button onclick="goHome()" type="button" aria-label="Back to DocTrain">🏠</button>
+    </div>
+    <div class="sidebar-backdrop" onclick="toggleMobileNav()"></div>
+    <nav class="sidebar">
+      <button class="sidebar-back" onclick="goHome()" type="button">← Back to DocTrain</button>
+      <div class="sidebar-title">DocTrain</div>
+      <div class="sidebar-sub">Bringing It Together</div>
+      <ul class="nav-list" id="navList-conclusion"></ul>
+      <div class="progress-track">
+        <span id="progressLabel-conclusion">0 of 2 complete</span>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill-conclusion" style="width:0%"></div></div>
+        <span class="reset-link" id="resetProgress-conclusion">Reset progress</span>
+      </div>
+    </nav>
+
+    <main class="main">
+
+    <!-- SECTION 0: THE FULL ARC -->
+    <section class="module active" data-id="concl-arc">
+      <div class="eyebrow">The whole thread, together</div>
+      <h1>Danielle's thread, start to finish</h1>
+      <div class="beat-flow wide" id="conclArcBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="openModule('view-note')">← Back to Individual Notes Module</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION 1: WHAT CHANGES NOW -->
+    <section class="module" data-id="concl-monday">
+      <div class="eyebrow">Last section</div>
+      <h1>What actually changes now</h1>
+      <div class="beat-flow wide" id="conclMondayBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="conclGoTo('concl-arc')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    </main>
+  </div>
+</div>
+
 <script>
 /* ---- Top-level view switching ---- */
 function showView(viewId){
@@ -1021,6 +1661,9 @@ function refreshHomeStatus(){
   }
   setStatus(document.getElementById('statusThread'), Object.values(bpProgress).filter(Boolean).length, bpSECTIONS.length);
   setStatus(document.getElementById('statusAsam'), Object.values(asamProgress).filter(Boolean).length, asamSECTIONS.length);
+  setStatus(document.getElementById('statusItp'), Object.values(itpProgress).filter(Boolean).length, itpSECTIONS.length);
+  setStatus(document.getElementById('statusNote'), Object.values(noteProgress).filter(Boolean).length, noteSECTIONS.length);
+  setStatus(document.getElementById('statusConclusion'), Object.values(conclusionProgress).filter(Boolean).length, conclusionSECTIONS.length);
 }
 
 /* =====================================================
@@ -1106,6 +1749,14 @@ const SECTION_TO_CONTAINER = {
   why:'whyBeats', specificity:'specificityBeats',
   dim1:'dim1Beats', dim2:'dim2Beats', dim3:'dim3Beats', dim4:'dim4Beats', dim5:'dim5Beats', dim6:'dim6Beats',
   rating:'ratingBeats', criteria:'criteriaBeats', assembly:'assemblyBeats',
+  itpwhy:'itpWhyBeats', itpanatomy:'itpAnatomyBeats', itpanatomyexample:'itpAnatomyExampleBeats', itpfromfinding:'itpFromFindingBeats',
+  itpobjectives:'itpObjectivesBeats', itpinterventions:'itpInterventionsBeats',
+  itpindividualized:'itpIndividualizedBeats', itpgoals:'itpGoalsBeats',
+  itpreviews:'itpReviewsBeats', itpassembly:'itpAssemblyBeats',
+  notewhy:'noteWhyBeats', noteanatomy:'noteAnatomyBeats', notetypes:'noteTypesBeats',
+  notedescribe:'noteDescribeBeats', noteresponse:'noteResponseBeats', noterisk:'noteRiskBeats',
+  noteassembly:'noteAssemblyBeats',
+  'concl-arc':'conclArcBeats', 'concl-monday':'conclMondayBeats',
 };
 
 function registerBeats(containerId, beats, finalHtml, afterRender, gate){
@@ -1198,7 +1849,8 @@ const WELCOME_BEATS = [
   `<p>Here's the part that's easy to lose sight of: almost everything that actually helps a client happens outside of documentation — in the room, in a conversation, in a moment where something shifts. Documentation can feel like the opposite of that. Like it's taking you away from the real work.</p>`,
   `<p>But it isn't separate from helping the client — <strong>it's what protects your ability to keep helping them.</strong> If the documentation doesn't hold up, the client's stay doesn't get approved. If the stay isn't approved, the work you did with them doesn't get to continue. Every ASAM, every ITP, every note is part of how your client stays in the room with you long enough for the work to matter.</p>`,
   `<p>DocAssist can help you get the words on the page faster. But it can't hand you the <em>why</em>. Without the why, documentation is just words in the right boxes. With it, every sentence you write is doing something for your client — even the ones that never say a word to them directly.</p>`,
-  `<p>So this isn't paperwork training. It's an extension of the clinical work you're already good at. Let's start with how it all fits together.</p>`,
+  `<p>So this isn't paperwork training. It's an extension of the clinical work you're already good at. Let's start with how it all fits together.</p>
+   <div class="callout">One more thing before you start: there's no reason to push through all four modules back to back. Progress saves automatically, so it's fine to do the Golden Thread today and come back for ASAM tomorrow. And everything here is about the judgment behind the words — when you're ready to actually draft a document, that happens in <a href="https://bretzfelder.com/docassist" target="_blank" rel="noopener">DocAssist</a>, not here.</div>`,
 ];
 const WELCOME_FINAL = `<button class="btn" onclick="bpMarkComplete('welcome'); bpGoTo('thread')">Start: The Golden Thread →</button>`;
 
@@ -1208,9 +1860,8 @@ const THREAD_BEATS = [
 
   `<p><strong>Quick definitions before anything else:</strong></p>
    <p><span class="term" onclick="this.classList.toggle('term-open')">ASAM<span class="term-def">American Society of Addiction Medicine. In practice, "an ASAM" means the standardized clinical assessment used to determine what level of care a client needs, organized into 6 dimensions.</span></span> is a standardized clinical assessment used to figure out what level of care a client needs.</p>
-   <p><span class="term" onclick="this.classList.toggle('term-open')">ITP<span class="term-def">Individual Treatment Plan.</span></span> stands for Individual Treatment Plan — the document that turns each problem identified in the ASAM into a specific, personalized goal.</p>`,
-
-  `<p>You'll actually draft all three of these documents inside DocAssist, which structures its fields to match this same thread — but the tool only helps you write faster. It can't decide what belongs in each field. That judgment is what this training builds.</p>`,
+   <p><span class="term" onclick="this.classList.toggle('term-open')">ITP<span class="term-def">Individual Treatment Plan.</span></span> stands for Individual Treatment Plan — the document that turns each problem identified in the ASAM into a specific, personalized goal.</p>
+   <p>There's a third piece too — the Individual Note, which documents what actually happens in session. Here's how all three fit together.</p>`,
 
   `<h2>Three documents, one job each</h2>
    <p>Woodhaven's clinical record is built from three documents. Each one has exactly one job. In plain terms, before any clinical jargon:</p>
@@ -1234,6 +1885,8 @@ const THREAD_BEATS = [
      </div>
    </div>
    <div class="thread-loop">↩ What gets documented in the Individual Note becomes the evidence for the next <span class="term" onclick="this.classList.toggle('term-open')">Continued Stay<span class="term-def">An ASAM written partway through treatment — as opposed to the Initial ASAM completed at admission — that reassesses whether a client still needs this level of care, based on what's happened since the last review.</span></span> ASAM — which re-identifies the problem, updates the plan, and the loop starts again. This is why it's called a <em>thread</em>: it never actually ends while the client is in treatment.</div>`,
+
+  `<p>You'll actually draft all three of these documents inside DocAssist, which structures its fields to match this same thread — but the tool only helps you write faster. It can't decide what belongs in each field. That judgment is what the rest of this training builds, one document at a time: first the ASAM, then the ITP, then the Individual Note. Each gets its own deep-dive module. What you're about to learn here is just the shape they all share.</p>`,
 
   `<h2>Why the order matters — and why you can't skip a link</h2>
    <p>You cannot write a meaningful treatment plan for a problem that hasn't been documented anywhere. If an ITP goal doesn't trace back to something identified in the ASAM, it looks invented — because, procedurally, it was. You also can't write a meaningful session note if there's no objective for that session to be working toward. A note that isn't connected to a plan isn't documentation of treatment; it's just a record that a conversation happened.</p>
@@ -1279,25 +1932,30 @@ const THREAD_EXAMPLE_BEATS = [
 
   `<div class="card">
      <div class="step-header"><span class="step-number">2</span><span class="step-title">What the ITP plans to do about it</span></div>
-     <div class="model-answer">Goal E (Dimension 5 — Relapse / Continued Use Potential)
-Client will reduce relapse potential by developing an independent coping plan for cravings occurring outside of program structure.
+     <div class="model-answer">Section C — Dimensions 5 &amp; 6
+Goal A — Relapse Proneness
 
-   Objective 1E: Client will identify two people, other than her previously identified using contact, that she can call when experiencing cravings, by next treatment plan review.
-   Intervention 1E: This clinician will use motivational interviewing to help client identify and commit to alternative support contacts.</div>
-     <p style="font-size:13px; color:var(--ink-soft); margin-bottom:0;">Notice this goal didn't come from a template pulled at random — every clause in it answers a specific gap named in Step 1. That's what "individualized" means in an ITP: <em>if you can't point to the ASAM sentence that justifies this goal, the goal doesn't belong here yet.</em></p>
+Client stated, "I don't want to keep calling him just because I don't have anyone else."
+
+Goal A: Client will develop coping skills to use during cravings occurring outside of program structure, reducing reliance on her previously identified using contact. (ESTABLISHED 7/24)
+
+Objective 1A: Client will identify two people, other than her previously identified using contact, that she can call when experiencing cravings. (START DATE 7/24) (TARGET DATE 8/24)
+
+Intervention 1A: This clinician will use motivational interviewing to help client identify and commit to alternative support contacts.</div>
+     <p style="font-size:13px; color:var(--ink-soft); margin-bottom:0;">Notice this goal didn't come from a template pulled at random — every clause in it answers a specific gap named in Step 1, and the required client quote anchors it in her own words. That's what "individualized" means in an ITP: <em>if you can't point to the ASAM sentence that justifies this goal, the goal doesn't belong here yet.</em> The date fields on the objective aren't decoration either — they're what a reviewer checks to confirm this plan is actually being worked, not just written once and forgotten.</p>
    </div>`,
 
   `<div class="card">
      <div class="step-header"><span class="step-number">3</span><span class="step-title">What the Individual Note proves happened</span></div>
      <div class="model-answer">Describe Therapeutic Interventions Provided:
-- This clinician met with client to review objective 1E of Goal E.
+- This clinician met with client to review Objective 1A of Goal A.
 - Client was asked to identify support contacts other than her previously identified using contact.
 
 Response — Intervention/Progress/Clinical Judgement:
 - Client identified her sister and a former sponsor as two alternative contacts she is willing to reach out to during cravings.
 - Client rated her confidence in following through as 6/10.
-- Objective 1E: not yet completed. Next objective: same, continue reinforcing.</div>
-     <p style="font-size:13px; color:var(--ink-soft); margin-bottom:0;">"Objective 1E" is not a stylistic choice — it's the literal string that lets someone trace this note back to the exact goal it belongs to. That label is the thread, made visible. This is also exactly the two-box structure DocAssist's Individual Note tool generates, ready to paste into these two Remarkable fields.</p>
+- Objective 1A: not yet completed. Next objective: same, continue reinforcing.</div>
+     <p style="font-size:13px; color:var(--ink-soft); margin-bottom:0;">"Objective 1A" is not a stylistic choice — it's the literal string that lets someone trace this note back to the exact goal it belongs to. That label is the thread, made visible. This is also exactly the two-box structure DocAssist's Individual Note tool generates, ready to paste into these two Remarkable fields.</p>
    </div>`,
 
   `<div class="callout"><strong>Where the loop closes:</strong> if the next Continued Stay ASAM's Dimension 5 update doesn't mention whether client actually followed through on contacting her sister or her sponsor, the thread breaks right here — the plan existed, the note exists, but nobody connected the note's progress back to the reassessment of risk. That single missing sentence is often the difference between a Continued Stay ASAM that reads as justified and one that reads as copy-pasted.</div>`,
@@ -1485,6 +2143,260 @@ document.getElementById('resetProgress-asam').onclick = ()=>{
   }
 };
 
+/* =====================================================
+   ITP MODULE
+   ===================================================== */
+const itpCHAPTERS = [
+  {title:'ITP Module', sections:[
+    {id:'itpwhy', label:'Why this module'},
+    {id:'itpanatomy', label:'The anatomy of a goal'},
+    {id:'itpanatomyexample', label:'A goal, worked through'},
+    {id:'itpfromfinding', label:'Turning a finding into a goal'},
+    {id:'itpobjectives', label:'Writing measurable objectives'},
+    {id:'itpinterventions', label:'Writing real interventions'},
+    {id:'itpindividualized', label:'Making it hers, not a template'},
+    {id:'itpgoals', label:'How many goals'},
+    {id:'itpreviews', label:'Treatment plan reviews'},
+    {id:'itpassembly', label:'Put it all together'},
+  ]},
+  {title:'Reference (look anytime)', sections:[
+    {id:'itpcheatsheet', label:'Quick reference cheat sheet', trackProgress:false},
+    {id:'itpmistakes', label:'Common mistakes recap', trackProgress:false},
+    {id:'itpfaq', label:'FAQ', trackProgress:false},
+  ]},
+];
+const itpSECTIONS = itpCHAPTERS.flatMap(c => c.sections);
+const itpTRACKED_SECTIONS = itpSECTIONS.filter(s => s.trackProgress !== false);
+
+let itpProgress = {};
+try{ itpProgress = JSON.parse(localStorage.getItem('doctrain-itp-progress') || '{}'); }catch(e){ itpProgress = {}; }
+
+function itpSaveProgress(){
+  localStorage.setItem('doctrain-itp-progress', JSON.stringify(itpProgress));
+  renderITPNav();
+}
+function itpMarkComplete(id){
+  itpProgress[id] = true;
+  itpSaveProgress();
+  updateBeatNav(SECTION_TO_CONTAINER[id]);
+}
+
+let itpCurrentSection = 'itpwhy';
+function renderITPNav(){
+  const navList = document.getElementById('navList-itp');
+  navList.innerHTML = '';
+  itpCHAPTERS.forEach(chapter=>{
+    const heading = document.createElement('li');
+    heading.style.cssText = 'font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:#7b9587; font-weight:700; margin:16px 0 6px; padding:0 8px;';
+    heading.textContent = chapter.title;
+    navList.appendChild(heading);
+    chapter.sections.forEach(s=>{
+      const li = document.createElement('li');
+      li.className = 'nav-item' + (itpCurrentSection===s.id ? ' active':'');
+      li.onclick = ()=>itpGoTo(s.id);
+      if(s.trackProgress === false){
+        const dash = document.createElement('span');
+        dash.className = 'nav-check';
+        dash.style.cssText = 'border-style:dashed; opacity:.6;';
+        li.appendChild(dash);
+      } else {
+        const check = document.createElement('span');
+        check.className = 'nav-check' + (itpProgress[s.id] ? ' done':'');
+        check.textContent = itpProgress[s.id] ? '✓' : '';
+        li.appendChild(check);
+      }
+      const label = document.createElement('span');
+      label.textContent = s.label;
+      li.appendChild(label);
+      navList.appendChild(li);
+    });
+  });
+  const doneCount = itpTRACKED_SECTIONS.filter(s=>itpProgress[s.id]).length;
+  document.getElementById('progressLabel-itp').textContent = doneCount + ' of ' + itpTRACKED_SECTIONS.length + ' complete';
+  document.getElementById('progressFill-itp').style.width = (doneCount/itpTRACKED_SECTIONS.length*100) + '%';
+  const itpFinalBadge = document.getElementById('itpFinalBadge');
+  if(itpFinalBadge) itpFinalBadge.style.display = (doneCount === itpTRACKED_SECTIONS.length) ? 'inline-block' : 'none';
+}
+
+function itpGoTo(id){
+  itpCurrentSection = id;
+  document.querySelectorAll('#view-itp section.module').forEach(sec=>{
+    sec.classList.toggle('active', sec.dataset.id === id);
+  });
+  renderITPNav();
+  closeMobileNav();
+  window.scrollTo({top:0, behavior:'instant'});
+}
+
+document.getElementById('resetProgress-itp').onclick = ()=>{
+  if(confirm('Reset all ITP module progress? This clears completion checkmarks and your written answers.')){
+    localStorage.removeItem('doctrain-itp-progress');
+    itpProgress = {};
+    itpSaveProgress();
+    ['itpWhyBeats','itpAnatomyBeats','itpAnatomyExampleBeats','itpFromFindingBeats','itpObjectivesBeats','itpInterventionsBeats','itpIndividualizedBeats','itpGoalsBeats','itpReviewsBeats','itpAssemblyBeats'].forEach(resetBeats);
+  }
+};
+
+/* =====================================================
+   INDIVIDUAL NOTES MODULE
+   ===================================================== */
+const noteCHAPTERS = [
+  {title:'Individual Notes Module', sections:[
+    {id:'notewhy', label:'Why this module'},
+    {id:'noteanatomy', label:'The anatomy of a note'},
+    {id:'notetypes', label:'Four session types'},
+    {id:'notedescribe', label:'Writing the session description'},
+    {id:'noteresponse', label:'Writing the response'},
+    {id:'noterisk', label:'Risk & safety'},
+    {id:'noteassembly', label:'Put it all together'},
+  ]},
+  {title:'Reference (look anytime)', sections:[
+    {id:'notecheatsheet', label:'Quick reference cheat sheet', trackProgress:false},
+    {id:'notemistakes', label:'Common mistakes recap', trackProgress:false},
+    {id:'notefaq', label:'FAQ', trackProgress:false},
+  ]},
+];
+const noteSECTIONS = noteCHAPTERS.flatMap(c => c.sections);
+const noteTRACKED_SECTIONS = noteSECTIONS.filter(s => s.trackProgress !== false);
+
+let noteProgress = {};
+try{ noteProgress = JSON.parse(localStorage.getItem('doctrain-note-progress') || '{}'); }catch(e){ noteProgress = {}; }
+
+function noteSaveProgress(){
+  localStorage.setItem('doctrain-note-progress', JSON.stringify(noteProgress));
+  renderNoteNav();
+}
+function noteMarkComplete(id){
+  noteProgress[id] = true;
+  noteSaveProgress();
+  updateBeatNav(SECTION_TO_CONTAINER[id]);
+}
+
+let noteCurrentSection = 'notewhy';
+function renderNoteNav(){
+  const navList = document.getElementById('navList-note');
+  navList.innerHTML = '';
+  noteCHAPTERS.forEach(chapter=>{
+    const heading = document.createElement('li');
+    heading.style.cssText = 'font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:#7b9587; font-weight:700; margin:16px 0 6px; padding:0 8px;';
+    heading.textContent = chapter.title;
+    navList.appendChild(heading);
+    chapter.sections.forEach(s=>{
+      const li = document.createElement('li');
+      li.className = 'nav-item' + (noteCurrentSection===s.id ? ' active':'');
+      li.onclick = ()=>noteGoTo(s.id);
+      if(s.trackProgress === false){
+        const dash = document.createElement('span');
+        dash.className = 'nav-check';
+        dash.style.cssText = 'border-style:dashed; opacity:.6;';
+        li.appendChild(dash);
+      } else {
+        const check = document.createElement('span');
+        check.className = 'nav-check' + (noteProgress[s.id] ? ' done':'');
+        check.textContent = noteProgress[s.id] ? '✓' : '';
+        li.appendChild(check);
+      }
+      const label = document.createElement('span');
+      label.textContent = s.label;
+      li.appendChild(label);
+      navList.appendChild(li);
+    });
+  });
+  const doneCount = noteTRACKED_SECTIONS.filter(s=>noteProgress[s.id]).length;
+  document.getElementById('progressLabel-note').textContent = doneCount + ' of ' + noteTRACKED_SECTIONS.length + ' complete';
+  document.getElementById('progressFill-note').style.width = (doneCount/noteTRACKED_SECTIONS.length*100) + '%';
+  const noteFinalBadge = document.getElementById('noteFinalBadge');
+  if(noteFinalBadge) noteFinalBadge.style.display = (doneCount === noteTRACKED_SECTIONS.length) ? 'inline-block' : 'none';
+}
+
+function noteGoTo(id){
+  noteCurrentSection = id;
+  document.querySelectorAll('#view-note section.module').forEach(sec=>{
+    sec.classList.toggle('active', sec.dataset.id === id);
+  });
+  renderNoteNav();
+  closeMobileNav();
+  window.scrollTo({top:0, behavior:'instant'});
+}
+
+document.getElementById('resetProgress-note').onclick = ()=>{
+  if(confirm('Reset all Individual Notes module progress? This clears completion checkmarks and your written answers.')){
+    localStorage.removeItem('doctrain-note-progress');
+    noteProgress = {};
+    noteSaveProgress();
+    ['noteWhyBeats','noteAnatomyBeats','noteTypesBeats','noteDescribeBeats','noteResponseBeats','noteRiskBeats','noteAssemblyBeats'].forEach(resetBeats);
+  }
+};
+
+/* =====================================================
+   CONCLUSION MODULE
+   ===================================================== */
+const conclusionCHAPTERS = [
+  {title:'Bringing It Together', sections:[
+    {id:'concl-arc', label:"Danielle's thread, start to finish"},
+    {id:'concl-monday', label:'What changes now'},
+  ]},
+];
+const conclusionSECTIONS = conclusionCHAPTERS.flatMap(c => c.sections);
+
+let conclusionProgress = {};
+try{ conclusionProgress = JSON.parse(localStorage.getItem('doctrain-conclusion-progress') || '{}'); }catch(e){ conclusionProgress = {}; }
+
+function conclusionSaveProgress(){
+  localStorage.setItem('doctrain-conclusion-progress', JSON.stringify(conclusionProgress));
+  renderConclusionNav();
+}
+function conclusionMarkComplete(id){
+  conclusionProgress[id] = true;
+  conclusionSaveProgress();
+  updateBeatNav(SECTION_TO_CONTAINER[id]);
+}
+
+let conclusionCurrentSection = 'concl-arc';
+function renderConclusionNav(){
+  const navList = document.getElementById('navList-conclusion');
+  navList.innerHTML = '';
+  conclusionCHAPTERS.forEach(chapter=>{
+    chapter.sections.forEach(s=>{
+      const li = document.createElement('li');
+      li.className = 'nav-item' + (conclusionCurrentSection===s.id ? ' active':'');
+      li.onclick = ()=>conclGoTo(s.id);
+      const check = document.createElement('span');
+      check.className = 'nav-check' + (conclusionProgress[s.id] ? ' done':'');
+      check.textContent = conclusionProgress[s.id] ? '✓' : '';
+      li.appendChild(check);
+      const label = document.createElement('span');
+      label.textContent = s.label;
+      li.appendChild(label);
+      navList.appendChild(li);
+    });
+  });
+  const doneCount = conclusionSECTIONS.filter(s=>conclusionProgress[s.id]).length;
+  document.getElementById('progressLabel-conclusion').textContent = doneCount + ' of ' + conclusionSECTIONS.length + ' complete';
+  document.getElementById('progressFill-conclusion').style.width = (doneCount/conclusionSECTIONS.length*100) + '%';
+  const conclusionFinalBadge = document.getElementById('conclusionFinalBadge');
+  if(conclusionFinalBadge) conclusionFinalBadge.style.display = (doneCount === conclusionSECTIONS.length) ? 'inline-block' : 'none';
+}
+
+function conclGoTo(id){
+  conclusionCurrentSection = id;
+  document.querySelectorAll('#view-conclusion section.module').forEach(sec=>{
+    sec.classList.toggle('active', sec.dataset.id === id);
+  });
+  renderConclusionNav();
+  closeMobileNav();
+  window.scrollTo({top:0, behavior:'instant'});
+}
+
+document.getElementById('resetProgress-conclusion').onclick = ()=>{
+  if(confirm('Reset your progress on Bringing It Together?')){
+    localStorage.removeItem('doctrain-conclusion-progress');
+    conclusionProgress = {};
+    conclusionSaveProgress();
+    ['conclArcBeats','conclMondayBeats'].forEach(resetBeats);
+  }
+};
+
 /* ---- Specificity classify exercise ---- */
 const CLASSIFY_ITEMS = [
   {text:"Client is doing well overall and engaging in treatment.", answer:'generic', explain:"No behavioral evidence, no date, could describe almost any client on almost any day."},
@@ -1539,6 +2451,7 @@ function renderClassify(){
 /* ---- Why this matters ---- */
 const WHY_BEATS = [
   `<p class="lede">This module assumes you've already been through <span class="inline-link" onclick="openModule('view-bigpicture')" role="link" tabindex="0">The Golden Thread</span> — if you haven't, start there first. Here, we go deep on writing the ASAM link of that thread well.</p>
+   <p style="font-size:13px; color:var(--ink-soft);">This module runs long — about 35–45 minutes across all six dimensions. It's fine to split it across a couple of sittings; your progress is saved section by section.</p>
    <p>None of what follows is about catching you doing something wrong. It's about giving you the tools to write down what you already know clinically, in a way that holds up — because the words in an ASAM narrative are the evidence a reviewer uses to decide whether continued residential care is medically necessary. Two clinicians can describe the same client and produce a note that gets approved — or one that gets denied.</p>`,
 
   `<div class="hero-compare">
@@ -1557,7 +2470,7 @@ const WHY_BEATS = [
    <p>A payer reviewer's job is to find reasons to authorize a lower, cheaper level of care. Every sentence you write either gives them ammunition to do that, or takes it away. Reviewers are pattern-matching against two things:</p>
    <ul>
      <li><strong>Genericness</strong> — language that could describe any client, on any day, at any facility. If a sentence would still be true with the name swapped out, it does no work.</li>
-     <li><strong>Positive framing without specificity</strong> — "good insight," "motivated," "supportive family" — these read as reasons to discharge, not reasons to continue. That's exactly why DocAssist throws a challenge message when you select them: it's not second-guessing your clinical judgment, it's stopping you before that sentence gets used against the client.</li>
+     <li><strong>Positive framing without specificity</strong> — "good insight," "motivated," "supportive family" — these read as reasons to discharge, not reasons to continue. That's exactly why <a href="https://bretzfelder.com/docassist" target="_blank" rel="noopener">DocAssist</a> throws a challenge message when you select them: it's not second-guessing your clinical judgment, it's stopping you before that sentence gets used against the client.</li>
    </ul>
    <div class="callout"><strong>The skill this training builds:</strong> turning true clinical observations into specific, dated, behaviorally-anchored language — without inventing anything or overstating severity.</div>`,
 
@@ -1661,6 +2574,8 @@ const DIM3_BEATS = [
      <div class="card-label" style="margin-top:18px;">Quick check</div>
      <div class="quiz-card" id="dim3CheckCard"></div>
    </div>`,
+
+  `<div class="callout" style="text-align:center;"><strong>Halfway there.</strong> Three dimensions down, three to go. Every one you've just done follows the same shape on purpose — spot the reviewer's real question, write it specifically, check it against Danielle's evidence. Dimensions 4–6 will feel more familiar because of that, not harder.</div>`,
 ];
 const DIM3_FINAL = `<button class="btn" onclick="asamGoTo('dim4')">Next: Dimension 4 deep dive →</button>`;
 
@@ -2118,6 +3033,999 @@ function renderAssemblyRatings(){
   });
 }
 
+/* =====================================================
+   ITP MODULE CONTENT
+   Same client, Danielle, threaded through from the ASAM
+   module — this is the exact case her ASAM findings
+   came from, now turned into an actual treatment plan.
+   ===================================================== */
+
+/* ---- Why this module ---- */
+const ITP_WHY_BEATS = [
+  `<p class="lede">This module assumes you've already been through <span class="inline-link" onclick="openModule('view-bigpicture')" role="link" tabindex="0">The Golden Thread</span> — if you haven't, start there first. Here, we go deep on the second link: turning what the ASAM identified into an actual plan.</p>
+   <p style="font-size:13px; color:var(--ink-soft);">About 30 minutes, start to finish. If you already finished ASAM in this sitting, this is a natural place to stop and pick back up later instead.</p>
+   <p>If some part of you has never written one of these and isn't sure where to even start — that's exactly who this was built for. There's no assumed background here. We'll build it up one piece at a time.</p>`,
+
+  `<p><strong>In plain terms, an ITP — Individual Treatment Plan — does one job:</strong> it takes each significant problem the ASAM identified and turns it into a specific, personalized plan to address it. Nothing more mysterious than that.</p>
+   <p>Every ITP entry is built from three layers:</p>
+   <ul class="checklist">
+     <li><strong>A Goal</strong> — the broad direction. "Reduce relapse potential." "Address untreated trauma symptoms."</li>
+     <li><strong>One or more Objectives</strong> — specific, measurable, dated steps toward that goal.</li>
+     <li><strong>An Intervention</strong> for each objective — what <em>you</em>, the clinician, will actually do to help the client get there.</li>
+   </ul>
+   <p>We'll go layer by layer starting in the next section. For now, just hold onto the shape: problem → goal → objective → intervention.</p>`,
+
+  `<p><a href="https://bretzfelder.com/docassist" target="_blank" rel="noopener">DocAssist</a> gives you a library of clinically vetted goals to start from, organized so each one lines up with the ASAM dimension it addresses, and it can flag when something's still missing. It can't tell you which library goal actually fits this client, whether to use the library at all versus writing one from scratch, or whether you've made it hers yet. That judgment is what this training builds.</p>`,
+
+  `<h2>Why a goal left exactly as the library wrote it is worse than it looks</h2>
+   <p>A goal left unedited from the template doesn't just look lazy — it breaks the thread. Remember: a reviewer, or an auditor months later, should be able to trace any Individual Note back through the ITP to a specific ASAM finding. If the ITP goal could belong to any client, that trace fails right there, no matter how good the note describing it is. DocAssist actually watches for this directly — a goal left unchanged from its default text triggers a warning before you can submit.</p>
+   <div class="callout"><strong>The reframe to hold onto:</strong> you didn't get into this work to write treatment plans. But a specific, individualized plan is what lets you keep doing the work that actually matters with this client — because it's what protects their ability to stay in treatment long enough for it to matter. We can't help the client if we don't document.</div>`,
+
+  `<h2>What "individualized" means for an ITP, specifically</h2>
+   <div class="hero-compare">
+     <div class="hero-col deny">
+       <span class="hero-tag">Left as the library wrote it</span>
+       <p>Goal A: Client will develop coping skills to use when experiencing high-risk situations and/or cravings. (ESTABLISHED 7/24)
+
+Objective 1A: Learn and implement 3 personal coping strategies to manage urges to lapse back into chemical use. (START DATE 7/24) (TARGET DATE TBD)</p>
+     </div>
+     <div class="hero-col survive">
+       <span class="hero-tag">Edited into her plan</span>
+       <p>Client stated, "I don't want to keep calling him just because I don't have anyone else."
+
+Goal A: Client will develop coping skills to use during cravings occurring outside of program structure, reducing reliance on her previously identified using contact. (ESTABLISHED 7/24)
+
+Objective 1A: Client will identify two people, other than her previously identified using contact, that she can call when experiencing cravings. (START DATE 7/24) (TARGET DATE 8/24)</p>
+     </div>
+   </div>
+   <p class="hero-note">Same starting point — both came from the same library goal category. The left version was accepted as-is: no client quote, and a target date left at "TBD," which is really no target at all. The right version was actually edited: it names her specific gap, is anchored by her own words, and has a real, checkable target date.</p>`,
+];
+const ITP_WHY_FINAL = `<button class="btn" onclick="itpMarkComplete('itpwhy'); itpGoTo('itpanatomy')">Next: The anatomy of a goal →</button>`;
+
+/* ---- Anatomy of a goal ---- */
+const ITP_ANATOMY_BEATS = [
+  `<p class="lede">Let's look at each of the three layers closely, starting with how DocAssist's goal library is structured. The worked example comes next.</p>`,
+
+  `<h3>Three sections, matched to dimension pairs</h3>
+   <p>DocAssist's goal library is organized into three sections, and each one lines up with two ASAM dimensions:</p>
+   <ul class="checklist">
+     <li><strong>Section A</strong> — Dimensions 1 &amp; 2 (Acute Intoxication/Withdrawal, Biomedical Conditions)</li>
+     <li><strong>Section B</strong> — Dimensions 3 &amp; 4 (Emotional/Behavioral/Cognitive, Readiness to Change)</li>
+     <li><strong>Section C</strong> — Dimensions 5 &amp; 6 (Relapse/Continued Use Potential, Recovery Environment)</li>
+   </ul>
+   <p>Within each section is a set of goal categories — things like Chronic Pain, PTSD, Treatment Resistance, Relapse Proneness — each with several preset goal options to choose from, and several preset objective/intervention pairs you check off as relevant. Every section also has a "+ Add Custom Goal" option, which lets you write the goal name, goal text, and its own objectives/interventions entirely from scratch. Neither path is the fallback — the library is a fast, clinically sound starting point when a category fits well; writing from scratch is just as normal when a client's situation doesn't map cleanly onto one.</p>`,
+
+  `<div class="thread-diagram">
+     <div class="thread-box">
+       <div class="thread-box-label">Goal</div>
+       <div class="thread-box-sub">The direction</div>
+       <div class="thread-box-detail">Picked from a category's preset options and edited, or written from scratch as a custom goal. Gets a letter — A, B, C — but that letter resets at the start of each section. Carries one date: ESTABLISHED.</div>
+     </div>
+     <div class="thread-arrow">→</div>
+     <div class="thread-box">
+       <div class="thread-box-label">Objective</div>
+       <div class="thread-box-sub">The checkable step</div>
+       <div class="thread-box-detail">Checked off from the category's preset pairs, or added custom. Numbered to its goal's letter (1A, 2A, 1B...). Carries two dates: START DATE and TARGET DATE.</div>
+     </div>
+     <div class="thread-arrow">→</div>
+     <div class="thread-box">
+       <div class="thread-box-label">Intervention</div>
+       <div class="thread-box-sub">Your action</div>
+       <div class="thread-box-detail">Paired automatically with its objective when you check the box. Shares the objective's number/letter.</div>
+     </div>
+   </div>`,
+
+  `<h3>Why letters reset per section</h3>
+   <p>A goal's real identity is its section <em>and</em> its letter together — "Section C, Goal A" is a completely different goal from "Section A, Goal A," even though they share a letter. This isn't a bug to work around; it's just how the library is organized, since each section is scoped to its own pair of dimensions. When you reference a goal anywhere — in an Individual Note, in a review — always carry the section along with the letter.</p>`,
+];
+const ITP_ANATOMY_FINAL = `<button class="btn" onclick="itpMarkComplete('itpanatomy'); itpGoTo('itpanatomyexample')">Next: See it worked through an example →</button>`;
+
+/* ---- Anatomy of a goal, part 2: worked example ---- */
+const ITP_ANATOMY_EXAMPLE_BEATS = [
+  `<p class="lede">Now the same structure, worked through one real example — Danielle's Dimension 5 finding from the Golden Thread (nightly cravings, no independent coping plan, one named risky contact) turned into a goal.</p>`,
+
+  `<div class="card">
+     <div class="card-label">Worked example — Danielle, Section C, Goal A</div>
+     <div class="model-answer">Section C — Dimensions 5 &amp; 6
+Goal A — Relapse Proneness
+
+Client stated, "I don't want to keep calling him just because I don't have anyone else."
+
+Goal A: Client will develop coping skills to use during cravings occurring outside of program structure, reducing reliance on her previously identified using contact. (ESTABLISHED 7/24)
+
+Objective 1A: Client will identify two people, other than her previously identified using contact, that she can call when experiencing cravings. (START DATE 7/24) (TARGET DATE 8/24)
+
+Intervention 1A: This clinician will use motivational interviewing to help client identify and commit to alternative support contacts.</div>
+     <ul class="checklist">
+       <li><strong>Section C, Goal A</strong> — the direction: reduce relapse potential tied to unstructured-time cravings. Started from the Relapse Proneness category, then edited to name her specific gap.</li>
+       <li><strong>The client quote</strong> — required for every goal. It's what makes this collaborative treatment planning, not something written about her without her.</li>
+       <li><strong>Objective 1A</strong> — this specific gap (no alternative contact, one named risky one) isn't captured word-for-word by any of the category's standard pairs, so it was added as a custom objective. That's a normal, expected part of the process, not a failure to find the "right" checkbox.</li>
+       <li><strong>Intervention 1A</strong> — the clinician's action: motivational interviewing, aimed specifically at getting to that objective. Not "provide support" — a named technique with a purpose.</li>
+     </ul>
+   </div>`,
+
+  `<h3>The three date fields, and what each one actually captures</h3>
+   <p>Dates live on the Goal and the Objective, not the Intervention:</p>
+   <ul class="checklist">
+     <li><strong>Established</strong> (on the Goal) — auto-filled to today's date the moment you generate the plan.</li>
+     <li><strong>Start Date</strong> (on the Objective) — also auto-filled to today's date at generation. In practice, Established and Start Date will almost always show the same day, because both are stamped at the same moment.</li>
+     <li><strong>Target Date</strong> (on the Objective) — the one field you actually choose. This is the real, checkable deadline, and it's the only date in the whole plan that takes deliberate judgment to set well.</li>
+   </ul>
+   <div class="callout">There's no separate field that gets stamped at each later review — DocAssist doesn't track a running history of check-ins on an objective. That's exactly why the Treatment Plan Reviews section later in this module matters: keeping the plan current is something <em>you</em> have to do deliberately, not something the tool does for you.</div>`,
+
+  `<h3>The confusion this section exists to prevent</h3>
+   <p>Goal and Objective get mixed up constantly, because both can sound like reasonable sentences on their own. The test: <strong>if the sentence could still be true next month, next year, forever — it's a goal.</strong> If it has a specific, checkable condition and a target date attached, it's an objective.</p>
+   <div class="callout">"Client will develop coping skills for cravings outside program structure" (no target date, never really "done") is the goal. "Client will identify two alternative contacts by 8/24" (checkable, dated) is the objective underneath it. If you notice your objective reads exactly like your goal, that's the signal to make it more specific.</div>`,
+];
+const ITP_ANATOMY_EXAMPLE_FINAL = `<button class="btn" onclick="itpMarkComplete('itpanatomyexample'); itpGoTo('itpfromfinding')">Next: Turn a finding into a goal →</button>`;
+
+/* ---- From finding to goal (practice) ---- */
+const ITP_FROMFINDING_BEATS = [
+  `<p class="lede">Here's a finding you may recognize from the ASAM module — Danielle's Dimension 2 narrative about her chronic pain and its link to cravings. Dimension 2 lives in Section A of the goal library, alongside Dimension 1. The library's Chronic Pain category happens to have a close fit here, so we'll practice that path: pick the closest preset option and edit it so it actually answers this finding, plus write the client quote that anchors it. (If nothing in a category fit this well, writing a custom goal from scratch would be just as valid — we'll use the library here simply because it gives us something concrete to edit.)</p>`,
+
+  `<h3>What your answer needs</h3>
+   <ul class="checklist">
+     <li>A goal sentence — built from a Chronic Pain preset option, edited to name the actual link this finding describes (pain connected to cravings, specifically)</li>
+     <li>A direct client quote — her own words from the finding, not a paraphrase</li>
+     <li>No target date and no single checkable condition yet — that's the objective's job, coming next</li>
+   </ul>`,
+
+  `<div class="scenario-box">
+     <div class="who">ASAM finding — Dimension 2, Danielle</div>
+     Client has chronic lower back pain secondary to a motor vehicle accident, previously managed with prescribed opioid medication that client identifies as a contributing factor to her opioid use disorder. Client is not currently prescribed opioid pain medication. During individual session, client disclosed unprompted that "some days it's hard not to think about how much easier the pills made it," directly connecting her untreated physical pain to cravings for her drug of choice. A physical therapy referral is pending.
+   </div>
+   <p style="font-size:13px; color:var(--ink-soft);">For reference, the Chronic Pain category's preset goal options include: "Regulate pain without addictive medications," "Develop healthy options to deal with chronic pain," and similar. None of them mention cravings on their own — that link is what you have to add.</p>
+   <textarea id="itpFromFindingAnswer" placeholder='Start with the quote: Client stated, &quot;...&quot;  Then the goal: Goal A: Client will...'></textarea>
+   <div style="margin-top:10px;">
+     <button class="btn" onclick="itpRevealModel('fromfinding')">Reveal model answer</button>
+   </div>
+   <div class="reveal" id="fromfindingReveal">
+     <div class="card-label">Model answer</div>
+     <div class="model-answer">Section A — Dimensions 1 &amp; 2
+Goal A — Chronic Pain
+
+Client stated, "Some days it's hard not to think about how much easier the pills made it."
+
+Goal A: Client will develop non-opioid strategies to manage pain-related cravings, reducing relapse risk associated with her untreated chronic pain. (ESTABLISHED 7/24)</div>
+     <ul class="checklist">
+       <li>Built from the library's "Develop healthy options to deal with chronic pain" option, but edited to name the exact mechanism from the finding — pain connected to cravings — not just "manage pain"</li>
+       <li>Says what the goal is <em>for</em> (reducing relapse risk), not just a restated symptom</li>
+       <li>Uses her own disclosure as the required client quote — nothing invented</li>
+       <li>No target date, no single checkable condition — because it's a direction, not a step. That's what makes it a goal and not an objective.</li>
+     </ul>
+     <p style="font-size:13px; color:var(--ink-soft);">Notice this edit only exists because the finding named a specific link — pain to cravings, in the client's own words. If the ASAM narrative had just said "client has chronic pain," there'd be nothing here to build a substance-use-relevant edit from, and the library default might be all you could honestly write.</p>
+     <div class="card-label" style="margin-top:18px;">Quick check</div>
+     <div class="quiz-card" id="fromfindingCheckCard"></div>
+   </div>`,
+];
+const ITP_FROMFINDING_FINAL = `<button class="btn" onclick="itpGoTo('itpobjectives')">Next: Writing measurable objectives →</button>`;
+
+/* ---- Objectives (practice) ---- */
+const ITP_OBJECTIVES_BEATS = [
+  `<p class="lede">Now the harder layer. A weak objective is the single most common ITP problem — usually because it accidentally restates the goal instead of naming a checkable step underneath it.</p>`,
+
+  `<h3>What makes an objective strong</h3>
+   <ul class="checklist">
+     <li>Specific — names an observable action or outcome, not a feeling or a general improvement</li>
+     <li>Measurable — a reviewer could look at the record and say yes or no, did this happen</li>
+     <li>Has a real Target Date — not left at the default "TBD"</li>
+     <li>Owned by the client — it describes what <em>the client</em> will do or demonstrate (the clinician's action is a separate layer, coming next)</li>
+   </ul>
+   <div class="callout">Quick gut-check: read your objective back and ask, "could this be true forever and never actually get marked complete?" If yes, it's a goal wearing an objective's number — make it more specific.</div>`,
+
+  `<h3>Try it: write the objective under Section A, Goal A</h3>
+   <div class="scenario-box">
+     <div class="who">Section A, Goal A, from the previous section</div>
+     Client will develop non-opioid strategies to manage pain-related cravings, reducing relapse risk associated with her untreated chronic pain. (Additional context: a PT referral is pending; client has not yet used any non-opioid coping technique for pain, by her own report. The Chronic Pain category's preset pairs include "Investigate the use of alternative pain remedies to reduce dependence on medication.")
+   </div>
+   <textarea id="itpObjectivesAnswer" placeholder="Write Objective 1A, with a Start Date and Target Date..."></textarea>
+   <div style="margin-top:10px;">
+     <button class="btn" onclick="itpRevealModel('objectives')">Reveal model answer</button>
+   </div>
+   <div class="reveal" id="objectivesReveal">
+     <div class="card-label">Model answer</div>
+     <div class="model-answer">Objective 1A: Client will identify and use at least one non-pharmacological pain management technique (e.g., a PT-recommended exercise or a breathing/grounding technique) when experiencing pain-related cravings, as evidenced by self-report. (START DATE 7/24) (TARGET DATE 8/24)</div>
+     <ul class="checklist">
+       <li>Checked and edited from the category's "investigate alternative pain remedies" pair, made more specific to what "using" one actually looks like</li>
+       <li>Has both a condition ("when experiencing pain-related cravings") and a way to confirm it happened ("as evidenced by self-report")</li>
+       <li>Has a real Target Date, not left at "TBD"</li>
+       <li>Is something Danielle does — not something the clinician does, which belongs in the intervention</li>
+     </ul>
+     <div class="card-label" style="margin-top:18px;">Quick check</div>
+     <div class="quiz-card" id="objectivesCheckCard"></div>
+   </div>`,
+];
+const ITP_OBJECTIVES_FINAL = `<button class="btn" onclick="itpGoTo('itpinterventions')">Next: Writing real interventions →</button>`;
+
+/* ---- Interventions (practice) ---- */
+const ITP_INTERVENTIONS_BEATS = [
+  `<p class="lede">The most common intervention mistake: writing what the <em>client</em> will do again, instead of what <em>you</em> will do to help them get there. An intervention is always the clinician's action.</p>`,
+
+  `<h3>What a strong intervention names</h3>
+   <ul class="checklist">
+     <li>A specific technique or modality — motivational interviewing, psychoeducation, cognitive-behavioral coping skills work, case management coordination, trauma-informed processing — not just "counseling" or "support"</li>
+     <li>What it's aimed at — tied specifically to the objective it shares a number with, not a generic restatement of "helping the client recover"</li>
+   </ul>
+   <div class="callout">If your intervention sentence starts with "Client will..." — stop. That's the objective again. An intervention starts with "This clinician will..." or "Counselor will..." When you check an objective's box in DocAssist, its paired intervention comes along with it — but it still needs to actually fit, or be edited until it does.</div>`,
+
+  `<h3>Try it: write the intervention for Objective 1A</h3>
+   <div class="scenario-box">
+     <div class="who">Objective 1A, from the previous section</div>
+     Client will identify and use at least one non-pharmacological pain management technique when experiencing pain-related cravings, as evidenced by self-report. (START DATE 7/24) (TARGET DATE 8/24) (Additional context: a PT referral is pending but has not yet resulted in an appointment.)
+   </div>
+   <textarea id="itpInterventionsAnswer" placeholder="Write Intervention 1A..."></textarea>
+   <div style="margin-top:10px;">
+     <button class="btn" onclick="itpRevealModel('interventions')">Reveal model answer</button>
+   </div>
+   <div class="reveal" id="interventionsReveal">
+     <div class="card-label">Model answer</div>
+     <div class="model-answer">Intervention 1A: This clinician will provide psychoeducation on non-opioid pain management strategies and coordinate with the pending physical therapy referral to ensure client has access to at least one alternative technique before her target date.</div>
+     <ul class="checklist">
+       <li>Starts with the clinician's action, not the client's</li>
+       <li>Names specific techniques (psychoeducation, care coordination) instead of "provide support"</li>
+       <li>Directly aimed at making Objective 1B achievable — connects the pending PT referral to the actual goal</li>
+     </ul>
+     <div class="card-label" style="margin-top:18px;">Quick check</div>
+     <div class="quiz-card" id="interventionsCheckCard"></div>
+   </div>`,
+];
+const ITP_INTERVENTIONS_FINAL = `<button class="btn" onclick="itpGoTo('itpindividualized')">Next: Making it hers, not a template →</button>`;
+
+/* ---- Making it hers, not a template (classify exercise) ---- */
+const ITP_INDIVIDUALIZED_BEATS = [
+  `<p class="lede">For each goal or objective below, decide whether it's individualized to a real, specific client — or whether it reads like unedited template language that could apply to anyone. Click your answer, then read why.</p>`,
+  `<div class="card" id="itpClassifyCard"><!-- rows injected by JS --></div>`,
+];
+const ITP_INDIVIDUALIZED_FINAL = `<button class="btn" onclick="itpGoTo('itpgoals')">Next: How many goals →</button>`;
+
+const ITP_CLASSIFY_ITEMS = [
+  {text:"Goal A: Client will develop healthy coping skills and improve overall wellness. (ESTABLISHED 7/24)", answer:'generic', explain:"Left exactly as the library wrote it, with no client quote attached — this is exactly what triggers DocAssist's SMART warning and quote warning before you can submit."},
+  {text:"Client stated, \"I don't want to keep calling him just because I don't have anyone else.\"<br><br>Goal A: Client will develop coping skills to use during cravings occurring outside of program structure, reducing reliance on her previously identified using contact. (ESTABLISHED 7/24)", answer:'specific', explain:"Edited from the library default to name her specific gap, and anchored with her own words as the required client quote."},
+  {text:"Objective 1A: Learn and implement 3 personal coping strategies to manage urges to lapse back into chemical use. (START DATE 7/24) (TARGET DATE TBD)", answer:'generic', explain:"Straight from the library, unedited, and the Target Date was left at \"TBD\" — nothing here confirms it's actually Danielle's plan or gives a reviewer a real deadline to check."},
+  {text:"Objective 1A: Client will identify two people, other than her previously identified using contact, that she can call when experiencing cravings. (START DATE 7/24) (TARGET DATE 8/24)", answer:'specific', explain:"Names her specific gap (one risky contact, zero alternatives) and has a real target date a reviewer can check."},
+  {text:"Goal B: Understand the negative impact of the current environment on addiction recovery. (ESTABLISHED 7/24)", answer:'generic', explain:"This is the unedited Living Environment Deficiency default — true in general, but it doesn't yet say anything only true of Danielle's mother's house or her ex-boyfriend living two blocks away."},
+  {text:"Client stated, \"I love my mom's house.\"<br><br>Goal B: Client will identify a discharge environment with enforceable boundaries against use, given her mother's stated unwillingness to enforce a no-use household policy. (ESTABLISHED 7/24)", answer:'specific', explain:"Edited to name the actual structural gap (mother won't enforce boundaries) and anchored with the client's own stated preference — which the goal has to work against, not pretend doesn't exist."},
+];
+
+function renderItpClassify(){
+  const card = document.getElementById('itpClassifyCard');
+  if(!card) return;
+  card.innerHTML = '';
+  let answeredCount = 0;
+  ITP_CLASSIFY_ITEMS.forEach((item, idx)=>{
+    const row = document.createElement('div');
+    row.className = 'classify-row';
+    row.innerHTML = `
+      <div style="flex:1;">
+        <div class="classify-text">${item.text}</div>
+        <div class="classify-explain" id="itp-explain-${idx}">${item.explain}</div>
+      </div>
+      <div class="classify-buttons">
+        <button class="pill-btn" data-val="specific" data-idx="${idx}">Individualized</button>
+        <button class="pill-btn" data-val="generic" data-idx="${idx}">Template</button>
+      </div>
+    `;
+    card.appendChild(row);
+  });
+  card.querySelectorAll('.pill-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const idx = btn.dataset.idx;
+      const item = ITP_CLASSIFY_ITEMS[idx];
+      const rowBtns = card.querySelectorAll(`[data-idx="${idx}"]`);
+      rowBtns.forEach(b=>b.disabled = true);
+      const correct = btn.dataset.val === item.answer;
+      btn.classList.add(correct ? 'chosen-correct' : 'chosen-wrong');
+      if(!correct){
+        rowBtns.forEach(b=>{ if(b.dataset.val === item.answer) b.classList.add('chosen-correct'); });
+      }
+      document.getElementById(`itp-explain-${idx}`).classList.add('show');
+      answeredCount++;
+      if(answeredCount === ITP_CLASSIFY_ITEMS.length){
+        itpMarkComplete('itpindividualized');
+      }
+    });
+  });
+}
+
+/* ---- How many goals ---- */
+const ITP_GOALS_BEATS = [
+  `<p class="lede">A natural instinct is to write a goal for every dimension in the ASAM. Resist it — that turns the ITP back into a template exercise, just six of them instead of one.</p>`,
+
+  `<h3>The actual question for each dimension</h3>
+   <p>Not "did this dimension get a rating above 0?" but "is this dimension actively driving the client's need for this level of care right now?" A dimension can be real, true, and still not need its own dedicated goal if it's stable, resolving on its own, or already being addressed through medical monitoring rather than counseling intervention.</p>
+   <div class="callout">Danielle's Dimension 1 (withdrawal) is a good example: real, documented, worth continued monitoring — but medically stable, and not something a counseling goal and objective would meaningfully address. It stays in the ASAM narrative as monitored, without becoming its own ITP goal.</div>`,
+
+  `<h3>Danielle's actual ITP, across three sections</h3>
+   <p style="font-size:13.5px; color:var(--ink-soft);">Here's what a realistic plan looks like once you apply that filter — five goals across five active findings, organized into the sections their dimensions belong to, skipping the one dimension that didn't need one. Remember: letters reset at the start of each section.</p>
+   <div class="card">
+     <div class="card-label">Section A — Dimensions 1 &amp; 2</div>
+     <p style="font-size:13.5px; margin:8px 0 2px;"><strong>Goal A — Chronic Pain (Dimension 2)</strong></p>
+     <p style="font-size:13.5px; margin:2px 0 0;">Develop non-opioid strategies to manage pain-related cravings. <em style="color:var(--ink-soft);">No goal for Dimension 1 — monitored in the ASAM instead.</em></p>
+   </div>
+   <div class="card">
+     <div class="card-label">Section B — Dimensions 3 &amp; 4</div>
+     <p style="font-size:13.5px; margin:8px 0 2px;"><strong>Goal A — Posttraumatic Stress Disorder (Dimension 3)</strong></p>
+     <p style="font-size:13.5px; margin:2px 0 10px;">Begin addressing the trauma response connected to her motor vehicle accident, to reduce avoidance and peer irritability.</p>
+     <p style="font-size:13.5px; margin:0 0 2px;"><strong>Goal B — Treatment Resistance (Dimension 4)</strong></p>
+     <p style="font-size:13.5px; margin:2px 0 0;">Increase congruence between her stated recovery intent and her observable behavior.</p>
+   </div>
+   <div class="card">
+     <div class="card-label">Section C — Dimensions 5 &amp; 6</div>
+     <p style="font-size:13.5px; margin:8px 0 2px;"><strong>Goal A — Relapse Proneness (Dimension 5)</strong></p>
+     <p style="font-size:13.5px; margin:2px 0 10px;">Develop coping skills to use during cravings occurring outside of program structure.</p>
+     <p style="font-size:13.5px; margin:0 0 2px;"><strong>Goal B — Living Environment Deficiency (Dimension 6)</strong></p>
+     <p style="font-size:13.5px; margin:2px 0 0;">Identify a discharge environment with enforceable boundaries against use.</p>
+   </div>
+   <p>Notice there are two goals lettered "A" and two lettered "B" in this plan — Section B's Goal A is not the same goal as Section C's Goal A. That's exactly why you always carry the section along with the letter when you reference one.</p>`,
+
+  `<h3>How goals get prioritized within a section, not just listed</h3>
+   <p>Within a section, the order isn't arbitrary — the goal tied to the most acute or highest-risk finding usually goes first, with goals addressing underlying contributors following it. Danielle's Section B, for example, leads with the PTSD goal because the unaddressed trauma response is arguably driving the readiness-to-change gap in Goal B — not the other way around.</p>`,
+];
+const ITP_GOALS_FINAL = `<button class="btn" onclick="itpMarkComplete('itpgoals'); itpGoTo('itpreviews')">Next: Treatment plan reviews →</button>`;
+
+/* ---- Treatment plan reviews ---- */
+const ITP_REVIEWS_BEATS = [
+  `<p class="lede">An ITP isn't written once and forgotten — it gets revisited at every treatment plan review, and this is where the Golden Thread either stays intact or quietly breaks.</p>`,
+
+  `<div class="callout"><strong>Important to understand about the dates:</strong> DocAssist doesn't keep a running history of check-ins on an objective — there's no field that logs "this was looked at again on this date." Established and Start Date are simply whatever day you generate the plan on. That means if you regenerate an existing goal at a later review, its Established date will show <em>that later day</em>, not the original date the goal was first written. Keeping track of that history is on you and the record, not the tool.</div>`,
+
+  `<h3>What a review actually has to do</h3>
+   <ul class="checklist">
+     <li>Check each open objective against what the Individual Notes since the last review actually showed — not against memory or assumption</li>
+     <li>Document, somewhere in the record, whether the original Established date is being preserved or whether this is intentionally a fresh version of the goal</li>
+     <li>Update the Target Date on any objective that's still relevant but whose old target has passed</li>
+     <li>Add new objectives (or, rarely, new goals) if a new active finding has emerged in a Continued Stay ASAM</li>
+   </ul>`,
+
+  `<div class="callout"><strong>The mistake this invites:</strong> carrying Objective 1A of Section C forward with a stale Target Date, review after review, without checking whether the notes since the last review actually addressed it. If three Individual Notes in a row never mention Objective 1A, the review should say that plainly — not just leave an old target date sitting there as if nothing happened.</div>`,
+
+  `<h3>Where the thread actually closes</h3>
+   <p>Recall from the Golden Thread: what gets documented in the Individual Note becomes the evidence for the next Continued Stay ASAM, which then feeds the next treatment plan review. If Danielle's notes show she followed through and named her sister and her sponsor as alternative contacts, the next review of Section C, Goal A should say exactly that — either marking Objective 1A complete, or noting real but partial progress with an updated Target Date. If the review is silent on it, that silence is a visible gap in the thread, even if every individual document looked fine on its own.</p>`,
+
+  `<h3>Check your understanding</h3>
+   <div class="quiz-card" id="itpReviewsQuizCard"></div>`,
+];
+const ITP_REVIEWS_FINAL = `<button class="btn" onclick="itpGoTo('itpassembly')">Next: Put it all together →</button>`;
+
+const ITP_REVIEWS_QUIZ_ITEMS = [
+  {
+    q: "At Danielle's next treatment plan review, Section C's Objective 1A is carried forward with its Target Date still showing the original date, even though three Individual Notes since the last review discussed her progress identifying alternative contacts. What's missing?",
+    options: [
+      "Nothing — objectives are supposed to stay the same until they're fully complete",
+      "The review should reflect what those notes actually showed and update the Target Date accordingly, whether that's progress, a stall, or completion — not leave it untouched",
+      "The objective should be deleted entirely since it's been open for multiple reviews",
+    ],
+    correctIdx: 1,
+    explain: "A review that ignores what the notes since the last review actually showed breaks the thread — even if the original objective was well written. DocAssist won't flag a stale Target Date for you; that's a judgment call you have to make."
+  },
+  {
+    q: "Danielle's PT referral (tied to Section A, Goal A, Objective 1A) still hasn't resulted in an appointment by the next review. What should happen to that objective?",
+    options: [
+      "Leave it exactly as written — appointments are outside the clinician's control",
+      "Note the barrier, and revise the intervention or Target Date to reflect what's actually achievable given that barrier",
+      "Remove the goal since the referral hasn't gone through yet",
+    ],
+    correctIdx: 1,
+    explain: "A stalled real-world barrier is exactly the kind of thing a review should name and adjust for — not something to leave unaddressed or use as a reason to drop the goal."
+  },
+];
+
+function renderItpReviewsQuiz(){
+  buildQuiz('itpReviewsQuizCard', ITP_REVIEWS_QUIZ_ITEMS, ()=>itpMarkComplete('itpreviews'));
+}
+
+/* ---- Full assembly ---- */
+const ITP_ASSEMBLY_BEATS = [
+  `<p class="lede">One more finding, no scaffolding this time. Danielle's Dimension 4 finding lives in Section B, alongside her Dimension 3 (PTSD) goal — so this one is Section B, Goal B. Write the full client quote, Goal, Objective, and Intervention below.</p>`,
+
+  `<div class="scenario-box">
+     <div class="who">ASAM finding — Dimension 4, Danielle</div>
+     Client verbalizes intent to maintain sobriety, citing her children as motivation, but minimizes the severity of her opioid use, referring to it as "a bad habit," and distinguishes herself from peers in group ("not like the other people here"). This stated insight is inconsistent with follow-through: client did not complete an assigned relapse prevention worksheet due 7/22, and when reminded 7/24 responded she would "get to it," without a specific plan.
+   </div>
+   <p style="font-size:13px; color:var(--ink-soft);">This falls under the library's Treatment Resistance category. Preset goal options include "Learn the facts about addiction, and make a logical decision about the treatment necessary to arrest it" — a reasonable starting point to edit from.</p>
+   <textarea id="itpAssemblyAnswer" placeholder="Write the client quote, Goal B, Objective 1B, and Intervention 1B here..." style="min-height:180px;"></textarea>
+   <div style="margin-top:10px;">
+     <button class="btn" onclick="itpRevealModel('assembly')">Reveal model answer</button>
+   </div>
+   <div class="reveal" id="assemblyReveal">
+     <div class="card-label">Model answer</div>
+     <div class="model-answer">Section B — Dimensions 3 &amp; 4
+Goal B — Treatment Resistance
+
+Client stated, "I'm not like the other people here — it's more of a bad habit."
+
+Goal B: Client will make a logical, honest assessment of her opioid use and increase congruence between her stated recovery intent and her observable behavior. (ESTABLISHED 7/24)
+
+Objective 1B: Client will complete the assigned relapse prevention worksheet and review it with her counselor within one week of assignment, addressing the gap between her stated commitment and her minimizing language in group ("a bad habit"). (START DATE 7/24) (TARGET DATE 7/31)
+
+Intervention 1B: This clinician will use motivational interviewing to explore client's ambivalence and reinforce follow-through on assigned recovery tasks.</div>
+     <ul class="checklist">
+       <li>Goal is edited from the Treatment Resistance library default to name the actual gap (stated intent vs. behavior), not just "increase motivation"</li>
+       <li>Client quote uses her own minimizing language, which is exactly what the goal has to address</li>
+       <li>Objective has a real Target Date (one week out) and references the specific minimizing pattern that makes it hers</li>
+       <li>Intervention is the clinician's action (motivational interviewing), aimed specifically at closing that gap</li>
+     </ul>
+     <div class="card-label" style="margin-top:18px;">Check your understanding</div>
+     <div class="quiz-card" id="itpAssemblyQuizCard"></div>
+   </div>`,
+
+  `<h2>Zooming back out</h2>
+   <p>Step back for a second from Section B, Goal B specifically, to everything you've built across these two modules. In the ASAM module, you took what you observed about one client — cravings, a missed worksheet, a mother who won't set boundaries — and turned it into specific, evidence-based findings a reviewer could picture. In this module, you took those same findings and turned them into a plan: a direction, a checkable step, and a named clinical action, all traceable back to the exact sentence that justified them.</p>
+   <p>That's the whole thread, in practice, not just in a diagram. If this is the first time you've ever written either of these documents, you now have the real shape of both — the third piece, the Individual Note, is what proves this plan is actually being worked, and it's next. If you've been writing ASAMs and ITPs for a while already, this is the moment worth sitting with: the six-dimension narrative and the goal-and-objective plan were never two separate chores. They're the same clinical judgment about the same person, written down twice, in two different shapes, so the record can hold together under review. Once that clicks, neither document is something you write <em>and then</em> think about the client — writing it well <em>is</em> thinking about the client.</p>`,
+
+  `<div class="callout"><strong>This is the whole point of both modules together:</strong> a problem the ASAM already proved is real, turned into a direction, a checkable step, and a specific clinician action — all individualized enough that a reviewer could only be reading about one real person.</div>
+   <span class="badge-done" id="itpFinalBadge" style="display:none;">You've completed the ITP module — nice work</span>
+   <div class="callout" style="margin-top:16px;">
+     <strong>Keep this handy:</strong> the <span class="inline-link" onclick="itpGoTo('itpcheatsheet')" role="link" tabindex="0">quick reference cheat sheet</span>, <span class="inline-link" onclick="itpGoTo('itpmistakes')" role="link" tabindex="0">common mistakes recap</span>, and <span class="inline-link" onclick="itpGoTo('itpfaq')" role="link" tabindex="0">FAQ</span> are built to be reopened anytime you're actually writing an ITP — not just read once during training.
+   </div>
+   <div class="callout" style="margin-top:16px;">
+     <strong>Coming next:</strong> the Individual Notes module — proving, session by session, that this plan is actually being worked. Once that exists, Danielle's thread will run unbroken from the first thing you ever wrote about her cravings to the note documenting whether she actually called her sister instead of her ex.
+   </div>`,
+];
+const ITP_ASSEMBLY_FINAL = `<span style="font-size:13px; color:var(--ink-soft);">You've reached the end of the ITP module.</span>`;
+
+const ITP_ASSEMBLY_QUIZ_ITEMS = [
+  {
+    q: "Which part of the model answer above is the objective, specifically?",
+    options: [
+      "\"Client will increase congruence between her stated recovery intent and her observable behavior.\"",
+      "\"Client will complete the assigned relapse prevention worksheet and review it with her counselor within one week of assignment...\"",
+      "\"This clinician will use motivational interviewing to explore client's ambivalence...\"",
+    ],
+    correctIdx: 1,
+    explain: "It's the specific, dated, checkable step — the goal is the broad direction above it, and the intervention is the clinician's action below it."
+  },
+];
+
+const ITP_CHECK_ITEMS = {
+  fromfinding: [{
+    q: "The Dimension 2 finding mentions PT is pending but doesn't yet exist. Should the goal wait until the PT appointment actually happens?",
+    options: [
+      "Yes — a goal can't be written until every referral in it is already scheduled",
+      "No — the goal can be written now, based on the finding that already exists; the pending referral becomes part of the intervention or objective instead",
+      "No — pending referrals should be left out of the plan entirely",
+    ],
+    correctIdx: 1,
+    explain: "The goal only needs a real, documented problem to build from — which this finding already provides. Logistics like a pending referral show up one layer down, in the objective or intervention."
+  }],
+  objectives: [{
+    q: "What would make 'Client will manage her pain better' a weak objective, even though it's related to the right goal?",
+    options: [
+      "It's too short to be taken seriously",
+      "It has no specific, checkable action and no date — a reviewer can't confirm it happened or didn't",
+      "It doesn't use enough clinical language",
+    ],
+    correctIdx: 1,
+    explain: "\"Manage her pain better\" could be true or false depending entirely on opinion. A strong objective names an observable action with a target date, so it's checkable either way."
+  }],
+  interventions: [{
+    q: "\"Client will use a coping technique when pain-related cravings occur\" is written as Intervention 1A. What's wrong with it?",
+    options: [
+      "Nothing — it's specific and dated",
+      "It describes the client's action, not the clinician's — it's actually a restated objective, not an intervention",
+      "It's too long for an intervention",
+    ],
+    correctIdx: 1,
+    explain: "An intervention is always what the clinician does. This sentence describes Danielle's behavior, which already belongs in Objective 1A one layer up."
+  }],
+  assembly: []
+};
+
+function itpRevealModel(id){
+  document.getElementById(id + 'Reveal').classList.add('show');
+  if(ITP_CHECK_ITEMS[id] && ITP_CHECK_ITEMS[id].length){
+    buildQuiz(id + 'CheckCard', ITP_CHECK_ITEMS[id], ()=>itpMarkComplete(id === 'fromfinding' ? 'itpfromfinding' : id === 'objectives' ? 'itpobjectives' : id === 'interventions' ? 'itpinterventions' : id));
+  }
+  if(id === 'assembly'){
+    buildQuiz('itpAssemblyQuizCard', ITP_ASSEMBLY_QUIZ_ITEMS, ()=>itpMarkComplete('itpassembly'));
+  }
+}
+
+/* =====================================================
+   INDIVIDUAL NOTES MODULE CONTENT
+   Same client, Danielle, threaded through from the ASAM
+   and ITP modules — the note practiced here reviews the
+   exact objective (Section C, Goal A, Objective 1A) built
+   in the ITP module and previewed back in the Golden Thread.
+   ===================================================== */
+
+/* ---- Why this module ---- */
+const NOTE_WHY_BEATS = [
+  `<p class="lede">This module assumes you've already been through the <span class="inline-link" onclick="openModule('view-itp')" role="link" tabindex="0">ITP module</span> — if you haven't, start there first. This is the third and final link in the Golden Thread: the ASAM found the problem, the ITP planned it, and the Individual Note is what proves, session by session, that the plan is actually being worked.</p>
+   <p style="font-size:13px; color:var(--ink-soft);">Last module — about 25 minutes. This one maps most directly onto what you'll actually type after a session, so it's worth having <a href="https://bretzfelder.com/docassist" target="_blank" rel="noopener">DocAssist</a> open in another tab to look at the real fields alongside this.</p>`,
+
+  `<p><strong>In plain terms, an Individual Note does one job:</strong> it documents what happened in a specific session, and connects it back to a specific objective in the client's ITP. <a href="https://bretzfelder.com/docassist" target="_blank" rel="noopener">DocAssist</a> generates it as two boxes:</p>
+   <ul class="checklist">
+     <li><strong>Describe Therapeutic Interventions Provided</strong> — which objective(s) you worked on, and what you did in session.</li>
+     <li><strong>Response — Intervention/Progress/Clinical Judgement</strong> — how the client responded, whether anything was completed, what's next, and a required risk &amp; safety line.</li>
+   </ul>`,
+
+  `<p>DocAssist auto-generates some of the connective sentences — which objective was reviewed, whether it was completed, what's assigned next — from a few fields you fill in. But it has no idea what actually happened in the room. The free-text parts, and the judgment about what belongs in them, are entirely yours. That's what this module builds.</p>`,
+
+  `<h2>Before anything else: a progress note is not a therapy note</h2>
+   <p>This is one of the most important distinctions in this whole module, and it's easy to get backwards. An Individual Note documents <strong>progress toward a specific objective</strong> — not a transcript of the session, not a record of everything the client disclosed, not her full emotional processing of a topic. If you find yourself writing down everything discussed the way you might in a personal clinical log, stop. That's not what this field is for.</p>
+   <div class="callout"><strong>This isn't just a stylistic preference — it can genuinely protect or harm the client.</strong> A progress note is part of the official clinical record. It can be subpoenaed in legal proceedings — custody disputes, criminal cases, civil litigation — and used by parties who do not have the client's best interests in mind. A note that reads like a therapy transcript, full of extensive personal disclosures, trauma details, or unrelated history, hands over material that was never meant to leave the therapeutic relationship, and can be used against the very client it was written about.</p>`,
+
+  `<h3>The practical test</h3>
+   <p>Before writing a sentence into either box, ask: <strong>does this document progress toward the objective, or does it just repeat what she told me?</strong> If it's the second, it almost always doesn't belong here — even if it felt like the most important part of the session emotionally.</p>
+   <div class="hero-compare">
+     <div class="hero-col deny">
+       <span class="hero-tag">Reads like a therapy transcript</span>
+       <p>Client disclosed extensive details about a traumatic event from her childhood, describing the specific circumstances and the person involved at length. Client also discussed feelings of betrayal regarding a past relationship and shared history from three prior relationships.</p>
+     </div>
+     <div class="hero-col survive">
+       <span class="hero-tag">Reads like a progress note</span>
+       <p>In the course of working toward Objective 1C, client identified a specific trigger connected to a past traumatic event. Client's affect was tearful but she was able to re-engage with the session's focus after a brief grounding exercise.</p>
+     </div>
+   </div>
+   <p class="hero-note">The right column doesn't pretend the trauma wasn't discussed — it says enough to show clinical relevance to the objective, without reproducing the disclosure itself. That's the line: acknowledge what's clinically relevant, don't transcribe it.</p>`,
+
+  `<h2>Why a note with no objective reference is a real problem</h2>
+   <p>Recall the single most important idea from the Golden Thread: a reviewer or auditor should be able to take any Individual Note and trace it backward to a specific ASAM finding, with nothing missing in between. A note that never names which objective it's working toward can't be traced to anything — it just reads as a conversation that happened, not treatment toward a documented plan.</p>
+   <div class="hero-compare">
+     <div class="hero-col deny">
+       <span class="hero-tag">Just a conversation</span>
+       <p>This clinician met with client for individual session. Client discussed feelings about recovery and expressed some progress. No concerns noted.</p>
+     </div>
+     <div class="hero-col survive">
+       <span class="hero-tag">Proves the plan is being worked</span>
+       <p>This clinician met with client to review Objective 1A of Goal A. Client identified her sister and a former sponsor as two alternative contacts she is willing to reach out to during cravings. Client rated her confidence in following through as 6/10. No risk or safety concerns identified this session.</p>
+     </div>
+   </div>
+   <p class="hero-note">Notice this second example follows the same rule as the one above: specific and traceable, but still proportionate. It documents what's needed to show progress — not everything Danielle said in the room.</p>`,
+];
+const NOTE_WHY_FINAL = `<button class="btn" onclick="noteMarkComplete('notewhy'); noteGoTo('noteanatomy')">Next: The anatomy of a note →</button>`;
+
+/* ---- Anatomy of a note ---- */
+const NOTE_ANATOMY_BEATS = [
+  `<p class="lede">Let's look at the fields that build a note, using the same objective from the Golden Thread and the ITP module — Danielle's Section C, Goal A, Objective 1A.</p>`,
+
+  `<h3>The fields, in order</h3>
+   <ul class="checklist">
+     <li><strong>Client name &amp; date</strong></li>
+     <li><strong>Session Type</strong> — one of four; changes which fields show and which sentences auto-generate (next section goes deep on this)</li>
+     <li><strong>ITP Reference</strong> — Objective(s) Reviewed and Objective(s) Assigned Next, each just a Goal Letter and an Objective Number</li>
+     <li><strong>Therapeutic Interventions Used</strong> — Motivational Interviewing or CBT — Cognitive Restructuring, selected as chips</li>
+     <li><strong>Session Description</strong> — free text, what occurred in session</li>
+     <li><strong>Response — Intervention/Progress/Clinical Judgement</strong> — free text, how the client responded</li>
+     <li><strong>Risk &amp; Safety</strong> — checkboxes plus optional free text</li>
+   </ul>
+   <div class="callout">One honest note about the intervention chips: selecting Motivational Interviewing or CBT doesn't currently generate its own sentence in the output. Pick whichever the session actually centered on — if it centered on exploring what the client wants and building motivation, that's MI; if it centered on examining thought patterns or challenging distorted thinking, that's CBT — and if it mattered clinically, say so in your free text too.</div>`,
+
+  `<h3>The reference format, and the gotcha it creates</h3>
+   <p>An objective gets referenced as its number plus its goal letter — "1A of Goal A." That's it. The note does <strong>not</strong> capture which section that goal belongs to.</p>
+   <div class="callout"><strong>Remember from the ITP module:</strong> letters reset at the start of every section, so "Goal A" alone is ambiguous — Section A's Goal A and Section C's Goal A are different goals. The Individual Note tool doesn't disambiguate this for you. Keeping straight which section's Goal A you mean is entirely on you.</div>`,
+
+  `<div class="card">
+     <div class="card-label">Worked example — Danielle, reviewing Section C, Goal A, Objective 1A</div>
+     <div class="card-label" style="margin-top:14px; color:var(--green-700);">Describe Therapeutic Interventions Provided</div>
+     <div class="model-answer">- This clinician met with client to review Objective 1A of Goal A.
+
+- Client was asked to identify support contacts other than her previously identified using contact.</div>
+     <div class="card-label" style="margin-top:14px; color:var(--green-700);">Response — Intervention/Progress/Clinical Judgement</div>
+     <div class="model-answer">- Client identified her sister and a former sponsor as two alternative contacts she is willing to reach out to during cravings.
+
+- Client rated her confidence in following through as 6/10.
+
+- No risk or safety concerns identified this session.</div>
+     <ul class="checklist">
+       <li>"Objective 1A of Goal A" is the literal reference string — this is what lets someone trace this note back to the exact goal it belongs to.</li>
+       <li>The client wasn't marked "Completed" yet — the objective stays open, so the thread continues into the next note instead of closing here.</li>
+       <li>This is exactly the note you saw previewed in the Golden Thread, before you'd learned any of the mechanics behind it.</li>
+     </ul>
+   </div>`,
+
+  `<h3>Reviewed vs. Assigned Next</h3>
+   <p>Objective(s) Reviewed rows can be checked "Completed" — this only applies to something you actually worked on today. Objective(s) Assigned Next rows have no Completed checkbox, because they haven't happened yet; they're what the client will work on before the next session.</p>`,
+];
+const NOTE_ANATOMY_FINAL = `<button class="btn" onclick="noteMarkComplete('noteanatomy'); noteGoTo('notetypes')">Next: Four session types →</button>`;
+
+/* ---- Session types (practice) ---- */
+const NOTE_TYPES_BEATS = [
+  `<p class="lede">The Session Type you pick changes which fields appear and which auto-generated sentences open the note. Getting it right matters — using the wrong type can make a note claim progress that never happened, or hide a required note that a first meeting actually needs.</p>`,
+
+  `<h3>The four types</h3>
+   <ul class="checklist">
+     <li><strong>Working off ITP (Reviewing)</strong> — the default, routine session. Opens with a line naming the objective(s) reviewed, or a generic line if none were selected.</li>
+     <li><strong>Updating/Revising ITP</strong> — for when the plan itself is changing. Opens by naming that the ITP was updated, then lists what was reviewed.</li>
+     <li><strong>First Meeting/Initial ITP</strong> — the "Objective(s) Reviewed" fields hide entirely, since there's nothing to review yet. Opens with rapport-building and completing the initial plan.</li>
+     <li><strong>Crisis Intervention</strong> — the whole ITP Reference section hides. Opens by stating the client's original ITP goals aren't a reflection of today's crisis note, since a crisis session isn't routine progress on the existing plan.</li>
+   </ul>
+   <div class="callout">Notice the pattern: the tool doesn't just relabel the same note four ways — it removes fields that wouldn't make sense for that type of session. If you can't find the "Objective(s) Reviewed" fields, check whether you've picked First Meeting or Crisis first before assuming something's broken.</div>`,
+
+  `<h3>Try it: match each scenario to its session type</h3>
+   <div class="quiz-card" id="noteTypesQuizCard"></div>`,
+];
+const NOTE_TYPES_FINAL = `<button class="btn" onclick="noteGoTo('notedescribe')">Next: Writing the session description →</button>`;
+
+const NOTE_TYPES_QUIZ_ITEMS = [
+  {
+    q: "Danielle is admitted today. This is the very first time her counselor is meeting with her one-on-one.",
+    options: ["Working off ITP (Reviewing)", "First Meeting/Initial ITP", "Crisis Intervention"],
+    correctIdx: 1,
+    explain: "Nothing has been reviewed yet — there's no existing objective to reference. First Meeting hides the \"Reviewed\" fields entirely, since a note claiming to review something that doesn't exist yet would be inaccurate."
+  },
+  {
+    q: "Danielle's counselor meets with her for a routine individual session to work on Objective 1A, same as most weeks.",
+    options: ["Working off ITP (Reviewing)", "Updating/Revising ITP", "Crisis Intervention"],
+    correctIdx: 0,
+    explain: "This is the default, ordinary case — reviewing progress on an existing objective without changing the plan itself."
+  },
+  {
+    q: "Danielle attempted to leave the facility against staff advice and required an emergency safety intervention.",
+    options: ["Working off ITP (Reviewing)", "First Meeting/Initial ITP", "Crisis Intervention"],
+    correctIdx: 2,
+    explain: "An acute event like this isn't routine progress on the existing plan — Crisis Intervention hides the ITP reference fields and opens by stating the original goals aren't a reflection of today's note."
+  },
+  {
+    q: "At Danielle's treatment plan review, her counselor meets with her specifically to revise Goal A because her circumstances have changed.",
+    options: ["Working off ITP (Reviewing)", "Updating/Revising ITP", "First Meeting/Initial ITP"],
+    correctIdx: 1,
+    explain: "This session is specifically about changing the plan, not just working the existing one — that's what Updating/Revising ITP is for."
+  },
+];
+
+function renderNoteTypesQuiz(){
+  buildQuiz('noteTypesQuizCard', NOTE_TYPES_QUIZ_ITEMS, ()=>noteMarkComplete('notetypes'));
+}
+
+/* ---- Writing the session description (practice) ---- */
+const NOTE_DESCRIBE_BEATS = [
+  `<p class="lede">DocAssist auto-generates a line naming which objective you reviewed. Your job in the Session Description field is to say what actually happened — the auto-generated line proves you worked on the right thing, but your free text is what proves it was real.</p>
+   <div class="callout">Keep the earlier rule in mind here: this is the field where it's easiest to accidentally slide into therapy-note territory. Describe the clinical task and what was addressed toward the objective — not everything the client said while you were addressing it.</div>`,
+
+  `<h3>What your answer needs</h3>
+   <ul class="checklist">
+     <li>Name the clinical task tied to the objective — what you actually asked her to do or work on this session</li>
+     <li>One or two sentences is usually enough — this field isn't where the outcome goes, just the task</li>
+     <li>Leave out anything she said that isn't necessary to show the task was addressed (the "why," the backstory, her feelings about it)</li>
+   </ul>`,
+
+  `<h3>Try it: write the session description</h3>
+   <div class="scenario-box">
+     <div class="who">Session — Danielle, reviewing Section C, Goal A, Objective 1A</div>
+     <div class="meta">Session Type: Working off ITP (Reviewing) &nbsp;·&nbsp; Objective Reviewed: 1, Goal A (not yet marked complete)</div>
+     <p style="margin:0;">During session, Danielle was asked to name two people, other than her ex-boyfriend, she could call during a craving. After some hesitation, she named her sister and a former AA sponsor, and said she felt comfortable reaching out to both.</p>
+   </div>
+   <textarea id="noteDescribeAnswer" placeholder="e.g. Client was asked to identify support contacts other than..."></textarea>
+   <div style="margin-top:10px;">
+     <button class="btn" onclick="noteRevealModel('describe')">Reveal model answer</button>
+   </div>
+   <div class="reveal" id="describeReveal">
+     <div class="card-label">Full generated box (auto-text + your free text)</div>
+     <div class="model-answer">- This clinician met with client to review Objective 1A of Goal A.
+
+- Client was asked to identify support contacts other than her previously identified using contact.</div>
+     <ul class="checklist">
+       <li>The first bullet is auto-generated from the objective reference you entered — you don't write this part</li>
+       <li>The second bullet is your free text — it names the actual clinical task (identifying alternative contacts), without yet revealing the outcome, which belongs in the Response box next</li>
+       <li>It stays at the level of the clinical task — it doesn't reproduce anything Danielle said about why her ex is still someone she'd consider calling, which isn't necessary to show progress on this objective</li>
+       <li>Written in complete sentences, ready to paste verbatim into Remarkable — not a shorthand fragment</li>
+     </ul>
+     <div class="card-label" style="margin-top:18px;">Quick check</div>
+     <div class="quiz-card" id="describeCheckCard"></div>
+   </div>`,
+];
+const NOTE_DESCRIBE_FINAL = `<button class="btn" onclick="noteGoTo('noteresponse')">Next: Writing the response →</button>`;
+
+/* ---- Writing the response (practice) ---- */
+const NOTE_RESPONSE_BEATS = [
+  `<p class="lede">The Response box is where the outcome lives — what the client actually said or did, whether the objective is complete, and the risk &amp; safety line every note requires.</p>
+   <div class="callout">Same rule as the last section, since it applies here just as much: document her response <em>to the objective</em>, not everything she processed emotionally while getting there. A confidence rating and a concrete outcome are progress. A full account of her feelings about her ex-boyfriend is not — even if that's most of what the session actually felt like.</div>`,
+
+  `<h3>What your answer needs</h3>
+   <ul class="checklist">
+     <li>The actual outcome — what she said or did in direct response to the task, not a general summary of the session</li>
+     <li>Something measurable if you have it — a rating, a specific statement, a concrete behavior</li>
+     <li>Whether this counts as progress toward the objective — even "not yet, and here's why" is a complete, honest answer</li>
+   </ul>`,
+
+  `<h3>Try it: write the response</h3>
+   <div class="scenario-box">
+     <div class="who">Same session — Danielle, Objective 1A</div>
+     Danielle named her sister and a former sponsor as two people she'd call instead of her ex. She rated her confidence in actually following through as 6 out of 10. Her counselor did not mark the objective complete — this was the first time she'd named anyone, and follow-through hasn't been observed yet. No risk concerns came up this session.
+   </div>
+   <textarea id="noteResponseAnswer" placeholder="e.g. Client identified... and rated her confidence in following through as..."></textarea>
+   <div style="margin-top:10px;">
+     <button class="btn" onclick="noteRevealModel('response')">Reveal model answer</button>
+   </div>
+   <div class="reveal" id="responseReveal">
+     <div class="card-label">Full generated box (your free text + auto-text)</div>
+     <div class="model-answer">- Client identified her sister and a former sponsor as two alternative contacts she is willing to reach out to during cravings.
+
+- Client rated her confidence in following through as 6/10.
+
+- No risk or safety concerns identified this session.</div>
+     <ul class="checklist">
+       <li>Because the objective wasn't marked "Completed," no auto-generated completion sentence appears — the record accurately shows this is still in progress</li>
+       <li>The confidence rating (6/10) is exactly the kind of specific, checkable detail that makes a response read as real rather than boilerplate</li>
+       <li>The risk line appears automatically because no risk checkboxes were checked — it's a real clinical claim, so it only belongs here because it's actually true</li>
+     </ul>
+     <div class="card-label" style="margin-top:18px;">Quick check</div>
+     <div class="quiz-card" id="responseCheckCard"></div>
+   </div>`,
+];
+const NOTE_RESPONSE_FINAL = `<button class="btn" onclick="noteGoTo('noterisk')">Next: Risk & safety →</button>`;
+
+/* ---- Risk & safety ---- */
+const NOTE_RISK_BEATS = [
+  `<p class="lede">Every note gets a risk &amp; safety line — there's no way to leave it blank. That makes it one of the few places in this whole system where silence still produces a claim.</p>`,
+
+  `<h3>How the line gets built</h3>
+   <ul class="checklist">
+     <li>Check any of "SI denied," "HI denied," or "Safety plan reviewed," and those join together as the line, e.g. "SI denied; HI denied."</li>
+     <li>Check none of them, and the note defaults to: <em>"No risk or safety concerns identified this session."</em></li>
+     <li>Check "Concerns present," and a free-text field opens — whatever you write there gets added after the line above.</li>
+   </ul>
+   <div class="callout"><strong>The real danger here:</strong> the default line is reassuring. If something concerning actually happened and you simply forget to check "Concerns present," the note doesn't stay silent about it — it actively states that nothing was wrong. An empty risk section isn't neutral; it's a specific, false claim of safety.</div>`,
+
+  `<h3>Quick check</h3>
+   <div class="quiz-card" id="riskQuizCard"></div>`,
+];
+const NOTE_RISK_FINAL = `<button class="btn" onclick="noteMarkComplete('noterisk'); noteGoTo('noteassembly')">Next: Put it all together →</button>`;
+
+const NOTE_RISK_QUIZ_ITEMS = [
+  {
+    q: "During session, Danielle mentions passive thoughts of \"what's the point\" that concern her counselor, though she denies any plan or intent. The counselor forgets to check \"Concerns present\" before generating the note. What does the note now say?",
+    options: [
+      "Nothing — the risk section is simply left blank",
+      "\"No risk or safety concerns identified this session\" — a specific claim that isn't true",
+      "The note won't generate until the field is completed",
+    ],
+    correctIdx: 1,
+    explain: "The tool always produces a risk line. If nothing is checked, it defaults to the reassuring statement — which becomes actively false if something concerning actually happened and wasn't flagged."
+  },
+  {
+    q: "A counselor checks \"SI denied\" and \"HI denied\" every single session, regardless of what was actually discussed, just to be thorough. What's the problem with that habit?",
+    options: [
+      "There's no problem — more documentation is always safer",
+      "Those checkboxes should only be checked when SI/HI were actually assessed and denied that session — checking them reflexively risks documenting an assessment that didn't happen",
+      "It's fine as long as the Response box also has free text",
+    ],
+    correctIdx: 1,
+    explain: "Every checkbox in this section is a specific clinical claim. Checking it out of habit rather than because you actually assessed for it that session risks documenting something that didn't occur."
+  },
+];
+
+function renderRiskQuiz(){
+  buildQuiz('riskQuizCard', NOTE_RISK_QUIZ_ITEMS, ()=>noteMarkComplete('noterisk'));
+}
+
+/* ---- Full assembly ---- */
+const NOTE_ASSEMBLY_BEATS = [
+  `<p class="lede">One more session, no scaffolding this time. This session touches two different goals from two different sections — a completely normal thing to happen in one visit. Write both output boxes in full.</p>`,
+
+  `<div class="scenario-box">
+     <div class="who">Session — Danielle, Working off ITP (Reviewing)</div>
+     Danielle's counselor met with her to review Objective 1A of Goal A in Section A (chronic pain / non-opioid coping). Danielle reported she used a breathing technique from physical therapy twice this week when pain-related cravings came up, and said it "actually helped a little." Her counselor marked this objective complete. The counselor then assigned Danielle Objective 1B of Goal B in Section B (Treatment Resistance) — reviewing the relapse prevention worksheet due at the next session, since Danielle admitted she still hadn't started it. No risk or safety concerns came up.
+   </div>
+   <textarea id="noteAssemblyAnswer" placeholder="Write both the Describe box and the Response box here..." style="min-height:180px;"></textarea>
+   <div style="margin-top:10px;">
+     <button class="btn" onclick="noteRevealModel('noteassembly')">Reveal model answer</button>
+   </div>
+   <div class="reveal" id="noteassemblyReveal">
+     <div class="card-label">Model answer</div>
+     <div class="card-label" style="margin-top:6px; color:var(--green-700);">Describe Therapeutic Interventions Provided</div>
+     <div class="model-answer">- This clinician met with client to review Objective 1A of Goal A.
+
+- Client reported using a breathing technique introduced by physical therapy on two occasions this week when experiencing pain-related cravings.
+
+- This clinician assigned client Objective 1B of Goal B from their ITP.</div>
+     <div class="card-label" style="margin-top:14px; color:var(--green-700);">Response — Intervention/Progress/Clinical Judgement</div>
+     <div class="model-answer">- Client completed objective 1A of Goal A from their ITP.
+
+- Client stated the technique "actually helped a little," and acknowledged she has not yet started the assigned relapse prevention worksheet tied to Objective 1B of Goal B.
+
+- Client will work on objective 1B of Goal B from their ITP due next week.
+
+- No risk or safety concerns identified this session.</div>
+     <ul class="checklist">
+       <li>Two separate goals, from two separate sections, both referenced correctly by their own goal letter — nothing gets merged or confused between them</li>
+       <li>The completed objective (1A of Goal A) generates a clean completion sentence, because the underlying evidence in the free text actually supports it</li>
+       <li>The newly assigned objective (1B of Goal B) shows up in both boxes — described as assigned, then reflected as what's next — closing the loop for this session and opening it for the next one</li>
+     </ul>
+     <div class="card-label" style="margin-top:18px;">Check your understanding</div>
+     <div class="quiz-card" id="noteAssemblyQuizCard"></div>
+   </div>`,
+
+  `<div class="callout"><strong>This is the whole point of the module:</strong> a plan that already existed, worked in real session time, with enough specific evidence that a reviewer could trace this exact note back through the ITP to the ASAM finding that started the whole thread.</div>
+   <span class="badge-done" id="noteFinalBadge" style="display:none;">You've completed the Individual Notes module — nice work</span>
+   <div class="callout" style="margin-top:16px;">
+     <strong>Keep this handy:</strong> the <span class="inline-link" onclick="noteGoTo('notecheatsheet')" role="link" tabindex="0">quick reference cheat sheet</span>, <span class="inline-link" onclick="noteGoTo('notemistakes')" role="link" tabindex="0">common mistakes recap</span>, and <span class="inline-link" onclick="noteGoTo('notefaq')" role="link" tabindex="0">FAQ</span> are built to be reopened anytime you're actually writing a note — not just read once during training.
+   </div>
+   <div class="callout" style="margin-top:16px;">
+     <strong>Last stop:</strong> <span class="inline-link" onclick="openModule('view-conclusion')" role="link" tabindex="0">Bringing It Together</span> — Danielle's entire thread, from the first thing you learned about her cravings to the note you just wrote, all in one place.
+   </div>`,
+];
+const NOTE_ASSEMBLY_FINAL = `<span style="font-size:13px; color:var(--ink-soft);">You've reached the end of the Individual Notes module.</span>`;
+
+const NOTE_ASSEMBLY_QUIZ_ITEMS = [
+  {
+    q: "Why does Objective 1A of Goal A get marked complete in the Response box, while Objective 1B of Goal B only appears as something to work on next?",
+    options: [
+      "It's arbitrary — either could have been marked either way",
+      "The free text actually supports completion for 1A (a technique was used, with real evidence), while 1B was only just assigned and hasn't been attempted yet",
+      "Only one objective is allowed to be marked complete per note",
+    ],
+    correctIdx: 1,
+    explain: "A completion claim needs real evidence behind it. 1A had it this session; 1B is brand new and couldn't possibly be complete yet."
+  },
+];
+
+const NOTE_CHECK_ITEMS = {
+  describe: [{
+    q: "The auto-generated first bullet already says an objective was reviewed. Why does the free text still matter?",
+    options: [
+      "It doesn't — the auto-generated line is sufficient on its own",
+      "The auto-generated line only proves the right objective was selected; the free text is the only place that proves something real actually happened toward it",
+      "Free text is only required for Crisis Intervention notes",
+    ],
+    correctIdx: 1,
+    explain: "The reference line is structural, not evidentiary. Without your free text, the note would say an objective was worked on without ever showing what that actually looked like."
+  }],
+  response: [{
+    q: "Why does no completion sentence appear for an objective that was reviewed but not checked \"Completed\"?",
+    options: [
+      "It's a bug — every reviewed objective should show a completion sentence",
+      "The tool only generates a completion claim when you've actually marked it complete, so the note doesn't overstate progress",
+      "Completion sentences only apply to Crisis Intervention notes",
+    ],
+    correctIdx: 1,
+    explain: "This is exactly the safeguard that keeps a note honest — it can't accidentally claim an objective is done just because it was mentioned."
+  }],
+  noteassembly: []
+};
+
+function noteRevealModel(id){
+  document.getElementById(id + 'Reveal').classList.add('show');
+  if(NOTE_CHECK_ITEMS[id] && NOTE_CHECK_ITEMS[id].length){
+    buildQuiz(id + 'CheckCard', NOTE_CHECK_ITEMS[id], ()=>noteMarkComplete(id === 'describe' ? 'notedescribe' : id === 'response' ? 'noteresponse' : id));
+  }
+  if(id === 'noteassembly'){
+    buildQuiz('noteAssemblyQuizCard', NOTE_ASSEMBLY_QUIZ_ITEMS, ()=>noteMarkComplete('noteassembly'));
+  }
+}
+
+/* =====================================================
+   CONCLUSION MODULE CONTENT
+   ===================================================== */
+
+/* ---- Danielle's thread, start to finish ---- */
+const CONCL_ARC_BEATS = [
+  `<p class="lede">You've now been through the ASAM module, the ITP module, and the Individual Notes module. Before calling this training done, let's see the whole thing in one place — not as three skills you picked up in three separate modules, but as one continuous, true story about one person.</p>`,
+
+  `<div class="card">
+     <div class="step-header"><span class="step-number">1</span><span class="step-title">What the ASAM identified</span></div>
+     <div class="model-answer">Client reports nightly cravings, currently managed only through peer support available in the residential milieu. When asked directly to identify a coping response to a craving occurring without staff or peers present, client was unable to name one... Client's current craving management is structurally dependent on this level of care and has not yet transferred to an independent coping plan.</div>
+     <p style="font-size:13px; color:var(--ink-soft); margin-bottom:0;">Dimension 5, Continued Stay — the problem: no independent coping plan, one identified risky contact, no alternative supports named.</p>
+   </div>`,
+
+  `<div class="card">
+     <div class="step-header"><span class="step-number">2</span><span class="step-title">What the ITP planned to do about it</span></div>
+     <div class="model-answer">Section C — Dimensions 5 &amp; 6
+Goal A — Relapse Proneness
+
+Client stated, "I don't want to keep calling him just because I don't have anyone else."
+
+Goal A: Client will develop coping skills to use during cravings occurring outside of program structure, reducing reliance on her previously identified using contact. (ESTABLISHED 7/24)
+
+Objective 1A: Client will identify two people, other than her previously identified using contact, that she can call when experiencing cravings. (START DATE 7/24) (TARGET DATE 8/24)
+
+Intervention 1A: This clinician will use motivational interviewing to help client identify and commit to alternative support contacts.</div>
+     <p style="font-size:13px; color:var(--ink-soft); margin-bottom:0;">Built from that exact finding, with her own words attached — nothing here could belong to any other client.</p>
+   </div>`,
+
+  `<div class="card">
+     <div class="step-header"><span class="step-number">3</span><span class="step-title">What the Individual Note proved actually happened</span></div>
+     <div class="card-label" style="margin-top:6px; color:var(--green-700);">Describe Therapeutic Interventions Provided</div>
+     <div class="model-answer">- This clinician met with client to review Objective 1A of Goal A.
+
+- Client was asked to identify support contacts other than her previously identified using contact.</div>
+     <div class="card-label" style="margin-top:14px; color:var(--green-700);">Response — Intervention/Progress/Clinical Judgement</div>
+     <div class="model-answer">- Client identified her sister and a former sponsor as two alternative contacts she is willing to reach out to during cravings.
+
+- Client rated her confidence in following through as 6/10.
+
+- No risk or safety concerns identified this session.</div>
+     <p style="font-size:13px; color:var(--ink-soft); margin-bottom:0;">Traceable by name — "Objective 1A of Goal A" — straight back to Step 2, which traces straight back to Step 1.</p>
+   </div>`,
+
+  `<h2>Same person, same truth, three shapes</h2>
+   <p>Notice what didn't change across all three documents: the underlying clinical reality. What changed is the <em>job</em> each document does with that reality. The ASAM proved the problem was real and serious enough to justify this level of care. The ITP turned that proof into a direction and a checkable step. The Note proved the step was actually being worked, with real evidence — a confidence rating, two named people, an honest "not yet completed."</p>
+   <div class="callout">If a reviewer picked up only one of these three documents, they'd have an incomplete, arguable picture. Together, they can trace an unbroken line from "here's what's wrong" to "here's the plan" to "here's proof it's working" — which is the entire reason any of this documentation exists.</div>`,
+
+  `<h2>Pulling it all together</h2>
+   <div class="quiz-card" id="conclArcQuizCard"></div>`,
+];
+const CONCL_ARC_FINAL = `<button class="btn" onclick="conclusionMarkComplete('concl-arc'); conclGoTo('concl-monday')">Next: What changes now →</button>`;
+
+const CONCL_ARC_QUIZ_ITEMS = [
+  {
+    q: "A reviewer wants to confirm Danielle still needs residential treatment for relapse risk specifically. Which single document gives them the clearest justification for that, on its own?",
+    options: ["The Individual Note", "The ITP", "The ASAM"],
+    correctIdx: 2,
+    explain: "The ASAM is where the severity and clinical justification for the level of care actually lives. The ITP and Note matter, but they only make sense once the ASAM has established there's a real problem to plan around."
+  },
+  {
+    q: "A new counselor picks up Danielle's chart mid-treatment and wants to know: is this relapse-prevention plan actually working, or just written down? Which document answers that?",
+    options: ["The ASAM", "The ITP", "The Individual Note"],
+    correctIdx: 2,
+    explain: "The ASAM and ITP describe the problem and the plan. Only the Individual Note documents whether real progress is actually happening, session by session."
+  },
+  {
+    q: "Danielle's ITP goal is in Section C. Her Individual Note references \"Objective 1A of Goal A.\" What has to be true for that reference to be unambiguous?",
+    options: [
+      "Nothing — Goal A always means the same thing everywhere",
+      "The reader has to already know this note is about Section C's Goal A, since the note itself never names the section",
+      "The note is incomplete without a section label and can't be traced at all",
+    ],
+    correctIdx: 1,
+    explain: "This is the real gotcha from the Notes module: the reference format only carries the letter, not the section. Tracing it correctly depends on staff keeping that context straight themselves."
+  },
+  {
+    q: "Which of these is the accurate way to describe what changed, and what didn't, across all three documents about Danielle's relapse risk?",
+    options: [
+      "The underlying clinical truth changed each time, to fit each document's format",
+      "The underlying clinical truth stayed the same; only the job each document does with it changed",
+      "Nothing changed at all — the three documents are just copies of each other",
+    ],
+    correctIdx: 1,
+    explain: "This is the core idea of the whole training. One real clinical picture, told three times, doing three different jobs — identify, plan, prove — not three unrelated stories."
+  },
+];
+
+function renderConclArcQuiz(){
+  buildQuiz('conclArcQuizCard', CONCL_ARC_QUIZ_ITEMS, ()=>conclusionMarkComplete('concl-arc'));
+}
+
+/* ---- What actually changes now ---- */
+const CONCL_MONDAY_BEATS = [
+  `<p class="lede">Training ends here, but your next real session, ASAM, or note doesn't wait for a training module. Here's the short version of everything above, organized around the actual moment you'll be sitting down to write.</p>`,
+
+  `<h3>Before you write an ASAM narrative...</h3>
+   <ul class="checklist">
+     <li>Ask: could this sentence describe any client, on any day? If yes, add the number, date, quote, or behavior that makes it theirs.</li>
+     <li>Write in plain language first. Chase accuracy, not clinical-sounding vocabulary.</li>
+     <li>You're not expected to already know the answer — you're licensed to exercise judgment. A defensible 2 beats a guessed 3.</li>
+   </ul>`,
+
+  `<h3>Before you write an ITP goal...</h3>
+   <ul class="checklist">
+     <li>Ask: can I point to the exact ASAM sentence this goal answers? If not, it doesn't belong yet.</li>
+     <li>Whether you start from the library or write it from scratch, edit it until it's true of this specific client — and don't submit without her own words attached.</li>
+     <li>Keep the section and the letter together in your head. "Goal A" alone is not a complete reference.</li>
+   </ul>`,
+
+  `<h3>Before you write an Individual Note...</h3>
+   <ul class="checklist">
+     <li>Ask what's progress toward the objective, not what was discussed. A progress note isn't a therapy transcript — oversharing can end up subpoenaed and used against the client.</li>
+     <li>Reference the exact objective, by goal letter and number — and remember you're the one who has to keep track of which section it's in.</li>
+     <li>Let your free text carry the actual evidence. The auto-generated lines only prove you picked the right objective, not that anything real happened toward it.</li>
+     <li>Never let the risk &amp; safety line default by accident. If something concerning happened, "Concerns present" and real detail are the only way that shows up.</li>
+   </ul>`,
+
+  `<h2>If this has felt mechanical until today</h2>
+   <p>If you've been writing ASAMs, ITPs, and Notes for a while already, the goal of this training was never to teach you new forms. It was to make the connections between the ones you already know visible — so that six-dimension narrative, that goal-and-objective plan, and that session note stop feeling like three separate chores you get through, and start feeling like what they actually are: the same clinical judgment about the same person, written down three times, in three shapes that hold each other up.</p>
+   <div class="callout">Once that clicks, the extra specificity this training keeps asking for stops feeling like busywork. It's not decoration on top of the real clinical work — it <em>is</em> the clinical work, made visible enough that someone else can trust it.</div>`,
+
+  `<h2>One more time, the whole point</h2>
+   <p>You didn't get into this work to fill out forms. You got into it to help people get somewhere better. Every specific sentence, every edited goal, every objective reference in a note — all of it exists for one reason: it's what lets your client stay in the room with you long enough for the actual work to matter. We can't help the client if we don't document. Now you know exactly how the documenting works.</p>
+   <span class="badge-done" id="conclusionFinalBadge" style="display:none;">You've completed DocTrain — nice work</span>`,
+
+  `<div class="callout" style="margin-top:4px;"><strong>Keep the reference material close:</strong> every module's cheat sheet, mistakes recap, and FAQ are built to be reopened anytime you're actually writing — not just read once during training. And when you're ready to write for real: <a href="https://bretzfelder.com/docassist" target="_blank" rel="noopener">bretzfelder.com/docassist</a>.</div>
+   <div style="margin-top:18px;">
+     <button class="btn" onclick="conclusionMarkComplete('concl-monday'); goHome()">← Back to DocTrain home</button>
+   </div>`,
+];
+const CONCL_MONDAY_FINAL = `<span style="font-size:13px; color:var(--ink-soft);">You've reached the end of DocTrain. Thank you for taking this seriously.</span>`;
+
+function conclMondayAfterRender(){
+  const st = BEAT_REGISTRY['conclMondayBeats'];
+  if(st && st.index === st.beats.length - 1){
+    conclusionMarkComplete('concl-monday');
+  }
+}
+
 /* ---- Init ---- */
 registerBeats('welcomeBeats', WELCOME_BEATS, WELCOME_FINAL);
 registerBeats('threadBeats', THREAD_BEATS, THREAD_FINAL);
@@ -2138,6 +4046,32 @@ registerBeats('ratingBeats', RATING_BEATS, RATING_FINAL, renderRatingExamples, (
 registerBeats('criteriaBeats', CRITERIA_BEATS, CRITERIA_FINAL, ()=>{ renderCriteria(); renderASAMFinalQuiz(); }, ()=>!!asamProgress['criteria']);
 registerBeats('assemblyBeats', ASSEMBLY_BEATS, ASSEMBLY_FINAL, renderAssemblyRatings, ()=>!!asamProgress['assembly']);
 renderASAMNav();
+
+registerBeats('itpWhyBeats', ITP_WHY_BEATS, ITP_WHY_FINAL);
+registerBeats('itpAnatomyBeats', ITP_ANATOMY_BEATS, ITP_ANATOMY_FINAL);
+registerBeats('itpAnatomyExampleBeats', ITP_ANATOMY_EXAMPLE_BEATS, ITP_ANATOMY_EXAMPLE_FINAL, null, ()=>!!itpProgress['itpanatomyexample']);
+registerBeats('itpFromFindingBeats', ITP_FROMFINDING_BEATS, ITP_FROMFINDING_FINAL, null, ()=>!!itpProgress['itpfromfinding']);
+registerBeats('itpObjectivesBeats', ITP_OBJECTIVES_BEATS, ITP_OBJECTIVES_FINAL, null, ()=>!!itpProgress['itpobjectives']);
+registerBeats('itpInterventionsBeats', ITP_INTERVENTIONS_BEATS, ITP_INTERVENTIONS_FINAL, null, ()=>!!itpProgress['itpinterventions']);
+registerBeats('itpIndividualizedBeats', ITP_INDIVIDUALIZED_BEATS, ITP_INDIVIDUALIZED_FINAL, renderItpClassify, ()=>!!itpProgress['itpindividualized']);
+registerBeats('itpGoalsBeats', ITP_GOALS_BEATS, ITP_GOALS_FINAL);
+registerBeats('itpReviewsBeats', ITP_REVIEWS_BEATS, ITP_REVIEWS_FINAL, renderItpReviewsQuiz, ()=>!!itpProgress['itpreviews']);
+registerBeats('itpAssemblyBeats', ITP_ASSEMBLY_BEATS, ITP_ASSEMBLY_FINAL, null, ()=>!!itpProgress['itpassembly']);
+renderITPNav();
+
+registerBeats('noteWhyBeats', NOTE_WHY_BEATS, NOTE_WHY_FINAL);
+registerBeats('noteAnatomyBeats', NOTE_ANATOMY_BEATS, NOTE_ANATOMY_FINAL);
+registerBeats('noteTypesBeats', NOTE_TYPES_BEATS, NOTE_TYPES_FINAL, renderNoteTypesQuiz, ()=>!!noteProgress['notetypes']);
+registerBeats('noteDescribeBeats', NOTE_DESCRIBE_BEATS, NOTE_DESCRIBE_FINAL, null, ()=>!!noteProgress['notedescribe']);
+registerBeats('noteResponseBeats', NOTE_RESPONSE_BEATS, NOTE_RESPONSE_FINAL, null, ()=>!!noteProgress['noteresponse']);
+registerBeats('noteRiskBeats', NOTE_RISK_BEATS, NOTE_RISK_FINAL, renderRiskQuiz, ()=>!!noteProgress['noterisk']);
+registerBeats('noteAssemblyBeats', NOTE_ASSEMBLY_BEATS, NOTE_ASSEMBLY_FINAL, null, ()=>!!noteProgress['noteassembly']);
+renderNoteNav();
+
+registerBeats('conclArcBeats', CONCL_ARC_BEATS, CONCL_ARC_FINAL, renderConclArcQuiz, ()=>!!conclusionProgress['concl-arc']);
+registerBeats('conclMondayBeats', CONCL_MONDAY_BEATS, CONCL_MONDAY_FINAL, conclMondayAfterRender);
+renderConclusionNav();
+
 showView('view-home');
 </script>
 </body>
