@@ -1400,7 +1400,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 
 .sn-obj-row {
   display: grid;
-  grid-template-columns: 1fr 1fr auto;
+  grid-template-columns: 0.85fr 1fr 1fr auto;
   gap: 8px;
   align-items: end;
 }
@@ -11035,8 +11035,8 @@ function fillSampleClient() {
   document.getElementById('sn-type').value = 'itp_review';
   snState.sessionType = 'itp_review';
   snUpdateSessionType();
-  snState.reviewed = [{ goalLetter: 'D', objNum: '3', completed: true }];
-  snState.next = [{ goalLetter: 'D', objNum: '4' }];
+  snState.reviewed = [{ section: 'B', goalLetter: 'D', objNum: '3', completed: true }];
+  snState.next = [{ section: 'B', goalLetter: 'D', objNum: '4' }];
   snRenderReviewed();
   snRenderNext();
   snState.interventions = ['Motivational Interviewing','CBT — Cognitive Restructuring','Relapse Prevention Planning'];
@@ -11359,8 +11359,8 @@ function fillSampleClient() {
 const snState = {
   clientName:'', date: new Date().toISOString().split('T')[0],
   sessionType:'itp_review',
-  reviewed: [{ goalLetter:'', objNum:'', completed:false }],
-  next: [{ goalLetter:'', objNum:'' }],
+  reviewed: [{ section:'', goalLetter:'', objNum:'', completed:false }],
+  next: [{ section:'', goalLetter:'', objNum:'' }],
   interventions:[],
   describe:'', progress:'',
   siDenied:false, hiDenied:false, safetyPlan:false,
@@ -11494,6 +11494,20 @@ function snRenderReviewed() {
     const row = document.createElement('div');
     row.className = 'sn-obj-row';
 
+    const secWrap = document.createElement('div');
+    secWrap.innerHTML = '<label class="sn-label">Section</label>';
+    const secSelect = document.createElement('select');
+    secSelect.className = 'sn-select';
+    secSelect.innerHTML = `
+      <option value="">—</option>
+      <option value="A">A</option>
+      <option value="B">B</option>
+      <option value="C">C</option>
+    `;
+    secSelect.value = o.section || '';
+    secSelect.onchange = () => { snState.reviewed[idx].section = secSelect.value; };
+    secWrap.appendChild(secSelect);
+
     const glWrap = document.createElement('div');
     glWrap.innerHTML = '<label class="sn-label">Goal Letter</label>';
     const glInput = document.createElement('input');
@@ -11534,6 +11548,7 @@ function snRenderReviewed() {
       ctrlWrap.appendChild(removeBtn);
     }
 
+    row.appendChild(secWrap);
     row.appendChild(glWrap);
     row.appendChild(obWrap);
     row.appendChild(ctrlWrap);
@@ -11542,7 +11557,7 @@ function snRenderReviewed() {
 }
 
 function snAddReviewed() {
-  snState.reviewed.push({ goalLetter:'', objNum:'', completed:false });
+  snState.reviewed.push({ section:'', goalLetter:'', objNum:'', completed:false });
   snRenderReviewed();
 }
 
@@ -11558,6 +11573,20 @@ function snRenderNext() {
   snState.next.forEach((o, idx) => {
     const row = document.createElement('div');
     row.className = 'sn-obj-row';
+
+    const secWrap = document.createElement('div');
+    secWrap.innerHTML = '<label class="sn-label">Section</label>';
+    const secSelect = document.createElement('select');
+    secSelect.className = 'sn-select';
+    secSelect.innerHTML = `
+      <option value="">—</option>
+      <option value="A">A</option>
+      <option value="B">B</option>
+      <option value="C">C</option>
+    `;
+    secSelect.value = o.section || '';
+    secSelect.onchange = () => { snState.next[idx].section = secSelect.value; };
+    secWrap.appendChild(secSelect);
 
     const glWrap = document.createElement('div');
     glWrap.innerHTML = '<label class="sn-label">Goal Letter</label>';
@@ -11589,6 +11618,7 @@ function snRenderNext() {
       ctrlWrap.appendChild(removeBtn);
     }
 
+    row.appendChild(secWrap);
     row.appendChild(glWrap);
     row.appendChild(obWrap);
     row.appendChild(ctrlWrap);
@@ -11597,7 +11627,7 @@ function snRenderNext() {
 }
 
 function snAddNext() {
-  snState.next.push({ goalLetter:'', objNum:'' });
+  snState.next.push({ section:'', goalLetter:'', objNum:'' });
   snRenderNext();
 }
 
@@ -11610,7 +11640,8 @@ function snRemoveNext(idx) {
 function snFmtObjRef(o) {
   const gl = o.goalLetter || '[Goal]';
   const ob = o.objNum || '[#]';
-  return `${ob}${gl} of Goal ${gl}`;
+  const sec = o.section || '[Section]';
+  return `${ob}${gl} of Goal ${gl} of Section ${sec}`;
 }
 
 function snJoinList(items) {
@@ -11625,10 +11656,10 @@ function snFormatDescribe() {
   const type = snState.sessionType;
 
   const reviewedRefs = snState.reviewed
-    .filter(o => o.goalLetter && o.objNum)
+    .filter(o => o.goalLetter && o.objNum && o.section)
     .map(snFmtObjRef);
   const nextRefs = snState.next
-    .filter(o => o.goalLetter && o.objNum)
+    .filter(o => o.goalLetter && o.objNum && o.section)
     .map(snFmtObjRef);
   const reviewedWord = reviewedRefs.length > 1 ? 'objectives' : 'objective';
   const nextWord = nextRefs.length > 1 ? 'objectives' : 'objective';
@@ -11675,10 +11706,10 @@ function snFormatResponse() {
   const type = snState.sessionType;
 
   const completedRefs = snState.reviewed
-    .filter(o => o.completed && o.goalLetter && o.objNum)
+    .filter(o => o.completed && o.goalLetter && o.objNum && o.section)
     .map(snFmtObjRef);
   const nextRefs = snState.next
-    .filter(o => o.goalLetter && o.objNum)
+    .filter(o => o.goalLetter && o.objNum && o.section)
     .map(snFmtObjRef);
   const completedWord = completedRefs.length > 1 ? 'objectives' : 'objective';
   const nextWord = nextRefs.length > 1 ? 'objectives' : 'objective';
@@ -11742,8 +11773,8 @@ function snClear() {
   Object.assign(snState, {
     clientName:'', clinician:'', date: new Date().toISOString().split('T')[0],
     sessionType:'itp_review',
-    reviewed: [{ goalLetter:'', objNum:'', completed:false }],
-    next: [{ goalLetter:'', objNum:'' }],
+    reviewed: [{ section:'', goalLetter:'', objNum:'', completed:false }],
+    next: [{ section:'', goalLetter:'', objNum:'' }],
     interventions:[],
     describe:'', progress:'',
     siDenied:false, hiDenied:false, safetyPlan:false,
