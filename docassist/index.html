@@ -4059,7 +4059,19 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 }
 .pc-field { display: flex; flex-direction: column; gap: 4px; }
 .pc-field label { font-size: 10px; font-weight: 600; color: var(--text-secondary); }
-.pc-help { cursor: help; color: var(--text-secondary); opacity: 0.7; font-weight: 400; }
+.pc-help {
+  cursor: pointer;
+  color: var(--text-secondary);
+  opacity: 0.7;
+  font-weight: 400;
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: inherit;
+  font-family: inherit;
+  line-height: 1;
+  vertical-align: text-bottom;
+}
 .pc-help:hover { opacity: 1; color: var(--accent); }
 .pc-cap-note { font-weight: 400; text-transform: none; letter-spacing: normal; }
 .pc-badge {
@@ -5205,6 +5217,30 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <div style="display:flex;gap:10px;justify-content:flex-end">
       <button class="btn btn-ghost" onclick="hideModal('pcClearModal')">Cancel</button>
       <button class="btn" style="background:#c0392b;color:white" onclick="pcClearAll()">Clear</button>
+    </div>
+  </div>
+</div>
+
+<div id="pcNewPeriodModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;align-items:center;justify-content:center">
+  <div style="background:white;border-radius:10px;padding:28px 32px;max-width:380px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.2)">
+    <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:10px">Start a new period for <span id="pcNewPeriodName">this counselor</span>?</div>
+    <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;margin-bottom:24px">This clears the entered hours so you can enter the next period's numbers. Name and program type stay the same. This cannot be undone.</div>
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button class="btn btn-ghost" onclick="hideModal('pcNewPeriodModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="pcConfirmNewPeriod()">Start New Period</button>
+    </div>
+  </div>
+</div>
+
+<div id="pcNoShowHelpModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;align-items:center;justify-content:center">
+  <div style="background:white;border-radius:10px;padding:28px 32px;max-width:420px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.2)">
+    <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:10px">What counts as "No Show" Time</div>
+    <div style="font-size:13px;color:var(--text-secondary);line-height:1.7;margin-bottom:24px">
+      Filter the "Outcome" to "No Show" only in the progress note search box, then total the scheduled time for those services.<br><br>
+      <strong style="color:var(--text)">Do not include no-show groups.</strong> Only count no-show time from other services — individual sessions and anything outside group. No-show groups are excluded from this total entirely.
+    </div>
+    <div style="display:flex;justify-content:flex-end">
+      <button class="btn btn-primary" onclick="hideModal('pcNoShowHelpModal')">Got it</button>
     </div>
   </div>
 </div>
@@ -12886,7 +12922,7 @@ function pcFieldsHTML(c) {
         <div class="pc-field"><label>${code2Label}</label><input class="gn-input" type="number" step="any" value="${c.code2}" oninput="pcUpdate(${c.id},'code2',this.value)"></div>
         <div class="pc-field"><label>Time Spent in 401</label><input class="gn-input" type="number" step="any" value="${c.time1}" oninput="pcUpdate(${c.id},'time1',this.value)"></div>
         <div class="pc-field"><label>Time Spent in 61RSG</label><input class="gn-input" type="number" step="any" value="${c.time2}" oninput="pcUpdate(${c.id},'time2',this.value)"></div>
-        <div class="pc-field"><label>"No Show" Time <span class="pc-help" title="In Remarkable, filter the client's service log to Status = No Show only, then total the scheduled time for those services.">ⓘ</span></label><input class="gn-input" type="number" step="any" value="${c.noShow}" oninput="pcUpdate(${c.id},'noShow',this.value)"></div>
+        <div class="pc-field"><label>"No Show" Time <button type="button" class="pc-help" onclick="showModal('pcNoShowHelpModal')">ⓘ</button></label><input class="gn-input" type="number" step="any" value="${c.noShow}" oninput="pcUpdate(${c.id},'noShow',this.value)"></div>
         <div class="pc-field"><label>PTO</label><input class="gn-input" type="number" step="any" value="${c.pto}" oninput="pcUpdate(${c.id},'pto',this.value)"></div>
         ${c.period === 'monthly' ? `
         <div class="pc-field"><label>Workdays in Month</label><input class="gn-input" type="number" step="any" value="${c.workdaysMonth}" oninput="pcUpdate(${c.id},'workdaysMonth',this.value)"></div>
@@ -12903,7 +12939,7 @@ function pcFieldsHTML(c) {
         <div class="pc-field"><label>403 Billing Hours</label><input class="gn-input" type="number" step="any" value="${c.c403}" oninput="pcUpdate(${c.id},'c403',this.value)"></div>
         <div class="pc-field"><label>404 Billing Hours</label><input class="gn-input" type="number" step="any" value="${c.c404}" oninput="pcUpdate(${c.id},'c404',this.value)"></div>
         <div class="pc-field"><label>404T Billing Hours</label><input class="gn-input" type="number" step="any" value="${c.c404t}" oninput="pcUpdate(${c.id},'c404t',this.value)"></div>
-        <div class="pc-field"><label>"No Show" Time <span class="pc-help" title="In Remarkable, filter the client's service log to Status = No Show only, then total the scheduled time for those services.">ⓘ</span></label><input class="gn-input" type="number" step="any" value="${c.noShow}" oninput="pcUpdate(${c.id},'noShow',this.value)"></div>
+        <div class="pc-field"><label>"No Show" Time <button type="button" class="pc-help" onclick="showModal('pcNoShowHelpModal')">ⓘ</button></label><input class="gn-input" type="number" step="any" value="${c.noShow}" oninput="pcUpdate(${c.id},'noShow',this.value)"></div>
         <div class="pc-field"><label>Time Spent in Group</label><input class="gn-input" type="number" step="any" value="${c.timeGroup}" oninput="pcUpdate(${c.id},'timeGroup',this.value)"></div>
         <div class="pc-field"><label>Hours Worked <span class="pc-cap-note">(capped at 40)</span></label><input class="gn-input" type="number" step="any" value="${c.hoursWorked}" oninput="pcUpdate(${c.id},'hoursWorked',this.value)"></div>
       </div>`;
@@ -12948,7 +12984,10 @@ function pcCardHTML(c) {
         </div>
         ${pcFieldsHTML(c)}
         ${pcResultsHTML(c, r)}
-        <button class="btn btn-ghost pc-copy-btn" onclick="pcCopyCard(${c.id})">Copy Percentage</button>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-ghost pc-copy-btn" onclick="pcCopyCard(${c.id})">Copy Percentage</button>
+          <button class="btn btn-ghost pc-copy-btn" onclick="pcRequestNewPeriod(${c.id})">New Period</button>
+        </div>
       </div>
     </div>`;
 }
@@ -12978,6 +13017,29 @@ function pcClearAll() {
   hideModal('pcClearModal');
   pcCounselors = [pcNewCounselor()];
   try { localStorage.removeItem(PC_STORAGE_KEY); } catch (e) {}
+  pcRenderAll();
+}
+
+let pcPendingNewPeriodId = null;
+
+function pcRequestNewPeriod(id) {
+  const c = pcCounselors.find(c => c.id === id);
+  if (!c) return;
+  pcPendingNewPeriodId = id;
+  const nameEl = document.getElementById('pcNewPeriodName');
+  if (nameEl) nameEl.textContent = c.name || 'this counselor';
+  showModal('pcNewPeriodModal');
+}
+
+function pcConfirmNewPeriod() {
+  hideModal('pcNewPeriodModal');
+  const id = pcPendingNewPeriodId;
+  pcPendingNewPeriodId = null;
+  const c = pcCounselors.find(c => c.id === id);
+  if (!c) return;
+  const clearFields = ['totalHrs', 'code1', 'code2', 'time1', 'time2', 'pto', 'workdaysMonth', 'workdaysLeft', 'noShow', 'c400', 'c400t', 'c402', 'c402t', 'c403', 'c404', 'c404t', 'timeGroup', 'hoursWorked'];
+  clearFields.forEach(f => c[f] = '');
+  pcSave();
   pcRenderAll();
 }
 
