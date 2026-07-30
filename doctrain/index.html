@@ -199,7 +199,7 @@
   }
   .hero-col.deny .hero-tag{color:var(--red);}
   .hero-col.survive .hero-tag{color:var(--green-700);}
-  .hero-col p{font-family:'IBM Plex Mono', monospace; font-size:13px; color:var(--ink); margin:0;}
+  .hero-col p{font-family:'IBM Plex Mono', monospace; font-size:13px; color:var(--ink); margin:0; white-space:pre-wrap;}
   .hero-note{font-size:12.5px; color:var(--ink-soft); margin-top:10px;}
 
   textarea{
@@ -268,6 +268,18 @@
     background:var(--white); border:1px solid var(--border); border-radius:6px;
     padding:6px 10px; margin-bottom:10px; display:inline-block;
   }
+
+  .scaffold-box{
+    background:var(--amber-bg);
+    border:1px solid var(--amber-border);
+    border-radius:8px;
+    padding:14px 16px;
+    margin-bottom:14px;
+    font-size:13.5px;
+  }
+  .scaffold-label{font-weight:700; color:#6b4f0a; font-size:13px; margin-bottom:6px;}
+  .scaffold-box ol{margin:6px 0 0 18px; padding:0;}
+  .scaffold-box ol li{margin-bottom:5px; color:var(--ink); line-height:1.4;}
 
   .reveal{
     display:none;
@@ -360,16 +372,18 @@
   @media print{
     @page{ margin:0.35in; }
     body *{ visibility:hidden; }
-    #cheatSheetPrintArea, #cheatSheetPrintArea *{ visibility:visible; }
-    #cheatSheetPrintArea{ position:absolute; left:0; top:0; width:100%; padding:0; margin:0; }
-    #cheatSheetPrintArea h2{ font-size:13.5px; margin:10px 0 4px; page-break-after:avoid; }
-    #cheatSheetPrintArea h2:first-of-type{ margin-top:6px; }
-    #cheatSheetPrintArea .callout{ font-size:10.5px; line-height:1.3; padding:8px 10px; margin:0 0 6px; }
-    #cheatSheetPrintArea .cheat-grid{ gap:4px; margin:4px 0; }
-    #cheatSheetPrintArea .cheat-item{ font-size:9.5px; line-height:1.3; padding:5px 8px; break-inside:avoid; }
-    #cheatSheetPrintArea .checklist{ margin-top:4px; }
-    #cheatSheetPrintArea .checklist li{ font-size:9.5px; line-height:1.3; padding:2px 0 2px 18px; break-inside:avoid; }
-    #cheatSheetPrintArea .checklist li::before{ top:2px; }
+    #cheatSheetPrintArea, #cheatSheetPrintArea *,
+    #itpCheatSheetPrintArea, #itpCheatSheetPrintArea *,
+    #noteCheatSheetPrintArea, #noteCheatSheetPrintArea *{ visibility:visible; }
+    #cheatSheetPrintArea, #itpCheatSheetPrintArea, #noteCheatSheetPrintArea{ position:absolute; left:0; top:0; width:100%; padding:0; margin:0; }
+    #cheatSheetPrintArea h2, #itpCheatSheetPrintArea h2, #noteCheatSheetPrintArea h2{ font-size:13.5px; margin:10px 0 4px; page-break-after:avoid; }
+    #cheatSheetPrintArea h2:first-of-type, #itpCheatSheetPrintArea h2:first-of-type, #noteCheatSheetPrintArea h2:first-of-type{ margin-top:6px; }
+    #cheatSheetPrintArea .callout, #itpCheatSheetPrintArea .callout, #noteCheatSheetPrintArea .callout{ font-size:10.5px; line-height:1.3; padding:8px 10px; margin:0 0 6px; }
+    #cheatSheetPrintArea .cheat-grid, #itpCheatSheetPrintArea .cheat-grid, #noteCheatSheetPrintArea .cheat-grid{ gap:4px; margin:4px 0; }
+    #cheatSheetPrintArea .cheat-item, #itpCheatSheetPrintArea .cheat-item, #noteCheatSheetPrintArea .cheat-item{ font-size:9.5px; line-height:1.3; padding:5px 8px; break-inside:avoid; }
+    #cheatSheetPrintArea .checklist, #itpCheatSheetPrintArea .checklist, #noteCheatSheetPrintArea .checklist{ margin-top:4px; }
+    #cheatSheetPrintArea .checklist li, #itpCheatSheetPrintArea .checklist li, #noteCheatSheetPrintArea .checklist li{ font-size:9.5px; line-height:1.3; padding:2px 0 2px 18px; break-inside:avoid; }
+    #cheatSheetPrintArea .checklist li::before, #itpCheatSheetPrintArea .checklist li::before, #noteCheatSheetPrintArea .checklist li::before{ top:2px; }
   }
 
   /* Glossary terms */
@@ -442,8 +456,9 @@
   }
 
   .badge-done{
-    display:inline-block; font-size:11.5px; font-weight:600; color:var(--green-700);
-    background:var(--green-100); padding:3px 10px; border-radius:12px; margin-left:10px;
+    display:inline-block; font-size:14.5px; font-weight:700; color:var(--white);
+    background:var(--green-600); padding:9px 18px; border-radius:999px; margin:6px 10px 6px 0;
+    box-shadow:0 3px 10px rgba(42,89,64,.28);
   }
 
   /* Golden Thread diagram */
@@ -1481,8 +1496,8 @@
 
         <h2 style="margin-top:28px;">The reference format</h2>
         <ul class="checklist">
-          <li>Objective reference = Goal Letter + Objective Number: "1A of Goal A" — but the note never states which <em>section</em> that goal belongs to.</li>
-          <li>Since letters reset per section, you have to keep straight which section's Goal A you mean — the tool won't catch a mismatch for you.</li>
+          <li>Objective reference = Section + Goal Letter + Objective Number: "Objective 1A of Goal A of Section C" — the section is now included, so a bare "Goal A" no longer has to be disambiguated from memory.</li>
+          <li>It's still worth a glance that the section named actually matches where that goal lives, especially with similarly-named goals across sections.</li>
           <li>"Objective(s) Reviewed" rows can be marked Completed; "Objective(s) Assigned Next" rows cannot — they haven't happened yet.</li>
         </ul>
 
@@ -1521,8 +1536,8 @@
         </div>
         <div class="mistake-card">
           <div class="mistake-dim">Reference format</div>
-          <div class="mistake-title">Forgetting which section a goal letter belongs to</div>
-          <div class="mistake-body">The note only says "Goal A" — it's on you to know whether that's Section A's Goal A or Section C's Goal A.</div>
+          <div class="mistake-title">Not double-checking the section on similarly-named goals</div>
+          <div class="mistake-body">The note now includes the section automatically ("Objective 1A of Goal A of Section C"), which fixes the old ambiguity — but if a client has goals with the same letter in more than one section, it's still worth a glance to confirm the right one generated.</div>
         </div>
         <div class="mistake-card">
           <div class="mistake-dim">Session types</div>
@@ -1837,21 +1852,21 @@ function setupBeatObserver(containerId){
   const container = document.getElementById(containerId);
   if(!state || !container) return;
   if(state.observer) state.observer.disconnect();
-  const seen = new WeakSet();
   const observer = new IntersectionObserver((entries)=>{
     entries.forEach(entry=>{
-      if(!seen.has(entry.target)){
-        // Ignore the observer's initial "current state" report so a beat
-        // grays out immediately on advance, even if it's still on-screen.
-        // It only redarkens once the user causes a real, later change
-        // (scrolling it out of view, then back into view).
-        seen.add(entry.target);
-        return;
-      }
       entry.target.classList.toggle('in-view', entry.isIntersecting);
     });
   }, {threshold:.4});
-  container.querySelectorAll('.beat.beat-read').forEach(el=>observer.observe(el));
+  container.querySelectorAll('.beat.beat-read').forEach(el=>{
+    // Elements not yet fully in the viewport start dimmed until the
+    // observer confirms visibility; elements already fully on-screen
+    // (e.g. right after clicking Continue) start bright immediately,
+    // since the reader is looking right at them.
+    const rect = el.getBoundingClientRect();
+    const alreadyVisible = rect.top >= 0 && rect.bottom <= (window.innerHeight || document.documentElement.clientHeight);
+    el.classList.toggle('in-view', alreadyVisible);
+    observer.observe(el);
+  });
   state.observer = observer;
 }
 function resetBeats(containerId){
@@ -1878,7 +1893,7 @@ const WELCOME_FINAL = `<button class="btn" onclick="bpMarkComplete('welcome'); b
 
 /* ---- Golden Thread ---- */
 const THREAD_BEATS = [
-  `<p class="lede">If you've never seen an ASAM or an ITP before, start here. Everything else in this training — every rule about wording, every checkbox, every field — exists to serve one idea. Once you have this idea, the rest stops feeling like paperwork and starts feeling obvious.</p>`,
+  `<p class="lede">Start here regardless of how much documentation experience you're coming in with. Everything else in this training — every rule about wording, every checkbox, every field — exists to serve one idea. Once you have this idea clearly, the rest stops feeling like paperwork and starts feeling obvious.</p>`,
 
   `<p><strong>Quick definitions before anything else:</strong></p>
    <p><span class="term" onclick="this.classList.toggle('term-open')">ASAM<span class="term-def">American Society of Addiction Medicine. In practice, "an ASAM" means the standardized clinical assessment used to determine what level of care a client needs, organized into 6 dimensions.</span></span> is a standardized clinical assessment used to figure out what level of care a client needs.</p>
@@ -1886,7 +1901,7 @@ const THREAD_BEATS = [
    <p>There's a third piece too — the Individual Note, which documents what actually happens in session. Here's how all three fit together.</p>`,
 
   `<h2>Three documents, one job each</h2>
-   <p>Woodhaven's clinical record is built from three documents. Each one has exactly one job. In plain terms, before any clinical jargon:</p>
+   <p>Woodhaven's clinical record is built primarily from three documents — there are other supporting pieces of paperwork, but these three are the backbone. Each one has exactly one job. In plain terms, before any clinical jargon:</p>
    <div class="thread-diagram">
      <div class="thread-box">
        <div class="thread-box-label">ASAM</div>
@@ -1954,23 +1969,21 @@ const THREAD_EXAMPLE_BEATS = [
 
   `<div class="card">
      <div class="step-header"><span class="step-number">2</span><span class="step-title">What the ITP plans to do about it</span></div>
-     <div class="model-answer">Section C — Dimensions 5 &amp; 6
-Goal A — Relapse Proneness
+     <div class="card-label" style="color:var(--ink-soft); font-weight:600;">Section C — Dimensions 5 &amp; 6 · Goal A — Relapse Proneness <span style="font-weight:400; font-style:italic;">(these two lines are the section/category already showing in DocAssist, not something you type)</span></div>
+     <div class="model-answer">Client stated, "I don't want to keep calling him just because I don't have anyone else."
 
-Client stated, "I don't want to keep calling him just because I don't have anyone else."
+Goal A: Client will develop coping skills to use during cravings occurring outside of program structure, reducing reliance on her previously identified using contact. (ESTABLISHED 7/24/2025)
 
-Goal A: Client will develop coping skills to use during cravings occurring outside of program structure, reducing reliance on her previously identified using contact. (ESTABLISHED 7/24)
-
-Objective 1A: Client will identify two people, other than her previously identified using contact, that she can call when experiencing cravings. (START DATE 7/24) (TARGET DATE 8/24)
+Objective 1A: Client will identify two people, other than her previously identified using contact, that she can call when experiencing cravings. (START DATE 7/24/2025) (TARGET DATE 8/24/2025)
 
 Intervention 1A: This clinician will use motivational interviewing to help client identify and commit to alternative support contacts.</div>
-     <p style="font-size:13px; color:var(--ink-soft); margin-bottom:0;">Notice this goal didn't come from a template pulled at random — every clause in it answers a specific gap named in Step 1, and the required client quote anchors it in her own words. That's what "individualized" means in an ITP: <em>if you can't point to the ASAM sentence that justifies this goal, the goal doesn't belong here yet.</em> The date fields on the objective aren't decoration either — they're what a reviewer checks to confirm this plan is actually being worked, not just written once and forgotten.</p>
+     <p style="font-size:13px; color:var(--ink-soft); margin-bottom:0;">Notice this goal didn't come from a template pulled at random — every part of it answers a specific gap named in Step 1, and the required client quote anchors it in her own words. That's what "individualized" means in an ITP: <em>if you can't point to the ASAM sentence that justifies this goal, the goal doesn't belong here yet.</em> The date fields on the objective aren't decoration either — they're what a reviewer checks to confirm this plan is actually being worked, not just written once and forgotten.</p>
    </div>`,
 
   `<div class="card">
      <div class="step-header"><span class="step-number">3</span><span class="step-title">What the Individual Note proves happened</span></div>
      <div class="model-answer">Describe Therapeutic Interventions Provided:
-- This clinician met with client to review Objective 1A of Goal A.
+- This clinician met with client to review Objective 1A of Goal A of Section C.
 - Client was asked to identify support contacts other than her previously identified using contact.
 
 Response — Intervention/Progress/Clinical Judgement:
@@ -1980,7 +1993,7 @@ Response — Intervention/Progress/Clinical Judgement:
      <p style="font-size:13px; color:var(--ink-soft); margin-bottom:0;">"Objective 1A" is not a stylistic choice — it's the literal string that lets someone trace this note back to the exact goal it belongs to. That label is the thread, made visible. This is also exactly the two-box structure DocAssist's Individual Note tool generates, ready to paste into these two Remarkable fields.</p>
    </div>`,
 
-  `<div class="callout"><strong>Where the loop closes:</strong> if the next Continued Stay ASAM's Dimension 5 update doesn't mention whether client actually followed through on contacting her sister or her sponsor, the thread breaks right here — the plan existed, the note exists, but nobody connected the note's progress back to the reassessment of risk. That single missing sentence is often the difference between a Continued Stay ASAM that reads as justified and one that reads as copy-pasted.</div>`,
+  `<div class="callout"><strong>Where the loop closes:</strong> the Continued Stay ASAM doesn't recap what happened in each note — that's not its job, and it's not where progress belongs. But it does have to reflect the current picture: is this risk actually lower now, or does the client still need this level of care for the same reason? If the next Dimension 5 update reads exactly like this one — same risk, same language, nothing about what's changed since — the thread breaks right here. Not because a session went unmentioned, but because nobody actually reassessed anything. The Note documents whether the work is happening; the ASAM has to say what that means for whether treatment here is still necessary.</div>`,
 
   `<h2>Check your understanding</h2>
    <div class="quiz-card" id="quizCard"></div>`,
@@ -2015,14 +2028,14 @@ const QUIZ_ITEMS = [
     explain: "The objective has to answer the specific gap named in the ASAM — no alternative supports identified, one named risky contact. A vague confidence goal or a generic attendance goal isn't built from this finding at all; it could apply to any client."
   },
   {
-    q: "The next Continued Stay ASAM doesn't mention whether the client followed through on the ITP objective from her last note. What just happened to the thread?",
+    q: "Danielle's notes show she's been actively working on identifying support contacts, but her next Continued Stay ASAM's Dimension 5 reads exactly the same as it did last time — same risk, same wording, nothing updated. What just happened to the thread?",
     options: [
-      "Nothing — the ASAM and the note are separate documents by design",
-      "It broke — the note's progress was never connected back to the reassessment of risk",
-      "It's fine as long as the note itself was accurate",
+      "Nothing — the ASAM isn't supposed to reference what happened in notes anyway",
+      "It broke — the ASAM was never actually reassessed against the current picture, just copied forward",
+      "It's fine, since progress belongs in the Note, not the ASAM",
     ],
     correctIdx: 1,
-    explain: "The loop is supposed to close here: what happened in the note becomes part of what the next ASAM reassesses. If the ASAM update ignores it, the record shows a plan and a note that never actually informed the next clinical decision — a visible gap in the thread."
+    explain: "The ASAM shouldn't recap sessions — that's true, and progress does belong in the Note. But the ASAM still has to reassess whether the risk itself has actually changed. An identical Dimension 5 at every review, regardless of what's happened in treatment, means nobody actually looked — that's the break."
   },
 ];
 
@@ -2422,11 +2435,11 @@ document.getElementById('resetProgress-conclusion').onclick = ()=>{
 /* ---- Specificity classify exercise ---- */
 const CLASSIFY_ITEMS = [
   {text:"Client is doing well overall and engaging in treatment.", answer:'generic', explain:"No behavioral evidence, no date, could describe almost any client on almost any day."},
-  {text:"Client left group twice this week (7/21, 7/24) when peers discussed relapse triggers, and declined to process why when approached individually.", answer:'specific', explain:"Dated, behavioral, observable — a reviewer can picture exactly what happened."},
+  {text:"Client left group twice this week (7/21/2025, 7/24/2025) when peers discussed relapse triggers, and declined to process why when approached individually.", answer:'specific', explain:"Dated, behavioral, observable — a reviewer can picture exactly what happened."},
   {text:"Client has good insight into their disease and is highly motivated to stay sober.", answer:'generic', explain:"This is the classic challenge-message pattern — unqualified positive framing reads as a reason to discharge, not continue."},
-  {text:"Client stated she has 'no plan' for what she would do if she relapsed after discharge, when asked directly during individual session on 7/23.", answer:'specific', explain:"Direct quote, dated, and answers the actual clinical question (relapse plan) rather than describing mood."},
+  {text:"Client stated she has 'no plan' for what she would do if she relapsed after discharge, when asked directly during individual session on 7/23/2025.", answer:'specific', explain:"Direct quote, dated, and answers the actual clinical question (relapse plan) rather than describing mood."},
   {text:"Client's family is supportive and provides a safe home environment.", answer:'generic', explain:"‘Safe’ and ‘supportive’ are conclusions, not evidence — what specifically makes it safe? A reviewer will read this as evidence for discharge."},
-  {text:"Client's brother, who lives in the home client will return to, is currently in active use and has declined to leave during client's residency, per client report 7/20.", answer:'specific', explain:"Specific person, specific fact, dated — gives a concrete reason the environment is not yet safe."},
+  {text:"Client's brother, who lives in the home client will return to, is currently in active use and has declined to leave during client's residency, per client report 7/20/2025.", answer:'specific', explain:"Specific person, specific fact, dated — gives a concrete reason the environment is not yet safe."},
 ];
 
 function renderClassify(){
@@ -2472,6 +2485,9 @@ function renderClassify(){
 /* ---- Dimension deep-dive reveal ---- */
 /* ---- Why this matters ---- */
 const WHY_BEATS = [
+  `<p class="lede">Before anything about wording, ratings, or dimensions: what is an ASAM actually <em>for</em>? It has one job — identify the problem. Clearly enough that anyone reading it (a reviewer, a new counselor picking up the case, you in three weeks) understands exactly what's still wrong with this client and why they need to be here, at this level of care, right now.</p>
+   <div class="callout"><strong>This is the whole reason any of this matters:</strong> if the ASAM doesn't make the problem obvious, nothing downstream can fix that. A vague ASAM isn't just a compliance risk — it means the actual clinical picture never got written down clearly enough for anyone to act on it. Every rule in this module (specific language, the six dimensions, the rating scale) exists only to serve that one purpose. Write it well, and you're protecting this client's ability to keep getting the care they actually need.</div>`,
+
   `<p class="lede">This module assumes you've already been through <span class="inline-link" onclick="openModule('view-bigpicture')" role="link" tabindex="0">The Golden Thread</span> — if you haven't, start there first. Here, we go deep on writing the ASAM link of that thread well.</p>
    <p style="font-size:13px; color:var(--ink-soft);">This module runs long — about 35–45 minutes across all six dimensions. It's fine to split it across a couple of sittings; your progress is saved section by section.</p>
    <p>None of what follows is about catching you doing something wrong. It's about giving you the tools to write down what you already know clinically, in a way that holds up — because the words in an ASAM narrative are the evidence a reviewer uses to decide whether continued residential care is medically necessary. Two clinicians can describe the same client and produce a note that gets approved — or one that gets denied.</p>`,
@@ -2483,7 +2499,7 @@ const WHY_BEATS = [
      </div>
      <div class="hero-col survive">
        <span class="hero-tag">Survives review</span>
-       <p>Client reports cravings 4–5x/day, unprompted, occurring most acutely in unstructured evening hours. Client could not identify a coping skill when asked directly during session on 7/22, relying instead on staff redirection. Without 24-hour structure, client's stated plan is to "go back to the same friends," which client identifies as their primary using environment.</p>
+       <p>Client reports cravings 4–5x/day, unprompted, occurring most acutely in unstructured evening hours. Client could not identify a coping skill when asked directly during session on 7/22/2025, relying instead on staff redirection. Without 24-hour structure, client's stated plan is to "go back to the same friends," which client identifies as their primary using environment.</p>
      </div>
    </div>
    <p class="hero-note">Same client. The left version is reassuring and vague — a reviewer reads it as "stable enough to step down." The right version is specific and behavioral — it gives the reviewer a reason this level of care is still needed <em>today</em>.</p>`,
@@ -2515,18 +2531,35 @@ const DIM1_BEATS = [
   `<h3>What a reviewer is actually asking</h3>
    <p>Not "is anything happening right now?" but "how far along is this client in a process that used to be dangerous, and is anyone still watching it?" A short abstinence window compared to a long history of use, residual physical symptoms, or anything nursing is still monitoring — all of that is real information. Writing "no withdrawal symptoms" and stopping there throws it away.</p>
    <div class="callout">This dimension often feels like the easiest one to rush past — which is exactly why it's worth slowing down. You're not being tested on medical knowledge here, just on documenting what's actually still true, even when the acute part is over.</div>`,
+  `<h3>What to look for</h3>
+   <p>Things worth checking for and naming in this dimension, if present:</p>
+   <ul class="checklist">
+     <li>What nursing's vital sign checks actually show — stable, or still fluctuating</li>
+     <li>Residual physical symptoms: sleep disturbance, appetite changes, fatigue, lingering cravings tied to the withdrawal timeline</li>
+     <li>Any PRN (as-needed) medication still being used for withdrawal-related symptoms</li>
+     <li>The specific gap between length of use and length of abstinence — the two numbers that make this dimension real, not generic</li>
+     <li>Anything suggesting the client is minimizing or unaware of symptoms nursing is still tracking</li>
+   </ul>`,
   `<h3>Try it: write the Dimension 1 narrative</h3>
    <div class="scenario-box">
      <div class="who">Client: Danielle, <span class="term" onclick="this.classList.toggle('term-open')">3.5 Residential<span class="term-def">ASAM Level 3.5: Clinically Managed High-Intensity Residential Services. A structured, live-in level of care for adults needing 24-hour support, without the round-the-clock medical/nursing monitoring that Level 3.7WM (medically monitored withdrawal management) would require.</span></span>, Continued Stay — Week 3</div>
-     Danielle completed medical withdrawal management prior to admission. Nursing checks 7/20–7/24 show stable vital signs. She denies nausea, tremors, or other acute withdrawal symptoms. She reports intermittent trouble falling asleep and low energy in the evenings, which she attributes to "still adjusting." She used heroin daily for approximately two years prior to admission and has now been abstinent 18 days.
+     Danielle completed medical withdrawal management prior to admission. Nursing checks 7/20/2025–7/24/2025 show stable vital signs. She denies nausea, tremors, or other acute withdrawal symptoms. She reports intermittent trouble falling asleep and low energy in the evenings, which she attributes to "still adjusting." She used heroin daily for approximately two years prior to admission and has now been abstinent 18 days.
    </div>
-   <textarea id="dim1Answer" placeholder="Write your Dimension 1 narrative here..."></textarea>
+   <div class="scaffold-box">
+     <div class="scaffold-label">Before you write, work through these in order:</div>
+     <ol>
+       <li>What's actually resolved? (What do the nursing checks show?)</li>
+       <li>What's still lingering, even though it's not "acute" anymore? (Sleep, energy, anything else she mentioned)</li>
+       <li>What's the gap between how long she used and how long she's been abstinent — and why does that gap matter?</li>
+     </ol>
+   </div>
+   <textarea id="dim1Answer" placeholder="Write your Dimension 1 narrative here..." oninput="document.getElementById('dim1RevealBtn').disabled = !this.value.trim()"></textarea>
    <div style="margin-top:10px;">
-     <button class="btn" onclick="revealModel('dim1')">Reveal model answer</button>
+     <button class="btn" id="dim1RevealBtn" disabled onclick="revealModel('dim1')">Reveal model answer</button>
    </div>
    <div class="reveal" id="dim1Reveal">
      <div class="card-label">Model answer</div>
-     <div class="model-answer">Client completed medical withdrawal management prior to residential admission and has remained medically stable throughout this reporting period, with vital signs within normal limits per nursing checks 7/20–7/24 and no reported nausea, tremors, or other acute withdrawal symptoms. Client continues to report intermittent sleep disturbance and evening low energy, which she attributes to "still adjusting" — mild residual symptoms consistent with early post-acute withdrawal following approximately two years of daily heroin use, currently abstinent 18 days. These symptoms do not currently require medical intervention but are being monitored, given the significant gap between her length of use and her length of abstinence.</div>
+     <div class="model-answer">Client completed medical withdrawal management prior to residential admission and has remained medically stable throughout this reporting period, with vital signs within normal limits per nursing checks 7/20/2025–7/24/2025 and no reported nausea, tremors, or other acute withdrawal symptoms. Client continues to report intermittent sleep disturbance and evening low energy, which she attributes to "still adjusting" — mild residual symptoms consistent with early post-acute withdrawal following approximately two years of daily heroin use, currently abstinent 18 days. These symptoms do not currently require medical intervention but are being monitored, given the significant gap between her length of use and her length of abstinence.</div>
      <ul class="checklist">
        <li>States plainly what's resolved (acute withdrawal) instead of leaving the dimension blank</li>
        <li>Still documents the residual symptoms instead of writing "N/A"</li>
@@ -2545,14 +2578,31 @@ const DIM2_BEATS = [
   `<h3>What a reviewer is actually asking</h3>
    <p>A chronic condition that has nothing to do with treatment doesn't need much space here. But a condition that's tangled up with the substance use — chronic pain that was previously treated with the same drug the client is now in treatment for, for example — is not background information. It's an active part of the clinical picture, and it belongs in this dimension in exactly those terms.</p>`,
   `<div class="callout">You don't need a medical degree to write this well. You just need to report what the client told you and what you observed, plainly, and let your clinical judgment connect it to relapse risk — which is exactly what this dimension is asking you to do.</div>`,
+  `<h3>What to look for</h3>
+   <p>Things worth checking for and naming in this dimension, if present:</p>
+   <ul class="checklist">
+     <li>Chronic pain, especially pain previously treated with the same substance the client is now in treatment for</li>
+     <li>Any medical condition that requires medication that could interact with recovery (or that a client could misuse)</li>
+     <li>Pregnancy, infectious disease status, or other conditions that need coordination with outside providers</li>
+     <li>Anything the client connects, in their own words, to cravings or a desire to use</li>
+     <li>Pending referrals or appointments tied to a physical condition, and whether they're actually being followed up on</li>
+   </ul>`,
   `<h3>Try it: write the Dimension 2 narrative</h3>
    <div class="scenario-box">
      <div class="who">Client: Danielle, 3.5 Residential, Continued Stay — Week 3</div>
      Danielle has chronic lower back pain from a car accident two years ago. She was previously prescribed opioid pain medication for this injury, which she reports contributed to her opioid use disorder. She is not currently prescribed any opioid medication. She rates her pain as 5–6 out of 10 most days, and a physical therapy referral is pending. She has not raised this pain in group, but mentioned to her individual counselor this week that "some days it's hard not to think about how much easier the pills made it."
    </div>
-   <textarea id="dim2Answer" placeholder="Write your Dimension 2 narrative here..."></textarea>
+   <div class="scaffold-box">
+     <div class="scaffold-label">Before you write, work through these in order:</div>
+     <ol>
+       <li>What's the physical condition, specifically, and where does it come from?</li>
+       <li>What's her own language connecting it to cravings or use?</li>
+       <li>What's being done about it right now (or not), and why does that matter for relapse risk?</li>
+     </ol>
+   </div>
+   <textarea id="dim2Answer" placeholder="Write your Dimension 2 narrative here..." oninput="document.getElementById('dim2RevealBtn').disabled = !this.value.trim()"></textarea>
    <div style="margin-top:10px;">
-     <button class="btn" onclick="revealModel('dim2')">Reveal model answer</button>
+     <button class="btn" id="dim2RevealBtn" disabled onclick="revealModel('dim2')">Reveal model answer</button>
    </div>
    <div class="reveal" id="dim2Reveal">
      <div class="card-label">Model answer</div>
@@ -2575,18 +2625,35 @@ const DIM3_BEATS = [
   `<h3>What a reviewer is actually asking</h3>
    <p>Not "does this client have a diagnosed mental health condition?" Behavioral and emotional symptoms are real and relevant whether or not they've ever been formally diagnosed. Irritability, avoidance, a tearful reaction to a specific topic — these are observable facts. Writing them down is well within your role. Deciding what they mean clinically is exactly the judgment you're licensed to provide.</p>`,
   `<div class="callout">If you catch yourself writing "no concerns" here because nothing has been formally diagnosed, stop and ask: what did I actually see or hear this week? That's the dimension.</div>`,
+  `<h3>What to look for</h3>
+   <p>Things worth checking for and naming in this dimension, if present:</p>
+   <ul class="checklist">
+     <li>Mood shifts, irritability, or tearfulness tied to a specific topic or situation — not a general "mood"</li>
+     <li>Avoidance: changing the subject, leaving group, declining to engage with a particular topic</li>
+     <li>Changes in sleep, appetite, or concentration</li>
+     <li>Trauma history that hasn't yet been directly addressed in treatment</li>
+     <li>A gap between how the client presents in group versus individual session</li>
+   </ul>`,
   `<h3>Try it: write the Dimension 3 narrative</h3>
    <div class="scenario-box">
      <div class="who">Client: Danielle, 3.5 Residential, Continued Stay — Week 3</div>
-     Danielle has a self-reported history of anxiety, though she has no formal diagnosis or current psychiatric medication. She has become visibly irritable with peers twice this week during group discussions unrelated to her own material (7/21, 7/24). In individual session 7/23, when her counselor asked about the car accident connected to her back pain, client became tearful, stated "I don't really talk about that," and asked to change the subject. She has not engaged in any trauma-focused treatment.
+     Danielle has a self-reported history of anxiety, though she has no formal diagnosis or current psychiatric medication. She has become visibly irritable with peers twice this week during group discussions unrelated to her own material (7/21/2025, 7/24/2025). In individual session 7/23/2025, when her counselor asked about the car accident connected to her back pain, client became tearful, stated "I don't really talk about that," and asked to change the subject. She has not engaged in any trauma-focused treatment.
    </div>
-   <textarea id="dim3Answer" placeholder="Write your Dimension 3 narrative here..."></textarea>
+   <div class="scaffold-box">
+     <div class="scaffold-label">Before you write, work through these in order:</div>
+     <ol>
+       <li>What specific behaviors did you observe, and when? (Dates, not "sometimes")</li>
+       <li>What did she actually say, in her own words?</li>
+       <li>Why does this matter for her continued treatment need — what's still unaddressed?</li>
+     </ol>
+   </div>
+   <textarea id="dim3Answer" placeholder="Write your Dimension 3 narrative here..." oninput="document.getElementById('dim3RevealBtn').disabled = !this.value.trim()"></textarea>
    <div style="margin-top:10px;">
-     <button class="btn" onclick="revealModel('dim3')">Reveal model answer</button>
+     <button class="btn" id="dim3RevealBtn" disabled onclick="revealModel('dim3')">Reveal model answer</button>
    </div>
    <div class="reveal" id="dim3Reveal">
      <div class="card-label">Model answer</div>
-     <div class="model-answer">Client reports a history of anxiety without formal diagnosis or current psychiatric medication. This week, client displayed increased irritability toward peers on two occasions during group (7/21, 7/24) in discussions unrelated to her own treatment material. In individual session 7/23, when asked about the motor vehicle accident associated with her chronic pain, client became tearful, stated "I don't really talk about that," and requested to change the subject. Client has not engaged in trauma-focused treatment. These observed emotional and behavioral symptoms — irritability and an avoided trauma response — have not yet been directly addressed in treatment and represent a continued area of clinical need that could affect her overall stability and relapse risk if left unaddressed.</div>
+     <div class="model-answer">Client reports a history of anxiety without formal diagnosis or current psychiatric medication. This week, client displayed increased irritability toward peers on two occasions during group (7/21/2025, 7/24/2025) in discussions unrelated to her own treatment material. In individual session 7/23/2025, when asked about the motor vehicle accident associated with her chronic pain, client became tearful, stated "I don't really talk about that," and requested to change the subject. Client has not engaged in trauma-focused treatment. These observed emotional and behavioral symptoms — irritability and an avoided trauma response — have not yet been directly addressed in treatment and represent a continued area of clinical need that could affect her overall stability and relapse risk if left unaddressed.</div>
      <ul class="checklist">
        <li>Documents observed behavior (irritability, tearfulness, avoidance) instead of a self-assigned diagnosis</li>
        <li>Uses specific, dated incidents rather than "sometimes seems anxious"</li>
@@ -2676,18 +2743,35 @@ const DIM4_BEATS = [
   `<h3>What a reviewer is actually asking</h3>
    <p>Not "is this client trying?" but "does this client's current stage of change require the structure of this level of care to avoid relapse, or could a lower level of care meet the same need?" Ambivalence, minimization, and inconsistency between stated intent and observed behavior are what justify continued stay — not the presence or absence of motivation as a personality trait.</p>`,
   `<div class="callout"><strong>Why "good insight and motivation" triggers a challenge message in DocAssist:</strong> if true and unqualified, it's a reason to discharge. The fix isn't to avoid the topic — it's to describe the <em>gap</em> between insight and action.</div>`,
+  `<h3>What to look for</h3>
+   <p>Things worth checking for and naming in this dimension, if present:</p>
+   <ul class="checklist">
+     <li>What the client says versus what they actually follow through on — missed assignments, no-shows, agreed-to steps not taken</li>
+     <li>Minimizing language: "just a habit," "not like the others here," comparisons that downplay severity</li>
+     <li>Compliance with structure (attendance, being polite) without any sign of internalizing the risk</li>
+     <li>Specific commitments made in session and whether they were actually kept</li>
+     <li>Any real, observed shift in stage of change — not just a client saying the "right" thing</li>
+   </ul>`,
   `<h3>Try it: write the Dimension 4 narrative</h3>
    <div class="scenario-box">
      <div class="who">Client: Danielle, 3.5 Residential, Continued Stay — Week 3</div>
      Danielle tells her counselor she "knows she needs to stay sober for her kids." In group, she has said twice this week that she's "not like the other people here" and doesn't think she has a "real problem" with opioids — she calls it "a bad habit." She agreed to complete a relapse prevention worksheet on Tuesday and did not turn it in. When reminded Thursday, she said she'd "get to it." She has attended all groups and is polite with staff.
    </div>
-   <textarea id="dim4Answer" placeholder="Write your Dimension 4 narrative here..."></textarea>
+   <div class="scaffold-box">
+     <div class="scaffold-label">Before you write, work through these in order:</div>
+     <ol>
+       <li>What does she say about her recovery, in her own words?</li>
+       <li>What did she actually do (or not do) that doesn't match that?</li>
+       <li>Why does that gap mean she still needs this level of care, specifically?</li>
+     </ol>
+   </div>
+   <textarea id="dim4Answer" placeholder="Write your Dimension 4 narrative here..." oninput="document.getElementById('dim4RevealBtn').disabled = !this.value.trim()"></textarea>
    <div style="margin-top:10px;">
-     <button class="btn" onclick="revealModel('dim4')">Reveal model answer</button>
+     <button class="btn" id="dim4RevealBtn" disabled onclick="revealModel('dim4')">Reveal model answer</button>
    </div>
    <div class="reveal" id="dim4Reveal">
      <div class="card-label">Model answer</div>
-     <div class="model-answer">Client verbalizes intent to maintain sobriety, citing her children as motivation, but minimizes the severity of her opioid use, referring to it as "a bad habit" rather than a substance use disorder, and distinguishes herself from peers in group ("not like the other people here") on two occasions this week. This stated insight is inconsistent with follow-through: client did not complete an assigned relapse prevention worksheet due 7/22, and when reminded 7/24 responded she would "get to it," without a specific plan. Client's compliance with the structure of the program (group attendance, cooperative affect) is not accompanied by internalization of relapse risk, indicating continued need for the structure and accountability of this level of care to address ambivalence before a lower level of care is appropriate.</div>
+     <div class="model-answer">Client verbalizes intent to maintain sobriety, citing her children as motivation, but minimizes the severity of her opioid use, referring to it as "a bad habit" rather than a substance use disorder, and distinguishes herself from peers in group ("not like the other people here") on two occasions this week. This stated insight is inconsistent with follow-through: client did not complete an assigned relapse prevention worksheet due 7/22/2025, and when reminded 7/24/2025 responded she would "get to it," without a specific plan. Client's compliance with the structure of the program (group attendance, cooperative affect) is not accompanied by internalization of relapse risk, indicating continued need for the structure and accountability of this level of care to address ambivalence before a lower level of care is appropriate.</div>
      <ul class="checklist">
        <li>Uses the client's own words as evidence, not the counselor's interpretation stated as fact</li>
        <li>Names the specific gap: stated intent vs. missed worksheet vs. minimizing language</li>
@@ -2707,14 +2791,31 @@ const DIM5_BEATS = [
   `<h3>The mistake this dimension invites</h3>
    <p>Because clients often are engaging well by week 2–3, counselors describe engagement in Dimension 5 instead of relapse risk. Engagement belongs in Dimension 4. Dimension 5 needs evidence about what happens when structure is removed: cravings, triggers, coping skill application (or failure to apply one), and the client's own account of what they'd do differently if given unstructured time today.</p>
    <div class="callout">This is usually the hardest dimension to write, precisely because your client really is doing well in front of you. That's not a contradiction you need to resolve — it's exactly what this dimension is asking you to document.</div>`,
+  `<h3>What to look for</h3>
+   <p>Things worth checking for and naming in this dimension, if present:</p>
+   <ul class="checklist">
+     <li>What the client says they'd do in an unstructured moment — or whether they can answer that at all</li>
+     <li>Specific people or places that are named relapse triggers or contacts</li>
+     <li>Coping skills the client can name in session versus ones they've actually demonstrated outside the milieu</li>
+     <li>What's happened during any prior pass, visit, or discharge, if there's history to draw on</li>
+     <li>How confident the client sounds — in their own words — about handling a craving alone</li>
+   </ul>`,
   `<h3>Try it: write the Dimension 5 narrative</h3>
    <div class="scenario-box">
      <div class="who">Client: Danielle, 3.5 Residential, Continued Stay — Week 3</div>
      Danielle reports cravings most evenings, which she rates as "manageable" with peer support in the milieu. When her counselor asked directly what she would do if she had a craving alone in her apartment, she paused and said she "hadn't thought about it." She identifies her ex-boyfriend, who still uses, as someone she'd likely reach out to "just to talk" if she felt lonely. She has not yet identified a specific person she could call instead.
    </div>
-   <textarea id="dim5Answer" placeholder="Write your Dimension 5 narrative here..."></textarea>
+   <div class="scaffold-box">
+     <div class="scaffold-label">Before you write, work through these in order:</div>
+     <ol>
+       <li>How is she managing cravings right now, with the structure of this level of care?</li>
+       <li>What happens (or what does she say would happen) without that structure?</li>
+       <li>What's the specific relapse pathway she's named, and what's missing as an alternative?</li>
+     </ol>
+   </div>
+   <textarea id="dim5Answer" placeholder="Write your Dimension 5 narrative here..." oninput="document.getElementById('dim5RevealBtn').disabled = !this.value.trim()"></textarea>
    <div style="margin-top:10px;">
-     <button class="btn" onclick="revealModel('dim5')">Reveal model answer</button>
+     <button class="btn" id="dim5RevealBtn" disabled onclick="revealModel('dim5')">Reveal model answer</button>
    </div>
    <div class="reveal" id="dim5Reveal">
      <div class="card-label">Model answer</div>
@@ -2737,14 +2838,31 @@ const DIM6_BEATS = [
   `<h3>What actually carries weight here</h3>
    <p>Not whether family "loves" the client — whether the physical environment contains active use, whether household members can or will enforce boundaries, whether the client has anywhere to go that isn't the environment tied to their using pattern, and what specifically would happen in the first 48 hours if discharged today.</p>
    <div class="callout">This one can feel uncomfortable, like you're being asked to say something negative about someone's family. You're not — you're describing structural facts about the environment, not judging the people in it.</div>`,
+  `<h3>What to look for</h3>
+   <p>Things worth checking for and naming in this dimension, if present:</p>
+   <ul class="checklist">
+     <li>Who the client would actually return to, and that person's stated stance on use in the home</li>
+     <li>Physical proximity to known using contacts or triggering locations</li>
+     <li>Whether the household will actually enforce a no-use policy — not whether they say they support the client</li>
+     <li>Sober supports (or the lack of them) near the discharge address</li>
+     <li>The client's own stated preference versus what the environment can actually provide — these are two different facts</li>
+   </ul>`,
   `<h3>Try it: write the Dimension 6 narrative</h3>
    <div class="scenario-box">
      <div class="who">Client: Danielle, 3.5 Residential, Continued Stay — Week 3</div>
      Danielle's mother, who she would return to, is supportive and attends family sessions, but has said she "doesn't want to police" Danielle and will not agree to a no-use household policy. Danielle's ex-boyfriend lives two blocks away. Danielle has no current housing alternative and no sober support identified within walking distance of her mother's home. She states she "loves her mom's house" and wants to go back there.
    </div>
-   <textarea id="dim6Answer" placeholder="Write your Dimension 6 narrative here..."></textarea>
+   <div class="scaffold-box">
+     <div class="scaffold-label">Before you write, work through these in order:</div>
+     <ol>
+       <li>Where would she actually go, and what's true about that specific place?</li>
+       <li>What structural boundaries against use exist there — or don't?</li>
+       <li>How does what she wants compare to what the environment can actually support?</li>
+     </ol>
+   </div>
+   <textarea id="dim6Answer" placeholder="Write your Dimension 6 narrative here..." oninput="document.getElementById('dim6RevealBtn').disabled = !this.value.trim()"></textarea>
    <div style="margin-top:10px;">
-     <button class="btn" onclick="revealModel('dim6')">Reveal model answer</button>
+     <button class="btn" id="dim6RevealBtn" disabled onclick="revealModel('dim6')">Reveal model answer</button>
    </div>
    <div class="reveal" id="dim6Reveal">
      <div class="card-label">Model answer</div>
@@ -2781,12 +2899,12 @@ const RATING_FINAL = `<button class="btn" onclick="asamGoTo('criteria')">Next: C
 
 /* ---- Criteria checklist ---- */
 const CRITERIA_BEATS = [
-  `<p class="lede">The <span class="term" onclick="this.classList.toggle('term-open')">criteria checklist<span class="term-def">The specific lettered clinical criteria (a, b, c...) tied to each dimension in Ohio's ASAM framework. Checking one means you can point to exact language in your narrative that supports it — not just a general impression.</span></span> in DocAssist isn't decoration — it's what you'll click against in Remarkable while the narrative is open next to it. This only works if you can read your own narrative and identify which specific criteria it supports. Read the Dimension 5 model answer again, then check every criterion it actually provides evidence for.</p>
+  `<p class="lede">The <span class="term" onclick="this.classList.toggle('term-open')">criteria checklist<span class="term-def">The specific lettered clinical criteria (a, b, c...) tied to each dimension in Ohio's ASAM framework. Checking one means you can point to exact language in your narrative that supports it — not just a general impression.</span></span> in DocAssist isn't decoration — it's what you'll click against in Remarkable while the narrative is open next to it. This only works if you can read your own narrative and identify which specific criteria it supports. Read the Dimension 5 model answer below, then check every criterion it actually provides evidence for.</p>
    <div class="scenario-box">
      <div class="who">Reference: Dimension 5 model answer</div>
      Client reports nightly cravings, currently managed only through peer support available in the residential milieu... client was unable to name one coping response... identifies her ex-boyfriend, an active user, as a likely contact... has not yet identified an alternative support... craving management is structurally dependent on this level of care.
-   </div>`,
-  `<div class="criteria-grid" id="criteriaGrid"><!-- injected --></div>
+   </div>
+   <div class="criteria-grid" id="criteriaGrid"><!-- injected --></div>
    <button class="btn" onclick="checkCriteria()">Check my answer</button>
    <div class="reveal" id="criteriaReveal">
      <p style="font-size:13.5px; color:var(--ink-soft);">Correct answers are highlighted green. Anything you checked that wasn't supported is highlighted red. Anything you missed is highlighted amber.</p>
@@ -2802,7 +2920,13 @@ const ASSEMBLY_BEATS = [
   `<p class="lede">This is what an actual Continued Stay ASAM review looks like: not one dimension at a time, but the whole picture, rated dimension by dimension, then argued as a whole. Everything below is Danielle's full case — the same client from every section of this module — pulled into one place.</p>
    <div class="scenario-box">
      <div class="who">Client: Danielle, 3.5 Residential, Continued Stay — Week 3, full picture</div>
-     Medically stable since completing withdrawal management prior to admission; 18 days abstinent from heroin after roughly two years of daily use, with mild residual sleep disturbance and low energy. Chronic lower back pain from a car accident, previously treated with opioids that contributed to her opioid use disorder; not currently prescribed opioids, but has directly linked her pain to cravings. Self-reported anxiety with no formal diagnosis; increased irritability with peers twice this week, and a tearful, avoidant reaction when asked about the accident connected to her pain. States she "knows she needs to stay sober for her kids" but minimizes her opioid use as "a bad habit" and did not complete an assigned relapse-prevention worksheet. Reports nightly cravings with no independent coping plan, and identifies her ex-boyfriend — an active user living two blocks from her planned discharge residence — as a likely contact if lonely. Her mother, the planned discharge resource, is emotionally supportive but has declined to enforce a no-use household policy.</div>`,
+     <p style="margin:0 0 10px;"><strong>Dimension 1:</strong> Medically stable since completing withdrawal management prior to admission; 18 days abstinent from heroin after roughly two years of daily use, with mild residual sleep disturbance and low energy.</p>
+     <p style="margin:0 0 10px;"><strong>Dimension 2:</strong> Chronic lower back pain from a car accident, previously treated with opioids that contributed to her opioid use disorder; not currently prescribed opioids, but has directly linked her pain to cravings.</p>
+     <p style="margin:0 0 10px;"><strong>Dimension 3:</strong> Self-reported anxiety with no formal diagnosis; increased irritability with peers twice this week, and a tearful, avoidant reaction when asked about the accident connected to her pain.</p>
+     <p style="margin:0 0 10px;"><strong>Dimension 4:</strong> States she "knows she needs to stay sober for her kids" but minimizes her opioid use as "a bad habit" and did not complete an assigned relapse-prevention worksheet.</p>
+     <p style="margin:0 0 10px;"><strong>Dimension 5:</strong> Reports nightly cravings with no independent coping plan, and identifies her ex-boyfriend — an active user living two blocks from her planned discharge residence — as a likely contact if lonely.</p>
+     <p style="margin:0;"><strong>Dimension 6:</strong> Her mother, the planned discharge resource, is emotionally supportive but has declined to enforce a no-use household policy.</p>
+   </div>`,
 
   `<h3>Rate each dimension</h3>
    <p style="font-size:13.5px; color:var(--ink-soft);">Use your judgment first — don't just try to remember what you rated in earlier sections. Click a number for each dimension below.</p>
@@ -2810,9 +2934,9 @@ const ASSEMBLY_BEATS = [
 
   `<h3>Now, in your own words</h3>
    <p class="lede">In two or three plain-language sentences — no clinical vocabulary required — what's the strongest reason this client still needs residential treatment right now?</p>
-   <textarea id="assemblySynthesis" placeholder="Write your synthesis here..."></textarea>
+   <textarea id="assemblySynthesis" placeholder="Write your synthesis here..." oninput="document.getElementById('assemblySynthesisRevealBtn').disabled = !this.value.trim()"></textarea>
    <div style="margin-top:10px;">
-     <button class="btn" onclick="document.getElementById('assemblySynthesisReveal').classList.add('show')">Reveal a model synthesis</button>
+     <button class="btn" id="assemblySynthesisRevealBtn" disabled onclick="document.getElementById('assemblySynthesisReveal').classList.add('show')">Reveal a model synthesis</button>
    </div>
    <div class="reveal" id="assemblySynthesisReveal">
      <div class="card-label">One reasonable synthesis</div>
@@ -2821,7 +2945,7 @@ const ASSEMBLY_BEATS = [
    </div>`,
 
   `<div class="callout"><strong>This is the whole point of the training:</strong> six dimensions, one document, one clinician's judgment about one real person — expressed in plain language, backed by specifics, ready to become the first link in the next ITP and the next Individual Note.</div>
-   <span class="badge-done" id="finalBadge" style="display:none;">You've completed the ASAM module — nice work</span>
+   <span class="badge-done" id="finalBadge" style="display:none;">🎉 You've completed the ASAM module — nice work</span>
    <div class="callout" style="margin-top:16px;">
      <strong>Keep this handy:</strong> the <span class="inline-link" onclick="asamGoTo('cheatsheet')" role="link" tabindex="0">quick reference cheat sheet</span>, <span class="inline-link" onclick="asamGoTo('mistakes')" role="link" tabindex="0">common mistakes recap</span>, and <span class="inline-link" onclick="asamGoTo('faq')" role="link" tabindex="0">FAQ</span> are built to be reopened anytime you're actually writing an ASAM — not just read once during training.
    </div>
@@ -2829,7 +2953,10 @@ const ASSEMBLY_BEATS = [
      <strong>Coming next:</strong> the ITP module — turning everything you just practiced here into individualized goals and objectives.
    </div>`,
 ];
-const ASSEMBLY_FINAL = `<span style="font-size:13px; color:var(--ink-soft);">You've reached the end of the ASAM module.</span>`;
+const ASSEMBLY_FINAL = `<div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+  <button class="btn" onclick="openModule('view-itp')">Next: Start ITP Module →</button>
+  <button class="btn secondary" onclick="goHome()">← Back to DocTrain home</button>
+</div>`;
 
 /* ---- Cumulative "pulling it together" check ---- */
 const ASAM_FINAL_QUIZ_ITEMS = [
@@ -3064,7 +3191,7 @@ function renderAssemblyRatings(){
 
 /* ---- Why this module ---- */
 const ITP_WHY_BEATS = [
-  `<p class="lede">This module assumes you've already been through <span class="inline-link" onclick="openModule('view-bigpicture')" role="link" tabindex="0">The Golden Thread</span> — if you haven't, start there first. Here, we go deep on the second link: turning what the ASAM identified into an actual plan.</p>
+  `<p class="lede">This module assumes you've already been through <span class="inline-link" onclick="openModule('view-bigpicture')" role="link" tabindex="0">The Golden Thread</span> and the <span class="inline-link" onclick="openModule('view-asam')" role="link" tabindex="0">ASAM module</span> — if you haven't done both, start there first. Here, we go deep on the second link: turning what the ASAM identified into an actual plan.</p>
    <p style="font-size:13px; color:var(--ink-soft);">About 30 minutes, start to finish. If you already finished ASAM in this sitting, this is a natural place to stop and pick back up later instead.</p>
    <p>If some part of you has never written one of these and isn't sure where to even start — that's exactly who this was built for. There's no assumed background here. We'll build it up one piece at a time.</p>`,
 
@@ -3087,17 +3214,17 @@ const ITP_WHY_BEATS = [
    <div class="hero-compare">
      <div class="hero-col deny">
        <span class="hero-tag">Left as the library wrote it</span>
-       <p>Goal A: Client will develop coping skills to use when experiencing high-risk situations and/or cravings. (ESTABLISHED 7/24)
+       <p>Goal A: Client will develop coping skills to use when experiencing high-risk situations and/or cravings. (ESTABLISHED 7/24/2025)
 
-Objective 1A: Learn and implement 3 personal coping strategies to manage urges to lapse back into chemical use. (START DATE 7/24) (TARGET DATE TBD)</p>
+Objective 1A: Learn and implement 3 personal coping strategies to manage urges to lapse back into chemical use. (START DATE 7/24/2025) (TARGET DATE TBD)</p>
      </div>
      <div class="hero-col survive">
        <span class="hero-tag">Edited into her plan</span>
        <p>Client stated, "I don't want to keep calling him just because I don't have anyone else."
 
-Goal A: Client will develop coping skills to use during cravings occurring outside of program structure, reducing reliance on her previously identified using contact. (ESTABLISHED 7/24)
+Goal A: Client will develop coping skills to use during cravings occurring outside of program structure, reducing reliance on her previously identified using contact. (ESTABLISHED 7/24/2025)
 
-Objective 1A: Client will identify two people, other than her previously identified using contact, that she can call when experiencing cravings. (START DATE 7/24) (TARGET DATE 8/24)</p>
+Objective 1A: Client will identify two people, other than her previously identified using contact, that she can call when experiencing cravings. (START DATE 7/24/2025) (TARGET DATE 8/24/2025)</p>
      </div>
    </div>
    <p class="hero-note">Same starting point — both came from the same library goal category. The left version was accepted as-is: no client quote, and a target date left at "TBD," which is really no target at all. The right version was actually edited: it names her specific gap, is anchored by her own words, and has a real, checkable target date.</p>`,
@@ -3106,36 +3233,44 @@ const ITP_WHY_FINAL = `<button class="btn" onclick="itpMarkComplete('itpwhy'); i
 
 /* ---- Anatomy of a goal ---- */
 const ITP_ANATOMY_BEATS = [
-  `<p class="lede">Let's look at each of the three layers closely, starting with how DocAssist's goal library is structured. The worked example comes next.</p>`,
+  `<p class="lede">This is the actual anatomy. Everything else in this module — and everything DocAssist does — is just a faster way to produce these four pieces. If you were writing a treatment plan by hand, in a different system, or on paper, this is still the structure you'd be building.</p>
+   <div class="thread-diagram">
+     <div class="thread-box">
+       <div class="thread-box-label">Problem</div>
+       <div class="thread-box-sub">From the ASAM</div>
+       <div class="thread-box-detail">A specific gap or unresolved risk the ASAM already identified. You don't invent this here — you find it there.</div>
+     </div>
+     <div class="thread-arrow">→</div>
+     <div class="thread-box">
+       <div class="thread-box-label">Goal</div>
+       <div class="thread-box-sub">The direction</div>
+       <div class="thread-box-detail">What you're working toward to address that problem.</div>
+     </div>
+     <div class="thread-arrow">→</div>
+     <div class="thread-box">
+       <div class="thread-box-label">Objective</div>
+       <div class="thread-box-sub">What she'll do</div>
+       <div class="thread-box-detail">A specific, checkable step toward the goal — something you can point to as done or not done, by a real date.</div>
+     </div>
+     <div class="thread-arrow">→</div>
+     <div class="thread-box">
+       <div class="thread-box-label">Intervention</div>
+       <div class="thread-box-sub">What you'll do</div>
+       <div class="thread-box-detail">Your action as the clinician to help her get there — not hers, yours.</div>
+     </div>
+   </div>
+   <div class="callout"><strong>The whole chain in one sentence:</strong> you find the goal from a problem already named in the ASAM, then decide what she's going to do about it (the objective) and how you're going to help her get there (the intervention).</div>`,
 
-  `<h3>Three sections, matched to dimension pairs</h3>
+  `<h3>How this looks inside DocAssist</h3>
+   <p>If you're using DocAssist, it organizes this same structure into a library so you're not starting from a blank page. If you're not using it — the four pieces above are still exactly what you're building; this next part is just about the tool's organization.</p>
    <p>DocAssist's goal library is organized into three sections, and each one lines up with two ASAM dimensions:</p>
    <ul class="checklist">
      <li><strong>Section A</strong> — Dimensions 1 &amp; 2 (Acute Intoxication/Withdrawal, Biomedical Conditions)</li>
      <li><strong>Section B</strong> — Dimensions 3 &amp; 4 (Emotional/Behavioral/Cognitive, Readiness to Change)</li>
      <li><strong>Section C</strong> — Dimensions 5 &amp; 6 (Relapse/Continued Use Potential, Recovery Environment)</li>
    </ul>
-   <p>Within each section is a set of goal categories — things like Chronic Pain, PTSD, Treatment Resistance, Relapse Proneness — each with several preset goal options to choose from, and several preset objective/intervention pairs you check off as relevant. Every section also has a "+ Add Custom Goal" option, which lets you write the goal name, goal text, and its own objectives/interventions entirely from scratch. Neither path is the fallback — the library is a fast, clinically sound starting point when a category fits well; writing from scratch is just as normal when a client's situation doesn't map cleanly onto one.</p>`,
-
-  `<div class="thread-diagram">
-     <div class="thread-box">
-       <div class="thread-box-label">Goal</div>
-       <div class="thread-box-sub">The direction</div>
-       <div class="thread-box-detail">Picked from a category's preset options and edited, or written from scratch as a custom goal. Gets a letter — A, B, C — but that letter resets at the start of each section. Carries one date: ESTABLISHED.</div>
-     </div>
-     <div class="thread-arrow">→</div>
-     <div class="thread-box">
-       <div class="thread-box-label">Objective</div>
-       <div class="thread-box-sub">The checkable step</div>
-       <div class="thread-box-detail">Checked off from the category's preset pairs, or added custom. Numbered to its goal's letter (1A, 2A, 1B...). Carries two dates: START DATE and TARGET DATE.</div>
-     </div>
-     <div class="thread-arrow">→</div>
-     <div class="thread-box">
-       <div class="thread-box-label">Intervention</div>
-       <div class="thread-box-sub">Your action</div>
-       <div class="thread-box-detail">Paired automatically with its objective when you check the box. Shares the objective's number/letter.</div>
-     </div>
-   </div>`,
+   <p>Within each section is a set of goal categories — things like Chronic Pain, PTSD, Treatment Resistance, Relapse Proneness — each with several preset goal options to choose from, and several preset objective/intervention pairs you check off as relevant. Every section also has a "+ Add Custom Goal" option, which lets you write the goal name, goal text, and its own objectives/interventions entirely from scratch. Neither path is the fallback — the library is a fast, clinically sound starting point when a category fits well; writing from scratch is just as normal when a client's situation doesn't map cleanly onto one.</p>
+   <p style="font-size:13px; color:var(--ink-soft);">One bookkeeping detail worth knowing now: the Goal gets a letter (A, B, C) within its section, the Objective is numbered to that letter (1A, 2A, 1B...), and the Intervention shares its objective's number. More on what that means next.</p>`,
 
   `<h3>Why letters reset per section</h3>
    <p>A goal's real identity is its section <em>and</em> its letter together — "Section C, Goal A" is a completely different goal from "Section A, Goal A," even though they share a letter. This isn't a bug to work around; it's just how the library is organized, since each section is scoped to its own pair of dimensions. When you reference a goal anywhere — in an Individual Note, in a review — always carry the section along with the letter.</p>`,
@@ -3147,15 +3282,12 @@ const ITP_ANATOMY_EXAMPLE_BEATS = [
   `<p class="lede">Now the same structure, worked through one real example — Danielle's Dimension 5 finding from the Golden Thread (nightly cravings, no independent coping plan, one named risky contact) turned into a goal.</p>`,
 
   `<div class="card">
-     <div class="card-label">Worked example — Danielle, Section C, Goal A</div>
-     <div class="model-answer">Section C — Dimensions 5 &amp; 6
-Goal A — Relapse Proneness
+     <div class="card-label">Worked example — Danielle, Section C, Goal A <span style="font-weight:400; font-style:italic; color:var(--ink-soft);">(the section and category are already showing in DocAssist — not something you type)</span></div>
+     <div class="model-answer">Client stated, "I don't want to keep calling him just because I don't have anyone else."
 
-Client stated, "I don't want to keep calling him just because I don't have anyone else."
+Goal A: Client will develop coping skills to use during cravings occurring outside of program structure, reducing reliance on her previously identified using contact. (ESTABLISHED 7/24/2025)
 
-Goal A: Client will develop coping skills to use during cravings occurring outside of program structure, reducing reliance on her previously identified using contact. (ESTABLISHED 7/24)
-
-Objective 1A: Client will identify two people, other than her previously identified using contact, that she can call when experiencing cravings. (START DATE 7/24) (TARGET DATE 8/24)
+Objective 1A: Client will identify two people, other than her previously identified using contact, that she can call when experiencing cravings. (START DATE 7/24/2025) (TARGET DATE 8/24/2025)
 
 Intervention 1A: This clinician will use motivational interviewing to help client identify and commit to alternative support contacts.</div>
      <ul class="checklist">
@@ -3177,7 +3309,7 @@ Intervention 1A: This clinician will use motivational interviewing to help clien
 
   `<h3>The confusion this section exists to prevent</h3>
    <p>Goal and Objective get mixed up constantly, because both can sound like reasonable sentences on their own. The test: <strong>if the sentence could still be true next month, next year, forever — it's a goal.</strong> If it has a specific, checkable condition and a target date attached, it's an objective.</p>
-   <div class="callout">"Client will develop coping skills for cravings outside program structure" (no target date, never really "done") is the goal. "Client will identify two alternative contacts by 8/24" (checkable, dated) is the objective underneath it. If you notice your objective reads exactly like your goal, that's the signal to make it more specific.</div>`,
+   <div class="callout">"Client will develop coping skills for cravings outside program structure" (no target date, never really "done") is the goal. "Client will identify two alternative contacts by 8/24/2025" (checkable, dated) is the objective underneath it. If you notice your objective reads exactly like your goal, that's the signal to make it more specific.</div>`,
 ];
 const ITP_ANATOMY_EXAMPLE_FINAL = `<button class="btn" onclick="itpMarkComplete('itpanatomyexample'); itpGoTo('itpfromfinding')">Next: Turn a finding into a goal →</button>`;
 
@@ -3197,18 +3329,15 @@ const ITP_FROMFINDING_BEATS = [
      Client has chronic lower back pain secondary to a motor vehicle accident, previously managed with prescribed opioid medication that client identifies as a contributing factor to her opioid use disorder. Client is not currently prescribed opioid pain medication. During individual session, client disclosed unprompted that "some days it's hard not to think about how much easier the pills made it," directly connecting her untreated physical pain to cravings for her drug of choice. A physical therapy referral is pending.
    </div>
    <p style="font-size:13px; color:var(--ink-soft);">For reference, the Chronic Pain category's preset goal options include: "Regulate pain without addictive medications," "Develop healthy options to deal with chronic pain," and similar. None of them mention cravings on their own — that link is what you have to add.</p>
-   <textarea id="itpFromFindingAnswer" placeholder='Start with the quote: Client stated, &quot;...&quot;  Then the goal: Goal A: Client will...'></textarea>
+   <textarea id="itpFromFindingAnswer" placeholder='Start with the quote: Client stated, &quot;...&quot;  Then the goal: Goal A: Client will...' oninput="document.getElementById('itpFromFindingRevealBtn').disabled = !this.value.trim()"></textarea>
    <div style="margin-top:10px;">
-     <button class="btn" onclick="itpRevealModel('fromfinding')">Reveal model answer</button>
+     <button class="btn" id="itpFromFindingRevealBtn" disabled onclick="itpRevealModel('fromfinding')">Reveal model answer</button>
    </div>
    <div class="reveal" id="fromfindingReveal">
-     <div class="card-label">Model answer</div>
-     <div class="model-answer">Section A — Dimensions 1 &amp; 2
-Goal A — Chronic Pain
+     <div class="card-label">Model answer <span style="font-weight:400; font-style:italic; color:var(--ink-soft);">(Section A — Dimensions 1 &amp; 2 · Goal A — Chronic Pain, already showing in DocAssist, not typed)</span></div>
+     <div class="model-answer">Client stated, "Some days it's hard not to think about how much easier the pills made it."
 
-Client stated, "Some days it's hard not to think about how much easier the pills made it."
-
-Goal A: Client will develop non-opioid strategies to manage pain-related cravings, reducing relapse risk associated with her untreated chronic pain. (ESTABLISHED 7/24)</div>
+Goal A: Client will develop non-opioid strategies to manage pain-related cravings, reducing relapse risk associated with her untreated chronic pain. (ESTABLISHED 7/24/2025)</div>
      <ul class="checklist">
        <li>Built from the library's "Develop healthy options to deal with chronic pain" option, but edited to name the exact mechanism from the finding — pain connected to cravings — not just "manage pain"</li>
        <li>Says what the goal is <em>for</em> (reducing relapse risk), not just a restated symptom</li>
@@ -3240,13 +3369,13 @@ const ITP_OBJECTIVES_BEATS = [
      <div class="who">Section A, Goal A, from the previous section</div>
      Client will develop non-opioid strategies to manage pain-related cravings, reducing relapse risk associated with her untreated chronic pain. (Additional context: a PT referral is pending; client has not yet used any non-opioid coping technique for pain, by her own report. The Chronic Pain category's preset pairs include "Investigate the use of alternative pain remedies to reduce dependence on medication.")
    </div>
-   <textarea id="itpObjectivesAnswer" placeholder="Write Objective 1A, with a Start Date and Target Date..."></textarea>
+   <textarea id="itpObjectivesAnswer" placeholder="Write Objective 1A, with a Start Date and Target Date..." oninput="document.getElementById('itpObjectivesRevealBtn').disabled = !this.value.trim()"></textarea>
    <div style="margin-top:10px;">
-     <button class="btn" onclick="itpRevealModel('objectives')">Reveal model answer</button>
+     <button class="btn" id="itpObjectivesRevealBtn" disabled onclick="itpRevealModel('objectives')">Reveal model answer</button>
    </div>
    <div class="reveal" id="objectivesReveal">
      <div class="card-label">Model answer</div>
-     <div class="model-answer">Objective 1A: Client will identify and use at least one non-pharmacological pain management technique (e.g., a PT-recommended exercise or a breathing/grounding technique) when experiencing pain-related cravings, as evidenced by self-report. (START DATE 7/24) (TARGET DATE 8/24)</div>
+     <div class="model-answer">Objective 1A: Client will identify and use at least one non-pharmacological pain management technique (e.g., a PT-recommended exercise or a breathing/grounding technique) when experiencing pain-related cravings, as evidenced by self-report. (START DATE 7/24/2025) (TARGET DATE 8/24/2025)</div>
      <ul class="checklist">
        <li>Checked and edited from the category's "investigate alternative pain remedies" pair, made more specific to what "using" one actually looks like</li>
        <li>Has both a condition ("when experiencing pain-related cravings") and a way to confirm it happened ("as evidenced by self-report")</li>
@@ -3273,11 +3402,11 @@ const ITP_INTERVENTIONS_BEATS = [
   `<h3>Try it: write the intervention for Objective 1A</h3>
    <div class="scenario-box">
      <div class="who">Objective 1A, from the previous section</div>
-     Client will identify and use at least one non-pharmacological pain management technique when experiencing pain-related cravings, as evidenced by self-report. (START DATE 7/24) (TARGET DATE 8/24) (Additional context: a PT referral is pending but has not yet resulted in an appointment.)
+     Client will identify and use at least one non-pharmacological pain management technique when experiencing pain-related cravings, as evidenced by self-report. (START DATE 7/24/2025) (TARGET DATE 8/24/2025) (Additional context: a PT referral is pending but has not yet resulted in an appointment.)
    </div>
-   <textarea id="itpInterventionsAnswer" placeholder="Write Intervention 1A..."></textarea>
+   <textarea id="itpInterventionsAnswer" placeholder="Write Intervention 1A..." oninput="document.getElementById('itpInterventionsRevealBtn').disabled = !this.value.trim()"></textarea>
    <div style="margin-top:10px;">
-     <button class="btn" onclick="itpRevealModel('interventions')">Reveal model answer</button>
+     <button class="btn" id="itpInterventionsRevealBtn" disabled onclick="itpRevealModel('interventions')">Reveal model answer</button>
    </div>
    <div class="reveal" id="interventionsReveal">
      <div class="card-label">Model answer</div>
@@ -3301,12 +3430,12 @@ const ITP_INDIVIDUALIZED_BEATS = [
 const ITP_INDIVIDUALIZED_FINAL = `<button class="btn" onclick="itpGoTo('itpgoals')">Next: How many goals →</button>`;
 
 const ITP_CLASSIFY_ITEMS = [
-  {text:"Goal A: Client will develop healthy coping skills and improve overall wellness. (ESTABLISHED 7/24)", answer:'generic', explain:"Left exactly as the library wrote it, with no client quote attached — this is exactly what triggers DocAssist's SMART warning and quote warning before you can submit."},
-  {text:"Client stated, \"I don't want to keep calling him just because I don't have anyone else.\"<br><br>Goal A: Client will develop coping skills to use during cravings occurring outside of program structure, reducing reliance on her previously identified using contact. (ESTABLISHED 7/24)", answer:'specific', explain:"Edited from the library default to name her specific gap, and anchored with her own words as the required client quote."},
-  {text:"Objective 1A: Learn and implement 3 personal coping strategies to manage urges to lapse back into chemical use. (START DATE 7/24) (TARGET DATE TBD)", answer:'generic', explain:"Straight from the library, unedited, and the Target Date was left at \"TBD\" — nothing here confirms it's actually Danielle's plan or gives a reviewer a real deadline to check."},
-  {text:"Objective 1A: Client will identify two people, other than her previously identified using contact, that she can call when experiencing cravings. (START DATE 7/24) (TARGET DATE 8/24)", answer:'specific', explain:"Names her specific gap (one risky contact, zero alternatives) and has a real target date a reviewer can check."},
-  {text:"Goal B: Understand the negative impact of the current environment on addiction recovery. (ESTABLISHED 7/24)", answer:'generic', explain:"This is the unedited Living Environment Deficiency default — true in general, but it doesn't yet say anything only true of Danielle's mother's house or her ex-boyfriend living two blocks away."},
-  {text:"Client stated, \"I love my mom's house.\"<br><br>Goal B: Client will identify a discharge environment with enforceable boundaries against use, given her mother's stated unwillingness to enforce a no-use household policy. (ESTABLISHED 7/24)", answer:'specific', explain:"Edited to name the actual structural gap (mother won't enforce boundaries) and anchored with the client's own stated preference — which the goal has to work against, not pretend doesn't exist."},
+  {text:"Goal A: Client will develop healthy coping skills and improve overall wellness. (ESTABLISHED 7/24/2025)", answer:'generic', explain:"Left exactly as the library wrote it, with no client quote attached — this is exactly what triggers DocAssist's SMART warning and quote warning before you can submit."},
+  {text:"Client stated, \"I don't want to keep calling him just because I don't have anyone else.\"<br><br>Goal A: Client will develop coping skills to use during cravings occurring outside of program structure, reducing reliance on her previously identified using contact. (ESTABLISHED 7/24/2025)", answer:'specific', explain:"Edited from the library default to name her specific gap, and anchored with her own words as the required client quote."},
+  {text:"Objective 1A: Learn and implement 3 personal coping strategies to manage urges to lapse back into chemical use. (START DATE 7/24/2025) (TARGET DATE TBD)", answer:'generic', explain:"Straight from the library, unedited, and the Target Date was left at \"TBD\" — nothing here confirms it's actually Danielle's plan or gives a reviewer a real deadline to check."},
+  {text:"Objective 1A: Client will identify two people, other than her previously identified using contact, that she can call when experiencing cravings. (START DATE 7/24/2025) (TARGET DATE 8/24/2025)", answer:'specific', explain:"Names her specific gap (one risky contact, zero alternatives) and has a real target date a reviewer can check."},
+  {text:"Goal B: Understand the negative impact of the current environment on addiction recovery. (ESTABLISHED 7/24/2025)", answer:'generic', explain:"This is the unedited Living Environment Deficiency default — true in general, but it doesn't yet say anything only true of Danielle's mother's house or her ex-boyfriend living two blocks away."},
+  {text:"Client stated, \"I love my mom's house.\"<br><br>Goal B: Client will identify a discharge environment with enforceable boundaries against use, given her mother's stated unwillingness to enforce a no-use household policy. (ESTABLISHED 7/24/2025)", answer:'specific', explain:"Edited to name the actual structural gap (mother won't enforce boundaries) and anchored with the client's own stated preference — which the goal has to work against, not pretend doesn't exist."},
 ];
 
 function renderItpClassify(){
@@ -3358,20 +3487,22 @@ const ITP_GOALS_BEATS = [
    <div class="callout">Danielle's Dimension 1 (withdrawal) is a good example: real, documented, worth continued monitoring — but medically stable, and not something a counseling goal and objective would meaningfully address. It stays in the ASAM narrative as monitored, without becoming its own ITP goal.</div>`,
 
   `<h3>Danielle's actual ITP, across three sections</h3>
-   <p style="font-size:13.5px; color:var(--ink-soft);">Here's what a realistic plan looks like once you apply that filter — five goals across five active findings, organized into the sections their dimensions belong to, skipping the one dimension that didn't need one. Remember: letters reset at the start of each section.</p>
+   <p style="font-size:13.5px; color:var(--ink-soft);">Here's what a realistic plan looks like once you apply that filter — five goals across five active findings, organized into the sections their dimensions belong to, skipping the one dimension that didn't need one. Remember: letters reset at the start of each section. One section at a time.</p>
    <div class="card">
      <div class="card-label">Section A — Dimensions 1 &amp; 2</div>
      <p style="font-size:13.5px; margin:8px 0 2px;"><strong>Goal A — Chronic Pain (Dimension 2)</strong></p>
      <p style="font-size:13.5px; margin:2px 0 0;">Develop non-opioid strategies to manage pain-related cravings. <em style="color:var(--ink-soft);">No goal for Dimension 1 — monitored in the ASAM instead.</em></p>
-   </div>
-   <div class="card">
+   </div>`,
+
+  `<div class="card">
      <div class="card-label">Section B — Dimensions 3 &amp; 4</div>
      <p style="font-size:13.5px; margin:8px 0 2px;"><strong>Goal A — Posttraumatic Stress Disorder (Dimension 3)</strong></p>
      <p style="font-size:13.5px; margin:2px 0 10px;">Begin addressing the trauma response connected to her motor vehicle accident, to reduce avoidance and peer irritability.</p>
      <p style="font-size:13.5px; margin:0 0 2px;"><strong>Goal B — Treatment Resistance (Dimension 4)</strong></p>
      <p style="font-size:13.5px; margin:2px 0 0;">Increase congruence between her stated recovery intent and her observable behavior.</p>
-   </div>
-   <div class="card">
+   </div>`,
+
+  `<div class="card">
      <div class="card-label">Section C — Dimensions 5 &amp; 6</div>
      <p style="font-size:13.5px; margin:8px 0 2px;"><strong>Goal A — Relapse Proneness (Dimension 5)</strong></p>
      <p style="font-size:13.5px; margin:2px 0 10px;">Develop coping skills to use during cravings occurring outside of program structure.</p>
@@ -3394,10 +3525,11 @@ const ITP_REVIEWS_BEATS = [
   `<h3>What a review actually has to do</h3>
    <ul class="checklist">
      <li>Check each open objective against what the Individual Notes since the last review actually showed — not against memory or assumption</li>
-     <li>Document, somewhere in the record, whether the original Established date is being preserved or whether this is intentionally a fresh version of the goal</li>
+     <li>Note in the record whether this is the same original goal still being worked, or an intentionally fresh one — see the "Continued" convention below</li>
      <li>Update the Target Date on any objective that's still relevant but whose old target has passed</li>
      <li>Add new objectives (or, rarely, new goals) if a new active finding has emerged in a Continued Stay ASAM</li>
-   </ul>`,
+   </ul>
+   <div class="callout"><strong>The "Continued" convention:</strong> since DocAssist always stamps Established as today's date when you generate the plan, that field alone can't tell a later reader whether a goal is brand new or has been active since week one. The fix is simple: when a goal is still the same one from a prior review, note that directly — for example, <span class="term" onclick="this.classList.toggle('term-open')">"Goal A (Continued 8/24/2025)"<span class="term-def">This means: Goal A already existed before this review — it isn't a new goal — and this particular review/check-in on it happened 8/24/2025. Write the real review date here, not the Established date DocAssist generated.</span></span> next to the goal, using the date of <em>this</em> review. That one word and date is what lets someone reading the record later tell "still working this" apart from "just started this."</div>`,
 
   `<div class="callout"><strong>The mistake this invites:</strong> carrying Objective 1A of Section C forward with a stale Target Date, review after review, without checking whether the notes since the last review actually addressed it. If three Individual Notes in a row never mention Objective 1A, the review should say that plainly — not just leave an old target date sitting there as if nothing happened.</div>`,
 
@@ -3442,23 +3574,20 @@ const ITP_ASSEMBLY_BEATS = [
 
   `<div class="scenario-box">
      <div class="who">ASAM finding — Dimension 4, Danielle</div>
-     Client verbalizes intent to maintain sobriety, citing her children as motivation, but minimizes the severity of her opioid use, referring to it as "a bad habit," and distinguishes herself from peers in group ("not like the other people here"). This stated insight is inconsistent with follow-through: client did not complete an assigned relapse prevention worksheet due 7/22, and when reminded 7/24 responded she would "get to it," without a specific plan.
+     Client verbalizes intent to maintain sobriety, citing her children as motivation, but minimizes the severity of her opioid use, referring to it as "a bad habit," and distinguishes herself from peers in group ("not like the other people here"). This stated insight is inconsistent with follow-through: client did not complete an assigned relapse prevention worksheet due 7/22/2025, and when reminded 7/24/2025 responded she would "get to it," without a specific plan.
    </div>
    <p style="font-size:13px; color:var(--ink-soft);">This falls under the library's Treatment Resistance category. Preset goal options include "Learn the facts about addiction, and make a logical decision about the treatment necessary to arrest it" — a reasonable starting point to edit from.</p>
-   <textarea id="itpAssemblyAnswer" placeholder="Write the client quote, Goal B, Objective 1B, and Intervention 1B here..." style="min-height:180px;"></textarea>
+   <textarea id="itpAssemblyAnswer" placeholder="Write the client quote, Goal B, Objective 1B, and Intervention 1B here..." style="min-height:180px;" oninput="document.getElementById('itpAssemblyRevealBtn').disabled = !this.value.trim()"></textarea>
    <div style="margin-top:10px;">
-     <button class="btn" onclick="itpRevealModel('assembly')">Reveal model answer</button>
+     <button class="btn" id="itpAssemblyRevealBtn" disabled onclick="itpRevealModel('assembly')">Reveal model answer</button>
    </div>
    <div class="reveal" id="assemblyReveal">
-     <div class="card-label">Model answer</div>
-     <div class="model-answer">Section B — Dimensions 3 &amp; 4
-Goal B — Treatment Resistance
+     <div class="card-label">Model answer <span style="font-weight:400; font-style:italic; color:var(--ink-soft);">(Section B — Dimensions 3 &amp; 4 · Goal B — Treatment Resistance, already showing in DocAssist, not typed)</span></div>
+     <div class="model-answer">Client stated, "I'm not like the other people here — it's more of a bad habit."
 
-Client stated, "I'm not like the other people here — it's more of a bad habit."
+Goal B: Client will make a logical, honest assessment of her opioid use and increase congruence between her stated recovery intent and her observable behavior. (ESTABLISHED 7/24/2025)
 
-Goal B: Client will make a logical, honest assessment of her opioid use and increase congruence between her stated recovery intent and her observable behavior. (ESTABLISHED 7/24)
-
-Objective 1B: Client will complete the assigned relapse prevention worksheet and review it with her counselor within one week of assignment, addressing the gap between her stated commitment and her minimizing language in group ("a bad habit"). (START DATE 7/24) (TARGET DATE 7/31)
+Objective 1B: Client will complete the assigned relapse prevention worksheet and review it with her counselor within one week of assignment, addressing the gap between her stated commitment and her minimizing language in group ("a bad habit"). (START DATE 7/24/2025) (TARGET DATE 7/31/2025)
 
 Intervention 1B: This clinician will use motivational interviewing to explore client's ambivalence and reinforce follow-through on assigned recovery tasks.</div>
      <ul class="checklist">
@@ -3476,7 +3605,7 @@ Intervention 1B: This clinician will use motivational interviewing to explore cl
    <p>That's the whole thread, in practice, not just in a diagram. If this is the first time you've ever written either of these documents, you now have the real shape of both — the third piece, the Individual Note, is what proves this plan is actually being worked, and it's next. If you've been writing ASAMs and ITPs for a while already, this is the moment worth sitting with: the six-dimension narrative and the goal-and-objective plan were never two separate chores. They're the same clinical judgment about the same person, written down twice, in two different shapes, so the record can hold together under review. Once that clicks, neither document is something you write <em>and then</em> think about the client — writing it well <em>is</em> thinking about the client.</p>`,
 
   `<div class="callout"><strong>This is the whole point of both modules together:</strong> a problem the ASAM already proved is real, turned into a direction, a checkable step, and a specific clinician action — all individualized enough that a reviewer could only be reading about one real person.</div>
-   <span class="badge-done" id="itpFinalBadge" style="display:none;">You've completed the ITP module — nice work</span>
+   <span class="badge-done" id="itpFinalBadge" style="display:none;">🎉 You've completed the ITP module — nice work</span>
    <div class="callout" style="margin-top:16px;">
      <strong>Keep this handy:</strong> the <span class="inline-link" onclick="itpGoTo('itpcheatsheet')" role="link" tabindex="0">quick reference cheat sheet</span>, <span class="inline-link" onclick="itpGoTo('itpmistakes')" role="link" tabindex="0">common mistakes recap</span>, and <span class="inline-link" onclick="itpGoTo('itpfaq')" role="link" tabindex="0">FAQ</span> are built to be reopened anytime you're actually writing an ITP — not just read once during training.
    </div>
@@ -3484,7 +3613,10 @@ Intervention 1B: This clinician will use motivational interviewing to explore cl
      <strong>Coming next:</strong> the Individual Notes module — proving, session by session, that this plan is actually being worked. Once that exists, Danielle's thread will run unbroken from the first thing you ever wrote about her cravings to the note documenting whether she actually called her sister instead of her ex.
    </div>`,
 ];
-const ITP_ASSEMBLY_FINAL = `<span style="font-size:13px; color:var(--ink-soft);">You've reached the end of the ITP module.</span>`;
+const ITP_ASSEMBLY_FINAL = `<div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+  <button class="btn" onclick="openModule('view-note')">Next: Start Individual Notes Module →</button>
+  <button class="btn secondary" onclick="goHome()">← Back to DocTrain home</button>
+</div>`;
 
 const ITP_ASSEMBLY_QUIZ_ITEMS = [
   {
@@ -3591,7 +3723,7 @@ const NOTE_WHY_BEATS = [
      </div>
      <div class="hero-col survive">
        <span class="hero-tag">Proves the plan is being worked</span>
-       <p>This clinician met with client to review Objective 1A of Goal A. Client identified her sister and a former sponsor as two alternative contacts she is willing to reach out to during cravings. Client rated her confidence in following through as 6/10. No risk or safety concerns identified this session.</p>
+       <p>This clinician met with client to review Objective 1A of Goal A of Section C. Client identified her sister and a former sponsor as two alternative contacts she is willing to reach out to during cravings. Client rated her confidence in following through as 6/10. No risk or safety concerns identified this session.</p>
      </div>
    </div>
    <p class="hero-note">Notice this second example follows the same rule as the one above: specific and traceable, but still proportionate. It documents what's needed to show progress — not everything Danielle said in the room.</p>`,
@@ -3614,14 +3746,14 @@ const NOTE_ANATOMY_BEATS = [
    </ul>
    <div class="callout">One honest note about the intervention chips: selecting Motivational Interviewing or CBT doesn't currently generate its own sentence in the output. Pick whichever the session actually centered on — if it centered on exploring what the client wants and building motivation, that's MI; if it centered on examining thought patterns or challenging distorted thinking, that's CBT — and if it mattered clinically, say so in your free text too.</div>`,
 
-  `<h3>The reference format, and the gotcha it creates</h3>
-   <p>An objective gets referenced as its number plus its goal letter — "1A of Goal A." That's it. The note does <strong>not</strong> capture which section that goal belongs to.</p>
-   <div class="callout"><strong>Remember from the ITP module:</strong> letters reset at the start of every section, so "Goal A" alone is ambiguous — Section A's Goal A and Section C's Goal A are different goals. The Individual Note tool doesn't disambiguate this for you. Keeping straight which section's Goal A you mean is entirely on you.</div>`,
+  `<h3>The reference format</h3>
+   <p>An objective gets referenced as its number, its goal letter, and now its section: "Objective 1A of Goal A of Section C." Including the section closes a real gap — since letters reset per section, "Goal A" by itself could mean three different goals, and now the note says exactly which one it means without you having to track that separately.</p>
+   <div class="callout"><strong>Remember from the ITP module:</strong> letters reset at the start of every section, so a bare "Goal A" is still ambiguous on its own — that's exactly why the section is included. It's still worth double-checking that the section named matches the section the goal actually lives in, especially if a client has similarly-named goals in more than one section.</div>`,
 
   `<div class="card">
      <div class="card-label">Worked example — Danielle, reviewing Section C, Goal A, Objective 1A</div>
      <div class="card-label" style="margin-top:14px; color:var(--green-700);">Describe Therapeutic Interventions Provided</div>
-     <div class="model-answer">- This clinician met with client to review Objective 1A of Goal A.
+     <div class="model-answer">- This clinician met with client to review Objective 1A of Goal A of Section C.
 
 - Client was asked to identify support contacts other than her previously identified using contact.</div>
      <div class="card-label" style="margin-top:14px; color:var(--green-700);">Response — Intervention/Progress/Clinical Judgement</div>
@@ -3709,13 +3841,13 @@ const NOTE_DESCRIBE_BEATS = [
      <div class="meta">Session Type: Working off ITP (Reviewing) &nbsp;·&nbsp; Objective Reviewed: 1, Goal A (not yet marked complete)</div>
      <p style="margin:0;">During session, Danielle was asked to name two people, other than her ex-boyfriend, she could call during a craving. After some hesitation, she named her sister and a former AA sponsor, and said she felt comfortable reaching out to both.</p>
    </div>
-   <textarea id="noteDescribeAnswer" placeholder="e.g. Client was asked to identify support contacts other than..."></textarea>
+   <textarea id="noteDescribeAnswer" placeholder="e.g. Client was asked to identify support contacts other than..." oninput="document.getElementById('noteDescribeRevealBtn').disabled = !this.value.trim()"></textarea>
    <div style="margin-top:10px;">
-     <button class="btn" onclick="noteRevealModel('describe')">Reveal model answer</button>
+     <button class="btn" id="noteDescribeRevealBtn" disabled onclick="noteRevealModel('describe')">Reveal model answer</button>
    </div>
    <div class="reveal" id="describeReveal">
      <div class="card-label">Full generated box (auto-text + your free text)</div>
-     <div class="model-answer">- This clinician met with client to review Objective 1A of Goal A.
+     <div class="model-answer">- This clinician met with client to review Objective 1A of Goal A of Section C.
 
 - Client was asked to identify support contacts other than her previously identified using contact.</div>
      <ul class="checklist">
@@ -3747,9 +3879,9 @@ const NOTE_RESPONSE_BEATS = [
      <div class="who">Same session — Danielle, Objective 1A</div>
      Danielle named her sister and a former sponsor as two people she'd call instead of her ex. She rated her confidence in actually following through as 6 out of 10. Her counselor did not mark the objective complete — this was the first time she'd named anyone, and follow-through hasn't been observed yet. No risk concerns came up this session.
    </div>
-   <textarea id="noteResponseAnswer" placeholder="e.g. Client identified... and rated her confidence in following through as..."></textarea>
+   <textarea id="noteResponseAnswer" placeholder="e.g. Client identified... and rated her confidence in following through as..." oninput="document.getElementById('noteResponseRevealBtn').disabled = !this.value.trim()"></textarea>
    <div style="margin-top:10px;">
-     <button class="btn" onclick="noteRevealModel('response')">Reveal model answer</button>
+     <button class="btn" id="noteResponseRevealBtn" disabled onclick="noteRevealModel('response')">Reveal model answer</button>
    </div>
    <div class="reveal" id="responseReveal">
      <div class="card-label">Full generated box (your free text + auto-text)</div>
@@ -3821,24 +3953,24 @@ const NOTE_ASSEMBLY_BEATS = [
      <div class="who">Session — Danielle, Working off ITP (Reviewing)</div>
      Danielle's counselor met with her to review Objective 1A of Goal A in Section A (chronic pain / non-opioid coping). Danielle reported she used a breathing technique from physical therapy twice this week when pain-related cravings came up, and said it "actually helped a little." Her counselor marked this objective complete. The counselor then assigned Danielle Objective 1B of Goal B in Section B (Treatment Resistance) — reviewing the relapse prevention worksheet due at the next session, since Danielle admitted she still hadn't started it. No risk or safety concerns came up.
    </div>
-   <textarea id="noteAssemblyAnswer" placeholder="Write both the Describe box and the Response box here..." style="min-height:180px;"></textarea>
+   <textarea id="noteAssemblyAnswer" placeholder="Write both the Describe box and the Response box here..." style="min-height:180px;" oninput="document.getElementById('noteAssemblyRevealBtn').disabled = !this.value.trim()"></textarea>
    <div style="margin-top:10px;">
-     <button class="btn" onclick="noteRevealModel('noteassembly')">Reveal model answer</button>
+     <button class="btn" id="noteAssemblyRevealBtn" disabled onclick="noteRevealModel('noteassembly')">Reveal model answer</button>
    </div>
    <div class="reveal" id="noteassemblyReveal">
      <div class="card-label">Model answer</div>
      <div class="card-label" style="margin-top:6px; color:var(--green-700);">Describe Therapeutic Interventions Provided</div>
-     <div class="model-answer">- This clinician met with client to review Objective 1A of Goal A.
+     <div class="model-answer">- This clinician met with client to review Objective 1A of Goal A of Section A.
 
 - Client reported using a breathing technique introduced by physical therapy on two occasions this week when experiencing pain-related cravings.
 
-- This clinician assigned client Objective 1B of Goal B from their ITP.</div>
+- This clinician assigned client Objective 1B of Goal B of Section B from their ITP.</div>
      <div class="card-label" style="margin-top:14px; color:var(--green-700);">Response — Intervention/Progress/Clinical Judgement</div>
-     <div class="model-answer">- Client completed objective 1A of Goal A from their ITP.
+     <div class="model-answer">- Client completed Objective 1A of Goal A of Section A from their ITP.
 
-- Client stated the technique "actually helped a little," and acknowledged she has not yet started the assigned relapse prevention worksheet tied to Objective 1B of Goal B.
+- Client stated the technique "actually helped a little," and acknowledged she has not yet started the assigned relapse prevention worksheet tied to Objective 1B of Goal B of Section B.
 
-- Client will work on objective 1B of Goal B from their ITP due next week.
+- Client will work on Objective 1B of Goal B of Section B from their ITP due next week.
 
 - No risk or safety concerns identified this session.</div>
      <ul class="checklist">
@@ -3851,7 +3983,7 @@ const NOTE_ASSEMBLY_BEATS = [
    </div>`,
 
   `<div class="callout"><strong>This is the whole point of the module:</strong> a plan that already existed, worked in real session time, with enough specific evidence that a reviewer could trace this exact note back through the ITP to the ASAM finding that started the whole thread.</div>
-   <span class="badge-done" id="noteFinalBadge" style="display:none;">You've completed the Individual Notes module — nice work</span>
+   <span class="badge-done" id="noteFinalBadge" style="display:none;">🎉 You've completed the Individual Notes module — nice work</span>
    <div class="callout" style="margin-top:16px;">
      <strong>Keep this handy:</strong> the <span class="inline-link" onclick="noteGoTo('notecheatsheet')" role="link" tabindex="0">quick reference cheat sheet</span>, <span class="inline-link" onclick="noteGoTo('notemistakes')" role="link" tabindex="0">common mistakes recap</span>, and <span class="inline-link" onclick="noteGoTo('notefaq')" role="link" tabindex="0">FAQ</span> are built to be reopened anytime you're actually writing a note — not just read once during training.
    </div>
@@ -3859,7 +3991,10 @@ const NOTE_ASSEMBLY_BEATS = [
      <strong>Last stop:</strong> <span class="inline-link" onclick="openModule('view-conclusion')" role="link" tabindex="0">Bringing It Together</span> — Danielle's entire thread, from the first thing you learned about her cravings to the note you just wrote, all in one place.
    </div>`,
 ];
-const NOTE_ASSEMBLY_FINAL = `<span style="font-size:13px; color:var(--ink-soft);">You've reached the end of the Individual Notes module.</span>`;
+const NOTE_ASSEMBLY_FINAL = `<div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+  <button class="btn" onclick="openModule('view-conclusion')">Next: Bringing It Together →</button>
+  <button class="btn secondary" onclick="goHome()">← Back to DocTrain home</button>
+</div>`;
 
 const NOTE_ASSEMBLY_QUIZ_ITEMS = [
   {
@@ -3924,14 +4059,12 @@ const CONCL_ARC_BEATS = [
 
   `<div class="card">
      <div class="step-header"><span class="step-number">2</span><span class="step-title">What the ITP planned to do about it</span></div>
-     <div class="model-answer">Section C — Dimensions 5 &amp; 6
-Goal A — Relapse Proneness
+     <div class="card-label" style="color:var(--ink-soft); font-weight:600;">Section C — Dimensions 5 &amp; 6 · Goal A — Relapse Proneness <span style="font-weight:400; font-style:italic;">(already showing in DocAssist, not typed)</span></div>
+     <div class="model-answer">Client stated, "I don't want to keep calling him just because I don't have anyone else."
 
-Client stated, "I don't want to keep calling him just because I don't have anyone else."
+Goal A: Client will develop coping skills to use during cravings occurring outside of program structure, reducing reliance on her previously identified using contact. (ESTABLISHED 7/24/2025)
 
-Goal A: Client will develop coping skills to use during cravings occurring outside of program structure, reducing reliance on her previously identified using contact. (ESTABLISHED 7/24)
-
-Objective 1A: Client will identify two people, other than her previously identified using contact, that she can call when experiencing cravings. (START DATE 7/24) (TARGET DATE 8/24)
+Objective 1A: Client will identify two people, other than her previously identified using contact, that she can call when experiencing cravings. (START DATE 7/24/2025) (TARGET DATE 8/24/2025)
 
 Intervention 1A: This clinician will use motivational interviewing to help client identify and commit to alternative support contacts.</div>
      <p style="font-size:13px; color:var(--ink-soft); margin-bottom:0;">Built from that exact finding, with her own words attached — nothing here could belong to any other client.</p>
@@ -3940,7 +4073,7 @@ Intervention 1A: This clinician will use motivational interviewing to help clien
   `<div class="card">
      <div class="step-header"><span class="step-number">3</span><span class="step-title">What the Individual Note proved actually happened</span></div>
      <div class="card-label" style="margin-top:6px; color:var(--green-700);">Describe Therapeutic Interventions Provided</div>
-     <div class="model-answer">- This clinician met with client to review Objective 1A of Goal A.
+     <div class="model-answer">- This clinician met with client to review Objective 1A of Goal A of Section C.
 
 - Client was asked to identify support contacts other than her previously identified using contact.</div>
      <div class="card-label" style="margin-top:14px; color:var(--green-700);">Response — Intervention/Progress/Clinical Judgement</div>
@@ -3975,14 +4108,14 @@ const CONCL_ARC_QUIZ_ITEMS = [
     explain: "The ASAM and ITP describe the problem and the plan. Only the Individual Note documents whether real progress is actually happening, session by session."
   },
   {
-    q: "Danielle's ITP goal is in Section C. Her Individual Note references \"Objective 1A of Goal A.\" What has to be true for that reference to be unambiguous?",
+    q: "Danielle's ITP goal is in Section C. Her Individual Note now references \"Objective 1A of Goal A of Section C.\" Why does including the section actually matter here?",
     options: [
-      "Nothing — Goal A always means the same thing everywhere",
-      "The reader has to already know this note is about Section C's Goal A, since the note itself never names the section",
-      "The note is incomplete without a section label and can't be traced at all",
+      "It doesn't — Goal A always means the same thing everywhere",
+      "Because letters reset per section, so without naming the section, \"Goal A\" alone could mean one of several different goals",
+      "It's just a formatting preference with no real effect on tracing the note",
     ],
     correctIdx: 1,
-    explain: "This is the real gotcha from the Notes module: the reference format only carries the letter, not the section. Tracing it correctly depends on staff keeping that context straight themselves."
+    explain: "Letters reset at the start of every section, so a bare \"Goal A\" is genuinely ambiguous on its own. Naming the section is what makes the reference point to exactly one goal instead of possibly three."
   },
   {
     q: "Which of these is the accurate way to describe what changed, and what didn't, across all three documents about Danielle's relapse risk?",
@@ -4032,7 +4165,16 @@ const CONCL_MONDAY_BEATS = [
 
   `<h2>One more time, the whole point</h2>
    <p>You didn't get into this work to fill out forms. You got into it to help people get somewhere better. Every specific sentence, every edited goal, every objective reference in a note — all of it exists for one reason: it's what lets your client stay in the room with you long enough for the actual work to matter. We can't help the client if we don't document. Now you know exactly how the documenting works.</p>
-   <span class="badge-done" id="conclusionFinalBadge" style="display:none;">You've completed DocTrain — nice work</span>`,
+   <span class="badge-done" id="conclusionFinalBadge" style="display:none;">🎉 You've completed DocTrain — nice work</span>`,
+
+  `<h2>This isn't the only place to learn this</h2>
+   <p>A training module can't cover every real case you'll actually sit with, and it isn't supposed to. If something still feels unclear, or a client in front of you doesn't fit neatly into anything covered here, that's a completely normal thing to run into — not a sign you missed something.</p>
+   <ul class="checklist">
+     <li>Bring it to your clinical supervisor — that's exactly what supervision is for</li>
+     <li>Reach out to the Clinical Director directly if it's bigger than a supervision question</li>
+     <li>Talk it through with a peer — someone else on staff has probably run into the same thing</li>
+   </ul>
+   <div class="callout">Asking for help isn't a sign you didn't learn this well enough. It's how documentation actually gets learned — one real, specific case at a time, with someone else to think it through with. We're here to support you.</div>`,
 
   `<div class="callout" style="margin-top:4px;"><strong>Keep the reference material close:</strong> every module's cheat sheet, mistakes recap, and FAQ are built to be reopened anytime you're actually writing — not just read once during training. And when you're ready to write for real: <a href="https://bretzfelder.com/docassist" target="_blank" rel="noopener">DocAssist</a>.</div>
    <div style="margin-top:18px;">
@@ -4071,7 +4213,7 @@ renderASAMNav();
 
 registerBeats('itpWhyBeats', ITP_WHY_BEATS, ITP_WHY_FINAL);
 registerBeats('itpAnatomyBeats', ITP_ANATOMY_BEATS, ITP_ANATOMY_FINAL);
-registerBeats('itpAnatomyExampleBeats', ITP_ANATOMY_EXAMPLE_BEATS, ITP_ANATOMY_EXAMPLE_FINAL, null, ()=>!!itpProgress['itpanatomyexample']);
+registerBeats('itpAnatomyExampleBeats', ITP_ANATOMY_EXAMPLE_BEATS, ITP_ANATOMY_EXAMPLE_FINAL);
 registerBeats('itpFromFindingBeats', ITP_FROMFINDING_BEATS, ITP_FROMFINDING_FINAL, null, ()=>!!itpProgress['itpfromfinding']);
 registerBeats('itpObjectivesBeats', ITP_OBJECTIVES_BEATS, ITP_OBJECTIVES_FINAL, null, ()=>!!itpProgress['itpobjectives']);
 registerBeats('itpInterventionsBeats', ITP_INTERVENTIONS_BEATS, ITP_INTERVENTIONS_FINAL, null, ()=>!!itpProgress['itpinterventions']);
