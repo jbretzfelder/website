@@ -2540,6 +2540,17 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
       </div>
     </div>
+
+    <div class="home-section">
+      <div class="home-section-label">Supervisor Tools</div>
+      <div class="home-grid">
+        <div class="home-card" onclick="navigateTo('productivity')">
+          <div class="home-card-icon"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+          <div class="home-card-title">Productivity Calculator</div>
+          <span class="home-card-arrow">Open →</span>
+        </div>
+      </div>
+    </div>
     </div><!-- /home-tools-area -->
     </div><!-- /home-scroll-area -->
     <div id="home-scroll-hint" class="home-scroll-hint" onclick="document.querySelector('.home-scroll-area').scrollBy({top: 200, behavior: 'smooth'})">
@@ -3965,6 +3976,96 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   width: 100%;
   box-sizing: border-box;
 }
+/* ─── PRODUCTIVITY CALCULATOR ─────────────── */
+.pc-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.pc-count-label { font-size: 12px; font-weight: 600; color: var(--text); }
+.pc-list { display: flex; flex-direction: column; gap: 14px; }
+.pc-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.pc-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.pc-name-input {
+  flex: 1;
+  min-width: 140px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 7px 10px;
+  font-family: 'Public Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  background: white;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.pc-name-input:focus { border-color: var(--border-focus); }
+.pc-remove-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 13px;
+  padding: 4px 6px;
+  line-height: 1;
+  border-radius: 4px;
+  transition: background 0.15s, color 0.15s;
+  flex-shrink: 0;
+}
+.pc-remove-btn:hover { background: var(--warning-bg); color: var(--warning-text); }
+.pc-card-body { padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+.pc-field-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+}
+.pc-field { display: flex; flex-direction: column; gap: 4px; }
+.pc-field label { font-size: 10px; font-weight: 600; color: var(--text-secondary); }
+.pc-help { cursor: help; color: var(--text-secondary); opacity: 0.7; font-weight: 400; }
+.pc-help:hover { opacity: 1; color: var(--accent); }
+.pc-cap-note { font-weight: 400; text-transform: none; letter-spacing: normal; }
+.pc-badge {
+  display: inline-block;
+  align-self: flex-start;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 20px;
+  border: 1px solid transparent;
+}
+.pc-badge-pass { background: var(--accent-light); color: var(--accent); border-color: #b8d9c4; }
+.pc-badge-fail { background: var(--warning-bg); color: var(--warning-text); border-color: var(--warning-border); }
+.pc-badge-neutral { background: var(--bg); color: var(--text-secondary); border-color: var(--border); }
+.pc-result-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 10px;
+  background: var(--bg);
+  border-radius: 6px;
+  padding: 12px;
+}
+.pc-result-item { display: flex; flex-direction: column; gap: 3px; }
+.pc-result-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-secondary); }
+.pc-result-value { font-family: 'DM Mono', monospace; font-size: 15px; font-weight: 600; color: var(--text); }
+.pc-result-highlight .pc-result-value { color: var(--accent); font-size: 18px; }
+.pc-copy-btn { align-self: flex-start; font-size: 11px; padding: 6px 14px; }
 </style>
 
 <div id="view-group" class="tool-view">
@@ -5032,6 +5133,30 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     </div>
   </div>
 </div><!-- /view-asa -->
+
+<!-- ═══ PRODUCTIVITY CALCULATOR VIEW ════════════════ -->
+<div id="view-productivity" class="tool-view">
+  <div class="tool-nav">
+    <button class="tool-nav-back" onclick="navigateTo('home')">← Back</button>
+    <span class="tool-nav-divider">|</span>
+    <span class="tool-nav-title">Productivity Calculator</span>
+  </div>
+
+  <div class="pc-scroll-area" style="flex:1;min-height:0;overflow-y:auto;">
+    <div style="max-width:900px;margin:0 auto;padding:18px;width:100%;box-sizing:border-box;">
+      <div class="pc-toolbar">
+        <div class="pc-count-label" id="pc-count-label">1 counselor</div>
+        <button class="btn btn-ghost" onclick="pcAddCounselor()">+ Add Counselor</button>
+      </div>
+      <div class="pc-list" id="pc-list"></div>
+    </div>
+  </div>
+
+  <div class="generate-bar">
+    <span class="generate-bar-hint">Targets: Residential 65% · IOP / OP 75% · PHP 80%. Figures aren't saved to Remarkable — copy them wherever you track productivity.</span>
+    <button class="btn btn-primary" id="pc-copy-all-btn" onclick="pcCopyAll()">Copy All</button>
+  </div>
+</div><!-- /view-productivity -->
 
 <!-- ═══ CHANGELOG VIEW ════════════════════════════════════ -->
 <!-- Changelog modal -->
@@ -10852,6 +10977,9 @@ function doReset() {
   // Reset ASA note
   asaClear();
 
+  // Reset productivity calculator
+  pcReset();
+
   // Go back to tab 1
   switchTab(1);
 }
@@ -12545,6 +12673,243 @@ function asaClear() {
   document.getElementById('asaResponseOutput').textContent = '';
 }
 
+// ═══════════════════════════════════════════════════
+// PRODUCTIVITY CALCULATOR
+// ═══════════════════════════════════════════════════
+let pcNextId = 1;
+let pcCounselors = [];
+
+function pcNum(v) { const n = parseFloat(v); return isNaN(n) ? 0 : n; }
+
+function pcNewCounselor() {
+  return {
+    id: pcNextId++,
+    name: '',
+    type: 'res',        // 'res' | 'iopop' | 'php'
+    period: 'weekly',    // 'weekly' | 'monthly' — residential only
+    totalHrs: '', code1: '', code2: '', time1: '', time2: '', pto: '',
+    workdaysMonth: '', workdaysLeft: '',
+    c400: '', c400t: '', c402: '', c402t: '', c403: '', c404: '', c404t: '',
+    noShow: '', timeGroup: '', hoursWorked: ''
+  };
+}
+
+function pcInit() {
+  if (pcCounselors.length === 0) pcCounselors.push(pcNewCounselor());
+  pcRenderAll();
+}
+
+function pcAddCounselor() {
+  pcCounselors.push(pcNewCounselor());
+  pcRenderAll();
+}
+
+function pcRemoveCounselor(id) {
+  pcCounselors = pcCounselors.filter(c => c.id !== id);
+  if (pcCounselors.length === 0) pcCounselors.push(pcNewCounselor());
+  pcRenderAll();
+}
+
+function pcSetType(id, type) {
+  const c = pcCounselors.find(c => c.id === id);
+  if (!c) return;
+  c.type = type;
+  pcRenderAll();
+}
+
+function pcSetPeriod(id, period) {
+  const c = pcCounselors.find(c => c.id === id);
+  if (!c) return;
+  c.period = period;
+  pcRenderAll();
+}
+
+function pcUpdate(id, field, value) {
+  const c = pcCounselors.find(c => c.id === id);
+  if (!c) return;
+  c[field] = value;
+  pcUpdateResults(id);
+}
+
+function pcCompute(c) {
+  if (c.type === 'res') {
+    const total = (pcNum(c.totalHrs) - (pcNum(c.code1) + pcNum(c.code2))) + (pcNum(c.time1) + pcNum(c.time2));
+    const target = 0.65;
+    let denom, minTotal = null, prodLeft = null, prodPerDay = null;
+    if (c.period === 'weekly') {
+      denom = 40 - pcNum(c.pto);
+    } else {
+      denom = (pcNum(c.workdaysMonth) * 8) - pcNum(c.pto);
+      minTotal = denom * target;
+      prodLeft = minTotal - total;
+      prodPerDay = pcNum(c.workdaysLeft) > 0 ? prodLeft / pcNum(c.workdaysLeft) : null;
+    }
+    const prod = denom > 0 ? total / denom : null;
+    return { total, prod, target, minTotal, prodLeft, prodPerDay };
+  } else {
+    const target = c.type === 'php' ? 0.80 : 0.75;
+    const hoursWorkedCapped = Math.min(pcNum(c.hoursWorked), 40);
+    const numerator = (((pcNum(c.totalHrs) - pcNum(c.c400) - pcNum(c.c400t) - pcNum(c.c402) - pcNum(c.c402t) - pcNum(c.c403) - pcNum(c.c404) - pcNum(c.c404t)) + pcNum(c.timeGroup)) - pcNum(c.noShow));
+    const prod = hoursWorkedCapped > 0 ? numerator / hoursWorkedCapped : null;
+    return { numerator, prod, target, hoursWorkedCapped };
+  }
+}
+
+function pcFmtPct(v) { return (v === null || !isFinite(v)) ? '—' : (v * 100).toFixed(1) + '%'; }
+function pcFmtNum(v) { return (v === null || !isFinite(v)) ? '—' : (Math.round(v * 100) / 100).toString(); }
+function pcTypeLabel(type) { return type === 'res' ? 'Residential' : (type === 'iopop' ? 'IOP / OP' : 'PHP'); }
+
+function pcBadgeInfo(r) {
+  if (r.prod === null) return { cls: 'pc-badge-neutral', text: 'Incomplete' };
+  if (r.prod >= r.target) return { cls: 'pc-badge-pass', text: 'Meets Target (' + (r.target * 100).toFixed(0) + '%)' };
+  return { cls: 'pc-badge-fail', text: 'Below Target (' + (r.target * 100).toFixed(0) + '%)' };
+}
+
+function pcUpdateResults(id) {
+  const c = pcCounselors.find(c => c.id === id);
+  if (!c) return;
+  const r = pcCompute(c);
+  const pctEl = document.getElementById('pc-pct-' + id);
+  if (pctEl) pctEl.textContent = pcFmtPct(r.prod);
+  const badge = document.getElementById('pc-badge-' + id);
+  if (badge) {
+    const info = pcBadgeInfo(r);
+    badge.textContent = info.text;
+    badge.className = 'pc-badge ' + info.cls;
+  }
+  if (c.type === 'res') {
+    const totalEl = document.getElementById('pc-total-' + id);
+    if (totalEl) totalEl.textContent = pcFmtNum(r.total);
+    if (c.period === 'monthly') {
+      const minEl = document.getElementById('pc-min-' + id);
+      const leftEl = document.getElementById('pc-left-' + id);
+      const perDayEl = document.getElementById('pc-perday-' + id);
+      if (minEl) minEl.textContent = pcFmtNum(r.minTotal);
+      if (leftEl) leftEl.textContent = pcFmtNum(r.prodLeft);
+      if (perDayEl) perDayEl.textContent = pcFmtNum(r.prodPerDay);
+    }
+  }
+}
+
+function pcFieldsHTML(c) {
+  if (c.type === 'res') {
+    const code1Label = c.period === 'weekly' ? '401 Service Hours' : '401 Billing Hours';
+    const code2Label = c.period === 'weekly' ? '61RSG Service Hours' : '61RSG Billing Hours';
+    return `
+      <div class="toggle-group" style="align-self:flex-start">
+        <button class="toggle-btn ${c.period === 'weekly' ? 'active' : ''}" onclick="pcSetPeriod(${c.id},'weekly')">Weekly</button>
+        <button class="toggle-btn ${c.period === 'monthly' ? 'active' : ''}" onclick="pcSetPeriod(${c.id},'monthly')">Monthly</button>
+      </div>
+      <div class="pc-field-grid">
+        <div class="pc-field"><label>Total Billing Hours</label><input class="gn-input" type="number" step="any" value="${c.totalHrs}" oninput="pcUpdate(${c.id},'totalHrs',this.value)"></div>
+        <div class="pc-field"><label>${code1Label}</label><input class="gn-input" type="number" step="any" value="${c.code1}" oninput="pcUpdate(${c.id},'code1',this.value)"></div>
+        <div class="pc-field"><label>${code2Label}</label><input class="gn-input" type="number" step="any" value="${c.code2}" oninput="pcUpdate(${c.id},'code2',this.value)"></div>
+        <div class="pc-field"><label>Time Spent in 401</label><input class="gn-input" type="number" step="any" value="${c.time1}" oninput="pcUpdate(${c.id},'time1',this.value)"></div>
+        <div class="pc-field"><label>Time Spent in 61RSG</label><input class="gn-input" type="number" step="any" value="${c.time2}" oninput="pcUpdate(${c.id},'time2',this.value)"></div>
+        <div class="pc-field"><label>PTO</label><input class="gn-input" type="number" step="any" value="${c.pto}" oninput="pcUpdate(${c.id},'pto',this.value)"></div>
+        ${c.period === 'monthly' ? `
+        <div class="pc-field"><label>Workdays in Month</label><input class="gn-input" type="number" step="any" value="${c.workdaysMonth}" oninput="pcUpdate(${c.id},'workdaysMonth',this.value)"></div>
+        <div class="pc-field"><label>Workdays Left</label><input class="gn-input" type="number" step="any" value="${c.workdaysLeft}" oninput="pcUpdate(${c.id},'workdaysLeft',this.value)"></div>` : ''}
+      </div>`;
+  }
+  return `
+      <div class="pc-field-grid">
+        <div class="pc-field"><label>Total Billing Hours</label><input class="gn-input" type="number" step="any" value="${c.totalHrs}" oninput="pcUpdate(${c.id},'totalHrs',this.value)"></div>
+        <div class="pc-field"><label>400 Billing Hours</label><input class="gn-input" type="number" step="any" value="${c.c400}" oninput="pcUpdate(${c.id},'c400',this.value)"></div>
+        <div class="pc-field"><label>400T Billing Hours</label><input class="gn-input" type="number" step="any" value="${c.c400t}" oninput="pcUpdate(${c.id},'c400t',this.value)"></div>
+        <div class="pc-field"><label>402 Billing Hours</label><input class="gn-input" type="number" step="any" value="${c.c402}" oninput="pcUpdate(${c.id},'c402',this.value)"></div>
+        <div class="pc-field"><label>402T Billing Hours</label><input class="gn-input" type="number" step="any" value="${c.c402t}" oninput="pcUpdate(${c.id},'c402t',this.value)"></div>
+        <div class="pc-field"><label>403 Billing Hours</label><input class="gn-input" type="number" step="any" value="${c.c403}" oninput="pcUpdate(${c.id},'c403',this.value)"></div>
+        <div class="pc-field"><label>404 Billing Hours</label><input class="gn-input" type="number" step="any" value="${c.c404}" oninput="pcUpdate(${c.id},'c404',this.value)"></div>
+        <div class="pc-field"><label>404T Billing Hours</label><input class="gn-input" type="number" step="any" value="${c.c404t}" oninput="pcUpdate(${c.id},'c404t',this.value)"></div>
+        <div class="pc-field"><label>"No Show" Time <span class="pc-help" title="In Remarkable, filter the client's service log to Status = No Show only, then total the scheduled time for those services.">ⓘ</span></label><input class="gn-input" type="number" step="any" value="${c.noShow}" oninput="pcUpdate(${c.id},'noShow',this.value)"></div>
+        <div class="pc-field"><label>Time Spent in Group</label><input class="gn-input" type="number" step="any" value="${c.timeGroup}" oninput="pcUpdate(${c.id},'timeGroup',this.value)"></div>
+        <div class="pc-field"><label>Hours Worked <span class="pc-cap-note">(capped at 40)</span></label><input class="gn-input" type="number" step="any" value="${c.hoursWorked}" oninput="pcUpdate(${c.id},'hoursWorked',this.value)"></div>
+      </div>`;
+}
+
+function pcResultsHTML(c, r) {
+  if (c.type === 'res') {
+    return `
+      <div class="pc-result-grid">
+        <div class="pc-result-item"><div class="pc-result-label">Total</div><div class="pc-result-value" id="pc-total-${c.id}">${pcFmtNum(r.total)}</div></div>
+        <div class="pc-result-item pc-result-highlight"><div class="pc-result-label">Productivity</div><div class="pc-result-value" id="pc-pct-${c.id}">${pcFmtPct(r.prod)}</div></div>
+        ${c.period === 'monthly' ? `
+        <div class="pc-result-item"><div class="pc-result-label">Minimum Total (65%)</div><div class="pc-result-value" id="pc-min-${c.id}">${pcFmtNum(r.minTotal)}</div></div>
+        <div class="pc-result-item"><div class="pc-result-label">Prod. Left</div><div class="pc-result-value" id="pc-left-${c.id}">${pcFmtNum(r.prodLeft)}</div></div>
+        <div class="pc-result-item"><div class="pc-result-label">Prod. Per Day</div><div class="pc-result-value" id="pc-perday-${c.id}">${pcFmtNum(r.prodPerDay)}</div></div>` : ''}
+      </div>`;
+  }
+  return `
+      <div class="pc-result-grid">
+        <div class="pc-result-item pc-result-highlight"><div class="pc-result-label">Productivity</div><div class="pc-result-value" id="pc-pct-${c.id}">${pcFmtPct(r.prod)}</div></div>
+      </div>`;
+}
+
+function pcCardHTML(c) {
+  const r = pcCompute(c);
+  const badge = pcBadgeInfo(r);
+  return `
+    <div class="pc-card" id="pc-card-${c.id}">
+      <div class="pc-card-header">
+        <input class="pc-name-input" type="text" placeholder="Counselor name" value="${c.name}" oninput="pcUpdate(${c.id},'name',this.value)">
+        <div class="toggle-group">
+          <button class="toggle-btn ${c.type === 'res' ? 'active' : ''}" onclick="pcSetType(${c.id},'res')">Residential</button>
+          <button class="toggle-btn ${c.type === 'iopop' ? 'active' : ''}" onclick="pcSetType(${c.id},'iopop')">IOP / OP</button>
+          <button class="toggle-btn ${c.type === 'php' ? 'active' : ''}" onclick="pcSetType(${c.id},'php')">PHP</button>
+        </div>
+        <button class="pc-remove-btn" title="Remove" onclick="pcRemoveCounselor(${c.id})">✕</button>
+      </div>
+      <div class="pc-card-body">
+        ${pcFieldsHTML(c)}
+        <div class="pc-badge ${badge.cls}" id="pc-badge-${c.id}">${badge.text}</div>
+        ${pcResultsHTML(c, r)}
+        <button class="btn btn-ghost pc-copy-btn" onclick="pcCopyCard(${c.id})">Copy Percentage</button>
+      </div>
+    </div>`;
+}
+
+function pcRenderAll() {
+  const container = document.getElementById('pc-list');
+  if (!container) return;
+  container.innerHTML = pcCounselors.map(pcCardHTML).join('');
+  const label = document.getElementById('pc-count-label');
+  if (label) label.textContent = pcCounselors.length + (pcCounselors.length === 1 ? ' counselor' : ' counselors');
+}
+
+function pcCopyCard(id) {
+  const c = pcCounselors.find(c => c.id === id);
+  if (!c) return;
+  const r = pcCompute(c);
+  navigator.clipboard.writeText(pcFmtPct(r.prod));
+  const btn = document.querySelector(`#pc-card-${id} .pc-copy-btn`);
+  if (btn) {
+    const original = btn.textContent;
+    btn.textContent = 'Copied ✓';
+    setTimeout(() => { btn.textContent = original; }, 1400);
+  }
+}
+
+function pcCopyAll() {
+  const lines = pcCounselors.map(c => {
+    const r = pcCompute(c);
+    const name = c.name || 'Counselor';
+    return `${name}: ${pcFmtPct(r.prod)}`;
+  });
+  navigator.clipboard.writeText(lines.join('\n'));
+  const btn = document.getElementById('pc-copy-all-btn');
+  if (btn) {
+    const original = btn.textContent;
+    btn.textContent = 'Copied ✓';
+    setTimeout(() => { btn.textContent = original; }, 1400);
+  }
+}
+
+function pcReset() {
+  pcCounselors = [pcNewCounselor()];
+  pcRenderAll();
+}
+
 // Init on load
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('sn-date').value = snState.date;
@@ -12563,6 +12928,7 @@ document.addEventListener('DOMContentLoaded', () => {
   nnUpdateProgress();
   document.getElementById('asa-date').value = asaState.date;
   asaBuildChips();
+  pcInit();
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
