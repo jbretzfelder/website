@@ -545,13 +545,8 @@
     user-select:none; -webkit-user-select:none; -moz-user-select:none; -ms-user-select:none;
   }
   .home-brand-title .accent{color:#2d6a4f;}
-  .home-meta{
-    font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--ink-soft);
-    margin-bottom:20px;
-    user-select:none; -webkit-user-select:none; -moz-user-select:none; -ms-user-select:none;
-  }
   #view-home .lede{
-    margin-bottom:14px;
+    margin-bottom:14px; max-width:none;
     user-select:none; -webkit-user-select:none; -moz-user-select:none; -ms-user-select:none;
   }
   #view-home .sub{font-size:13.5px; color:var(--ink-soft); margin:0 0 6px;}
@@ -589,20 +584,27 @@
   .home-card-status.soon{background:#e5e3da; color:#8a8677;}
   .home-card-arrow{font-size:18px; color:var(--green-500); flex-shrink:0;}
   .home-card.disabled .home-card-arrow{color:#c9c6b9;}
+  .home-card-meta{
+    display:flex; flex-direction:column; align-items:flex-end; gap:6px; flex-shrink:0;
+  }
   .home-card-time{
     font-family:'IBM Plex Mono', monospace; font-size:11px; font-weight:500;
-    color:var(--ink-soft); margin-left:8px;
+    color:var(--ink-soft); white-space:nowrap;
   }
-  .home-pacing-note{
-    font-size:13.5px; color:var(--ink-soft); background:var(--green-100);
-    border-radius:10px; padding:12px 16px; margin-bottom:8px; max-width:640px;
-    line-height:1.5;
+  .home-info-box{
+    background:var(--green-100); border:1px solid var(--border); border-radius:12px;
+    padding:20px 22px; margin-bottom:8px;
   }
-  .home-pacing-note a{font-weight:600;}
-  .home-docassist-link{
-    margin-top:28px; font-size:13.5px; color:var(--ink-soft); text-align:center;
+  .home-info-row{
+    display:flex; align-items:baseline; gap:16px; font-size:13.5px; color:var(--ink-soft); line-height:1.5;
   }
-  .home-docassist-link a{font-weight:600;}
+  .home-info-row + .home-info-row{margin-top:10px;}
+  .home-info-badge{
+    font-family:'IBM Plex Mono', monospace; font-size:10.5px; font-weight:700;
+    text-transform:uppercase; letter-spacing:.04em; color:var(--green-700);
+    flex-shrink:0; white-space:nowrap; width:108px;
+  }
+  .home-info-row a{font-weight:600;}
 
   /* Top-level view switching */
   .top-view{display:none;}
@@ -616,64 +618,84 @@
     <div class="home-brand-title">Doc<span class="accent">Train</span></div>
   </div>
   <p class="lede">You got into this work to help people, not to fill out forms. This tool covers why documentation matters, and how to do it well.</p>
-  <div class="home-meta">Self-paced — picks up where you left off</div>
-  <div class="home-pacing-note">This isn't built to finish in one sitting. Most people go through it over several sessions in their first week or two — each module saves your place, so there's no penalty for stopping mid-section. When it's time to write for real, <a href="https://bretzfelder.com/docassist" target="_blank" rel="noopener">DocAssist</a> is the tool you'll actually draft in.</div>
+
+  <div class="home-info-box">
+    <div class="home-info-row">
+      <span class="home-info-badge">Self-paced</span>
+      <span>Picks up where you left off — most people spread this over several sessions, and there's no penalty for stopping mid-section.</span>
+    </div>
+    <div class="home-info-row">
+      <span class="home-info-badge">The real tool</span>
+      <span>This training builds judgment. When it's time to actually draft an ASAM, ITP, or note, that happens in <a href="https://bretzfelder.com/docassist" target="_blank" rel="noopener">DocAssist</a>.</span>
+    </div>
+  </div>
 
   <div class="track-label">Start here</div>
   <div class="home-card" onclick="openModule('view-bigpicture')" id="cardThread">
-    <div class="home-card-icon">GT</div>
+    <div class="home-card-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3"/><path d="M9 17H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
     <div class="home-card-body">
-      <div class="home-card-title">The Golden Thread <span class="home-card-time">~10 min</span></div>
+      <div class="home-card-title">The Golden Thread</div>
       <div class="home-card-desc">Why ASAM, ITP, and Individual Notes are one connected system — not three separate forms</div>
     </div>
-    <span class="home-card-status" id="statusThread"></span>
+    <div class="home-card-meta">
+      <span class="home-card-time">~10 min</span>
+      <span class="home-card-status" id="statusThread"></span>
+    </div>
     <span class="home-card-arrow">→</span>
   </div>
 
   <div class="track-label">Modules</div>
   <div class="home-card" onclick="openModule('view-asam')" id="cardAsam">
-    <div class="home-card-icon">A</div>
+    <div class="home-card-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
     <div class="home-card-body">
-      <div class="home-card-title">ASAM Documentation <span class="home-card-time">~35–45 min</span></div>
+      <div class="home-card-title">ASAM Documentation</div>
       <div class="home-card-desc">Writing narratives, risk ratings, and criteria that survive payer review, then drafting them in DocAssist</div>
     </div>
-    <span class="home-card-status" id="statusAsam"></span>
+    <div class="home-card-meta">
+      <span class="home-card-time">~35–45 min</span>
+      <span class="home-card-status" id="statusAsam"></span>
+    </div>
     <span class="home-card-arrow">→</span>
   </div>
 
   <div class="home-card" onclick="openModule('view-itp')" id="cardItp">
-    <div class="home-card-icon">I</div>
+    <div class="home-card-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg></div>
     <div class="home-card-body">
-      <div class="home-card-title">ITP Development <span class="home-card-time">~30 min</span></div>
+      <div class="home-card-title">ITP Development</div>
       <div class="home-card-desc">Turning ASAM findings into individualized, defensible goals and objectives</div>
     </div>
-    <span class="home-card-status" id="statusItp"></span>
+    <div class="home-card-meta">
+      <span class="home-card-time">~30 min</span>
+      <span class="home-card-status" id="statusItp"></span>
+    </div>
     <span class="home-card-arrow">→</span>
   </div>
 
   <div class="home-card" onclick="openModule('view-note')" id="cardNote">
-    <div class="home-card-icon">N</div>
+    <div class="home-card-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></div>
     <div class="home-card-body">
-      <div class="home-card-title">Individual Notes <span class="home-card-time">~25 min</span></div>
+      <div class="home-card-title">Individual Notes</div>
       <div class="home-card-desc">Documenting session progress that ties back to the ITP</div>
     </div>
-    <span class="home-card-status" id="statusNote"></span>
+    <div class="home-card-meta">
+      <span class="home-card-time">~25 min</span>
+      <span class="home-card-status" id="statusNote"></span>
+    </div>
     <span class="home-card-arrow">→</span>
   </div>
 
   <div class="track-label">Wrap-up</div>
   <div class="home-card" onclick="openModule('view-conclusion')" id="cardConclusion">
-    <div class="home-card-icon">✓</div>
+    <div class="home-card-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
     <div class="home-card-body">
-      <div class="home-card-title">Bringing It Together <span class="home-card-time">~10 min</span></div>
+      <div class="home-card-title">Bringing It Together</div>
       <div class="home-card-desc">Danielle's full thread, start to finish — and what actually changes now that you know it</div>
     </div>
-    <span class="home-card-status" id="statusConclusion"></span>
+    <div class="home-card-meta">
+      <span class="home-card-time">~10 min</span>
+      <span class="home-card-status" id="statusConclusion"></span>
+    </div>
     <span class="home-card-arrow">→</span>
-  </div>
-
-  <div class="home-docassist-link">
-    When it's time for the real thing: <a href="https://bretzfelder.com/docassist" target="_blank" rel="noopener">bretzfelder.com/docassist →</a>
   </div>
 </div>
 
@@ -4012,7 +4034,7 @@ const CONCL_MONDAY_BEATS = [
    <p>You didn't get into this work to fill out forms. You got into it to help people get somewhere better. Every specific sentence, every edited goal, every objective reference in a note — all of it exists for one reason: it's what lets your client stay in the room with you long enough for the actual work to matter. We can't help the client if we don't document. Now you know exactly how the documenting works.</p>
    <span class="badge-done" id="conclusionFinalBadge" style="display:none;">You've completed DocTrain — nice work</span>`,
 
-  `<div class="callout" style="margin-top:4px;"><strong>Keep the reference material close:</strong> every module's cheat sheet, mistakes recap, and FAQ are built to be reopened anytime you're actually writing — not just read once during training. And when you're ready to write for real: <a href="https://bretzfelder.com/docassist" target="_blank" rel="noopener">bretzfelder.com/docassist</a>.</div>
+  `<div class="callout" style="margin-top:4px;"><strong>Keep the reference material close:</strong> every module's cheat sheet, mistakes recap, and FAQ are built to be reopened anytime you're actually writing — not just read once during training. And when you're ready to write for real: <a href="https://bretzfelder.com/docassist" target="_blank" rel="noopener">DocAssist</a>.</div>
    <div style="margin-top:18px;">
      <button class="btn" onclick="conclusionMarkComplete('concl-monday'); goHome()">← Back to DocTrain home</button>
    </div>`,
