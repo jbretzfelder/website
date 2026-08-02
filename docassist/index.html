@@ -4037,6 +4037,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 }
 .pc-header-pct.pc-pct-pass { color: var(--accent); }
 .pc-header-pct.pc-pct-fail { color: var(--warning-text); }
+.pc-header-pct.pc-pct-warn { color: #c0392b; }
 .pc-remove-btn {
   background: none;
   border: none;
@@ -4052,6 +4053,14 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 .pc-remove-btn:hover { background: var(--warning-bg); color: var(--warning-text); }
 .pc-card-body { display: none; padding: 14px; border-top: 1px solid var(--border); flex-direction: column; gap: 12px; }
 .pc-card-body.open { display: flex; }
+.pc-empty-hint {
+  font-size: 12px;
+  font-style: italic;
+  color: var(--text-secondary);
+  background: var(--bg);
+  border-radius: 6px;
+  padding: 8px 12px;
+}
 .pc-field-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -4073,7 +4082,6 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   vertical-align: text-bottom;
 }
 .pc-help:hover { opacity: 1; color: var(--accent); }
-.pc-cap-note { font-weight: 400; text-transform: none; letter-spacing: normal; }
 .pc-badge {
   display: inline-block;
   align-self: flex-start;
@@ -4086,6 +4094,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 }
 .pc-badge-pass { background: var(--accent-light); color: var(--accent); border-color: #b8d9c4; }
 .pc-badge-fail { background: var(--warning-bg); color: var(--warning-text); border-color: var(--warning-border); }
+.pc-badge-warn { background: #fdecea; color: #c0392b; border-color: #f3b7ae; }
 .pc-badge-neutral { background: var(--bg); color: var(--text-secondary); border-color: var(--border); }
 .pc-result-grid {
   display: grid;
@@ -5200,6 +5209,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       <div class="pc-toolbar">
         <div class="pc-count-label" id="pc-count-label">1 counselor</div>
         <div class="pc-toolbar-actions">
+          <button class="btn btn-ghost" onclick="showModal('pcCalcGuideModal')">How to Calculate</button>
           <button class="btn btn-ghost" onclick="pcExpandAll(false)">Collapse All</button>
           <button class="btn btn-ghost" onclick="pcExpandAll(true)">Expand All</button>
           <button class="btn btn-ghost" onclick="pcAddCounselor()">+ Add Counselor</button>
@@ -5241,6 +5251,116 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     </div>
     <div style="display:flex;justify-content:flex-end">
       <button class="btn btn-primary" onclick="hideModal('pcNoShowHelpModal')">Got it</button>
+    </div>
+  </div>
+</div>
+
+<div id="pcCalcGuideModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;align-items:center;justify-content:center;" onclick="if(event.target===this)hideModal('pcCalcGuideModal')">
+  <div style="background:#f8faf9;border-radius:10px;max-width:680px;width:92%;max-height:86vh;box-shadow:0 20px 60px rgba(0,0,0,0.2);display:flex;flex-direction:column;">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:20px 24px 16px;border-bottom:1px solid var(--border);flex-shrink:0;">
+      <div>
+        <div style="font-size:16px;font-weight:600;color:#1b4332;">How to Calculate Productivity</div>
+        <div style="font-size:12px;color:#5a6a62;margin-top:2px;">Where each number comes from in Remarkable and Paychex.</div>
+      </div>
+      <button onclick="hideModal('pcCalcGuideModal')" style="background:none;border:none;font-size:18px;color:#999;cursor:pointer;line-height:1;padding:0 0 0 12px;" title="Close">✕</button>
+    </div>
+    <div style="overflow-y:auto;padding:20px 24px 28px;">
+
+      <div style="background:#edf7f1;border:1px solid #b7e4c7;border-radius:6px;padding:14px 16px;margin-bottom:22px;">
+        <div style="font-size:13px;font-weight:700;color:#1b4332;margin-bottom:6px;">The big picture</div>
+        <div style="font-size:13px;line-height:1.65;color:#2d4a3a;">
+          Productivity compares actual client-facing work to hours actually worked. Group billing inflates hours — one physical group session can bill multiple times, once per client or service code. So this calculator backs that inflated billing out of the total, then adds the group's real physical time back in, counted once.
+        </div>
+      </div>
+
+      <div style="margin-bottom:22px;">
+        <div style="font-size:13px;font-weight:700;color:#1b4332;margin-bottom:8px;">Weekly vs. Monthly</div>
+        <div style="font-size:13px;line-height:1.7;color:var(--text);margin-bottom:8px;">
+          <strong>PHP / OP</strong> is calculated the same way whether you're looking at a week or a whole month — just widen the date range in Remarkable and Paychex to cover the month. There's no separate monthly mode for PHP/OP.
+        </div>
+        <div style="font-size:13px;line-height:1.7;color:var(--text);">
+          <strong>Residential</strong> works differently for Monthly. Instead of just widening the date range, it compares progress against a running target, so you can tell a counselor — before the month ends — exactly how much productivity they still need per day to hit goal. That's why Residential has a dedicated Monthly mode with extra fields (Workdays in Month, Workdays Left) that PHP/OP doesn't need.
+        </div>
+      </div>
+
+      <div style="margin-bottom:22px;">
+        <div style="font-size:13px;font-weight:700;color:#1b4332;margin-bottom:8px;">Step 1 — Match your date range</div>
+        <div style="font-size:13px;line-height:1.65;color:var(--text);">
+          Use the exact same start and end dates in Remarkable, Paychex, and this calculator. If any of the three cover a different span, nothing else here will line up.
+        </div>
+      </div>
+
+      <div style="margin-bottom:22px;">
+        <div style="font-size:13px;font-weight:700;color:#1b4332;margin-bottom:8px;">Step 2 — Pull Total Billing Hours (Remarkable)</div>
+        <div style="font-size:13px;line-height:1.7;color:var(--text);">
+          Billing → Progress Note Search. Enter the date range, set Staff to the counselor, Billable Service = Yes, Signature Status = Signed, then click Search. Record the "Total: Hours" from the results and enter it into <strong>Total Billing Hours</strong>.
+        </div>
+      </div>
+
+      <div style="margin-bottom:22px;">
+        <div style="font-size:13px;font-weight:700;color:#1b4332;margin-bottom:8px;">Step 3 — Pull each service code's hours, one at a time</div>
+        <div style="font-size:13px;line-height:1.7;color:var(--text);margin-bottom:8px;">
+          Run that same search again, but this time add a Type of Service filter — and repeat it once per code you have a box for in this calculator:
+        </div>
+        <div style="font-size:13px;line-height:1.7;color:var(--text);margin-bottom:8px;">
+          <strong>Residential:</strong> 401, 61RSG<br>
+          <strong>PHP / OP:</strong> 400, 400T, 402, 402T, 403, 404, 404T
+        </div>
+        <div style="font-size:13px;line-height:1.7;color:var(--text);">
+          Each time, record that code's "Total: Hours" and enter it into the matching field in this calculator. These hours represent billing volume, not physical time in the room.
+        </div>
+      </div>
+
+      <div style="background:#fffbeb;border:1px solid var(--warning-border);border-radius:6px;padding:14px 16px;margin-bottom:22px;">
+        <div style="font-size:13px;font-weight:700;color:var(--warning-text);margin-bottom:6px;">Step 4 — Time Spent in Group (the critical step)</div>
+        <div style="font-size:13px;line-height:1.7;color:#5a4526;margin-bottom:10px;">
+          Count each physical group session once — not once per billed service. Use the Date, Start Time, and End Time in the search results: if the same time block shows up more than once, that's one session billed several times, not several sessions.
+        </div>
+        <div style="font-size:13px;line-height:1.7;color:#5a4526;margin-bottom:10px;">
+          <strong>If different levels of care were in the same group at the same time</strong> — say a 2.1 client and a 1.0 client, billed under different codes — that session still only happened once.
+        </div>
+        <div style="font-size:13px;line-height:1.7;color:#5a4526;margin-bottom:10px;">
+          <strong>Residential:</strong> enter that session's time under just one of the two group-time fields — Time Spent in 401 or Time Spent in 61RSG — not both. Splitting one session's time across both fields double-counts it, since the calculator adds them together.
+        </div>
+        <div style="font-size:13px;line-height:1.7;color:#5a4526;">
+          <strong>PHP / OP — this is the confusing one:</strong> there's only one field here, Time Spent in Group. This isn't just a code-and-its-"T"-version thing — any of the seven codes (400, 400T, 402, 402T, 403, 404, 404T) can show up as a separate result for the very same physical group, because different clients in that same group can be billed under different codes. When you search each code one at a time in Step 3, compare the Date, Start Time, and End Time across all of them, not just within one code. If two different codes' results show the same date and time, that's one physical group, not two. Count that block of time <strong>once</strong> in Time Spent in Group — don't add it in again every time it shows up under another code.
+        </div>
+      </div>
+
+      <div style="margin-bottom:22px;">
+        <div style="font-size:13px;font-weight:700;color:#1b4332;margin-bottom:8px;">Step 5 — PTO and Hours Worked (Paychex)</div>
+        <div style="font-size:13px;line-height:1.7;color:var(--text);margin-bottom:8px;">
+          <strong>Residential:</strong> Open Paychex and pull the PTO or leave hours the counselor actually took during the period. Enter that into <strong>PTO</strong> — this calculator subtracts it from a standard work period to get available working hours, so only enter time off, not hours worked.
+        </div>
+        <div style="font-size:13px;line-height:1.7;color:var(--text);">
+          <strong>PHP / OP:</strong> Open Paychex, go to the counselor's timecard, and enter total hours actually worked for the period into <strong>Hours Worked</strong>. This is time spent working — not unpaid time, holiday, or PTO. Most timecards separate these into their own buckets; make sure you're pulling the worked-hours bucket, not a total that folds in paid leave. There's no cap here, since some counselors work weekend days that push them past 40.
+        </div>
+      </div>
+
+      <div style="margin-bottom:22px;">
+        <div style="font-size:13px;font-weight:700;color:#1b4332;margin-bottom:8px;">Quick accuracy checks</div>
+        <div style="display:flex;flex-direction:column;gap:6px;font-size:13px;line-height:1.6;color:var(--text);">
+          <div>✔ Productivity over 100%? Recheck your group time — this almost always means a session got counted more than once.</div>
+          <div>✔ For PHP/OP, Hours Worked should match Paychex exactly.</div>
+          <div>✔ A service code's billing hours should always be greater than or equal to the physical group time you counted for that code.</div>
+          <div>✔ Every date range — Remarkable, Paychex, and this calculator — should match exactly.</div>
+        </div>
+      </div>
+
+      <div>
+        <div style="font-size:13px;font-weight:700;color:#1b4332;margin-bottom:8px;">Common mistakes to avoid</div>
+        <div style="display:flex;flex-direction:column;gap:6px;font-size:13px;line-height:1.6;color:var(--text);">
+          <div>✕ Entering scheduled hours instead of actual hours worked from Paychex.</div>
+          <div>✕ Counting a group once per billed service or client, instead of once per physical session.</div>
+          <div>✕ For Residential, splitting one physical group's time across both group-time fields because it involved more than one level of care.</div>
+          <div>✕ For PHP/OP, counting the same group's time twice because it showed up under two different service codes.</div>
+        </div>
+      </div>
+
+      <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);font-size:12px;color:#5a6a62;font-style:italic;">
+        If a number doesn't look right, stop and verify before entering it. Accuracy matters more than speed here. If anything here doesn't match what you're seeing in Remarkable or Paychex, reach out to Joseph directly with a screenshot — that's the fastest way to sort out what's different.
+      </div>
+
     </div>
   </div>
 </div>
@@ -12863,6 +12983,7 @@ function pcUpdate(id, field, value) {
 }
 
 function pcCompute(c) {
+  const noData = c.totalHrs === '' || c.totalHrs === null || c.totalHrs === undefined;
   if (c.type === 'res') {
     const total = ((pcNum(c.totalHrs) - (pcNum(c.code1) + pcNum(c.code2))) + (pcNum(c.time1) + pcNum(c.time2))) - pcNum(c.noShow);
     const target = 0.65;
@@ -12875,14 +12996,14 @@ function pcCompute(c) {
       prodLeft = minTotal - total;
       prodPerDay = pcNum(c.workdaysLeft) > 0 ? prodLeft / pcNum(c.workdaysLeft) : null;
     }
-    const prod = denom > 0 ? total / denom : null;
+    const prod = (!noData && denom > 0) ? total / denom : null;
     return { total, prod, target, minTotal, prodLeft, prodPerDay };
   } else {
     const target = c.type === 'php' ? 0.80 : 0.75;
-    const hoursWorkedCapped = Math.min(pcNum(c.hoursWorked), 40);
+    const hoursWorked = pcNum(c.hoursWorked);
     const numerator = (((pcNum(c.totalHrs) - pcNum(c.c400) - pcNum(c.c400t) - pcNum(c.c402) - pcNum(c.c402t) - pcNum(c.c403) - pcNum(c.c404) - pcNum(c.c404t)) + pcNum(c.timeGroup)) - pcNum(c.noShow));
-    const prod = hoursWorkedCapped > 0 ? numerator / hoursWorkedCapped : null;
-    return { numerator, prod, target, hoursWorkedCapped };
+    const prod = (!noData && hoursWorked > 0) ? numerator / hoursWorked : null;
+    return { numerator, prod, target, hoursWorked };
   }
 }
 
@@ -12892,6 +13013,7 @@ function pcTypeLabel(type) { return type === 'res' ? 'Residential' : (type === '
 
 function pcBadgeInfo(r) {
   if (r.prod === null) return { cls: 'pc-badge-neutral', text: 'Incomplete', short: '—', pctCls: '' };
+  if (r.prod > 1) return { cls: 'pc-badge-warn', text: 'Over 100% — recheck group time', short: '⚠ Recheck', pctCls: 'pc-pct-warn' };
   if (r.prod >= r.target) return { cls: 'pc-badge-pass', text: 'Meets Target (' + (r.target * 100).toFixed(0) + '%)', short: 'Meets', pctCls: 'pc-pct-pass' };
   return { cls: 'pc-badge-fail', text: 'Below Target (' + (r.target * 100).toFixed(0) + '%)', short: 'Below', pctCls: 'pc-pct-fail' };
 }
@@ -12905,6 +13027,8 @@ function pcUpdateResults(id) {
   if (headerPct) { headerPct.textContent = pcFmtPct(r.prod); headerPct.className = 'pc-header-pct ' + info.pctCls; }
   const badge = document.getElementById('pc-badge-' + id);
   if (badge) { badge.textContent = info.short; badge.className = 'pc-badge ' + info.cls; }
+  const hintEl = document.getElementById('pc-hint-' + id);
+  if (hintEl) hintEl.style.display = (c.totalHrs === '') ? '' : 'none';
   if (c.type === 'res' && c.period === 'monthly') {
     const perDayEl = document.getElementById('pc-perday-' + id);
     if (perDayEl) perDayEl.textContent = pcFmtNum(r.prodPerDay);
@@ -12941,7 +13065,7 @@ function pcFieldsHTML(c) {
         <div class="pc-field"><label>404T Billing Hours</label><input class="gn-input" type="number" step="any" value="${c.c404t}" oninput="pcUpdate(${c.id},'c404t',this.value)"></div>
         <div class="pc-field"><label>"No Show" Time <button type="button" class="pc-help" onclick="showModal('pcNoShowHelpModal')">ⓘ</button></label><input class="gn-input" type="number" step="any" value="${c.noShow}" oninput="pcUpdate(${c.id},'noShow',this.value)"></div>
         <div class="pc-field"><label>Time Spent in Group</label><input class="gn-input" type="number" step="any" value="${c.timeGroup}" oninput="pcUpdate(${c.id},'timeGroup',this.value)"></div>
-        <div class="pc-field"><label>Hours Worked <span class="pc-cap-note">(capped at 40)</span></label><input class="gn-input" type="number" step="any" value="${c.hoursWorked}" oninput="pcUpdate(${c.id},'hoursWorked',this.value)"></div>
+        <div class="pc-field"><label>Hours Worked</label><input class="gn-input" type="number" step="any" value="${c.hoursWorked}" oninput="pcUpdate(${c.id},'hoursWorked',this.value)"></div>
       </div>`;
 }
 
@@ -12982,6 +13106,7 @@ function pcCardHTML(c) {
             <button class="toggle-btn ${c.period === 'monthly' ? 'active' : ''}" onclick="pcSetPeriod(${c.id},'monthly')">Monthly</button>
           </div>` : ''}
         </div>
+        <div class="pc-empty-hint" id="pc-hint-${c.id}" style="${c.totalHrs === '' ? '' : 'display:none;'}">Enter Total Billing Hours to begin — everything else builds from there.</div>
         ${pcFieldsHTML(c)}
         ${pcResultsHTML(c, r)}
         <div style="display:flex;gap:8px;">
