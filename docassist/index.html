@@ -4004,7 +4004,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   cursor: pointer;
   user-select: none;
 }
-.pc-chevron { font-size: 16px; font-weight: 700; color: var(--accent); display: inline-block; }
+.pc-chevron { font-size: 16px; font-weight: 700; color: var(--accent); display: inline-block; text-align: center; width: 100%; }
 .pc-name-input {
   width: 100%;
   border: 1px solid var(--border);
@@ -12965,7 +12965,7 @@ function pcToggleOpen(id) {
   const body = document.getElementById('pc-body-' + id);
   const chevron = document.getElementById('pc-chevron-' + id);
   if (body) body.classList.toggle('open', c.isOpen);
-  if (chevron) chevron.textContent = c.isOpen ? '▴' : '▾';
+  if (chevron) chevron.textContent = c.isOpen ? '−' : '+';
 }
 
 function pcExpandAll(open) {
@@ -13086,7 +13086,7 @@ function pcCardHTML(c) {
   return `
     <div class="pc-card" id="pc-card-${c.id}">
       <div class="pc-card-header" onclick="pcToggleOpen(${c.id})">
-        <span class="pc-chevron" id="pc-chevron-${c.id}">${c.isOpen ? '▴' : '▾'}</span>
+        <span class="pc-chevron" id="pc-chevron-${c.id}">${c.isOpen ? '−' : '+'}</span>
         <input class="pc-name-input" type="text" placeholder="Counselor name" value="${c.name}" onclick="event.stopPropagation()" oninput="pcUpdate(${c.id},'name',this.value)">
         <span class="pc-type-label">${typeLabel}</span>
         <span class="pc-header-pct ${badge.pctCls}" id="pc-header-pct-${c.id}">${pcFmtPct(r.prod)}</span>
