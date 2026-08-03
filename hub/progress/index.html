@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Progress — Woodhaven Clinical Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green-900:#122a1e; --green-800:#1b3a2b; --green-700:#2a5940; --green-600:#3a7856; --green-500:#4c9a6f;
+    --green-100:#e6efe8; --green-050:#f4f8f5; --accent:#2d6a4f; --cream:#faf8f3;
+    --ink:#1e2622; --ink-soft:#4c5850; --border:#d8ded9; --white:#ffffff; --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'IBM Plex Sans', sans-serif; color:var(--ink); line-height:1.55; min-height:100vh;
+    background:linear-gradient(160deg, #f7f9f0 0%, #fdf8e1 100%);
+    background-repeat:no-repeat; background-size:100% 100%; background-attachment:fixed;
+  }
+  .mono{font-family:'IBM Plex Mono', monospace;}
+  .wrap{max-width:760px; margin:0 auto; padding:clamp(28px,5vh,56px) 28px 100px;}
+  .hub-back-link{
+    display:inline-flex; align-items:center; gap:6px; font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px; font-weight:600; color:var(--green-600); text-decoration:none;
+    margin-bottom:20px; text-transform:uppercase; letter-spacing:.04em;
+  }
+  .hub-back-link:hover{color:var(--green-800);}
+  h1{font-size:26px; color:var(--green-900); margin:4px 0 8px; font-weight:800;}
+  .lede{font-size:15.5px; color:var(--ink-soft); max-width:560px; margin:0 0 30px;}
+
+  .overall-card{
+    background:var(--white); border:1px solid var(--border); border-radius:12px;
+    padding:22px 24px; margin-bottom:28px;
+  }
+  .overall-top{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px;}
+  .overall-label{font-size:13px; font-weight:600; color:var(--green-800); text-transform:uppercase; letter-spacing:.04em; font-family:'IBM Plex Mono', monospace;}
+  .overall-count{font-size:13.5px; color:var(--ink-soft);}
+  .bar-bg{height:9px; background:var(--green-050); border-radius:5px; overflow:hidden; border:1px solid var(--border);}
+  .bar-fill{height:100%; background:var(--green-500); transition:width .3s ease;}
+
+  .group-label{
+    font-family:'IBM Plex Mono', monospace; font-size:11.5px; text-transform:uppercase;
+    letter-spacing:.06em; color:var(--green-700); font-weight:600; margin:30px 0 12px;
+  }
+  .mod-row{
+    display:flex; align-items:center; gap:16px; background:var(--white); border:1px solid var(--border);
+    border-radius:10px; padding:14px 18px; margin-bottom:10px;
+  }
+  .mod-row.soon{background:#f2f1ec; border-color:#e2e0d8;}
+  .mod-name{flex:1; font-size:14.5px; font-weight:600; color:var(--green-900);}
+  .mod-row.soon .mod-name{color:#8a8677;}
+  .mod-bar-bg{width:120px; height:7px; background:var(--green-050); border-radius:4px; overflow:hidden; border:1px solid var(--border); flex-shrink:0;}
+  .mod-bar-fill{height:100%; background:var(--green-500);}
+  .mod-status{font-size:12px; font-family:'IBM Plex Mono', monospace; color:var(--ink-soft); width:82px; text-align:right; flex-shrink:0;}
+  .mod-status.complete{color:var(--green-700); font-weight:600;}
+  .mod-status.soon{color:#9a9689;}
+
+  .note-box{
+    background:var(--green-100); border:1px solid var(--border); border-radius:10px;
+    padding:16px 18px; font-size:13px; color:var(--ink-soft); line-height:1.55; margin-top:8px;
+  }
+  .reset-row{margin-top:30px; text-align:right;}
+  .reset-link{font-size:12px; color:#8fa89b; cursor:pointer; text-decoration:underline; font-family:'IBM Plex Sans',sans-serif;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a href="../" class="hub-back-link">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    Woodhaven Clinical Hub
+  </a>
+  <h1>My Progress</h1>
+  <p class="lede">Your own training checklist, tracked on this device. Switching browsers or clearing your cache will reset it — this isn't visible to anyone but you.</p>
+
+  <div class="overall-card">
+    <div class="overall-top">
+      <span class="overall-label">Overall completion</span>
+      <span class="overall-count" id="overallCount">— of —</span>
+    </div>
+    <div class="bar-bg"><div class="bar-fill" id="overallBar" style="width:0%"></div></div>
+  </div>
+
+  <div class="group-label">Documentation training</div>
+  <div id="docModules"></div>
+
+  <div class="group-label">Clinical skills</div>
+  <div class="mod-row soon"><span class="mod-name">Crisis Response Simulator</span><span class="mod-status soon">Coming soon</span></div>
+  <div class="mod-row soon"><span class="mod-name">Motivational Interviewing</span><span class="mod-status soon">Coming soon</span></div>
+  <div class="mod-row soon"><span class="mod-name">Co-Occurring Disorders</span><span class="mod-status soon">Coming soon</span></div>
+  <div class="mod-row soon"><span class="mod-name">Ethics &amp; Boundaries</span><span class="mod-status soon">Coming soon</span></div>
+  <div class="mod-row soon"><span class="mod-name">Group Facilitation</span><span class="mod-status soon">Coming soon</span></div>
+  <div class="mod-row soon"><span class="mod-name">Family Systems</span><span class="mod-status soon">Coming soon</span></div>
+  <div class="mod-row soon"><span class="mod-name">Cultural Humility</span><span class="mod-status soon">Coming soon</span></div>
+
+  <div class="note-box">
+    This page reflects your own progress through <a href="../training/">Training &amp; Onboarding</a>, stored in this browser. It isn't visible to supervisors or admins yet — that requires accounts, which are planned but not built.
+  </div>
+
+  <div class="reset-row"><span class="reset-link" onclick="resetAllProgress()">Reset all progress on this device</span></div>
+</div>
+
+<script>
+/* ── Chapter definitions, kept identical to training/index.html so counts match exactly ── */
+const bpCHAPTERS = [
+  {title:'The Golden Thread', sections:[
+    {id:'welcome', label:'Welcome'},
+    {id:'thread', label:'The Golden Thread'},
+    {id:'thread-example', label:'Follow one thread end to end'},
+  ]},
+];
+
+const asamCHAPTERS = [
+  {title:'ASAM Module', sections:[
+    {id:'why', label:'Why this matters'},
+    {id:'specificity', label:'Specific vs. generic'},
+    {id:'dim1', label:'Dimension 1 deep dive'},
+    {id:'dim2', label:'Dimension 2 deep dive'},
+    {id:'dim3', label:'Dimension 3 deep dive'},
+    {id:'dim4', label:'Dimension 4 deep dive'},
+    {id:'dim5', label:'Dimension 5 deep dive'},
+    {id:'dim6', label:'Dimension 6 deep dive'},
+    {id:'rating', label:'Risk rating calibration'},
+    {id:'criteria', label:'Criteria checklist'},
+    {id:'assembly', label:'Put it all together'},
+  ]},
+  {title:'Reference (look anytime)', sections:[
+    {id:'cheatsheet', label:'Quick reference cheat sheet', trackProgress:false},
+    {id:'mistakes', label:'Common mistakes recap', trackProgress:false},
+    {id:'faq', label:'FAQ', trackProgress:false},
+  ]},
+];
+
+const itpCHAPTERS = [
+  {title:'ITP Module', sections:[
+    {id:'itpwhy', label:'Why this module'},
+    {id:'itpanatomy', label:'The anatomy of a goal'},
+    {id:'itpanatomyexample', label:'A goal, worked through'},
+    {id:'itpfromfinding', label:'Turning a finding into a goal'},
+    {id:'itpobjectives', label:'Writing measurable objectives'},
+    {id:'itpinterventions', label:'Writing real interventions'},
+    {id:'itpindividualized', label:'Making it hers, not a template'},
+    {id:'itpgoals', label:'How many goals'},
+    {id:'itpreviews', label:'Treatment plan reviews'},
+    {id:'itpassembly', label:'Put it all together'},
+  ]},
+  {title:'Reference (look anytime)', sections:[
+    {id:'itpcheatsheet', label:'Quick reference cheat sheet', trackProgress:false},
+    {id:'itpmistakes', label:'Common mistakes recap', trackProgress:false},
+    {id:'itpfaq', label:'FAQ', trackProgress:false},
+  ]},
+];
+
+const noteCHAPTERS = [
+  {title:'Individual Notes Module', sections:[
+    {id:'notewhy', label:'Why this module'},
+    {id:'noteanatomy', label:'The anatomy of a note'},
+    {id:'notetypes', label:'Four session types'},
+    {id:'notedescribe', label:'Writing the session description'},
+    {id:'noteresponse', label:'Writing the response'},
+    {id:'noterisk', label:'Risk & safety'},
+    {id:'noteassembly', label:'Put it all together'},
+  ]},
+  {title:'Reference (look anytime)', sections:[
+    {id:'notecheatsheet', label:'Quick reference cheat sheet', trackProgress:false},
+    {id:'notemistakes', label:'Common mistakes recap', trackProgress:false},
+    {id:'notefaq', label:'FAQ', trackProgress:false},
+  ]},
+];
+
+const conclusionCHAPTERS = [
+  {title:'Bringing It Together', sections:[
+    {id:'concl-arc', label:"Danielle's thread, start to finish"},
+    {id:'concl-monday', label:'What changes now'},
+  ]},
+];
+
+const MODULES = [
+  {name:'The Golden Thread', chapters:bpCHAPTERS, key:'doctrain-bigpicture-progress'},
+  {name:'ASAM Documentation', chapters:asamCHAPTERS, key:'doctrain-asam-progress'},
+  {name:'ITP Development', chapters:itpCHAPTERS, key:'doctrain-itp-progress'},
+  {name:'Individual Notes', chapters:noteCHAPTERS, key:'doctrain-note-progress'},
+  {name:'Bringing It Together', chapters:conclusionCHAPTERS, key:'doctrain-conclusion-progress'},
+];
+
+function trackedSections(chapters){
+  return chapters.flatMap(c => c.sections).filter(s => s.trackProgress !== false);
+}
+
+function readProgress(key){
+  try{ return JSON.parse(localStorage.getItem(key) || '{}'); }catch(e){ return {}; }
+}
+
+function render(){
+  const container = document.getElementById('docModules');
+  container.innerHTML = '';
+  let totalDone = 0, totalAll = 0;
+
+  MODULES.forEach(mod => {
+    const tracked = trackedSections(mod.chapters);
+    const progress = readProgress(mod.key);
+    const done = tracked.filter(s => progress[s.id]).length;
+    const total = tracked.length;
+    totalDone += done; totalAll += total;
+    const pct = total ? Math.round((done/total)*100) : 0;
+    const isComplete = total > 0 && done >= total;
+
+    const row = document.createElement('div');
+    row.className = 'mod-row';
+    row.innerHTML = `
+      <span class="mod-name">${mod.name}</span>
+      <div class="mod-bar-bg"><div class="mod-bar-fill" style="width:${pct}%"></div></div>
+      <span class="mod-status ${isComplete ? 'complete' : ''}">${isComplete ? 'Complete' : done + ' of ' + total}</span>
+    `;
+    container.appendChild(row);
+  });
+
+  const overallPct = totalAll ? Math.round((totalDone/totalAll)*100) : 0;
+  document.getElementById('overallCount').textContent = totalDone + ' of ' + totalAll + ' sections';
+  document.getElementById('overallBar').style.width = overallPct + '%';
+}
+
+function resetAllProgress(){
+  if(!confirm('This clears all training progress stored on this device. Continue?')) return;
+  MODULES.forEach(mod => localStorage.removeItem(mod.key));
+  render();
+}
+
+render();
+</script>
+</body>
+</html>

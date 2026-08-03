@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tools — Woodhaven Clinical Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green-900:#122a1e; --green-700:#2a5940; --green-600:#3a7856; --green-100:#e6efe8;
+    --ink:#1e2622; --ink-soft:#4c5850; --border:#d8ded9; --white:#ffffff;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'IBM Plex Sans', sans-serif; color:var(--ink); line-height:1.55; min-height:100vh;
+    background:linear-gradient(160deg, #f7f9f0 0%, #fdf8e1 100%);
+    background-repeat:no-repeat; background-size:100% 100%; background-attachment:fixed;
+  }
+  .wrap{max-width:640px; margin:0 auto; padding:clamp(28px,5vh,56px) 28px 100px;}
+  .hub-back-link{
+    display:inline-flex; align-items:center; gap:6px; font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px; font-weight:600; color:var(--green-600); text-decoration:none;
+    margin-bottom:20px; text-transform:uppercase; letter-spacing:.04em;
+  }
+  .hub-back-link:hover{color:var(--green-900);}
+  h1{font-size:26px; color:var(--green-900); margin:4px 0 8px; font-weight:800;}
+  .lede{font-size:15.5px; color:var(--ink-soft); max-width:520px;}
+  .card{
+    background:var(--white); border:1px solid var(--border); border-radius:12px;
+    padding:22px 24px; margin-top:24px;
+  }
+  .card-label{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--green-700); margin-bottom:8px; font-family:'IBM Plex Mono', monospace;}
+  .card p{font-size:14px; color:var(--ink-soft); margin:0;}
+  .card a{color:var(--green-700); font-weight:600;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a href="../" class="hub-back-link">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    Woodhaven Clinical Hub
+  </a>
+  <h1>Tools</h1>
+  <p class="lede">Day-to-day utilities that support your role. This section is being built out.</p>
+
+  <div class="card">
+    <div class="card-label">Available now</div>
+    <p>The Productivity Calculator currently lives inside <a href="../docassist/">DocAssist</a>, under Supervisor Tools. It's being moved here as its own standalone tool.</p>
+  </div>
+</div>
+</body>
+</html>
