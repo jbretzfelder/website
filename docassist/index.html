@@ -2559,9 +2559,9 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <div class="home-bottom-links" style="text-align:center;margin-top:clamp(12px, 3vh, 28px);display:flex;gap:8px;justify-content:center;align-items:center;flex-wrap:wrap;">
       <button onclick="confirmStartTutorial()" style="font-family:'Public Sans',sans-serif;font-size:12px;font-weight:600;color:#2d6a4f;cursor:pointer;padding:6px 16px;border-radius:20px;border:1px solid #b8d9c4;background:var(--accent-light);line-height:1;transition:background .15s,border-color .15s;" onmouseover="this.style.background='#c8e6d4';this.style.borderColor='#2d6a4f'" onmouseout="this.style.background='var(--accent-light)';this.style.borderColor='#b8d9c4'">How to Use</button>
       <button onclick="openChangelogModal()" style="font-family:'Public Sans',sans-serif;font-size:12px;font-weight:600;color:#2d6a4f;cursor:pointer;padding:6px 16px;border-radius:20px;border:1px solid #b8d9c4;background:var(--accent-light);line-height:1;transition:background .15s,border-color .15s;" onmouseover="this.style.background='#c8e6d4';this.style.borderColor='#2d6a4f'" onmouseout="this.style.background='var(--accent-light)';this.style.borderColor='#b8d9c4'">What's New</button>
-      <a href="https://bretzfelder.com/training" target="_blank" rel="noopener" title="Clinical Training: learn why documentation matters and how to write it well" style="font-family:'Public Sans',sans-serif;font-size:12px;font-weight:600;color:#2d6a4f;cursor:pointer;padding:6px 16px;border-radius:20px;border:1px solid #b8d9c4;background:var(--accent-light);line-height:1;transition:background .15s,border-color .15s;text-decoration:none;display:inline-flex;align-items:center;gap:6px;" onmouseover="this.style.background='#c8e6d4';this.style.borderColor='#2d6a4f'" onmouseout="this.style.background='var(--accent-light)';this.style.borderColor='#b8d9c4'">
+      <a href="https://bretzfelder.com/doctrain" target="_blank" rel="noopener" title="DocTrain: learn why documentation matters and how to write it well" style="font-family:'Public Sans',sans-serif;font-size:12px;font-weight:600;color:#2d6a4f;cursor:pointer;padding:6px 16px;border-radius:20px;border:1px solid #b8d9c4;background:var(--accent-light);line-height:1;transition:background .15s,border-color .15s;text-decoration:none;display:inline-flex;align-items:center;gap:6px;" onmouseover="this.style.background='#c8e6d4';this.style.borderColor='#2d6a4f'" onmouseout="this.style.background='var(--accent-light)';this.style.borderColor='#b8d9c4'">
         <svg width="13" height="13" viewBox="0 0 28 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3C10.5 1.3 5.5 1 2 2v15c3.5-1 8.5-.7 12 1"/><path d="M14 3c3.5-1.7 8.5-2 12-1v15c-3.5-1-8.5-.7-12 1"/><line x1="14" y1="3" x2="14" y2="19"/></svg>
-        Clinical Training
+        Try DocTrain
       </a>
     </div>
   </div>
@@ -5255,6 +5255,19 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   </div>
 </div>
 
+<div id="pcDaysWorkedHelpModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;align-items:center;justify-content:center">
+  <div style="background:white;border-radius:10px;padding:28px 32px;max-width:420px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.2)">
+    <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:10px">What counts as "Days Worked"</div>
+    <div style="font-size:13px;color:var(--text-secondary);line-height:1.7;margin-bottom:24px">
+      This is the counselor's regular scheduled weekday count for the period — not how many hours they physically worked. A standard Monday–Friday counselor is 5 days.<br><br>
+      <strong style="color:var(--text)">Only search the weekday dates they regularly work.</strong> When you pull hours in Remarkable, run the search across just those weekday dates — skip weekend dates entirely, even if the counselor covered an extra group on a Saturday or Sunday. That keeps weekend billing out of every number in this section, so it doesn't inflate the total or the day count.
+    </div>
+    <div style="display:flex;justify-content:flex-end">
+      <button class="btn btn-primary" onclick="hideModal('pcDaysWorkedHelpModal')">Got it</button>
+    </div>
+  </div>
+</div>
+
 <div id="pcCalcGuideModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;align-items:center;justify-content:center;" onclick="if(event.target===this)hideModal('pcCalcGuideModal')">
   <div style="background:#f8faf9;border-radius:10px;max-width:680px;width:92%;max-height:86vh;box-shadow:0 20px 60px rgba(0,0,0,0.2);display:flex;flex-direction:column;">
     <div style="display:flex;justify-content:space-between;align-items:center;padding:20px 24px 16px;border-bottom:1px solid var(--border);flex-shrink:0;">
@@ -5285,8 +5298,11 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 
       <div style="margin-bottom:22px;">
         <div style="font-size:13px;font-weight:700;color:#1b4332;margin-bottom:8px;">Step 1 — Match your date range</div>
-        <div style="font-size:13px;line-height:1.65;color:var(--text);">
+        <div style="font-size:13px;line-height:1.65;color:var(--text);margin-bottom:8px;">
           Use the exact same start and end dates in Remarkable, Paychex, and this calculator. If any of the three cover a different span, nothing else here will line up.
+        </div>
+        <div style="font-size:13px;line-height:1.65;color:var(--text);">
+          <strong>PHP / OP:</strong> only run the search across the counselor's regular weekday dates. If they're Monday–Friday, search Monday–Friday — even if they also covered a group over the weekend. Weekend dates just don't go into the search at all for this calculation.
         </div>
       </div>
 
@@ -5328,12 +5344,15 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       </div>
 
       <div style="margin-bottom:22px;">
-        <div style="font-size:13px;font-weight:700;color:#1b4332;margin-bottom:8px;">Step 5 — PTO and Hours Worked (Paychex)</div>
+        <div style="font-size:13px;font-weight:700;color:#1b4332;margin-bottom:8px;">Step 5 — Days Worked and PTO (Paychex + your own knowledge of the schedule)</div>
         <div style="font-size:13px;line-height:1.7;color:var(--text);margin-bottom:8px;">
           <strong>Residential:</strong> Open Paychex and pull the PTO or leave hours the counselor actually took during the period. Enter that into <strong>PTO</strong> — this calculator subtracts it from a standard work period to get available working hours, so only enter time off, not hours worked.
         </div>
+        <div style="font-size:13px;line-height:1.7;color:var(--text);margin-bottom:8px;">
+          <strong>PHP / OP:</strong> this one doesn't use hours worked at all anymore — physical hours in the building don't matter, only billed hours against the days they were scheduled. Enter their regular scheduled days for the period into <strong>Days Worked</strong> (a standard Monday–Friday counselor is 5). Then pull PTO the same way you would for Residential, and enter it into <strong>PTO</strong>.
+        </div>
         <div style="font-size:13px;line-height:1.7;color:var(--text);">
-          <strong>PHP / OP:</strong> Open Paychex, go to the counselor's timecard, and enter total hours actually worked for the period into <strong>Hours Worked</strong>. This is time spent working — not unpaid time, holiday, or PTO. Most timecards separate these into their own buckets; make sure you're pulling the worked-hours bucket, not a total that folds in paid leave. There's no cap here, since some counselors work weekend days that push them past 40.
+          The calculator turns that into a target: Days Worked × 8, minus PTO, times 80% (PHP) or 75% (OP) — that's the number of billed hours they actually need. A full 5-day week with no PTO needs 32 billed hours for PHP, 30 for OP. Ten hours of PTO lowers that target by 8 hours (PHP) or 7.5 hours (OP). You'll see this as <strong>Required Billable Hours</strong> once you've entered Days Worked.
         </div>
       </div>
 
@@ -5341,7 +5360,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         <div style="font-size:13px;font-weight:700;color:#1b4332;margin-bottom:8px;">Quick accuracy checks</div>
         <div style="display:flex;flex-direction:column;gap:6px;font-size:13px;line-height:1.6;color:var(--text);">
           <div>✔ Productivity over 100%? Recheck your group time — this almost always means a session got counted more than once.</div>
-          <div>✔ For PHP/OP, Hours Worked should match Paychex exactly.</div>
+          <div>✔ For PHP/OP, Days Worked should match their regular schedule — don't inflate it for extra weekend groups they picked up.</div>
           <div>✔ A service code's billing hours should always be greater than or equal to the physical group time you counted for that code.</div>
           <div>✔ Every date range — Remarkable, Paychex, and this calculator — should match exactly.</div>
         </div>
@@ -5350,10 +5369,10 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       <div>
         <div style="font-size:13px;font-weight:700;color:#1b4332;margin-bottom:8px;">Common mistakes to avoid</div>
         <div style="display:flex;flex-direction:column;gap:6px;font-size:13px;line-height:1.6;color:var(--text);">
-          <div>✕ Entering scheduled hours instead of actual hours worked from Paychex.</div>
           <div>✕ Counting a group once per billed service or client, instead of once per physical session.</div>
           <div>✕ For Residential, splitting one physical group's time across both group-time fields because it involved more than one level of care.</div>
           <div>✕ For PHP/OP, counting the same group's time twice because it showed up under two different service codes.</div>
+          <div>✕ For PHP/OP, including weekend dates in the Remarkable search because a counselor covered an extra group — weekend billing shouldn't be in these numbers at all.</div>
         </div>
       </div>
 
@@ -12897,7 +12916,7 @@ function pcNewCounselor() {
     totalHrs: '', code1: '', code2: '', time1: '', time2: '', pto: '',
     workdaysMonth: '', workdaysLeft: '',
     c400: '', c400t: '', c402: '', c402t: '', c403: '', c404: '', c404t: '',
-    noShow: '', timeGroup: '', hoursWorked: ''
+    noShow: '', timeGroup: '', daysWorked: ''
   };
 }
 
@@ -13000,10 +13019,11 @@ function pcCompute(c) {
     return { total, prod, target, minTotal, prodLeft, prodPerDay };
   } else {
     const target = c.type === 'php' ? 0.80 : 0.75;
-    const hoursWorked = pcNum(c.hoursWorked);
+    const denom = (pcNum(c.daysWorked) * 8) - pcNum(c.pto);
     const numerator = (((pcNum(c.totalHrs) - pcNum(c.c400) - pcNum(c.c400t) - pcNum(c.c402) - pcNum(c.c402t) - pcNum(c.c403) - pcNum(c.c404) - pcNum(c.c404t)) + pcNum(c.timeGroup)) - pcNum(c.noShow));
-    const prod = (!noData && hoursWorked > 0) ? numerator / hoursWorked : null;
-    return { numerator, prod, target, hoursWorked };
+    const requiredHours = denom > 0 ? denom * target : null;
+    const prod = (!noData && denom > 0) ? numerator / denom : null;
+    return { numerator, prod, target, denom, requiredHours };
   }
 }
 
@@ -13011,7 +13031,7 @@ function pcFmtPct(v) { return (v === null || !isFinite(v)) ? '—' : (v * 100).t
 function pcFmtNum(v) { return (v === null || !isFinite(v)) ? '—' : (Math.round(v * 100) / 100).toString(); }
 function pcTypeLabel(type) { return type === 'res' ? 'Residential' : (type === 'php' ? 'PHP' : 'OP'); }
 
-function pcBadgeInfo(r) {
+function pcBadgeInfo(r, type) {
   if (r.prod === null) return { cls: 'pc-badge-neutral', text: 'Incomplete', short: '—', pctCls: '' };
   if (r.prod > 1) return { cls: 'pc-badge-warn', text: 'Over 100% — recheck group time', short: '⚠ Recheck', pctCls: 'pc-pct-warn' };
   if (r.prod >= r.target) return { cls: 'pc-badge-pass', text: 'Meets Target (' + (r.target * 100).toFixed(0) + '%)', short: 'Meets', pctCls: 'pc-pct-pass' };
@@ -13022,7 +13042,7 @@ function pcUpdateResults(id) {
   const c = pcCounselors.find(c => c.id === id);
   if (!c) return;
   const r = pcCompute(c);
-  const info = pcBadgeInfo(r);
+  const info = pcBadgeInfo(r, c.type);
   const headerPct = document.getElementById('pc-header-pct-' + id);
   if (headerPct) { headerPct.textContent = pcFmtPct(r.prod); headerPct.className = 'pc-header-pct ' + info.pctCls; }
   const badge = document.getElementById('pc-badge-' + id);
@@ -13032,6 +13052,12 @@ function pcUpdateResults(id) {
   if (c.type === 'res' && c.period === 'monthly') {
     const perDayEl = document.getElementById('pc-perday-' + id);
     if (perDayEl) perDayEl.textContent = pcFmtNum(r.prodPerDay);
+  }
+  if (c.type === 'php' || c.type === 'op') {
+    const numeratorEl = document.getElementById('pc-numerator-' + id);
+    if (numeratorEl) numeratorEl.textContent = pcFmtNum(r.numerator);
+    const requiredEl = document.getElementById('pc-required-' + id);
+    if (requiredEl) requiredEl.textContent = pcFmtNum(r.requiredHours);
   }
 }
 
@@ -13065,7 +13091,8 @@ function pcFieldsHTML(c) {
         <div class="pc-field"><label>404T Billing Hours</label><input class="gn-input" type="number" step="any" value="${c.c404t}" oninput="pcUpdate(${c.id},'c404t',this.value)"></div>
         <div class="pc-field"><label>"No Show" Time <button type="button" class="pc-help" onclick="showModal('pcNoShowHelpModal')">ⓘ</button></label><input class="gn-input" type="number" step="any" value="${c.noShow}" oninput="pcUpdate(${c.id},'noShow',this.value)"></div>
         <div class="pc-field"><label>Time Spent in Group</label><input class="gn-input" type="number" step="any" value="${c.timeGroup}" oninput="pcUpdate(${c.id},'timeGroup',this.value)"></div>
-        <div class="pc-field"><label>Hours Worked</label><input class="gn-input" type="number" step="any" value="${c.hoursWorked}" oninput="pcUpdate(${c.id},'hoursWorked',this.value)"></div>
+        <div class="pc-field"><label>Days Worked <button type="button" class="pc-help" onclick="showModal('pcDaysWorkedHelpModal')">ⓘ</button></label><input class="gn-input" type="number" step="any" value="${c.daysWorked}" oninput="pcUpdate(${c.id},'daysWorked',this.value)"></div>
+        <div class="pc-field"><label>PTO</label><input class="gn-input" type="number" step="any" value="${c.pto}" oninput="pcUpdate(${c.id},'pto',this.value)"></div>
       </div>`;
 }
 
@@ -13076,12 +13103,19 @@ function pcResultsHTML(c, r) {
         <div class="pc-result-item"><div class="pc-result-label">Prod. Per Day</div><div class="pc-result-value" id="pc-perday-${c.id}">${pcFmtNum(r.prodPerDay)}</div></div>
       </div>`;
   }
+  if (c.type === 'php' || c.type === 'op') {
+    return `
+      <div class="pc-result-grid">
+        <div class="pc-result-item"><div class="pc-result-label">Calculated Billable Hours</div><div class="pc-result-value" id="pc-numerator-${c.id}">${pcFmtNum(r.numerator)}</div></div>
+        <div class="pc-result-item"><div class="pc-result-label">Required Billable Hours</div><div class="pc-result-value" id="pc-required-${c.id}">${pcFmtNum(r.requiredHours)}</div></div>
+      </div>`;
+  }
   return '';
 }
 
 function pcCardHTML(c) {
   const r = pcCompute(c);
-  const badge = pcBadgeInfo(r);
+  const badge = pcBadgeInfo(r, c.type);
   const typeLabel = pcTypeLabel(c.type) + (c.type === 'res' ? (c.period === 'monthly' ? ' · Monthly' : ' · Weekly') : '');
   return `
     <div class="pc-card" id="pc-card-${c.id}">
@@ -13162,7 +13196,7 @@ function pcConfirmNewPeriod() {
   pcPendingNewPeriodId = null;
   const c = pcCounselors.find(c => c.id === id);
   if (!c) return;
-  const clearFields = ['totalHrs', 'code1', 'code2', 'time1', 'time2', 'pto', 'workdaysMonth', 'workdaysLeft', 'noShow', 'c400', 'c400t', 'c402', 'c402t', 'c403', 'c404', 'c404t', 'timeGroup', 'hoursWorked'];
+  const clearFields = ['totalHrs', 'code1', 'code2', 'time1', 'time2', 'pto', 'workdaysMonth', 'workdaysLeft', 'noShow', 'c400', 'c400t', 'c402', 'c402t', 'c403', 'c404', 'c404t', 'timeGroup', 'daysWorked'];
   clearFields.forEach(f => c[f] = '');
   pcSave();
   pcRenderAll();
