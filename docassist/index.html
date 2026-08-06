@@ -4061,6 +4061,31 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   border-radius: 6px;
   padding: 8px 12px;
 }
+.pc-weeks-list { display: flex; flex-direction: column; gap: 12px; }
+.pc-week-block {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 12px;
+  background: var(--surface);
+}
+.pc-week-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.pc-week-title { font-size: 12px; font-weight: 700; color: var(--accent); }
+.pc-week-remove {
+  background: none;
+  border: none;
+  font-size: 11px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: background .15s, color .15s;
+}
+.pc-week-remove:hover { background: var(--warning-bg); color: var(--warning-text); }
 .pc-field-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -5289,10 +5314,10 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       <div style="margin-bottom:22px;">
         <div style="font-size:13px;font-weight:700;color:#1b4332;margin-bottom:8px;">Weekly vs. Monthly</div>
         <div style="font-size:13px;line-height:1.7;color:var(--text);margin-bottom:8px;">
-          <strong>PHP / OP</strong> is calculated the same way whether you're looking at a week or a whole month — just widen the date range in Remarkable and Paychex to cover the month. There's no separate monthly mode for PHP/OP.
+          <strong>PHP / OP</strong> has its own Monthly mode now, but it doesn't work by widening the date range like you might expect. Since weekend dates are never in the search, one long date range would blur together across weeks in a way that's hard to untangle. Instead, Monthly gives you a week-by-week entry: fill in a normal week's worth of fields for Week 1, add a Week 2 block, and so on — one block per week in that month. Use Add Week / Remove Week to match however many weeks the month actually has. The calculator adds every week's billed hours and every week's required hours together behind the scenes, so the final percentage reflects the whole month at once.
         </div>
         <div style="font-size:13px;line-height:1.7;color:var(--text);">
-          <strong>Residential</strong> works differently for Monthly. Instead of just widening the date range, it compares progress against a running target, so you can tell a counselor — before the month ends — exactly how much productivity they still need per day to hit goal. That's why Residential has a dedicated Monthly mode with extra fields (Workdays in Month, Workdays Left) that PHP/OP doesn't need.
+          <strong>Residential</strong> works differently again for Monthly — it compares progress against a running target, so you can tell a counselor before the month ends exactly how much productivity they still need per day to hit goal. That's why Residential's Monthly mode has its own extra fields (Workdays in Month, Workdays Left) that don't apply to PHP/OP.
         </div>
       </div>
 
@@ -12911,13 +12936,29 @@ function pcNewCounselor() {
     id: pcNextId++,
     name: '',
     type: 'res',        // 'res' | 'php' | 'op'
-    period: 'weekly',    // 'weekly' | 'monthly' — residential only
+    period: 'weekly',    // 'weekly' | 'monthly'
     isOpen: true,
     totalHrs: '', code1: '', code2: '', time1: '', time2: '', pto: '',
     workdaysMonth: '', workdaysLeft: '',
     c400: '', c400t: '', c402: '', c402t: '', c403: '', c404: '', c404t: '',
-    noShow: '', timeGroup: '', daysWorked: ''
+    noShow: '', timeGroup: '', daysWorked: '',
+    weeks: []           // PHP/OP monthly only — array of week field sets
   };
+}
+
+function pcNewWeek() {
+  return {
+    totalHrs: '', c400: '', c400t: '', c402: '', c402t: '', c403: '', c404: '', c404t: '',
+    noShow: '', timeGroup: '', daysWorked: '', pto: ''
+  };
+}
+
+function pcHasNoData(c) {
+  if ((c.type === 'php' || c.type === 'op') && c.period === 'monthly') {
+    const weeks = (c.weeks && c.weeks.length) ? c.weeks : [];
+    return !weeks.some(w => w.totalHrs !== '');
+  }
+  return c.totalHrs === '' || c.totalHrs === null || c.totalHrs === undefined;
 }
 
 function pcSave() {
@@ -12964,6 +13005,9 @@ function pcSetType(id, type) {
   const c = pcCounselors.find(c => c.id === id);
   if (!c) return;
   c.type = type;
+  if ((type === 'php' || type === 'op') && c.period === 'monthly' && (!c.weeks || c.weeks.length === 0)) {
+    c.weeks = [pcNewWeek()];
+  }
   pcSave();
   pcRenderAll();
 }
@@ -12972,8 +13016,37 @@ function pcSetPeriod(id, period) {
   const c = pcCounselors.find(c => c.id === id);
   if (!c) return;
   c.period = period;
+  if (period === 'monthly' && (c.type === 'php' || c.type === 'op') && (!c.weeks || c.weeks.length === 0)) {
+    c.weeks = [pcNewWeek()];
+  }
   pcSave();
   pcRenderAll();
+}
+
+function pcAddWeek(id) {
+  const c = pcCounselors.find(c => c.id === id);
+  if (!c) return;
+  if (!c.weeks) c.weeks = [];
+  c.weeks.push(pcNewWeek());
+  pcSave();
+  pcRenderAll();
+}
+
+function pcRemoveWeek(id, idx) {
+  const c = pcCounselors.find(c => c.id === id);
+  if (!c || !c.weeks) return;
+  c.weeks.splice(idx, 1);
+  if (c.weeks.length === 0) c.weeks.push(pcNewWeek());
+  pcSave();
+  pcRenderAll();
+}
+
+function pcUpdateWeek(id, idx, field, value) {
+  const c = pcCounselors.find(c => c.id === id);
+  if (!c || !c.weeks || !c.weeks[idx]) return;
+  c.weeks[idx][field] = value;
+  pcSave();
+  pcUpdateResults(id);
 }
 
 function pcToggleOpen(id) {
@@ -13001,8 +13074,14 @@ function pcUpdate(id, field, value) {
   pcUpdateResults(id);
 }
 
+function pcComputePhpOpWeek(w) {
+  const denom = (pcNum(w.daysWorked) * 8) - pcNum(w.pto);
+  const numerator = (((pcNum(w.totalHrs) - pcNum(w.c400) - pcNum(w.c400t) - pcNum(w.c402) - pcNum(w.c402t) - pcNum(w.c403) - pcNum(w.c404) - pcNum(w.c404t)) + pcNum(w.timeGroup)) - pcNum(w.noShow));
+  return { numerator, denom };
+}
+
 function pcCompute(c) {
-  const noData = c.totalHrs === '' || c.totalHrs === null || c.totalHrs === undefined;
+  const noData = pcHasNoData(c);
   if (c.type === 'res') {
     const total = ((pcNum(c.totalHrs) - (pcNum(c.code1) + pcNum(c.code2))) + (pcNum(c.time1) + pcNum(c.time2))) - pcNum(c.noShow);
     const target = 0.65;
@@ -13019,8 +13098,19 @@ function pcCompute(c) {
     return { total, prod, target, minTotal, prodLeft, prodPerDay };
   } else {
     const target = c.type === 'php' ? 0.80 : 0.75;
-    const denom = (pcNum(c.daysWorked) * 8) - pcNum(c.pto);
-    const numerator = (((pcNum(c.totalHrs) - pcNum(c.c400) - pcNum(c.c400t) - pcNum(c.c402) - pcNum(c.c402t) - pcNum(c.c403) - pcNum(c.c404) - pcNum(c.c404t)) + pcNum(c.timeGroup)) - pcNum(c.noShow));
+    if (c.period === 'monthly') {
+      const weeks = (c.weeks && c.weeks.length) ? c.weeks : [pcNewWeek()];
+      let numerator = 0, denom = 0;
+      weeks.forEach(w => {
+        const wr = pcComputePhpOpWeek(w);
+        numerator += wr.numerator;
+        denom += wr.denom;
+      });
+      const requiredHours = denom > 0 ? denom * target : null;
+      const prod = (!noData && denom > 0) ? numerator / denom : null;
+      return { numerator, prod, target, denom, requiredHours };
+    }
+    const { numerator, denom } = pcComputePhpOpWeek(c);
     const requiredHours = denom > 0 ? denom * target : null;
     const prod = (!noData && denom > 0) ? numerator / denom : null;
     return { numerator, prod, target, denom, requiredHours };
@@ -13048,7 +13138,7 @@ function pcUpdateResults(id) {
   const badge = document.getElementById('pc-badge-' + id);
   if (badge) { badge.textContent = info.short; badge.className = 'pc-badge ' + info.cls; }
   const hintEl = document.getElementById('pc-hint-' + id);
-  if (hintEl) hintEl.style.display = (c.totalHrs === '') ? '' : 'none';
+  if (hintEl) hintEl.style.display = pcHasNoData(c) ? '' : 'none';
   if (c.type === 'res' && c.period === 'monthly') {
     const perDayEl = document.getElementById('pc-perday-' + id);
     if (perDayEl) perDayEl.textContent = pcFmtNum(r.prodPerDay);
@@ -13079,21 +13169,48 @@ function pcFieldsHTML(c) {
         <div class="pc-field"><label>Workdays Left</label><input class="gn-input" type="number" step="any" value="${c.workdaysLeft}" oninput="pcUpdate(${c.id},'workdaysLeft',this.value)"></div>` : ''}
       </div>`;
   }
+  return pcPhpOpBodyHTML(c);
+}
+
+function pcPhpOpFieldsHTML(id, weekIdx, w) {
+  const upd = (field) => weekIdx === null
+    ? `pcUpdate(${id},'${field}',this.value)`
+    : `pcUpdateWeek(${id},${weekIdx},'${field}',this.value)`;
   return `
       <div class="pc-field-grid">
-        <div class="pc-field"><label>Total Billing Hours</label><input class="gn-input" type="number" step="any" value="${c.totalHrs}" oninput="pcUpdate(${c.id},'totalHrs',this.value)"></div>
-        <div class="pc-field"><label>400 Billing Hours</label><input class="gn-input" type="number" step="any" value="${c.c400}" oninput="pcUpdate(${c.id},'c400',this.value)"></div>
-        <div class="pc-field"><label>400T Billing Hours</label><input class="gn-input" type="number" step="any" value="${c.c400t}" oninput="pcUpdate(${c.id},'c400t',this.value)"></div>
-        <div class="pc-field"><label>402 Billing Hours</label><input class="gn-input" type="number" step="any" value="${c.c402}" oninput="pcUpdate(${c.id},'c402',this.value)"></div>
-        <div class="pc-field"><label>402T Billing Hours</label><input class="gn-input" type="number" step="any" value="${c.c402t}" oninput="pcUpdate(${c.id},'c402t',this.value)"></div>
-        <div class="pc-field"><label>403 Billing Hours</label><input class="gn-input" type="number" step="any" value="${c.c403}" oninput="pcUpdate(${c.id},'c403',this.value)"></div>
-        <div class="pc-field"><label>404 Billing Hours</label><input class="gn-input" type="number" step="any" value="${c.c404}" oninput="pcUpdate(${c.id},'c404',this.value)"></div>
-        <div class="pc-field"><label>404T Billing Hours</label><input class="gn-input" type="number" step="any" value="${c.c404t}" oninput="pcUpdate(${c.id},'c404t',this.value)"></div>
-        <div class="pc-field"><label>"No Show" Time <button type="button" class="pc-help" onclick="showModal('pcNoShowHelpModal')">ⓘ</button></label><input class="gn-input" type="number" step="any" value="${c.noShow}" oninput="pcUpdate(${c.id},'noShow',this.value)"></div>
-        <div class="pc-field"><label>Time Spent in Group</label><input class="gn-input" type="number" step="any" value="${c.timeGroup}" oninput="pcUpdate(${c.id},'timeGroup',this.value)"></div>
-        <div class="pc-field"><label>Days Worked <button type="button" class="pc-help" onclick="showModal('pcDaysWorkedHelpModal')">ⓘ</button></label><input class="gn-input" type="number" step="any" value="${c.daysWorked}" oninput="pcUpdate(${c.id},'daysWorked',this.value)"></div>
-        <div class="pc-field"><label>PTO</label><input class="gn-input" type="number" step="any" value="${c.pto}" oninput="pcUpdate(${c.id},'pto',this.value)"></div>
+        <div class="pc-field"><label>Total Billing Hours</label><input class="gn-input" type="number" step="any" value="${w.totalHrs}" oninput="${upd('totalHrs')}"></div>
+        <div class="pc-field"><label>400 Billing Hours</label><input class="gn-input" type="number" step="any" value="${w.c400}" oninput="${upd('c400')}"></div>
+        <div class="pc-field"><label>400T Billing Hours</label><input class="gn-input" type="number" step="any" value="${w.c400t}" oninput="${upd('c400t')}"></div>
+        <div class="pc-field"><label>402 Billing Hours</label><input class="gn-input" type="number" step="any" value="${w.c402}" oninput="${upd('c402')}"></div>
+        <div class="pc-field"><label>402T Billing Hours</label><input class="gn-input" type="number" step="any" value="${w.c402t}" oninput="${upd('c402t')}"></div>
+        <div class="pc-field"><label>403 Billing Hours</label><input class="gn-input" type="number" step="any" value="${w.c403}" oninput="${upd('c403')}"></div>
+        <div class="pc-field"><label>404 Billing Hours</label><input class="gn-input" type="number" step="any" value="${w.c404}" oninput="${upd('c404')}"></div>
+        <div class="pc-field"><label>404T Billing Hours</label><input class="gn-input" type="number" step="any" value="${w.c404t}" oninput="${upd('c404t')}"></div>
+        <div class="pc-field"><label>"No Show" Time <button type="button" class="pc-help" onclick="showModal('pcNoShowHelpModal')">ⓘ</button></label><input class="gn-input" type="number" step="any" value="${w.noShow}" oninput="${upd('noShow')}"></div>
+        <div class="pc-field"><label>Time Spent in Group</label><input class="gn-input" type="number" step="any" value="${w.timeGroup}" oninput="${upd('timeGroup')}"></div>
+        <div class="pc-field"><label>Days Worked <button type="button" class="pc-help" onclick="showModal('pcDaysWorkedHelpModal')">ⓘ</button></label><input class="gn-input" type="number" step="any" value="${w.daysWorked}" oninput="${upd('daysWorked')}"></div>
+        <div class="pc-field"><label>PTO</label><input class="gn-input" type="number" step="any" value="${w.pto}" oninput="${upd('pto')}"></div>
       </div>`;
+}
+
+function pcPhpOpBodyHTML(c) {
+  if (c.period === 'monthly') {
+    const weeks = (c.weeks && c.weeks.length) ? c.weeks : [pcNewWeek()];
+    return `
+      <div class="pc-weeks-list">
+        ${weeks.map((w, i) => `
+          <div class="pc-week-block">
+            <div class="pc-week-header">
+              <span class="pc-week-title">Week ${i + 1}</span>
+              ${weeks.length > 1 ? `<button type="button" class="pc-week-remove" onclick="pcRemoveWeek(${c.id},${i})">Remove Week</button>` : ''}
+            </div>
+            ${pcPhpOpFieldsHTML(c.id, i, w)}
+          </div>
+        `).join('')}
+      </div>
+      <button type="button" class="btn btn-ghost" style="align-self:flex-start;" onclick="pcAddWeek(${c.id})">+ Add Week</button>`;
+  }
+  return pcPhpOpFieldsHTML(c.id, null, c);
 }
 
 function pcResultsHTML(c, r) {
@@ -13116,7 +13233,7 @@ function pcResultsHTML(c, r) {
 function pcCardHTML(c) {
   const r = pcCompute(c);
   const badge = pcBadgeInfo(r, c.type);
-  const typeLabel = pcTypeLabel(c.type) + (c.type === 'res' ? (c.period === 'monthly' ? ' · Monthly' : ' · Weekly') : '');
+  const typeLabel = pcTypeLabel(c.type) + (c.period === 'monthly' ? ' · Monthly' : ' · Weekly');
   return `
     <div class="pc-card" id="pc-card-${c.id}">
       <div class="pc-card-header" onclick="pcToggleOpen(${c.id})">
@@ -13134,13 +13251,12 @@ function pcCardHTML(c) {
             <button class="toggle-btn ${c.type === 'php' ? 'active' : ''}" onclick="pcSetType(${c.id},'php')">PHP</button>
             <button class="toggle-btn ${c.type === 'op' ? 'active' : ''}" onclick="pcSetType(${c.id},'op')">OP</button>
           </div>
-          ${c.type === 'res' ? `
           <div class="toggle-group">
             <button class="toggle-btn ${c.period === 'weekly' ? 'active' : ''}" onclick="pcSetPeriod(${c.id},'weekly')">Weekly</button>
             <button class="toggle-btn ${c.period === 'monthly' ? 'active' : ''}" onclick="pcSetPeriod(${c.id},'monthly')">Monthly</button>
-          </div>` : ''}
+          </div>
         </div>
-        <div class="pc-empty-hint" id="pc-hint-${c.id}" style="${c.totalHrs === '' ? '' : 'display:none;'}">Enter Total Billing Hours to begin — everything else builds from there.</div>
+        <div class="pc-empty-hint" id="pc-hint-${c.id}" style="${pcHasNoData(c) ? '' : 'display:none;'}">Enter Total Billing Hours to begin — everything else builds from there.</div>
         ${pcFieldsHTML(c)}
         ${pcResultsHTML(c, r)}
         <div style="display:flex;gap:8px;">
@@ -13198,6 +13314,7 @@ function pcConfirmNewPeriod() {
   if (!c) return;
   const clearFields = ['totalHrs', 'code1', 'code2', 'time1', 'time2', 'pto', 'workdaysMonth', 'workdaysLeft', 'noShow', 'c400', 'c400t', 'c402', 'c402t', 'c403', 'c404', 'c404t', 'timeGroup', 'daysWorked'];
   clearFields.forEach(f => c[f] = '');
+  if (c.weeks && c.weeks.length) c.weeks = [pcNewWeek()];
   pcSave();
   pcRenderAll();
 }
