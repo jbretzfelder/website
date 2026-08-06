@@ -4053,14 +4053,6 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 .pc-remove-btn:hover { background: var(--warning-bg); color: var(--warning-text); }
 .pc-card-body { display: none; padding: 14px; border-top: 1px solid var(--border); flex-direction: column; gap: 12px; }
 .pc-card-body.open { display: flex; }
-.pc-empty-hint {
-  font-size: 12px;
-  font-style: italic;
-  color: var(--text-secondary);
-  background: var(--bg);
-  border-radius: 6px;
-  padding: 8px 12px;
-}
 .pc-weeks-list { display: flex; flex-direction: column; gap: 12px; }
 .pc-week-block {
   border: 1px solid var(--border);
@@ -4071,10 +4063,24 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 .pc-week-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 10px;
   margin-bottom: 10px;
 }
-.pc-week-title { font-size: 12px; font-weight: 700; color: var(--accent); }
+.pc-week-title { font-size: 12px; font-weight: 700; color: var(--accent); flex-shrink: 0; }
+.pc-week-label-input {
+  flex: 1;
+  min-width: 100px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 5px 9px;
+  font-family: 'Public Sans', sans-serif;
+  font-size: 11px;
+  color: var(--text);
+  background: var(--bg);
+  outline: none;
+  transition: border-color 0.15s;
+}
+.pc-week-label-input:focus { border-color: var(--border-focus); background: white; }
 .pc-week-remove {
   background: none;
   border: none;
@@ -4084,8 +4090,11 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   padding: 2px 6px;
   border-radius: 4px;
   transition: background .15s, color .15s;
+  flex-shrink: 0;
 }
 .pc-week-remove:hover { background: var(--warning-bg); color: var(--warning-text); }
+.pc-week-summary { font-size: 12px; color: var(--text-secondary); margin-top: 10px; }
+.pc-week-summary strong { color: var(--text); font-family: 'DM Mono', monospace; font-weight: 600; }
 .pc-field-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -12948,6 +12957,7 @@ function pcNewCounselor() {
 
 function pcNewWeek() {
   return {
+    label: '',
     totalHrs: '', c400: '', c400t: '', c402: '', c402t: '', c403: '', c404: '', c404t: '',
     noShow: '', timeGroup: '', daysWorked: '', pto: ''
   };
@@ -13137,8 +13147,6 @@ function pcUpdateResults(id) {
   if (headerPct) { headerPct.textContent = pcFmtPct(r.prod); headerPct.className = 'pc-header-pct ' + info.pctCls; }
   const badge = document.getElementById('pc-badge-' + id);
   if (badge) { badge.textContent = info.short; badge.className = 'pc-badge ' + info.cls; }
-  const hintEl = document.getElementById('pc-hint-' + id);
-  if (hintEl) hintEl.style.display = pcHasNoData(c) ? '' : 'none';
   if (c.type === 'res' && c.period === 'monthly') {
     const perDayEl = document.getElementById('pc-perday-' + id);
     if (perDayEl) perDayEl.textContent = pcFmtNum(r.prodPerDay);
@@ -13148,6 +13156,16 @@ function pcUpdateResults(id) {
     if (numeratorEl) numeratorEl.textContent = pcFmtNum(r.numerator);
     const requiredEl = document.getElementById('pc-required-' + id);
     if (requiredEl) requiredEl.textContent = pcFmtNum(r.requiredHours);
+    if (c.period === 'monthly' && c.weeks) {
+      c.weeks.forEach((w, i) => {
+        const wr = pcComputePhpOpWeek(w);
+        const wReq = wr.denom > 0 ? wr.denom * r.target : null;
+        const billedEl = document.getElementById('pc-week-billed-' + id + '-' + i);
+        const weekReqEl = document.getElementById('pc-week-required-' + id + '-' + i);
+        if (billedEl) billedEl.textContent = pcFmtNum(wr.numerator);
+        if (weekReqEl) weekReqEl.textContent = pcFmtNum(wReq);
+      });
+    }
   }
 }
 
@@ -13195,18 +13213,24 @@ function pcPhpOpFieldsHTML(id, weekIdx, w) {
 
 function pcPhpOpBodyHTML(c) {
   if (c.period === 'monthly') {
+    const target = c.type === 'php' ? 0.80 : 0.75;
     const weeks = (c.weeks && c.weeks.length) ? c.weeks : [pcNewWeek()];
     return `
       <div class="pc-weeks-list">
-        ${weeks.map((w, i) => `
+        ${weeks.map((w, i) => {
+          const wr = pcComputePhpOpWeek(w);
+          const wReq = wr.denom > 0 ? wr.denom * target : null;
+          return `
           <div class="pc-week-block">
             <div class="pc-week-header">
               <span class="pc-week-title">Week ${i + 1}</span>
+              <input type="text" class="pc-week-label-input" placeholder="e.g. 3/3–3/7 (optional)" value="${w.label || ''}" onclick="event.stopPropagation()" oninput="pcUpdateWeek(${c.id},${i},'label',this.value)">
               ${weeks.length > 1 ? `<button type="button" class="pc-week-remove" onclick="pcRemoveWeek(${c.id},${i})">Remove Week</button>` : ''}
             </div>
             ${pcPhpOpFieldsHTML(c.id, i, w)}
+            <div class="pc-week-summary">Billed: <strong id="pc-week-billed-${c.id}-${i}">${pcFmtNum(wr.numerator)}</strong> · Required: <strong id="pc-week-required-${c.id}-${i}">${pcFmtNum(wReq)}</strong></div>
           </div>
-        `).join('')}
+        `; }).join('')}
       </div>
       <button type="button" class="btn btn-ghost" style="align-self:flex-start;" onclick="pcAddWeek(${c.id})">+ Add Week</button>`;
   }
@@ -13256,7 +13280,6 @@ function pcCardHTML(c) {
             <button class="toggle-btn ${c.period === 'monthly' ? 'active' : ''}" onclick="pcSetPeriod(${c.id},'monthly')">Monthly</button>
           </div>
         </div>
-        <div class="pc-empty-hint" id="pc-hint-${c.id}" style="${pcHasNoData(c) ? '' : 'display:none;'}">Enter Total Billing Hours to begin — everything else builds from there.</div>
         ${pcFieldsHTML(c)}
         ${pcResultsHTML(c, r)}
         <div style="display:flex;gap:8px;">
