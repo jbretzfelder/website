@@ -373,17 +373,18 @@
     @page{ margin:0.35in; }
     body *{ visibility:hidden; }
     #cheatSheetPrintArea, #cheatSheetPrintArea *,
+    #locCheatSheetPrintArea, #locCheatSheetPrintArea *,
     #itpCheatSheetPrintArea, #itpCheatSheetPrintArea *,
     #noteCheatSheetPrintArea, #noteCheatSheetPrintArea *{ visibility:visible; }
-    #cheatSheetPrintArea, #itpCheatSheetPrintArea, #noteCheatSheetPrintArea{ position:absolute; left:0; top:0; width:100%; padding:0; margin:0; }
-    #cheatSheetPrintArea h2, #itpCheatSheetPrintArea h2, #noteCheatSheetPrintArea h2{ font-size:13.5px; margin:10px 0 4px; page-break-after:avoid; }
-    #cheatSheetPrintArea h2:first-of-type, #itpCheatSheetPrintArea h2:first-of-type, #noteCheatSheetPrintArea h2:first-of-type{ margin-top:6px; }
-    #cheatSheetPrintArea .callout, #itpCheatSheetPrintArea .callout, #noteCheatSheetPrintArea .callout{ font-size:10.5px; line-height:1.3; padding:8px 10px; margin:0 0 6px; }
-    #cheatSheetPrintArea .cheat-grid, #itpCheatSheetPrintArea .cheat-grid, #noteCheatSheetPrintArea .cheat-grid{ gap:4px; margin:4px 0; }
-    #cheatSheetPrintArea .cheat-item, #itpCheatSheetPrintArea .cheat-item, #noteCheatSheetPrintArea .cheat-item{ font-size:9.5px; line-height:1.3; padding:5px 8px; break-inside:avoid; }
-    #cheatSheetPrintArea .checklist, #itpCheatSheetPrintArea .checklist, #noteCheatSheetPrintArea .checklist{ margin-top:4px; }
-    #cheatSheetPrintArea .checklist li, #itpCheatSheetPrintArea .checklist li, #noteCheatSheetPrintArea .checklist li{ font-size:9.5px; line-height:1.3; padding:2px 0 2px 18px; break-inside:avoid; }
-    #cheatSheetPrintArea .checklist li::before, #itpCheatSheetPrintArea .checklist li::before, #noteCheatSheetPrintArea .checklist li::before{ top:2px; }
+    #cheatSheetPrintArea, #locCheatSheetPrintArea, #itpCheatSheetPrintArea, #noteCheatSheetPrintArea{ position:absolute; left:0; top:0; width:100%; padding:0; margin:0; }
+    #cheatSheetPrintArea h2, #locCheatSheetPrintArea h2, #itpCheatSheetPrintArea h2, #noteCheatSheetPrintArea h2{ font-size:13.5px; margin:10px 0 4px; page-break-after:avoid; }
+    #cheatSheetPrintArea h2:first-of-type, #locCheatSheetPrintArea h2:first-of-type, #itpCheatSheetPrintArea h2:first-of-type, #noteCheatSheetPrintArea h2:first-of-type{ margin-top:6px; }
+    #cheatSheetPrintArea .callout, #locCheatSheetPrintArea .callout, #itpCheatSheetPrintArea .callout, #noteCheatSheetPrintArea .callout{ font-size:10.5px; line-height:1.3; padding:8px 10px; margin:0 0 6px; }
+    #cheatSheetPrintArea .cheat-grid, #locCheatSheetPrintArea .cheat-grid, #itpCheatSheetPrintArea .cheat-grid, #noteCheatSheetPrintArea .cheat-grid{ gap:4px; margin:4px 0; }
+    #cheatSheetPrintArea .cheat-item, #locCheatSheetPrintArea .cheat-item, #itpCheatSheetPrintArea .cheat-item, #noteCheatSheetPrintArea .cheat-item{ font-size:9.5px; line-height:1.3; padding:5px 8px; break-inside:avoid; }
+    #cheatSheetPrintArea .checklist, #locCheatSheetPrintArea .checklist, #itpCheatSheetPrintArea .checklist, #noteCheatSheetPrintArea .checklist{ margin-top:4px; }
+    #cheatSheetPrintArea .checklist li, #locCheatSheetPrintArea .checklist li, #itpCheatSheetPrintArea .checklist li, #noteCheatSheetPrintArea .checklist li{ font-size:9.5px; line-height:1.3; padding:2px 0 2px 18px; break-inside:avoid; }
+    #cheatSheetPrintArea .checklist li::before, #locCheatSheetPrintArea .checklist li::before, #itpCheatSheetPrintArea .checklist li::before, #noteCheatSheetPrintArea .checklist li::before{ top:2px; }
   }
 
   /* Glossary terms */
@@ -702,6 +703,20 @@
     <span class="home-card-arrow">→</span>
   </div>
 
+  <div class="track-label">Documentation Skills</div>
+  <div class="home-card" onclick="openModule('view-loc')" id="cardLoc">
+    <div class="home-card-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></div>
+    <div class="home-card-body">
+      <div class="home-card-title">Levels of Care</div>
+      <div class="home-card-desc">What each level of care actually means, and how to determine — and justify — the right one for a client</div>
+    </div>
+    <div class="home-card-meta">
+      <span class="home-card-time">~35–45 min</span>
+      <span class="home-card-status" id="statusLoc"></span>
+    </div>
+    <span class="home-card-arrow">→</span>
+  </div>
+
   <div class="track-label">Clinical Skills</div>
   <div class="home-card disabled" id="cardCrisis">
     <div class="home-card-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg></div>
@@ -847,6 +862,200 @@
         <span></span>
       </div>
     </section>
+    </main>
+  </div>
+</div>
+
+<div id="view-loc" class="top-view">
+  <div class="app">
+    <div class="mobile-topbar">
+      <button onclick="toggleMobileNav()" type="button" aria-label="Open menu">☰</button>
+      <span class="mobile-topbar-title">Levels of Care Module</span>
+      <button onclick="goHome()" type="button" aria-label="Back to Clinical Training">🏠</button>
+    </div>
+    <div class="sidebar-backdrop" onclick="toggleMobileNav()"></div>
+    <nav class="sidebar">
+      <button class="sidebar-back" onclick="goHome()" type="button">← Back to Clinical Training</button>
+      <div class="sidebar-title">Clinical Training</div>
+      <div class="sidebar-sub">Levels of Care Module</div>
+      <ul class="nav-list" id="navList-loc"></ul>
+      <div class="progress-track">
+        <span id="progressLabel-loc">0 of 10 complete</span>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill-loc" style="width:0%"></div></div>
+        <span class="reset-link" id="resetProgress-loc">Reset progress</span>
+      </div>
+    </nav>
+
+    <main class="main">
+
+    <!-- SECTION: WHY -->
+    <section class="module active" data-id="loc-why">
+      <div class="eyebrow">Start here</div>
+      <h1>What "level of care" actually means</h1>
+      <div class="beat-flow wide" id="locWhyBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="goHome()">← Back to Clinical Training</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION: CONTINUUM -->
+    <section class="module" data-id="loc-continuum">
+      <div class="eyebrow">Foundations</div>
+      <h1>The continuum of care</h1>
+      <div class="beat-flow wide" id="locContinuumBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="locGoTo('loc-why')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION: FOCUS -->
+    <section class="module" data-id="loc-focus">
+      <div class="eyebrow">Foundations</div>
+      <h1>Same continuum, different jobs</h1>
+      <div class="beat-flow wide" id="locFocusBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="locGoTo('loc-continuum')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION: THE TEST -->
+    <section class="module" data-id="loc-test">
+      <div class="eyebrow">The decision framework</div>
+      <h1>The residential necessity test</h1>
+      <div class="beat-flow wide" id="locTestBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="locGoTo('loc-focus')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION: PRACTICE 1 -->
+    <section class="module" data-id="loc-practice1">
+      <div class="eyebrow">Practice</div>
+      <h1>Case study: is Maria ready to step down?</h1>
+      <div class="beat-flow wide" id="locPractice1Beats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="locGoTo('loc-test')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION: TRANSITIONS -->
+    <section class="module" data-id="loc-transitions">
+      <div class="eyebrow">The decision framework</div>
+      <h1>Transition readiness, level by level</h1>
+      <div class="beat-flow wide" id="locTransitionsBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="locGoTo('loc-practice1')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION: PRACTICE 2 -->
+    <section class="module" data-id="loc-practice2">
+      <div class="eyebrow">Practice</div>
+      <h1>One more case, then three quick scenarios</h1>
+      <div class="beat-flow wide" id="locPractice2Beats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="locGoTo('loc-transitions')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION: DOMAINS -->
+    <section class="module" data-id="loc-domains">
+      <div class="eyebrow">The decision framework</div>
+      <h1>Five domains, one weak link</h1>
+      <div class="beat-flow wide" id="locDomainsBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="locGoTo('loc-practice2')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION: JUSTIFY -->
+    <section class="module" data-id="loc-justify">
+      <div class="eyebrow">Documentation</div>
+      <h1>Justifying the level of care on paper</h1>
+      <div class="beat-flow wide" id="locJustifyBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="locGoTo('loc-domains')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION: ASSEMBLY -->
+    <section class="module" data-id="loc-assembly">
+      <div class="eyebrow">Practice · Final section</div>
+      <h1>Determine Danielle's level of care</h1>
+      <div class="beat-flow wide" id="locAssemblyBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="locGoTo('loc-justify')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- REFERENCE: CHEAT SHEET -->
+    <section class="module" data-id="loc-cheatsheet">
+      <div class="eyebrow">Reference · look at this anytime</div>
+      <h1>Levels of Care quick reference</h1>
+      <p class="lede">The continuum, the litmus test, and the five domains — one page, meant to sit open next to a chart while you're actually weighing a transition, not read start to finish.</p>
+      <div style="margin:14px 0 24px;">
+        <button class="btn secondary" onclick="window.print()">🖨️ Print / Save as PDF</button>
+      </div>
+
+      <div id="locCheatSheetPrintArea">
+        <div class="callout"><strong>Before anything else:</strong> the litmus test — can this person maintain their recovery gains for 12–16 hours without professional oversight? If no, they need more structure. If yes across every domain, they're ready for less.</div>
+
+        <h2 style="margin-top:28px;">The continuum, low to high</h2>
+        <div class="cheat-grid">
+          <div class="cheat-item"><strong>0.5 — Early Intervention:</strong> Education and monitoring for at-risk use, not yet a diagnosable disorder.</div>
+          <div class="cheat-item"><strong>1 — Outpatient:</strong> Scheduled sessions, client living independently full-time.</div>
+          <div class="cheat-item"><strong>2.1 — Intensive Outpatient (IOP):</strong> Several hours of programming, several days a week, living independently.</div>
+          <div class="cheat-item"><strong>2.5 — Partial Hospitalization (Day Treatment):</strong> 20+ hours/week programming, evenings and nights at home.</div>
+          <div class="cheat-item"><strong>3.1 — Clinically Managed Low-Intensity Residential:</strong> Live-in, lighter clinical structure, often longer-term.</div>
+          <div class="cheat-item"><strong>3.5 — Clinically Managed High-Intensity Residential:</strong> Live-in, 24/7 clinical (non-medical) oversight, no nursing on site.</div>
+          <div class="cheat-item"><strong>3.7 / 3.7WM — Medically Monitored Intensive Inpatient / Withdrawal Management:</strong> Live-in, 24/7 medical monitoring, nursing and physician availability.</div>
+          <div class="cheat-item"><strong>4 — Medically Managed Intensive Inpatient:</strong> Hospital-level care for the most acute medical/psychiatric presentations.</div>
+        </div>
+
+        <h2 style="margin-top:28px;">3.7WM / 3.5 / 2.5 — the job, not just the intensity</h2>
+        <ul class="checklist">
+          <li><strong>3.7WM:</strong> Medical stabilization. Nursing always available.</li>
+          <li><strong>3.5:</strong> Skill-building and behavioral change. No nursing on site — clinical staff only.</li>
+          <li><strong>2.5:</strong> Real-world application. Evenings at home; the point is proving skills hold up with less supervision.</li>
+        </ul>
+
+        <h2 style="margin-top:28px;">Five domains for a 3.5 → 2.5 decision</h2>
+        <ul class="checklist">
+          <li><strong>Medical Complexity</strong> — independent medication management, recognizing emergencies, communicating with providers</li>
+          <li><strong>Psychiatric Stability</strong> — managing symptoms without 24/7 oversight, using coping skills consistently, recognizing warning signs</li>
+          <li><strong>Social Skills</strong> — navigating relationships and conflict without staff mediation</li>
+          <li><strong>Daily Living Skills</strong> — cooking, cleaning, budgeting, time management, transportation</li>
+          <li><strong>Support Systems</strong> — recovery-oriented relationships, appropriately engaged family/social supports, accessible community resources</li>
+        </ul>
+        <div class="callout"><strong>One weak domain is enough to hold someone at the higher level of care</strong> — even when every other domain looks ready. That's not overcaution; a single unresolved risk area is exactly what a relapse exploits.</div>
+      </div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="locGoTo('loc-assembly')">← Back to Levels of Care Module</button>
+        <span></span>
+      </div>
+    </section>
+
     </main>
   </div>
 </div>
@@ -1778,6 +1987,7 @@ function refreshHomeStatus(){
     }
   }
   setStatus(document.getElementById('statusThread'), Object.values(bpProgress).filter(Boolean).length, bpSECTIONS.length);
+  setStatus(document.getElementById('statusLoc'), Object.values(locProgress).filter(Boolean).length, locSECTIONS.length);
   setStatus(document.getElementById('statusAsam'), Object.values(asamProgress).filter(Boolean).length, asamSECTIONS.length);
   setStatus(document.getElementById('statusItp'), Object.values(itpProgress).filter(Boolean).length, itpSECTIONS.length);
   setStatus(document.getElementById('statusNote'), Object.values(noteProgress).filter(Boolean).length, noteSECTIONS.length);
@@ -1874,6 +2084,9 @@ const SECTION_TO_CONTAINER = {
   notewhy:'noteWhyBeats', noteanatomy:'noteAnatomyBeats', notetypes:'noteTypesBeats',
   notedescribe:'noteDescribeBeats', noteresponse:'noteResponseBeats', noterisk:'noteRiskBeats',
   noteassembly:'noteAssemblyBeats',
+  'loc-why':'locWhyBeats', 'loc-continuum':'locContinuumBeats', 'loc-focus':'locFocusBeats', 'loc-test':'locTestBeats',
+  'loc-practice1':'locPractice1Beats', 'loc-transitions':'locTransitionsBeats', 'loc-practice2':'locPractice2Beats',
+  'loc-domains':'locDomainsBeats', 'loc-justify':'locJustifyBeats', 'loc-assembly':'locAssemblyBeats',
   'concl-arc':'conclArcBeats', 'concl-monday':'conclMondayBeats',
 };
 
@@ -2163,6 +2376,690 @@ function buildQuiz(containerId, items, onAllAnswered){
     card.appendChild(qDiv);
   });
 }
+
+/* =====================================================
+   LEVELS OF CARE MODULE
+   ===================================================== */
+const locCHAPTERS = [
+  {title:'Levels of Care Module', sections:[
+    {id:'loc-why', label:'What "level of care" means'},
+    {id:'loc-continuum', label:'The continuum of care'},
+    {id:'loc-focus', label:'Same continuum, different jobs'},
+    {id:'loc-test', label:'The residential necessity test'},
+    {id:'loc-practice1', label:'Case study: Maria'},
+    {id:'loc-transitions', label:'Transition readiness by level'},
+    {id:'loc-practice2', label:'One more case, three scenarios'},
+    {id:'loc-domains', label:'Five domains, one weak link'},
+    {id:'loc-justify', label:'Justifying it on paper'},
+    {id:'loc-assembly', label:'Put it all together'},
+  ]},
+  {title:'Reference (look anytime)', sections:[
+    {id:'loc-cheatsheet', label:'Quick reference cheat sheet', trackProgress:false},
+  ]},
+];
+const locSECTIONS = locCHAPTERS.flatMap(c => c.sections);
+const locTRACKED_SECTIONS = locSECTIONS.filter(s => s.trackProgress !== false);
+
+let locProgress = {};
+try{ locProgress = JSON.parse(localStorage.getItem('doctrain-loc-progress') || '{}'); }catch(e){ locProgress = {}; }
+
+function locSaveProgress(){
+  localStorage.setItem('doctrain-loc-progress', JSON.stringify(locProgress));
+  renderLOCNav();
+}
+function locMarkComplete(id){
+  locProgress[id] = true;
+  locSaveProgress();
+  updateBeatNav(SECTION_TO_CONTAINER[id]);
+}
+
+let locCurrentSection = 'loc-why';
+function renderLOCNav(){
+  const navList = document.getElementById('navList-loc');
+  navList.innerHTML = '';
+  locCHAPTERS.forEach(chapter=>{
+    const heading = document.createElement('li');
+    heading.style.cssText = 'font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:#7b9587; font-weight:700; margin:16px 0 6px; padding:0 8px;';
+    heading.textContent = chapter.title;
+    navList.appendChild(heading);
+    chapter.sections.forEach(s=>{
+      const li = document.createElement('li');
+      li.className = 'nav-item' + (locCurrentSection===s.id ? ' active':'');
+      li.onclick = ()=>locGoTo(s.id);
+      if(s.trackProgress === false){
+        const dash = document.createElement('span');
+        dash.className = 'nav-check';
+        dash.style.cssText = 'border-style:dashed; opacity:.6;';
+        li.appendChild(dash);
+      } else {
+        const check = document.createElement('span');
+        check.className = 'nav-check' + (locProgress[s.id] ? ' done':'');
+        check.textContent = locProgress[s.id] ? '✓' : '';
+        li.appendChild(check);
+      }
+      const label = document.createElement('span');
+      label.textContent = s.label;
+      li.appendChild(label);
+      navList.appendChild(li);
+    });
+  });
+  const doneCount = locTRACKED_SECTIONS.filter(s=>locProgress[s.id]).length;
+  document.getElementById('progressLabel-loc').textContent = doneCount + ' of ' + locTRACKED_SECTIONS.length + ' complete';
+  document.getElementById('progressFill-loc').style.width = (doneCount/locTRACKED_SECTIONS.length*100) + '%';
+  const locFinalBadge = document.getElementById('locFinalBadge');
+  if(locFinalBadge) locFinalBadge.style.display = (doneCount === locTRACKED_SECTIONS.length) ? 'inline-block' : 'none';
+}
+
+function locGoTo(id){
+  locCurrentSection = id;
+  document.querySelectorAll('#view-loc section.module').forEach(sec=>{
+    sec.classList.toggle('active', sec.dataset.id === id);
+  });
+  renderLOCNav();
+  closeMobileNav();
+  window.scrollTo({top:0, behavior:'instant'});
+}
+
+document.getElementById('resetProgress-loc').onclick = ()=>{
+  if(confirm('Reset all Levels of Care module progress? This clears completion checkmarks and your written answers.')){
+    localStorage.removeItem('doctrain-loc-progress');
+    locProgress = {};
+    locSaveProgress();
+    ['locWhyBeats','locContinuumBeats','locFocusBeats','locTestBeats','locPractice1Beats','locTransitionsBeats','locPractice2Beats','locDomainsBeats','locJustifyBeats','locAssemblyBeats'].forEach(resetBeats);
+  }
+};
+
+/* ---- Generic two-or-more-option decision exercise ----
+   Reused for the Maria case, the David case, the vignette/domain
+   matching set, and the Danielle domain-readiness assembly. Each
+   item is a row: a prompt, a set of button options, and which
+   option index is correct. */
+function renderLocDecision(containerId, items, onDoneSectionId, onAllAnswered){
+  const card = document.getElementById(containerId);
+  if(!card) return;
+  card.innerHTML = '';
+  let answered = 0;
+  items.forEach((item, idx)=>{
+    const row = document.createElement('div');
+    row.className = 'classify-row';
+    const optsHtml = item.options.map((opt,i)=>`<button class="pill-btn" data-val="${i}" data-idx="${idx}">${opt}</button>`).join('');
+    row.innerHTML = `
+      <div style="flex:1;">
+        <div class="classify-text">${item.prompt}</div>
+        <div class="classify-explain" id="${containerId}-explain-${idx}">${item.explain}</div>
+      </div>
+      <div class="classify-buttons">${optsHtml}</div>
+    `;
+    card.appendChild(row);
+  });
+  card.querySelectorAll('.pill-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const idx = btn.dataset.idx;
+      const item = items[idx];
+      const rowBtns = card.querySelectorAll(`[data-idx="${idx}"]`);
+      rowBtns.forEach(b=>b.disabled = true);
+      const chosenVal = parseInt(btn.dataset.val, 10);
+      const correct = chosenVal === item.correctIdx;
+      btn.classList.add(correct ? 'chosen-correct' : 'chosen-wrong');
+      if(!correct){
+        rowBtns[item.correctIdx].classList.add('chosen-correct');
+      }
+      document.getElementById(`${containerId}-explain-${idx}`).classList.add('show');
+      answered++;
+      if(answered === items.length){
+        if(onDoneSectionId) locMarkComplete(onDoneSectionId);
+        if(onAllAnswered) onAllAnswered();
+      }
+    });
+  });
+}
+function locRevealModel(id){
+  document.getElementById(id + 'Reveal').classList.add('show');
+}
+
+
+/* ---- Why this module ---- */
+const LOC_WHY_BEATS = [
+  `<p class="lede">Before you're ever asked to weigh in on what level of care a client needs, it helps to slow all the way down and get clear on what these numbers even mean. This module assumes nothing — if you've never opened an ASAM in your life, you're in exactly the right place.</p>`,
+
+  `<h3>What "level of care" actually means</h3>
+   <p>It's not a grade of how sick someone is. It's the <em>setting</em> a client is receiving treatment in right now — how much structure, how much staff oversight, and how many hours of programming a day. A client can be clinically appropriate for more than one setting on a given day; picking the right one is a judgment call, not a lookup.</p>
+   <p style="font-size:13px; color:var(--ink-soft);">One heads-up before you start: this module uses Danielle, the same client you've seen elsewhere in this training, for its final practice case — so if you've done the ASAM module already, some details will feel familiar. If you haven't, that's fine too; nothing here requires it.</p>`,
+
+  `<h3>Why getting this wrong costs something real</h3>
+   <p>Almost every counselor in this building has had the same experience: a client steps down before they're actually ready, and within 30 days they're back. That's not a coincidence and it's not bad luck — it's what happens when "ready" gets decided by things like time served or good behavior in the building, instead of by whether the client can actually hold their recovery together without staff nearby.</p>
+   <p>The mistake runs the other way too. Keeping someone at a higher level of care than they clinically need isn't "safe" by default — it's a real cost to the client: more restriction, more time away from their life, and a documentation record that won't survive review, since insurance won't keep paying for a level of care the evidence doesn't support. Both directions cause real harm. This module is about learning to tell the difference.</p>`,
+
+  `<div class="callout"><strong>How this connects to the Golden Thread:</strong> level of care is the question underneath almost everything an ASAM documents. Every one of the six dimensions you may already know from the ASAM module exists, in part, to answer one question: does this person still need <em>this much</em> structure, or would less be enough? This module goes deep on that one decision, on its own, before you ever have to write a full narrative around it.</div>`,
+
+  `<h3>What's ahead</h3>
+   <p>In order: what the full continuum of care actually looks like, what makes each level different in <em>kind</em> and not just intensity, a decision framework for the transition staff make constantly (3.5 to 2.5), several real practice scenarios, and finally, how to put a level-of-care decision into words that hold up on paper.</p>`,
+];
+const LOC_WHY_FINAL = `<button class="btn" onclick="locMarkComplete('loc-why'); locGoTo('loc-continuum')">Next: The continuum of care →</button>`;
+
+/* ---- The continuum of care ---- */
+const LOC_CONTINUUM_BEATS = [
+  `<p class="lede">ASAM's levels aren't a severity scale from 1 to 10. They're a menu of different treatment settings, each with its own staffing, structure, and hours — and the number attached to each one describes the setting, not how "far along" a client is.</p>`,
+
+  `<h3>Reading the numbers</h3>
+   <p>A whole number is a broad category (0, 1, 2, 3, 4). A decimal after it narrows that down to a specific level within the category — for example, 3.1, 3.5, and 3.7 are all forms of residential care, but they're built for very different clinical pictures. Higher numbers mean more structure and staff involvement, not "more sick." A client can genuinely need a 3.5 today and a 1 in three months, and neither one is a reflection of how "bad" their case is — just what setting fits where they are right now.</p>`,
+
+  `<h3>The full continuum, low to high</h3>
+   <p style="font-size:13.5px; color:var(--ink-soft);">Click each one to see what it actually looks like day to day.</p>
+   <div class="break-cards">
+     <div class="break-card" onclick="this.classList.toggle('expanded')">
+       <div class="break-card-title"><span class="break-card-icon">+</span> 0.5 — Early Intervention</div>
+       <div class="break-card-body">Education and monitoring for at-risk use that hasn't reached a diagnosable disorder — often a single session or a short series, not ongoing treatment.</div>
+     </div>
+     <div class="break-card" onclick="this.classList.toggle('expanded')">
+       <div class="break-card-title"><span class="break-card-icon">+</span> 1 — Outpatient</div>
+       <div class="break-card-body">Scheduled individual or group sessions, usually a few hours a week. The client is living independently full-time and managing everything else in their life around it.</div>
+     </div>
+     <div class="break-card" onclick="this.classList.toggle('expanded')">
+       <div class="break-card-title"><span class="break-card-icon">+</span> 2.1 — Intensive Outpatient (IOP)</div>
+       <div class="break-card-body">Several hours of programming, several days a week — more structure than standard outpatient, but the client still lives independently and manages their own schedule around it.</div>
+     </div>
+     <div class="break-card" onclick="this.classList.toggle('expanded')">
+       <div class="break-card-title"><span class="break-card-icon">+</span> 2.5 — Partial Hospitalization (Day Treatment)</div>
+       <div class="break-card-body">20+ hours of programming a week — most of the day, most days — but the client returns home in the evenings and overnight. The first level where a client is genuinely tested on unsupervised time.</div>
+     </div>
+     <div class="break-card" onclick="this.classList.toggle('expanded')">
+       <div class="break-card-title"><span class="break-card-icon">+</span> 3.1 — Clinically Managed Low-Intensity Residential</div>
+       <div class="break-card-body">Live-in care with lighter clinical structure than 3.5, often used for longer-term stays while a client builds stability and independent living skills.</div>
+     </div>
+     <div class="break-card" onclick="this.classList.toggle('expanded')">
+       <div class="break-card-title"><span class="break-card-icon">+</span> 3.5 — Clinically Managed High-Intensity Residential</div>
+       <div class="break-card-body">Live-in care with 24/7 clinical oversight from non-medical staff — no nursing on site. This is where intensive skill-building and behavioral work happens.</div>
+     </div>
+     <div class="break-card" onclick="this.classList.toggle('expanded')">
+       <div class="break-card-title"><span class="break-card-icon">+</span> 3.7 / 3.7WM — Medically Monitored Intensive Inpatient / Withdrawal Management</div>
+       <div class="break-card-body">Live-in care with 24/7 medical monitoring — nursing always available, physician oversight. Built for medical stabilization, most often acute withdrawal.</div>
+     </div>
+     <div class="break-card" onclick="this.classList.toggle('expanded')">
+       <div class="break-card-title"><span class="break-card-icon">+</span> 4 — Medically Managed Intensive Inpatient</div>
+       <div class="break-card-body">Hospital-level care for the most acute medical or psychiatric presentations — beyond what a residential facility is equipped to manage.</div>
+     </div>
+   </div>`,
+
+  `<div class="callout">Woodhaven currently operates five of these levels: <strong>1 (Outpatient), 2.1 (IOP), 2.5, 3.5, and 3.7WM</strong>. This module's practice sections zoom in on the 3.7WM → 3.5 → 2.5 stretch specifically, since that's where the highest-stakes, hardest-to-call transitions happen. But the same idea — demonstrated readiness over time served, one weak domain holding a decision — applies just as much to a 2.5-to-2.1 or 2.1-to-1 conversation.</div>`,
+
+  `<h2>Check your understanding</h2>
+   <div class="quiz-card" id="locContinuumQuizCard"></div>`,
+];
+const LOC_CONTINUUM_FINAL = `<button class="btn" onclick="locGoTo('loc-focus')">Next: Same continuum, different jobs →</button>`;
+
+const LOC_CONTINUUM_QUIZ_ITEMS = [
+  {
+    q: "A client moves from 3.5 to 2.5. What does that transition actually mean?",
+    options: [
+      "She's gotten worse and needs to be monitored more closely",
+      "She's gotten better slowly, so she needs less treatment overall",
+      "She's ready to practice what she's learned with less supervision, not less treatment",
+    ],
+    correctIdx: 2,
+    explain: "2.5 is still 20+ hours a week of programming — it's not a lighter version of treatment. What changes is supervision: evenings and nights are now unsupervised, which is exactly the skill 2.5 exists to test."
+  },
+  {
+    q: "What does a higher ASAM level number mean?",
+    options: [
+      "The client is sicker than a client at a lower level",
+      "The setting has more structure and staff involvement, not that the client is worse off",
+      "The client has been in treatment longer",
+    ],
+    correctIdx: 1,
+    explain: "The number describes the treatment setting, not a severity score. A client can need a high level of care briefly and a lower one for much longer — the number tracks the setting that fits right now."
+  },
+];
+
+
+/* ---- Same continuum, different jobs ---- */
+const LOC_FOCUS_BEATS = [
+  `<p class="lede">Here's the single biggest misconception to unlearn: 3.7WM, 3.5, and 2.5 don't just differ by "how much" structure a client gets. They differ by what job each level is actually doing. Mixing that up is where a lot of bad level-of-care decisions start.</p>`,
+
+  `<div class="thread-diagram">
+     <div class="thread-box">
+       <div class="thread-box-label">3.7WM</div>
+       <div class="thread-box-sub">Medical Stabilization</div>
+       <div class="thread-box-detail">24/7 medical monitoring, physician availability, nursing always on site. Structured programming 5+ hours a day. The goal is getting the body safe.</div>
+     </div>
+     <div class="thread-arrow">→</div>
+     <div class="thread-box">
+       <div class="thread-box-label">3.5</div>
+       <div class="thread-box-sub">Skill-Building &amp; Behavioral Change</div>
+       <div class="thread-box-detail">24/7 clinical oversight from non-medical staff — no nursing on site. Intensive programming. The goal is building the skills recovery actually requires.</div>
+     </div>
+     <div class="thread-arrow">→</div>
+     <div class="thread-box">
+       <div class="thread-box-label">2.5</div>
+       <div class="thread-box-sub">Real-World Application</div>
+       <div class="thread-box-detail">20+ hours a week of programming, evenings and nights at home. The goal is proving those skills hold up with less supervision.</div>
+     </div>
+   </div>`,
+
+  `<div class="callout"><strong>Critical mindset to hold onto: there is no nursing available at 3.5.</strong> A client transitioning from 3.7WM to 3.5 has to be able to manage their own medical needs — or need only the level of support non-medical clinical staff can actually provide. If a client is still relying on nursing for medication compliance or reassurance about physical symptoms, that's not a 3.5 need, no matter how emotionally or behaviorally ready they otherwise look.</div>`,
+
+  `<h3>What actually changes at each step</h3>
+   <ul class="checklist">
+     <li>3.7WM → 3.5 isn't "less medical support" — it's a hard line. Nursing goes away entirely.</li>
+     <li>3.5 → 2.5 isn't "less treatment" — it's the same intensity of programming, minus 24-hour supervision. Evenings become the client's first unsupervised test.</li>
+     <li>Compliance inside the building — attending groups, following rules, being polite to staff — doesn't answer whether a client is ready for either step. It tells you almost nothing about what happens when nobody's watching.</li>
+   </ul>`,
+
+  `<h2>Check your understanding</h2>
+   <div class="quiz-card" id="locFocusQuizCard"></div>`,
+];
+const LOC_FOCUS_FINAL = `<button class="btn" onclick="locMarkComplete('loc-focus'); locGoTo('loc-test')">Next: The residential necessity test →</button>`;
+
+const LOC_FOCUS_QUIZ_ITEMS = [
+  {
+    q: "A client at 3.5 asks the on-call staff member for help managing her diabetes medication overnight. What does this tell you?",
+    options: [
+      "Nothing unusual — 3.5 has nursing coverage for exactly this",
+      "This is a mismatch — 3.5 has no nursing on site, so ongoing medical dependence like this belongs at a level with medical monitoring",
+      "It's fine as long as she's compliant with groups during the day",
+    ],
+    correctIdx: 1,
+    explain: "3.5 is clinical, not medical, oversight — there's no nursing on site. A client who still needs hands-on medical support hasn't finished the job 3.7WM exists to do."
+  },
+];
+
+/* ---- The residential necessity test ---- */
+const LOC_TEST_BEATS = [
+  `<p class="lede">Now the actual decision framework — specifically for the judgment call staff make constantly: is this client ready to move from 3.5 to 2.5?</p>`,
+
+  `<div class="callout" style="font-size:15px; text-align:center;"><strong>The litmus test:</strong> "Can this person maintain their recovery gains for 12–16 hours without professional oversight?"</div>
+   <p>If the honest answer is no, they need 3.5. If the honest answer is yes — across the board, not just in the areas that are easy to feel good about — they're ready for 2.5. It's a simple question to ask and a hard one to answer honestly, because it isn't the same question as "is this person doing well here."</p>`,
+
+  `<h3>What "no" looks like</h3>
+   <div class="hero-compare">
+     <div class="hero-col deny">
+       <span class="hero-tag">Needs 3.5</span>
+       <p>Environmental Control Needs:
+- Cannot resist substance use when alone or unsupervised
+- Lacks safe, sober housing
+- Lives with active users or an unsupportive family
+- History of immediate relapse when structure decreases
+
+Skill Deficit Severity:
+- Cannot manage basic daily living tasks consistently
+- Needs real-time modeling or practice for interpersonal skills
+- Requires immediate intervention for maladaptive behaviors
+- Cannot generalize coping skills from counseling into daily situations</p>
+     </div>
+     <div class="hero-col survive">
+       <span class="hero-tag">Ready for 2.5</span>
+       <p>Recovery behaviors during unsupervised time
+
+Stable housing and transportation
+
+Can identify and use support systems independently
+
+Consistent engagement even when structure decreases
+
+Self-management of medical needs</p>
+     </div>
+   </div>`,
+
+  `<div class="callout">Notice what's missing from both lists: attendance, rule-following, being polite to staff. Those are baseline expectations, not evidence of readiness — the litmus test is about what happens the moment nobody's watching, not how someone behaves inside the building.</div>`,
+];
+const LOC_TEST_FINAL = `<button class="btn" onclick="locMarkComplete('loc-test'); locGoTo('loc-practice1')">Next: Case study — Maria →</button>`;
+
+
+/* ---- Case study: Maria ---- */
+const LOC_PRACTICE1_BEATS = [
+  `<p class="lede">Time to apply the litmus test to a real kind of case — the kind you'll see constantly.</p>`,
+
+  `<div class="scenario-box">
+     <div class="who">Client: Maria, 28 — 3.5 Residential, Day 45</div>
+     Maria follows program rules and attends all groups without incident. She needs constant reminders from staff for basic hygiene tasks. She consistently chooses relationships that staff and peers have flagged as problematic. When confronted directly about these patterns, she shuts down and disengages from the conversation.
+   </div>
+   <div class="scaffold-box">
+     <div class="scaffold-label">Before you decide, run her through the litmus test:</div>
+     <ol>
+       <li>Rule-following and attendance don't answer the question. What does?</li>
+       <li>Does she show the skill-deficit pattern (needs real-time modeling, can't generalize coping skills, needs immediate intervention for maladaptive patterns) — or the unsupervised-ready pattern?</li>
+       <li>What happens the moment structure decreases and nobody's there to redirect her?</li>
+     </ol>
+   </div>
+   <div class="card" id="locMariaClassifyCard"><!-- injected by JS --></div>`,
+];
+const LOC_PRACTICE1_FINAL = `<button class="btn" onclick="locGoTo('loc-transitions')">Next: Transition readiness by level →</button>`;
+
+const LOC_MARIA_ITEMS = [
+  {
+    prompt: "Maria: ready for 2.5, or maintain 3.5?",
+    options: ["Ready for 2.5", "Maintain 3.5"],
+    correctIdx: 1,
+    explain: "Maintain 3.5. Needing constant hygiene reminders, consistently choosing problematic relationships, and shutting down instead of engaging with feedback are all skill-deficit signs — she needs real-time intervention and modeling, which 2.5's reduced supervision can't provide. Compliance with the program's structure isn't the same as being able to function without it."
+  },
+];
+
+/* ---- Transition readiness by level ---- */
+const LOC_TRANSITIONS_BEATS = [
+  `<p class="lede">Readiness isn't about time served or program completion. It's about demonstrable evidence of specific capabilities at each level — the same skill actually shown, not just time passed.</p>`,
+
+  `<p style="font-size:13.5px; color:var(--ink-soft);">Click each transition to see what actually counts as evidence.</p>
+   <div class="break-cards">
+     <div class="break-card" onclick="this.classList.toggle('expanded')">
+       <div class="break-card-title"><span class="break-card-icon">+</span> From 3.7WM to 3.5</div>
+       <div class="break-card-body">Medical stability achieved. Engagement with treatment programming. Reduced acute symptoms. Can function without constant medical oversight — no more relying on nursing for medication compliance or reassurance.</div>
+     </div>
+     <div class="break-card" onclick="this.classList.toggle('expanded')">
+       <div class="break-card-title"><span class="break-card-icon">+</span> From 3.5 to 2.5</div>
+       <div class="break-card-body">Demonstrated coping skills across various situations, not just in session. Consistent program engagement. Beginning insight into triggers and warning signs. Can maintain recovery behaviors when unsupervised. Safe living environment secured.</div>
+     </div>
+     <div class="break-card" onclick="this.classList.toggle('expanded')">
+       <div class="break-card-title"><span class="break-card-icon">+</span> From 2.5 to Outpatient</div>
+       <div class="break-card-body">Stable in the community for an extended period. Strong support network actually activated, not just identified. Employment or other meaningful activity engaged. Independent medical management.</div>
+     </div>
+   </div>`,
+
+  `<div class="callout">Notice the pattern across all three: every item is something a reviewer — or you, six months from now — could point to and say "here's the evidence." None of them are "enough time has passed" or "no incidents this week." Absence of a problem isn't the same as demonstrated readiness.</div>`,
+];
+const LOC_TRANSITIONS_FINAL = `<button class="btn" onclick="locMarkComplete('loc-transitions'); locGoTo('loc-practice2')">Next: One more case, three scenarios →</button>`;
+
+
+/* ---- One more case, three scenarios ---- */
+const LOC_PRACTICE2_BEATS = [
+  `<p class="lede">One more single case to walk through carefully, then three quick-hit scenarios to round out the pattern.</p>`,
+
+  `<div class="scenario-box">
+     <div class="who">Client: David, 45 — 3.7WM, Day 12</div>
+     David is diabetic. His blood sugar has been stable for 5 days. He's attending all groups and his mood has improved. Yesterday he asked the nurse three separate times about minor stomach discomfort. He takes all of his medications, but only when reminded by nursing staff.
+   </div>
+   <div class="card" id="locDavidClassifyCard"><!-- injected by JS --></div>`,
+
+  `<h3>Three quick vignettes — which domain is the actual problem?</h3>
+   <p style="font-size:13.5px; color:var(--ink-soft);">In each of these, everything else about the client looks ready for 2.5. One domain isn't. Pick the domain, then read why it's enough on its own to hold the recommendation at 3.5.</p>
+   <div class="card" id="locVignetteClassifyCard"><!-- injected by JS --></div>`,
+
+  `<div class="callout"><strong>The pattern across all four cases in this section:</strong> one weak domain is enough to keep someone at the higher level of care, even when everything else looks ready. That's not overcaution — a single unresolved risk area is exactly what a relapse exploits. This is sometimes called the "one weak domain" rule, and it holds up because recovery doesn't fail on the areas that are already solid.</div>`,
+];
+const LOC_PRACTICE2_FINAL = `<button class="btn" onclick="locGoTo('loc-domains')">Next: Five domains, one weak link →</button>`;
+
+const LOC_DAVID_ITEMS = [
+  {
+    prompt: "David: ready to move to 3.5, or maintain 3.7WM?",
+    options: ["Ready for 3.5", "Maintain 3.7WM"],
+    correctIdx: 1,
+    explain: "Maintain 3.7WM. Blood sugar stability and mood improvement are real progress, but he's still relying on nursing for medication compliance and for reassurance about physical symptoms — exactly the support 3.5 doesn't have. \"Takes his medications when reminded\" isn't the same as managing them independently."
+  },
+];
+
+const LOC_VIGNETTE_ITEMS = [
+  {
+    prompt: "Medically stable, mood stable, good program engagement — but the client's family is actively using substances in the home she'll return to.",
+    options: ["Medical Complexity", "Support Systems", "Social Skills"],
+    correctIdx: 1,
+    explain: "Support Systems. An actively-using household isn't a background detail — it's a toxic environment that will actively undermine early recovery the moment she's unsupervised there. Recommendation: maintain 3.5 until a safe living environment is secured; this can't be worked around from a distance."
+  },
+  {
+    prompt: "Medically stable, psychiatrically stable, strong daily living skills — but a documented history of relapsing immediately whenever structure decreases in the past.",
+    options: ["Psychiatric Stability", "Daily Living Skills", "Medical Complexity"],
+    correctIdx: 0,
+    explain: "Psychiatric Stability. \"Stable right now, inside a highly structured setting\" isn't the same question as \"stable when structure decreases\" — and history is the best predictor available. Recommendation: maintain 3.5; the pattern needs to actually be interrupted once before it's safe to test again with less supervision."
+  },
+  {
+    prompt: "Every other area is stable — except the client cannot manage interpersonal conflict without staff stepping in to mediate.",
+    options: ["Social Skills", "Support Systems", "Daily Living Skills"],
+    correctIdx: 0,
+    explain: "Social Skills. Interpersonal conflict is inevitable in any community setting, supervised or not — and 2.5's evening hours are exactly when staff won't be there to mediate. Recommendation: maintain 3.5 until she can navigate conflict independently."
+  },
+];
+
+
+/* ---- Five domains, one weak link ---- */
+const LOC_DOMAINS_BEATS = [
+  `<p class="lede">Now that you've seen the one-weak-domain rule in action four times, here are the five domains themselves, spelled out — the questions worth actually asking before recommending any 3.5 → 2.5 transition.</p>`,
+
+  `<p style="font-size:13.5px; color:var(--ink-soft);">Click each domain to see the specific questions underneath it.</p>
+   <div class="break-cards">
+     <div class="break-card" onclick="this.classList.toggle('expanded')">
+       <div class="break-card-title"><span class="break-card-icon">+</span> Medical Complexity</div>
+       <div class="break-card-body">Can they manage their medications independently? Do they recognize a medical emergency when it's happening? Can they communicate clearly with healthcare providers on their own?</div>
+     </div>
+     <div class="break-card" onclick="this.classList.toggle('expanded')">
+       <div class="break-card-title"><span class="break-card-icon">+</span> Psychiatric Stability</div>
+       <div class="break-card-body">Are they managing symptoms without 24/7 oversight? Are they using coping skills consistently, not just when prompted? Do they recognize their own early warning signs?</div>
+     </div>
+     <div class="break-card" onclick="this.classList.toggle('expanded')">
+       <div class="break-card-title"><span class="break-card-icon">+</span> Social Skills</div>
+       <div class="break-card-body">Are they navigating relationships appropriately? Can they manage conflict without staff intervention? Are they building healthy support connections, or repeating the same patterns?</div>
+     </div>
+     <div class="break-card" onclick="this.classList.toggle('expanded')">
+       <div class="break-card-title"><span class="break-card-icon">+</span> Daily Living Skills</div>
+       <div class="break-card-body">Cooking, cleaning, budgeting — independently? Time management and basic self-care? Transportation and the general logistics of daily life?</div>
+     </div>
+     <div class="break-card" onclick="this.classList.toggle('expanded')">
+       <div class="break-card-title"><span class="break-card-icon">+</span> Support Systems</div>
+       <div class="break-card-body">Are recovery-oriented relationships actually established, or just identified on paper? Are family or social supports engaged in a way that helps, not hurts? Are community resources identified <em>and</em> accessible — not just theoretically available?</div>
+     </div>
+   </div>`,
+
+  `<div class="callout">If you've already been through the ASAM module, these five domains will feel familiar — they're the same clinical picture as the six dimensions, reorganized around one specific decision: is this person ready for less supervision, right now, in each of these areas. If you haven't been through that module, nothing here requires it; you now have everything you need for this one.</div>`,
+
+  `<h2>Check your understanding</h2>
+   <div class="quiz-card" id="locDomainsQuizCard"></div>`,
+];
+const LOC_DOMAINS_FINAL = `<button class="btn" onclick="locMarkComplete('loc-domains'); locGoTo('loc-justify')">Next: Justifying it on paper →</button>`;
+
+const LOC_DOMAINS_QUIZ_ITEMS = [
+  {
+    q: "A client has excellent daily living skills, strong support systems, and good medical self-management — but has never once had to resolve a conflict without a staff member stepping in. What's the recommendation?",
+    options: [
+      "Ready for 2.5 — four out of five domains is a strong track record",
+      "Maintain 3.5 — the one untested domain (Social Skills) is enough on its own",
+      "It depends on how many groups she's attended",
+    ],
+    correctIdx: 1,
+    explain: "One weak or untested domain is enough to hold the recommendation at the higher level of care. A strong track record everywhere else doesn't offset a domain that hasn't actually been demonstrated — and conflict without staff nearby is exactly what 2.5's evening hours will test."
+  },
+];
+
+
+/* ---- Justifying it on paper ---- */
+const LOC_JUSTIFY_BEATS = [
+  `<p class="lede">Deciding the right level of care is only half the job. The other half is writing it down in a way that actually holds up — because the words in the ASAM are the only evidence a reviewer ever sees.</p>`,
+
+  `<div class="callout"><strong>The reframe worth holding onto:</strong> an ASAM isn't an intake form. It's a clinical argument. Every dimension is answering one question for whoever's reviewing it: why does this person need this level of care right now, and why would a lower level of care fall short? If that idea is clear, everything about how these narratives get written starts to make more sense.</div>`,
+
+  `<p>A payer reviewer isn't reading your documentation to get to know the client. They're reading it looking for a reason a lower, cheaper level of care would do. Every sentence either gives them that reason or takes it away — which means vague, reassuring language is exactly what makes their job easier, not yours.</p>`,
+
+  `<h3>Same clinical picture, two very different write-ups</h3>
+   <div class="hero-compare">
+     <div class="hero-col deny">
+       <span class="hero-tag">Gets challenged</span>
+       <p>Client is motivated for treatment and wants to get sober for his family. He agrees he has a problem and is ready to do the work.</p>
+     </div>
+     <div class="hero-col survive">
+       <span class="hero-tag">Justifies the level of care</span>
+       <p>Client verbalizes intent to remain sober but has not yet demonstrated follow-through: missed his assigned relapse-prevention worksheet twice this week and continues to minimize his use as "not that bad compared to some people here." This gap between stated intent and observed behavior indicates he still requires the structured, monitored intervention this level of care provides to translate motivation into sustained behavior change.</p>
+     </div>
+   </div>
+   <p class="hero-note">Same client, same week. The left version is true, reassuring, and completely useless to a reviewer — it reads as a reason to discharge. The right version says exactly the same underlying reality, but names the specific gap between what he says and what he does, which is the actual reason a lower level of care wouldn't hold him accountable the same way.</p>`,
+
+  `<h3>Six ways a real ASAM can fail to justify the level of care</h3>
+   <p style="font-size:13.5px; color:var(--ink-soft);">These are drawn from an actual set of weak dimension write-ups. Click each to see exactly what's missing.</p>
+   <div class="break-cards">
+     <div class="break-card" onclick="this.classList.toggle('expanded')">
+       <div class="break-card-title"><span class="break-card-icon">+</span> "Client reports heavy alcohol use. Currently in withdrawal. Medical staff monitoring. Risk is high."</div>
+       <div class="break-card-body">No substances named specifically, no quantities, no frequency, no withdrawal history, no vital sign trend. "Risk is high" is a conclusion with nothing underneath it — a reviewer can't picture what "monitoring" is actually catching.</div>
+     </div>
+     <div class="break-card" onclick="this.classList.toggle('expanded')">
+       <div class="break-card-title"><span class="break-card-icon">+</span> "Client has some medical history. No acute concerns at this time. Medications noted in chart."</div>
+       <div class="break-card-body">"Medications noted in chart" is not documentation — it's a pointer to documentation that doesn't exist in this dimension. If a condition doesn't connect to relapse risk or treatment needs, say so plainly; if it does, say exactly how.</div>
+     </div>
+     <div class="break-card" onclick="this.classList.toggle('expanded')">
+       <div class="break-card-title"><span class="break-card-icon">+</span> "Client reports history of depression and anxiety. Has been prescribed medication in the past. Denies current suicidal ideation. Mood is stable."</div>
+       <div class="break-card-body">A list of diagnoses without any description of how symptoms are presenting right now, or how they're affecting treatment engagement. History alone doesn't justify anything — current presentation and its clinical impact does.</div>
+     </div>
+     <div class="break-card" onclick="this.classList.toggle('expanded')">
+       <div class="break-card-title"><span class="break-card-icon">+</span> "Client is motivated for treatment and wants to get sober for his family. He agrees he has a problem and is ready to do the work."</div>
+       <div class="break-card-body">This is the most common failure mode in the whole document. "Motivated" and "ready to do the work" describe almost every client who voluntarily admits — they justify nothing on their own, and read as a reason to discharge rather than continue.</div>
+     </div>
+     <div class="break-card" onclick="this.classList.toggle('expanded')">
+       <div class="break-card-title"><span class="break-card-icon">+</span> "Client has been to treatment before and relapsed. He is at risk for relapse. Residential level of care is recommended."</div>
+       <div class="break-card-body">A conclusion asserted without an argument underneath it. Being "at risk for relapse" needs the pattern, history, or trigger that supports that conclusion — otherwise a reviewer has no way to evaluate whether the recommendation is sound.</div>
+     </div>
+     <div class="break-card" onclick="this.classList.toggle('expanded')">
+       <div class="break-card-title"><span class="break-card-icon">+</span> "Client has family support. Living situation is somewhat unstable. Will need to address this in treatment."</div>
+       <div class="break-card-body">"Somewhat unstable" could mean almost anything — from a noisy household to an actively using one. Without describing what's actually unstable, this sentence can't do the job it's supposed to do: showing whether the environment supports or undermines this client's recovery.</div>
+     </div>
+   </div>`,
+
+  `<h3>Try it: rewrite one</h3>
+   <p>Here's a weak Dimension 5 write-up. Using what you now know about the residential necessity test, rewrite it so it actually justifies the level of care.</p>
+   <div class="scenario-box">
+     <div class="who">Weak version — Dimension 5, Relapse/Continued Use Potential</div>
+     Client has been to treatment before and relapsed. He is at risk for relapse. Residential level of care is recommended.
+     <div class="meta" style="margin-top:10px; display:block;">Background fact you can use: this is his second treatment episode. He relapsed within a week of his last discharge, after returning to the same apartment and the same using contact, with no alternative coping plan in place.</div>
+   </div>
+   <div class="scaffold-box">
+     <div class="scaffold-label">Before you write, work through these:</div>
+     <ol>
+       <li>What's the actual pattern — not just "he relapsed once," but what happened, how fast, and under what conditions?</li>
+       <li>What does the residential necessity test say about whether that pattern could repeat outside this level of care?</li>
+       <li>What's still missing right now that would need to change before a lower level of care could hold?</li>
+     </ol>
+   </div>
+   <textarea id="locJustifyAnswer" placeholder="Write your rewritten Dimension 5 narrative here..." oninput="document.getElementById('locJustifyRevealBtn').disabled = !this.value.trim()"></textarea>
+   <div style="margin-top:10px;">
+     <button class="btn" id="locJustifyRevealBtn" disabled onclick="locRevealModel('locJustify'); locMarkComplete('loc-justify')">Reveal model answer</button>
+   </div>
+   <div class="reveal" id="locJustifyReveal">
+     <div class="card-label">Model answer</div>
+     <div class="model-answer">This is client's second treatment episode. Following his first discharge, he relapsed within one week after returning to the same residence and the same using contact, with no independent coping plan or alternative living arrangement in place. He has not yet identified what would be different this time, and no new coping strategy or environmental change has been established to interrupt that pattern. Given the speed and consistency of his prior relapse under similar unsupervised conditions, his risk of continued use without this level of care's structure and monitoring remains significant.</div>
+     <ul class="checklist">
+       <li>Names the actual pattern — how fast, under what conditions — instead of asserting "at risk" with nothing underneath it</li>
+       <li>Ties directly to the litmus test: what happens without this level of care's structure, specifically</li>
+       <li>Says what's still missing, which is what a lower level of care would actually need to see before a step-down makes sense</li>
+     </ul>
+   </div>`,
+
+  `<h3>What every level-of-care justification needs</h3>
+   <ul class="checklist">
+     <li>Specific evidence — a date, a quote, a number, an observed behavior. Not a conclusion standing alone.</li>
+     <li>A description of what happens <em>without</em> this level of care, not just how the client is doing inside it</li>
+     <li>A direct link to one of the five domains — medical, psychiatric, social, daily living, or support systems — so the recommendation is traceable, not just asserted</li>
+   </ul>`,
+];
+const LOC_JUSTIFY_FINAL = `<button class="btn" onclick="locGoTo('loc-assembly')">Next: Put it all together →</button>`;
+
+
+/* ---- Put it all together: Danielle ---- */
+const LOC_ASSEMBLY_BEATS = [
+  `<p class="lede">One last case — the same kind of decision you'll make constantly, gathered into a single full picture. This is Danielle, three weeks into 3.5, being considered for a step-down to 2.5.</p>`,
+
+  `<div class="scenario-box">
+     <div class="who">Client: Danielle — 3.5 Residential, Week 3, Continued Stay review</div>
+     <strong>Medical Complexity:</strong> No active medical issues; manages her own basic health needs without staff involvement.<br><br>
+     <strong>Psychiatric Stability:</strong> Mood has been stable for the full three weeks. No crisis episodes. Uses coping skills consistently in session and can name her early warning signs.<br><br>
+     <strong>Social Skills:</strong> Two documented incidents this week where staff had to step in to mediate conflicts with peers; she was unable to de-escalate or resolve either one independently.<br><br>
+     <strong>Daily Living Skills:</strong> Manages her own hygiene, laundry, and daily schedule independently, without reminders.<br><br>
+     <strong>Support Systems:</strong> Her previously identified using contact still lives two blocks from her planned discharge residence. She has named two alternative support contacts — her sister and a former sponsor — but hasn't yet had to actually call either one under real craving conditions.
+   </div>`,
+
+  `<h3>Work through each domain</h3>
+   <p style="font-size:13.5px; color:var(--ink-soft);">For each one, decide: is this domain ready for 2.5, or not yet?</p>
+   <div class="card" id="locAssemblyClassifyCard"><!-- injected by JS --></div>`,
+
+  `<div class="reveal" id="locAssemblyOverallReveal">
+     <div class="card-label">Overall recommendation</div>
+     <div class="callout">Four of five domains look ready. But Social Skills isn't — two staff-mediated conflicts in one week is exactly the kind of real-time intervention 3.5 exists to provide, and 2.5's evening hours won't have staff standing by to catch it. One weak domain is enough. <strong>Recommendation: maintain 3.5</strong>, with a specific objective addressing independent conflict navigation before the next review.</div>
+   </div>`,
+
+  `<h3>Write the justification</h3>
+   <p>Write the one-to-two sentence justification you'd put in Danielle's Continued Stay ASAM explaining why 3.5 remains necessary, based specifically on the Social Skills domain.</p>
+   <div class="scaffold-box">
+     <div class="scaffold-label">What your answer needs:</div>
+     <ol>
+       <li>The specific, dated evidence (two staff-mediated conflicts this week)</li>
+       <li>What that evidence means for unsupervised time specifically</li>
+       <li>What would need to change before this domain would support a step-down</li>
+     </ol>
+   </div>
+   <textarea id="locAssemblyAnswer" placeholder="Write your justification here..." oninput="document.getElementById('locAssemblyRevealBtn').disabled = !this.value.trim()"></textarea>
+   <div style="margin-top:10px;">
+     <button class="btn" id="locAssemblyRevealBtn" disabled onclick="locRevealModel('locAssembly'); locMarkComplete('loc-assembly')">Reveal model answer</button>
+   </div>
+   <div class="reveal" id="locAssemblyReveal">
+     <div class="card-label">Model answer</div>
+     <div class="model-answer">This week, client required staff mediation to resolve two separate peer conflicts and was unable to de-escalate or resolve either independently. Given that 2.5's evening hours provide no staff availability for this kind of real-time intervention, client has not yet demonstrated the independent conflict-resolution skills this level of care is structured to support. Continued residential placement at 3.5 is recommended to directly address this gap before considering a step-down.</div>
+   </div>`,
+
+  `<div class="callout">Notice this is the exact shape of every LOC justification in this module: specific dated evidence, what it means for unsupervised time, and what's still missing. That's the whole formula — everything else is just applying it to a different domain.</div>
+   <span class="badge-done" id="locFinalBadge" style="display:none;">🎉 You've completed the Levels of Care module — nice work</span>
+   <div class="callout" style="margin-top:16px;">
+     <strong>Keep this handy:</strong> the <span class="inline-link" onclick="locGoTo('loc-cheatsheet')" role="link" tabindex="0">quick reference cheat sheet</span> is built to be reopened anytime you're actually weighing a transition — not just read once during training.
+   </div>
+   <div class="callout" style="margin-top:16px;">
+     <strong>Where this connects:</strong> the ASAM module is where a decision like this one gets written into the six-dimension narrative a reviewer actually sees.
+   </div>`,
+];
+const LOC_ASSEMBLY_FINAL = `<div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+  <button class="btn secondary" onclick="goHome()">← Back to Clinical Training home</button>
+  <button class="btn" onclick="openModule('view-asam')">Go to: ASAM Module →</button>
+</div>`;
+
+const LOC_ASSEMBLY_ITEMS = [
+  {
+    prompt: "Medical Complexity",
+    options: ["Ready for 2.5", "Not yet"],
+    correctIdx: 0,
+    explain: "Ready. She manages her own basic health needs without staff involvement — no ongoing medical dependence to flag here."
+  },
+  {
+    prompt: "Psychiatric Stability",
+    options: ["Ready for 2.5", "Not yet"],
+    correctIdx: 0,
+    explain: "Ready. Three full weeks of stable mood, consistent use of coping skills in session, and the ability to name her own warning signs — this is demonstrated, not just claimed."
+  },
+  {
+    prompt: "Social Skills",
+    options: ["Ready for 2.5", "Not yet"],
+    correctIdx: 1,
+    explain: "Not yet. Two staff-mediated conflicts this week means she hasn't shown she can navigate conflict without intervention — and 2.5's evening hours won't have staff there to step in."
+  },
+  {
+    prompt: "Daily Living Skills",
+    options: ["Ready for 2.5", "Not yet"],
+    correctIdx: 0,
+    explain: "Ready. Independent hygiene, laundry, and schedule management without reminders — exactly what this domain is asking about."
+  },
+  {
+    prompt: "Support Systems",
+    options: ["Ready for 2.5", "Not yet"],
+    correctIdx: 0,
+    explain: "Ready, with a caveat worth watching. Two alternative contacts are named and willing — untested under real craving conditions is a reasonable early-2.5 goal, not a reason to hold her at 3.5 on its own. The proximity of her prior contact is worth flagging for her ITP, but it doesn't override this domain by itself."
+  },
+];
+
+
+/* ---- Render wiring for interactive sections ---- */
+function locRenderContinuum(){
+  buildQuiz('locContinuumQuizCard', LOC_CONTINUUM_QUIZ_ITEMS, ()=>locMarkComplete('loc-continuum'));
+}
+function locRenderFocus(){
+  buildQuiz('locFocusQuizCard', LOC_FOCUS_QUIZ_ITEMS, ()=>locMarkComplete('loc-focus'));
+}
+function locRenderPractice1(){
+  renderLocDecision('locMariaClassifyCard', LOC_MARIA_ITEMS, 'loc-practice1');
+}
+function locRenderPractice2(){
+  renderLocDecision('locDavidClassifyCard', LOC_DAVID_ITEMS, null);
+  renderLocDecision('locVignetteClassifyCard', LOC_VIGNETTE_ITEMS, 'loc-practice2');
+}
+function locRenderDomains(){
+  buildQuiz('locDomainsQuizCard', LOC_DOMAINS_QUIZ_ITEMS, ()=>locMarkComplete('loc-domains'));
+}
+function locShowAssemblyOverall(){
+  const el = document.getElementById('locAssemblyOverallReveal');
+  if(el) el.classList.add('show');
+}
+function locRenderAssembly(){
+  renderLocDecision('locAssemblyClassifyCard', LOC_ASSEMBLY_ITEMS, null, locShowAssemblyOverall);
+}
+
 
 /* =====================================================
    ASAM MODULE
@@ -4278,6 +5175,18 @@ registerBeats('threadExampleBeats', THREAD_EXAMPLE_BEATS, THREAD_EXAMPLE_FINAL,
   ()=>buildQuiz('quizCard', QUIZ_ITEMS, ()=>bpMarkComplete('thread-example')),
   ()=>!!bpProgress['thread-example']);
 renderBPNav();
+
+registerBeats('locWhyBeats', LOC_WHY_BEATS, LOC_WHY_FINAL);
+registerBeats('locContinuumBeats', LOC_CONTINUUM_BEATS, LOC_CONTINUUM_FINAL, locRenderContinuum, ()=>!!locProgress['loc-continuum']);
+registerBeats('locFocusBeats', LOC_FOCUS_BEATS, LOC_FOCUS_FINAL, locRenderFocus, ()=>!!locProgress['loc-focus']);
+registerBeats('locTestBeats', LOC_TEST_BEATS, LOC_TEST_FINAL);
+registerBeats('locPractice1Beats', LOC_PRACTICE1_BEATS, LOC_PRACTICE1_FINAL, locRenderPractice1, ()=>!!locProgress['loc-practice1']);
+registerBeats('locTransitionsBeats', LOC_TRANSITIONS_BEATS, LOC_TRANSITIONS_FINAL);
+registerBeats('locPractice2Beats', LOC_PRACTICE2_BEATS, LOC_PRACTICE2_FINAL, locRenderPractice2, ()=>!!locProgress['loc-practice2']);
+registerBeats('locDomainsBeats', LOC_DOMAINS_BEATS, LOC_DOMAINS_FINAL, locRenderDomains, ()=>!!locProgress['loc-domains']);
+registerBeats('locJustifyBeats', LOC_JUSTIFY_BEATS, LOC_JUSTIFY_FINAL, null, ()=>!!locProgress['loc-justify']);
+registerBeats('locAssemblyBeats', LOC_ASSEMBLY_BEATS, LOC_ASSEMBLY_FINAL, locRenderAssembly, ()=>!!locProgress['loc-assembly']);
+renderLOCNav();
 
 registerBeats('whyBeats', WHY_BEATS, WHY_FINAL);
 registerBeats('specificityBeats', SPECIFICITY_BEATS, SPECIFICITY_FINAL, renderClassify, ()=>!!asamProgress['specificity']);
