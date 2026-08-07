@@ -5293,11 +5293,24 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   <div style="background:white;border-radius:10px;padding:28px 32px;max-width:420px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.2)">
     <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:10px">What counts as "Days Worked"</div>
     <div style="font-size:13px;color:var(--text-secondary);line-height:1.7;margin-bottom:24px">
-      This is the counselor's regular scheduled weekday count for the period — not how many hours they physically worked. A standard Monday–Friday counselor is 5 days.<br><br>
+      This is the counselor's regular scheduled weekday count for the period — not how many hours they physically worked. A standard Monday–Friday counselor is 5 days. If they work a compressed schedule (like 4 ten-hour days), this is still just the day count — set the hours themselves in <strong>Hours Per Day</strong> next to it.<br><br>
       <strong style="color:var(--text)">Only search the weekday dates they regularly work.</strong> When you pull hours in Remarkable, run the search across just those weekday dates — skip weekend dates entirely, even if the counselor covered an extra group on a Saturday or Sunday. That keeps weekend billing out of every number in this section, so it doesn't inflate the total or the day count.
     </div>
     <div style="display:flex;justify-content:flex-end">
       <button class="btn btn-primary" onclick="hideModal('pcDaysWorkedHelpModal')">Got it</button>
+    </div>
+  </div>
+</div>
+
+<div id="pcHoursPerDayHelpModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;align-items:center;justify-content:center">
+  <div style="background:white;border-radius:10px;padding:28px 32px;max-width:420px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.2)">
+    <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:10px">What "Hours Per Day" changes</div>
+    <div style="font-size:13px;color:var(--text-secondary);line-height:1.7;margin-bottom:24px">
+      Defaults to 8, for a standard workday. Change it if the counselor works a compressed schedule — for example, four 10-hour days instead of five 8-hour days.<br><br>
+      This is what the target scales against: Days Worked × Hours Per Day, minus PTO, times 80% (PHP) or 75% (OP). A 4-day, 10-hour schedule with no PTO still comes out to the same 40-hour week as 5 days at 8 hours — so the required billable hours end up the same either way, as long as this is set correctly.
+    </div>
+    <div style="display:flex;justify-content:flex-end">
+      <button class="btn btn-primary" onclick="hideModal('pcHoursPerDayHelpModal')">Got it</button>
     </div>
   </div>
 </div>
@@ -5378,15 +5391,15 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       </div>
 
       <div style="margin-bottom:22px;">
-        <div style="font-size:13px;font-weight:700;color:#1b4332;margin-bottom:8px;">Step 5 — Days Worked and PTO (Paychex + your own knowledge of the schedule)</div>
+        <div style="font-size:13px;font-weight:700;color:#1b4332;margin-bottom:8px;">Step 5 — Days Worked, Hours Per Day, and PTO (Paychex + your own knowledge of the schedule)</div>
         <div style="font-size:13px;line-height:1.7;color:var(--text);margin-bottom:8px;">
           <strong>Residential:</strong> Open Paychex and pull the PTO or leave hours the counselor actually took during the period. Enter that into <strong>PTO</strong> — this calculator subtracts it from a standard work period to get available working hours, so only enter time off, not hours worked.
         </div>
         <div style="font-size:13px;line-height:1.7;color:var(--text);margin-bottom:8px;">
-          <strong>PHP / OP:</strong> this one doesn't use hours worked at all anymore — physical hours in the building don't matter, only billed hours against the days they were scheduled. Enter their regular scheduled days for the period into <strong>Days Worked</strong> (a standard Monday–Friday counselor is 5). Then pull PTO the same way you would for Residential, and enter it into <strong>PTO</strong>.
+          <strong>PHP / OP:</strong> this one doesn't use hours worked at all anymore — physical hours in the building don't matter, only billed hours against the days they were scheduled. Enter their regular scheduled days for the period into <strong>Days Worked</strong> (a standard Monday–Friday counselor is 5). <strong>Hours Per Day</strong> defaults to 8 — change it if someone works a compressed schedule, like four 10-hour days. Then pull PTO the same way you would for Residential, and enter it into <strong>PTO</strong>.
         </div>
         <div style="font-size:13px;line-height:1.7;color:var(--text);">
-          The calculator turns that into a target: Days Worked × 8, minus PTO, times 80% (PHP) or 75% (OP) — that's the number of billed hours they actually need. A full 5-day week with no PTO needs 32 billed hours for PHP, 30 for OP. Ten hours of PTO lowers that target by 8 hours (PHP) or 7.5 hours (OP). You'll see this as <strong>Required Billable Hours</strong> once you've entered Days Worked.
+          The calculator turns that into a target: Days Worked × Hours Per Day, minus PTO, times 80% (PHP) or 75% (OP) — that's the number of billed hours they actually need. A full 5-day, 8-hour week with no PTO needs 32 billed hours for PHP, 30 for OP — and a 4-day, 10-hour week with no PTO lands on the same 32 and 30, since both add up to 40 hours. Ten hours of PTO lowers that target by 8 hours (PHP) or 7.5 hours (OP), regardless of how the days are split. You'll see this as <strong>Required Billable Hours</strong> once you've entered Days Worked.
         </div>
       </div>
 
@@ -12950,7 +12963,7 @@ function pcNewCounselor() {
     totalHrs: '', code1: '', code2: '', time1: '', time2: '', pto: '',
     workdaysMonth: '', workdaysLeft: '',
     c400: '', c400t: '', c402: '', c402t: '', c403: '', c404: '', c404t: '',
-    noShow: '', timeGroup: '', daysWorked: '',
+    noShow: '', timeGroup: '', daysWorked: '', hoursPerDay: '8',
     weeks: []           // PHP/OP monthly only — array of week field sets
   };
 }
@@ -12959,7 +12972,7 @@ function pcNewWeek() {
   return {
     label: '',
     totalHrs: '', c400: '', c400t: '', c402: '', c402t: '', c403: '', c404: '', c404t: '',
-    noShow: '', timeGroup: '', daysWorked: '', pto: ''
+    noShow: '', timeGroup: '', daysWorked: '', pto: '', hoursPerDay: '8'
   };
 }
 
@@ -12986,6 +12999,10 @@ function pcLoad() {
     pcCounselors.forEach(c => {
       if (typeof c.isOpen !== 'boolean') c.isOpen = true;
       if (c.type === 'iopop') c.type = 'op'; // migrate old label
+      if (c.hoursPerDay === undefined) c.hoursPerDay = '8';
+      if (Array.isArray(c.weeks)) {
+        c.weeks.forEach(w => { if (w.hoursPerDay === undefined) w.hoursPerDay = '8'; });
+      }
       if (c.id > maxId) maxId = c.id;
     });
     pcNextId = (typeof data.nextId === 'number' && data.nextId > maxId) ? data.nextId : maxId + 1;
@@ -13085,7 +13102,8 @@ function pcUpdate(id, field, value) {
 }
 
 function pcComputePhpOpWeek(w) {
-  const denom = (pcNum(w.daysWorked) * 8) - pcNum(w.pto);
+  const hoursPerDay = pcNum(w.hoursPerDay) || 8;
+  const denom = (pcNum(w.daysWorked) * hoursPerDay) - pcNum(w.pto);
   const numerator = (((pcNum(w.totalHrs) - pcNum(w.c400) - pcNum(w.c400t) - pcNum(w.c402) - pcNum(w.c402t) - pcNum(w.c403) - pcNum(w.c404) - pcNum(w.c404t)) + pcNum(w.timeGroup)) - pcNum(w.noShow));
   return { numerator, denom };
 }
@@ -13207,6 +13225,7 @@ function pcPhpOpFieldsHTML(id, weekIdx, w) {
         <div class="pc-field"><label>"No Show" Time <button type="button" class="pc-help" onclick="showModal('pcNoShowHelpModal')">ⓘ</button></label><input class="gn-input" type="number" step="any" value="${w.noShow}" oninput="${upd('noShow')}"></div>
         <div class="pc-field"><label>Time Spent in Group</label><input class="gn-input" type="number" step="any" value="${w.timeGroup}" oninput="${upd('timeGroup')}"></div>
         <div class="pc-field"><label>Days Worked <button type="button" class="pc-help" onclick="showModal('pcDaysWorkedHelpModal')">ⓘ</button></label><input class="gn-input" type="number" step="any" value="${w.daysWorked}" oninput="${upd('daysWorked')}"></div>
+        <div class="pc-field"><label>Hours Per Day <button type="button" class="pc-help" onclick="showModal('pcHoursPerDayHelpModal')">ⓘ</button></label><input class="gn-input" type="number" step="any" value="${w.hoursPerDay !== undefined ? w.hoursPerDay : '8'}" oninput="${upd('hoursPerDay')}"></div>
         <div class="pc-field"><label>PTO</label><input class="gn-input" type="number" step="any" value="${w.pto}" oninput="${upd('pto')}"></div>
       </div>`;
 }
