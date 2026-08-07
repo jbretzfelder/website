@@ -234,23 +234,26 @@
   button.btn:disabled{opacity:.5; cursor:not-allowed;}
 
   .classify-row{
-    display:flex; align-items:center; gap:14px;
-    padding:12px 0; border-bottom:1px solid var(--border);
+    display:flex; flex-direction:column; gap:12px;
+    padding:16px 18px; margin-bottom:10px;
+    background:var(--white); border:1px solid var(--border); border-radius:8px;
   }
-  .classify-row:last-child{border-bottom:none;}
-  .classify-text{flex:1; font-size:14.5px;}
-  .classify-buttons{display:flex; gap:6px; flex-shrink:0;}
+  .classify-row:last-child{margin-bottom:0;}
+  .classify-text{font-size:14.5px; line-height:1.55;}
+  .classify-buttons{display:flex; flex-wrap:wrap; gap:8px;}
   .pill-btn{
     font-family:'IBM Plex Sans', sans-serif;
-    font-size:12.5px; font-weight:600;
-    padding:6px 12px; border-radius:20px;
+    font-size:12.5px; font-weight:600; line-height:1.35;
+    padding:8px 14px; border-radius:20px;
     border:1px solid var(--border); background:white; cursor:pointer;
+    white-space:normal; text-align:center;
   }
   .pill-btn:hover{border-color:var(--green-600);}
   .pill-btn.chosen-correct{background:var(--green-100); border-color:var(--green-500); color:var(--green-800);}
   .pill-btn.chosen-wrong{background:var(--red-bg); border-color:#e3bcb8; color:var(--red);}
   .classify-explain{
-    font-size:13px; color:var(--ink-soft); margin-top:6px; display:none;
+    font-size:13px; color:var(--ink-soft); display:none;
+    padding-top:10px; margin-top:2px; border-top:1px dashed var(--border);
   }
   .classify-explain.show{display:block;}
 
@@ -375,16 +378,17 @@
     #cheatSheetPrintArea, #cheatSheetPrintArea *,
     #locCheatSheetPrintArea, #locCheatSheetPrintArea *,
     #itpCheatSheetPrintArea, #itpCheatSheetPrintArea *,
-    #noteCheatSheetPrintArea, #noteCheatSheetPrintArea *{ visibility:visible; }
-    #cheatSheetPrintArea, #locCheatSheetPrintArea, #itpCheatSheetPrintArea, #noteCheatSheetPrintArea{ position:absolute; left:0; top:0; width:100%; padding:0; margin:0; }
-    #cheatSheetPrintArea h2, #locCheatSheetPrintArea h2, #itpCheatSheetPrintArea h2, #noteCheatSheetPrintArea h2{ font-size:13.5px; margin:10px 0 4px; page-break-after:avoid; }
-    #cheatSheetPrintArea h2:first-of-type, #locCheatSheetPrintArea h2:first-of-type, #itpCheatSheetPrintArea h2:first-of-type, #noteCheatSheetPrintArea h2:first-of-type{ margin-top:6px; }
-    #cheatSheetPrintArea .callout, #locCheatSheetPrintArea .callout, #itpCheatSheetPrintArea .callout, #noteCheatSheetPrintArea .callout{ font-size:10.5px; line-height:1.3; padding:8px 10px; margin:0 0 6px; }
-    #cheatSheetPrintArea .cheat-grid, #locCheatSheetPrintArea .cheat-grid, #itpCheatSheetPrintArea .cheat-grid, #noteCheatSheetPrintArea .cheat-grid{ gap:4px; margin:4px 0; }
-    #cheatSheetPrintArea .cheat-item, #locCheatSheetPrintArea .cheat-item, #itpCheatSheetPrintArea .cheat-item, #noteCheatSheetPrintArea .cheat-item{ font-size:9.5px; line-height:1.3; padding:5px 8px; break-inside:avoid; }
-    #cheatSheetPrintArea .checklist, #locCheatSheetPrintArea .checklist, #itpCheatSheetPrintArea .checklist, #noteCheatSheetPrintArea .checklist{ margin-top:4px; }
-    #cheatSheetPrintArea .checklist li, #locCheatSheetPrintArea .checklist li, #itpCheatSheetPrintArea .checklist li, #noteCheatSheetPrintArea .checklist li{ font-size:9.5px; line-height:1.3; padding:2px 0 2px 18px; break-inside:avoid; }
-    #cheatSheetPrintArea .checklist li::before, #locCheatSheetPrintArea .checklist li::before, #itpCheatSheetPrintArea .checklist li::before, #noteCheatSheetPrintArea .checklist li::before{ top:2px; }
+    #noteCheatSheetPrintArea, #noteCheatSheetPrintArea *,
+    #cocCheatSheetPrintArea, #cocCheatSheetPrintArea *{ visibility:visible; }
+    #cheatSheetPrintArea, #locCheatSheetPrintArea, #itpCheatSheetPrintArea, #noteCheatSheetPrintArea, #cocCheatSheetPrintArea{ position:absolute; left:0; top:0; width:100%; padding:0; margin:0; }
+    #cheatSheetPrintArea h2, #locCheatSheetPrintArea h2, #itpCheatSheetPrintArea h2, #noteCheatSheetPrintArea h2, #cocCheatSheetPrintArea h2{ font-size:13.5px; margin:10px 0 4px; page-break-after:avoid; }
+    #cheatSheetPrintArea h2:first-of-type, #locCheatSheetPrintArea h2:first-of-type, #itpCheatSheetPrintArea h2:first-of-type, #noteCheatSheetPrintArea h2:first-of-type, #cocCheatSheetPrintArea h2:first-of-type{ margin-top:6px; }
+    #cheatSheetPrintArea .callout, #locCheatSheetPrintArea .callout, #itpCheatSheetPrintArea .callout, #noteCheatSheetPrintArea .callout, #cocCheatSheetPrintArea .callout{ font-size:10.5px; line-height:1.3; padding:8px 10px; margin:0 0 6px; }
+    #cheatSheetPrintArea .cheat-grid, #locCheatSheetPrintArea .cheat-grid, #itpCheatSheetPrintArea .cheat-grid, #noteCheatSheetPrintArea .cheat-grid, #cocCheatSheetPrintArea .cheat-grid{ gap:4px; margin:4px 0; }
+    #cheatSheetPrintArea .cheat-item, #locCheatSheetPrintArea .cheat-item, #itpCheatSheetPrintArea .cheat-item, #noteCheatSheetPrintArea .cheat-item, #cocCheatSheetPrintArea .cheat-item{ font-size:9.5px; line-height:1.3; padding:5px 8px; break-inside:avoid; }
+    #cheatSheetPrintArea .checklist, #locCheatSheetPrintArea .checklist, #itpCheatSheetPrintArea .checklist, #noteCheatSheetPrintArea .checklist, #cocCheatSheetPrintArea .checklist{ margin-top:4px; }
+    #cheatSheetPrintArea .checklist li, #locCheatSheetPrintArea .checklist li, #itpCheatSheetPrintArea .checklist li, #noteCheatSheetPrintArea .checklist li, #cocCheatSheetPrintArea .checklist li{ font-size:9.5px; line-height:1.3; padding:2px 0 2px 18px; break-inside:avoid; }
+    #cheatSheetPrintArea .checklist li::before, #locCheatSheetPrintArea .checklist li::before, #itpCheatSheetPrintArea .checklist li::before, #noteCheatSheetPrintArea .checklist li::before, #cocCheatSheetPrintArea .checklist li::before{ top:2px; }
   }
 
   /* Glossary terms */
@@ -718,6 +722,19 @@
   </div>
 
   <div class="track-label">Clinical Skills</div>
+  <div class="home-card" onclick="openModule('view-cooccurring')" id="cardCooccurring">
+    <div class="home-card-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18"/></svg></div>
+    <div class="home-card-body">
+      <div class="home-card-title">Co-Occurring Disorders</div>
+      <div class="home-card-desc">Working with mental health alongside substance use — integrated treatment, not two separate problems</div>
+    </div>
+    <div class="home-card-meta">
+      <span class="home-card-time">~30–40 min</span>
+      <span class="home-card-status" id="statusCooccurring"></span>
+    </div>
+    <span class="home-card-arrow">→</span>
+  </div>
+
   <div class="home-card disabled" id="cardCrisis">
     <div class="home-card-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg></div>
     <div class="home-card-body">
@@ -725,7 +742,6 @@
       <div class="home-card-desc">Branching scenarios — a client's situation escalates based on what you choose to say and do next</div>
     </div>
     <div class="home-card-meta">
-      <span class="home-card-time">~30 min</span>
       <span class="home-card-status soon">Coming soon</span>
     </div>
     <span class="home-card-arrow">→</span>
@@ -738,20 +754,6 @@
       <div class="home-card-desc">Practice responding to resistant and ambivalent clients — reflections, rolling with resistance, evoking change talk</div>
     </div>
     <div class="home-card-meta">
-      <span class="home-card-time">~30 min</span>
-      <span class="home-card-status soon">Coming soon</span>
-    </div>
-    <span class="home-card-arrow">→</span>
-  </div>
-
-  <div class="home-card disabled" id="cardCooccurring">
-    <div class="home-card-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18"/></svg></div>
-    <div class="home-card-body">
-      <div class="home-card-title">Co-Occurring Disorders</div>
-      <div class="home-card-desc">Working with mental health alongside substance use — integrated treatment, not two separate problems</div>
-    </div>
-    <div class="home-card-meta">
-      <span class="home-card-time">~30 min</span>
       <span class="home-card-status soon">Coming soon</span>
     </div>
     <span class="home-card-arrow">→</span>
@@ -764,7 +766,6 @@
       <div class="home-card-desc">Dual relationships, self-disclosure, gifts, confidentiality limits — the gray areas you'll actually run into</div>
     </div>
     <div class="home-card-meta">
-      <span class="home-card-time">~25 min</span>
       <span class="home-card-status soon">Coming soon</span>
     </div>
     <span class="home-card-arrow">→</span>
@@ -777,7 +778,6 @@
       <div class="home-card-desc">Handling monopolizers, silence, cross-talk, and conflict while keeping a group therapeutic</div>
     </div>
     <div class="home-card-meta">
-      <span class="home-card-time">~25 min</span>
       <span class="home-card-status soon">Coming soon</span>
     </div>
     <span class="home-card-arrow">→</span>
@@ -790,7 +790,6 @@
       <div class="home-card-desc">Enabling patterns, roles, boundaries, and how to work with family as part of the client's recovery, not around it</div>
     </div>
     <div class="home-card-meta">
-      <span class="home-card-time">~25 min</span>
       <span class="home-card-status soon">Coming soon</span>
     </div>
     <span class="home-card-arrow">→</span>
@@ -803,7 +802,6 @@
       <div class="home-card-desc">Working across difference with curiosity instead of assumption — race, culture, religion, language, identity</div>
     </div>
     <div class="home-card-meta">
-      <span class="home-card-time">~20 min</span>
       <span class="home-card-status soon">Coming soon</span>
     </div>
     <span class="home-card-arrow">→</span>
@@ -1955,6 +1953,160 @@
   </div>
 </div>
 
+<div id="view-cooccurring" class="top-view">
+  <div class="app">
+    <div class="mobile-topbar">
+      <button onclick="toggleMobileNav()" type="button" aria-label="Open menu">☰</button>
+      <span class="mobile-topbar-title">Co-Occurring Disorders</span>
+      <button onclick="goHome()" type="button" aria-label="Back to Clinical Training">🏠</button>
+    </div>
+    <div class="sidebar-backdrop" onclick="toggleMobileNav()"></div>
+    <nav class="sidebar">
+      <button class="sidebar-back" onclick="goHome()" type="button">← Back to Clinical Training</button>
+      <div class="sidebar-title">Clinical Training</div>
+      <div class="sidebar-sub">Co-Occurring Disorders</div>
+      <ul class="nav-list" id="navList-coc"></ul>
+      <div class="progress-track">
+        <span id="progressLabel-coc">0 of 7 complete</span>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill-coc" style="width:0%"></div></div>
+        <span class="reset-link" id="resetProgress-coc">Reset progress</span>
+      </div>
+    </nav>
+
+    <main class="main">
+
+    <!-- SECTION: WHY -->
+    <section class="module active" data-id="coc-why">
+      <div class="eyebrow">Start here</div>
+      <h1>Mental health isn't a separate case load</h1>
+      <div class="beat-flow wide" id="cocWhyBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="goHome()">← Back to Clinical Training</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION: SCOPE -->
+    <section class="module" data-id="coc-scope">
+      <div class="eyebrow">The scope question</div>
+      <h1>What we treat here, and when it's not ours</h1>
+      <div class="beat-flow wide" id="cocScopeBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="cocGoTo('coc-why')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION: WITHDRAWAL -->
+    <section class="module" data-id="coc-withdrawal">
+      <div class="eyebrow">Foundations</div>
+      <h1>Withdrawal can look like a diagnosis — it isn't one yet</h1>
+      <div class="beat-flow wide" id="cocWithdrawalBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="cocGoTo('coc-scope')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION: BASELINE -->
+    <section class="module" data-id="coc-baseline">
+      <div class="eyebrow">Foundations</div>
+      <h1>Baseline, stability, and what "getting worse" actually means</h1>
+      <div class="beat-flow wide" id="cocBaselineBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="cocGoTo('coc-withdrawal')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION: SUICIDALITY REFRAME -->
+    <section class="module" data-id="coc-si-reframe">
+      <div class="eyebrow">Suicidality</div>
+      <h1>The reframe: disclosure is not the emergency you think it is</h1>
+      <div class="beat-flow wide" id="cocSiReframeBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="cocGoTo('coc-baseline')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION: SUICIDALITY RESPONSE -->
+    <section class="module" data-id="coc-si-response">
+      <div class="eyebrow">Suicidality</div>
+      <h1>What you actually do — and what policy backs you up</h1>
+      <div class="beat-flow wide" id="cocSiResponseBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="cocGoTo('coc-si-reframe')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION: ASSEMBLY -->
+    <section class="module" data-id="coc-assembly">
+      <div class="eyebrow">Practice · Final section</div>
+      <h1>Put it together: Danielle discloses</h1>
+      <div class="beat-flow wide" id="cocAssemblyBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="cocGoTo('coc-si-response')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- REFERENCE: CHEAT SHEET -->
+    <section class="module" data-id="coc-cheatsheet">
+      <div class="eyebrow">Reference · look at this anytime</div>
+      <h1>Co-occurring disorders quick reference</h1>
+      <p class="lede">The scope test, the withdrawal caveat, and the suicidality protocol — one page, meant to sit open next to you in the moment, not read start to finish. This does not replace the official policy — see "Handling a Client with Suicidal/Homicidal Ideation/Intent" for the full procedure.</p>
+      <div style="margin:14px 0 24px;">
+        <button class="btn secondary" onclick="window.print()">🖨️ Print / Save as PDF</button>
+      </div>
+
+      <div id="cocCheatSheetPrintArea">
+        <div class="callout"><strong>The scope test:</strong> we're always treating mental health, alongside substance use, as long as the substance use concern is still the bigger of the two. The moment mental health symptoms supersede the substance use concern — the client can no longer safely or meaningfully engage here because of them — that's a level-of-care conversation, not a "manage it and move on" situation. When in doubt, consult your supervisor.</div>
+
+        <h2 style="margin-top:22px;">Withdrawal vs. diagnosis</h2>
+        <ul class="checklist">
+          <li>Early recovery is not a reliable window for diagnosing anything — withdrawal can closely mimic anxiety, depression, psychosis, and mood instability</li>
+          <li>Don't diagnose off of week one. Document what you observe, not a conclusion about what it means</li>
+          <li>Establish and track a baseline once withdrawal clears — that baseline, not day one, is what you compare against later</li>
+        </ul>
+
+        <h2 style="margin-top:22px;">Stability, not symptom-free</h2>
+        <ul class="checklist">
+          <li>The goal is a client who can hold their baseline, even an imperfect one — not a client with zero symptoms</li>
+          <li>Ask: can they engage in group and individual sessions, even minimally? That's the functional question that matters most</li>
+          <li>Decompensation — a real drop below baseline, not just a bad day — is what triggers a level-of-care conversation with your supervisor</li>
+        </ul>
+
+        <h2 style="margin-top:22px;">Suicidal/homicidal ideation vs. intent</h2>
+        <div class="cheat-grid">
+          <div class="cheat-item"><strong>Ideation:</strong> thoughts of harming self/others, no stated intent. → Lethality assessment/suicide screener + safety plan if clinically appropriate. Consult Clinical Director/Clinical Supervisor if exclusionary criteria could be met.</div>
+          <div class="cheat-item"><strong>Intent:</strong> client expresses they will act on it, in that moment. → Immediately contact clinical/medical staff or supervisor on duty. Do not leave the client alone, including in the bathroom. No safety plan is written when intent is present.</div>
+        </div>
+        <ul class="checklist">
+          <li>Asking directly ("Are you having thoughts of hurting yourself?") does not increase risk — it opens the door</li>
+          <li>A disclosure is not attention-seeking. Treat it as real every time</li>
+          <li>Full steps, contacts, and documentation requirements are in the official Crisis Intervention procedure — this card is a memory jog, not the policy itself</li>
+        </ul>
+      </div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="cocGoTo('coc-assembly')">← Back to Co-Occurring Disorders Module</button>
+        <span></span>
+      </div>
+    </section>
+
+    </main>
+  </div>
+</div>
+
 <script>
 /* ---- Top-level view switching ---- */
 function showView(viewId){
@@ -1992,6 +2144,7 @@ function refreshHomeStatus(){
   setStatus(document.getElementById('statusItp'), Object.values(itpProgress).filter(Boolean).length, itpSECTIONS.length);
   setStatus(document.getElementById('statusNote'), Object.values(noteProgress).filter(Boolean).length, noteSECTIONS.length);
   setStatus(document.getElementById('statusConclusion'), Object.values(conclusionProgress).filter(Boolean).length, conclusionSECTIONS.length);
+  setStatus(document.getElementById('statusCooccurring'), Object.values(cocProgress).filter(Boolean).length, cocSECTIONS.length);
 }
 
 /* =====================================================
@@ -2088,6 +2241,9 @@ const SECTION_TO_CONTAINER = {
   'loc-practice1':'locPractice1Beats', 'loc-transitions':'locTransitionsBeats', 'loc-practice2':'locPractice2Beats',
   'loc-domains':'locDomainsBeats', 'loc-justify':'locJustifyBeats', 'loc-assembly':'locAssemblyBeats',
   'concl-arc':'conclArcBeats', 'concl-monday':'conclMondayBeats',
+  'coc-why':'cocWhyBeats', 'coc-scope':'cocScopeBeats', 'coc-withdrawal':'cocWithdrawalBeats',
+  'coc-baseline':'cocBaselineBeats', 'coc-si-reframe':'cocSiReframeBeats', 'coc-si-response':'cocSiResponseBeats',
+  'coc-assembly':'cocAssemblyBeats',
 };
 
 function registerBeats(containerId, beats, finalHtml, afterRender, gate){
@@ -5168,6 +5324,522 @@ function conclMondayAfterRender(){
   }
 }
 
+/* =====================================================
+   CO-OCCURRING DISORDERS MODULE
+   ===================================================== */
+const cocCHAPTERS = [
+  {title:'Co-Occurring Disorders', sections:[
+    {id:'coc-why', label:'Mental health isn\'t separate'},
+    {id:'coc-scope', label:'What we treat, and when it\'s not ours'},
+    {id:'coc-withdrawal', label:'Withdrawal vs. diagnosis'},
+    {id:'coc-baseline', label:'Baseline and decompensation'},
+    {id:'coc-si-reframe', label:'Suicidality: the reframe'},
+    {id:'coc-si-response', label:'Suicidality: what you do'},
+    {id:'coc-assembly', label:'Put it together: Danielle'},
+  ]},
+  {title:'Reference (look anytime)', sections:[
+    {id:'coc-cheatsheet', label:'Quick reference cheat sheet', trackProgress:false},
+  ]},
+];
+const cocSECTIONS = cocCHAPTERS.flatMap(c => c.sections);
+const cocTRACKED_SECTIONS = cocSECTIONS.filter(s => s.trackProgress !== false);
+
+let cocProgress = {};
+try{ cocProgress = JSON.parse(localStorage.getItem('doctrain-coc-progress') || '{}'); }catch(e){ cocProgress = {}; }
+
+function cocSaveProgress(){
+  localStorage.setItem('doctrain-coc-progress', JSON.stringify(cocProgress));
+  renderCOCNav();
+}
+function cocMarkComplete(id){
+  cocProgress[id] = true;
+  cocSaveProgress();
+  updateBeatNav(SECTION_TO_CONTAINER[id]);
+}
+
+let cocCurrentSection = 'coc-why';
+function renderCOCNav(){
+  const navList = document.getElementById('navList-coc');
+  navList.innerHTML = '';
+  cocCHAPTERS.forEach(chapter=>{
+    const heading = document.createElement('li');
+    heading.style.cssText = 'font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:#7b9587; font-weight:700; margin:16px 0 6px; padding:0 8px;';
+    heading.textContent = chapter.title;
+    navList.appendChild(heading);
+    chapter.sections.forEach(s=>{
+      const li = document.createElement('li');
+      li.className = 'nav-item' + (cocCurrentSection===s.id ? ' active':'');
+      li.onclick = ()=>cocGoTo(s.id);
+      if(s.trackProgress === false){
+        const dash = document.createElement('span');
+        dash.className = 'nav-check';
+        dash.style.cssText = 'border-style:dashed; opacity:.6;';
+        li.appendChild(dash);
+      } else {
+        const check = document.createElement('span');
+        check.className = 'nav-check' + (cocProgress[s.id] ? ' done':'');
+        check.textContent = cocProgress[s.id] ? '✓' : '';
+        li.appendChild(check);
+      }
+      const label = document.createElement('span');
+      label.textContent = s.label;
+      li.appendChild(label);
+      navList.appendChild(li);
+    });
+  });
+  const doneCount = cocTRACKED_SECTIONS.filter(s=>cocProgress[s.id]).length;
+  document.getElementById('progressLabel-coc').textContent = doneCount + ' of ' + cocTRACKED_SECTIONS.length + ' complete';
+  document.getElementById('progressFill-coc').style.width = (doneCount/cocTRACKED_SECTIONS.length*100) + '%';
+  const cocFinalBadge = document.getElementById('cocFinalBadge');
+  if(cocFinalBadge) cocFinalBadge.style.display = (doneCount === cocTRACKED_SECTIONS.length) ? 'inline-block' : 'none';
+}
+
+function cocGoTo(id){
+  cocCurrentSection = id;
+  document.querySelectorAll('#view-cooccurring section.module').forEach(sec=>{
+    sec.classList.toggle('active', sec.dataset.id === id);
+  });
+  renderCOCNav();
+  closeMobileNav();
+  window.scrollTo({top:0, behavior:'instant'});
+}
+
+document.getElementById('resetProgress-coc').onclick = ()=>{
+  if(confirm('Reset all Co-Occurring Disorders module progress? This clears completion checkmarks and your written answers.')){
+    localStorage.removeItem('doctrain-coc-progress');
+    cocProgress = {};
+    cocSaveProgress();
+    ['cocWhyBeats','cocScopeBeats','cocWithdrawalBeats','cocBaselineBeats','cocSiReframeBeats','cocSiResponseBeats','cocAssemblyBeats'].forEach(resetBeats);
+  }
+};
+
+/* ---- Generic decision exercise (reused across this module) ---- */
+function cocRenderDecision(containerId, items, onDoneSectionId, onAllAnswered){
+  const card = document.getElementById(containerId);
+  if(!card) return;
+  card.innerHTML = '';
+  let answered = 0;
+  items.forEach((item, idx)=>{
+    const row = document.createElement('div');
+    row.className = 'classify-row';
+    const optsHtml = item.options.map((opt,i)=>`<button class="pill-btn" data-val="${i}" data-idx="${idx}">${opt}</button>`).join('');
+    row.innerHTML = `
+      <div style="flex:1;">
+        <div class="classify-text">${item.prompt}</div>
+        <div class="classify-explain" id="${containerId}-explain-${idx}">${item.explain}</div>
+      </div>
+      <div class="classify-buttons">${optsHtml}</div>
+    `;
+    card.appendChild(row);
+  });
+  card.querySelectorAll('.pill-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const idx = btn.dataset.idx;
+      const item = items[idx];
+      const rowBtns = card.querySelectorAll(`[data-idx="${idx}"]`);
+      rowBtns.forEach(b=>b.disabled = true);
+      const chosenVal = parseInt(btn.dataset.val, 10);
+      const correct = chosenVal === item.correctIdx;
+      btn.classList.add(correct ? 'chosen-correct' : 'chosen-wrong');
+      if(!correct){
+        rowBtns[item.correctIdx].classList.add('chosen-correct');
+      }
+      document.getElementById(`${containerId}-explain-${idx}`).classList.add('show');
+      answered++;
+      if(answered === items.length){
+        if(onDoneSectionId) cocMarkComplete(onDoneSectionId);
+        if(onAllAnswered) onAllAnswered();
+      }
+    });
+  });
+}
+function cocRevealModel(id){
+  document.getElementById(id + 'Reveal').classList.add('show');
+}
+
+/* ---- Why this module ---- */
+const COC_WHY_BEATS = [
+  `<p class="lede">If mental health comes up with a client and your stomach tightens a little — you're not alone, and this module exists to take that feeling apart. There's no test at the end designed to catch you out. The goal is simple: you should leave this feeling steadier around clients who present with mental health symptoms, not more anxious.</p>`,
+
+  `<h3>The number that changes how you should think about this</h3>
+   <p>The vast majority of the clients you'll work with here have a co-occurring mental health condition alongside their substance use — not a small subset, not an occasional complication. Depression, anxiety, trauma-related symptoms, and mood instability show up constantly alongside substance use, because for a lot of clients, the substance use started as an attempt to manage those very symptoms. If you're waiting for "the co-occurring client" to show up as a distinct, unusual case, you'll be waiting the wrong way — statistically, they're most of the caseload.</p>`,
+
+  `<h3>"We don't treat mental health" is true and misleading at the same time</h3>
+   <p>Woodhaven isn't a psychiatric hospital, and we're not running a separate mental health treatment track alongside substance use treatment. That part is true. But here's the part that gets lost: nearly everything you already do here — structure, routine, groups, coping skills, accountability, sleep and nutrition regulation, a client feeling heard — is also mental health treatment, whether or not anyone calls it that. <strong>We are almost always treating mental health. We just don't treat it as a separate problem with its own separate plan.</strong> It's woven into the substance use treatment, not bolted onto the side of it.</p>`,
+
+  `<div class="callout"><strong>The one exception, previewed:</strong> there's exactly one condition under which mental health becomes something we don't address here — when it supersedes the substance use concern. That's the whole subject of the next section, and it's a narrower line than most staff assume.</div>`,
+
+  `<h3>What's ahead</h3>
+   <p>In order: where the line actually sits between "we work with this" and "this needs a different level of care," why withdrawal makes early diagnosis unreliable, what "baseline" means and why stability matters more than symptom-free, and then a full section on suicidality — including the exact steps behind our official policy, with a chance to practice your own response before you ever need it for real.</p>`,
+];
+const COC_WHY_FINAL = `<button class="btn" onclick="cocMarkComplete('coc-why'); cocGoTo('coc-scope')">Next: What we treat, and when it's not ours →</button>`;
+
+/* ---- Scope: the supersedes threshold ---- */
+const COC_SCOPE_BEATS = [
+  `<p class="lede">This is the section most staff want most clearly answered: when does a client's mental health become something we can't work with here? The answer isn't a diagnosis list. It's a comparison.</p>`,
+
+  `<h3>The rule</h3>
+   <p>A client can have real, observable symptoms of a mental health condition — including a serious one — and still be appropriate for this level of care, as long as <strong>the substance use concern remains the bigger of the two problems.</strong> The moment that flips — the mental health symptoms become the dominant, driving concern, bigger than the substance use issue that brought them here — that's no longer something we address here. It becomes a level-of-care conversation.</p>
+   <p>Notice what that rule does <em>not</em> say. It doesn't say "no symptoms allowed." It doesn't say "any signs of a serious diagnosis means immediate transfer." It says: which one is bigger, right now, for this client?</p>`,
+
+  `<h3>What that looks like in practice</h3>
+   <p>A client can show signs and symptoms consistent with a condition like schizophrenia — odd beliefs, disorganized thinking, a flattened affect — and still be someone we work with, as long as those symptoms aren't the more severe or more urgent concern compared to their substance use. If they can still engage, function within the structure, and their symptoms aren't escalating or driving unsafe behavior, that's not automatically a "this doesn't belong here" situation.</p>
+   <p>What changes the answer is escalation or dominance — the symptoms become unmanageable within this setting, start driving behavior that isn't safe, or simply become the loudest, most urgent thing about the client's presentation, eclipsing the substance use work entirely. That's when it supersedes, and that's when it stops being ours to manage alone.</p>`,
+
+  `<div class="callout"><strong>Always consult your supervisor when you're not sure which side of that line a client is on.</strong> This isn't a call you're expected to make solo, and getting a second set of eyes on a borderline case is exactly what the judgment call is supposed to look like — not a sign you don't know what you're doing.</div>`,
+
+  `<h3>Try it: which side of the line?</h3>
+   <p>For each client presentation below, decide whether it's something we continue working with here (monitoring, consulting as needed) or a presentation where mental health has superseded the substance use concern (a level-of-care conversation with your supervisor).</p>
+   <div class="classify-card" id="cocScopeClassifyCard"></div>`,
+];
+const COC_SCOPE_FINAL = `<button class="btn" onclick="cocGoTo('coc-withdrawal')">Next: Withdrawal vs. diagnosis →</button>`;
+
+const COC_SCOPE_ITEMS = [
+  {
+    prompt: "A client reports a long-standing history of mild depression, takes a stable prescribed medication for it, and is fully participating in groups and individual sessions. Their substance use is clearly the more urgent, active concern.",
+    options: ["Continue working with them here", "Mental health has superseded — LOC conversation"],
+    correctIdx: 0,
+    explain: "Stable, managed symptoms that aren't the dominant concern, alongside full engagement, is exactly the profile of a client we continue working with — with ongoing monitoring, not escalation."
+  },
+  {
+    prompt: "A client begins expressing paranoid beliefs about staff poisoning their food, refuses to eat, and can no longer be redirected into group. The paranoia is now the most urgent thing happening with this client.",
+    options: ["Continue working with them here", "Mental health has superseded — LOC conversation"],
+    correctIdx: 1,
+    explain: "Once symptoms escalate to the point of driving unsafe behavior (refusing to eat) and becoming the dominant, most urgent concern — bigger than the substance use issue — that's the supersede line. This calls for an immediate supervisor consult about appropriateness of this level of care."
+  },
+  {
+    prompt: "A client with generalized anxiety has a rough day, is visibly anxious in group, but still participates, still eats, still sleeps, and returns to baseline by evening.",
+    options: ["Continue working with them here", "Mental health has superseded — LOC conversation"],
+    correctIdx: 0,
+    explain: "A hard day with visible symptoms isn't the same as decompensation or supersession. The client is still functioning and still engaging — that's well within what we continue to support here."
+  },
+  {
+    prompt: "A client discloses passive suicidal thoughts during an individual session but denies any plan or intent, and remains engaged and safe for the rest of the day.",
+    options: ["Continue working with them here", "Mental health has superseded — LOC conversation"],
+    correctIdx: 0,
+    explain: "This isn't automatically a supersede situation — it's a specific-response situation, covered in detail later in this module. Disclosure without escalating risk still gets worked with here, following the crisis protocol, not necessarily a level-of-care change."
+  },
+];
+
+function cocRenderScope(){
+  cocRenderDecision('cocScopeClassifyCard', COC_SCOPE_ITEMS, 'coc-scope');
+}
+
+/* ---- Withdrawal vs. diagnosis ---- */
+const COC_WITHDRAWAL_BEATS = [
+  `<p class="lede">Here's a fact that changes how you should read almost everything a client says or shows in their first days here: withdrawal can look a lot like a mental health disorder, even when it isn't one.</p>`,
+
+  `<h3>What withdrawal can mimic</h3>
+   <ul class="checklist">
+     <li>Anxiety symptoms — racing thoughts, restlessness, panic-like physical sensations</li>
+     <li>Depressive symptoms — flat affect, low energy, hopelessness, poor sleep and appetite</li>
+     <li>Psychosis-like symptoms — disorganized thinking, irritability, occasionally perceptual disturbances</li>
+     <li>Mood instability — swings that can look like a mood disorder over the course of a single day</li>
+   </ul>
+   <p>None of that means the client doesn't have a real underlying condition. It means you genuinely cannot tell, reliably, in the first days of withdrawal — and neither can anyone else on the team.</p>`,
+
+  `<div class="callout"><strong>The practical rule:</strong> mental health cannot be adequately identified or diagnosed while a client is in early recovery, because withdrawal symptoms distort the picture too much. Document what you observe — specific behaviors, specific statements, specific dates — rather than a diagnostic conclusion about what it means. "Client appeared withdrawn and tearful, minimal engagement in group" is useful and accurate. "Client is depressed" is a conclusion you're not positioned to make yet, and it can follow the client through their chart in a way that's hard to walk back.</div>`,
+
+  `<h3>The good news underneath this</h3>
+   <p>Many symptoms that look alarming in week one clear up substantially on their own as the client stabilizes and the body finishes clearing whatever it was managing. That's not a reason to ignore what you're seeing — it's a reason to give it time before drawing conclusions, while still tracking and documenting it carefully. What matters is what's actually happening once that early window has passed.</p>`,
+
+  `<h3>Quick check</h3>
+   <div class="quiz-card" id="cocWithdrawalQuizCard"></div>`,
+];
+const COC_WITHDRAWAL_FINAL = `<button class="btn" onclick="cocMarkComplete('coc-withdrawal'); cocGoTo('coc-baseline')">Next: Baseline and decompensation →</button>`;
+
+const COC_WITHDRAWAL_QUIZ_ITEMS = [
+  {
+    q: "A client is three days into withdrawal and shows flat affect, poor sleep, and says \"nothing matters anymore.\" What's the most clinically sound documentation approach right now?",
+    options: [
+      "Document a working diagnosis of major depressive disorder",
+      "Document the specific observed behaviors and statements, without concluding a diagnosis this early",
+      "Don't document any of it, since it's probably just withdrawal",
+    ],
+    correctIdx: 1,
+    explain: "Withdrawal can produce this exact picture without an underlying mood disorder being present. Document what you actually observed — it's real and worth tracking — without committing to a diagnostic label this early."
+  },
+  {
+    q: "Why does 'many symptoms clear up as the client stabilizes' matter for how you respond in the moment?",
+    options: [
+      "It means you should dismiss or minimize what the client is reporting",
+      "It's a reason to keep tracking and supporting the client through it, rather than jumping straight to a diagnostic conclusion or a level-of-care decision based on day-one symptoms",
+      "It means withdrawal symptoms are never something to take seriously",
+    ],
+    correctIdx: 1,
+    explain: "The point isn't to ignore what you're seeing — it's to keep supporting the client and tracking what happens, rather than treating early, withdrawal-influenced symptoms as the final picture."
+  },
+];
+
+function cocRenderWithdrawalQuiz(){
+  buildQuiz('cocWithdrawalQuizCard', COC_WITHDRAWAL_QUIZ_ITEMS, ()=>cocMarkComplete('coc-withdrawal'));
+}
+
+/* ---- Baseline and decompensation ---- */
+const COC_BASELINE_BEATS = [
+  `<p class="lede">Once the acute withdrawal window has passed, the question changes. It's no longer "what does this symptom mean" — it's "what does normal look like for this specific client, and are they holding it?"</p>`,
+
+  `<h3>Stability, not symptom-free</h3>
+   <p>This is worth saying plainly, because it's easy to miss: the goal is not a client with zero symptoms. Recovery looks different for every client, and so do reasonable expectations for growth. A client with a long-standing, well-managed anxiety condition who is still anxious, but consistently at their own normal level, is doing exactly what we're hoping for. A baseline that includes some symptoms, held steady, is success — not a problem waiting to be solved.</p>`,
+
+  `<h3>The functional question that actually matters</h3>
+   <p>When you're checking in on how a client is doing, the most useful question isn't "are their symptoms gone" — it's <strong>can they engage in group and individual sessions, even on the most minor level?</strong> A client who's visibly struggling but still shows up, still says something in group, still sits through an individual session, is still working. That's the bar, and it's a lower bar than a lot of staff assume.</p>`,
+
+  `<h3>What decompensation actually means</h3>
+   <p>Decompensation is a real, meaningful drop below that established baseline — not a bad day, not a symptomatic day that still looks like their normal. It's when a client who could engage no longer can, when functioning that was previously stable starts genuinely breaking down. That's the trigger to reopen the conversation about whether this is still the right level of care for this client — and that conversation goes to your supervisor, not a decision you make solo in the moment.</p>`,
+
+  `<h3>Try it: baseline or decompensation?</h3>
+   <div class="classify-card" id="cocBaselineClassifyCard"></div>`,
+];
+const COC_BASELINE_FINAL = `<button class="btn" onclick="cocGoTo('coc-si-reframe')">Next: Suicidality — the reframe →</button>`;
+
+const COC_BASELINE_ITEMS = [
+  {
+    prompt: "A client with a documented history of moderate depression continues to show low energy and flat affect, consistent with how they've presented since admission, but still attends every group and speaks briefly in check-ins.",
+    options: ["Holding baseline — continue supporting", "Decompensating — re-evaluate appropriateness"],
+    correctIdx: 0,
+    explain: "This is the client's established normal, and they're still functionally engaging, even minimally. That's baseline, held — exactly what we're looking for, not a red flag."
+  },
+  {
+    prompt: "A client who has reliably participated in groups for two weeks suddenly stops speaking entirely, refuses to leave their room for programming, and this has continued for three consecutive days.",
+    options: ["Holding baseline — continue supporting", "Decompensating — re-evaluate appropriateness"],
+    correctIdx: 1,
+    explain: "This is a real, sustained drop from an established, functioning baseline — not a bad afternoon. This is exactly the kind of change that should prompt a supervisor conversation about whether this level of care still fits."
+  },
+  {
+    prompt: "A client has an unusually hard, tearful day after a difficult phone call with family, but is back to their normal engagement level by the next morning.",
+    options: ["Holding baseline — continue supporting", "Decompensating — re-evaluate appropriateness"],
+    correctIdx: 0,
+    explain: "A single hard day with a clear trigger, followed by a return to baseline, is a normal part of treatment — not decompensation. The question is whether the drop is sustained and represents a real break from their normal, not whether a hard day happened at all."
+  },
+];
+
+function cocRenderBaseline(){
+  cocRenderDecision('cocBaselineClassifyCard', COC_BASELINE_ITEMS, 'coc-baseline');
+}
+
+/* ---- Suicidality: the reframe ---- */
+const COC_SI_REFRAME_BEATS = [
+  `<p class="lede">Say the word "suicidal" in a shift report and watch what happens to the room. For a lot of staff, it's the single word most likely to trigger genuine panic. This section is about taking that panic apart, piece by piece — because panic is exactly the wrong response, and it's not the one the policy actually asks of you.</p>`,
+
+  `<h3>It's not cause for panic. It's cause for a specific response.</h3>
+   <p>Those are two different things, and mixing them up is where a lot of staff distress comes from. A specific response is calm, procedural, and something you already know how to start: you monitor the client, you contact your supervisor, and you make the necessary referral. That's it. That's the shape of it. The next section walks through exactly what that looks like — the point of this section is just to get your nervous system out of the way first.</p>`,
+
+  `<h3>A client telling you is a good thing</h3>
+   <p>This might be the single most important reframe in this whole module: <strong>a client expressing that they're suicidal is a good thing.</strong> It means they trust you enough, and feel safe enough, to say something most people never say out loud. A huge number of people who are struggling this way say nothing at all — which means there's no warning, and no chance to help before something happens. A disclosure is the opposite of a warning sign that things have gone wrong. It's an opening.</p>`,
+
+  `<div class="callout"><strong>It's also not attention-seeking.</strong> However it's phrased, however calm or offhand it sounds, treat every disclosure as real and as an emergency requiring the specific response above — never as a bid for attention to be managed or minimized. Being an emergency and being cause for panic are still two different things; you can take it completely seriously without your voice or your face telegraphing alarm.</div>`,
+
+  `<h3>Yes, it's okay to ask directly</h3>
+   <p>Some staff worry that asking about suicide directly might put the idea in a client's head, or make things worse. It doesn't. Asking directly — "Are you having thoughts of hurting yourself?" — does not increase risk, and you don't need to couch it in softer language to make it safer. If anything, a direct question makes it easier and safer for a client to answer honestly, instead of guessing whether it's okay to say something this heavy out loud.</p>`,
+
+  `<h3>Quick check</h3>
+   <div class="quiz-card" id="cocSiReframeQuizCard"></div>`,
+];
+const COC_SI_REFRAME_FINAL = `<button class="btn" onclick="cocMarkComplete('coc-si-reframe'); cocGoTo('coc-si-response')">Next: What you actually do →</button>`;
+
+const COC_SI_REFRAME_QUIZ_ITEMS = [
+  {
+    q: "A client casually mentions suicidal thoughts, and part of you wonders if they're just seeking attention. What's the right way to treat that disclosure?",
+    options: [
+      "Take it seriously and follow the specific response protocol regardless of how it was phrased",
+      "Wait and see if they bring it up again before responding",
+      "Gently point out that this seems like it might be for attention",
+    ],
+    correctIdx: 0,
+    explain: "However a disclosure is phrased, it isn't attention-seeking, and it's never something to wait out or minimize. Every disclosure gets the same real response."
+  },
+  {
+    q: "You're worried that asking a client directly about suicidal thoughts might make things worse. What does this module say about that?",
+    options: [
+      "Asking directly can plant the idea, so it's better to ask around it",
+      "Asking directly doesn't increase risk, and you don't have to couch it — it's good and appropriate to ask plainly",
+      "Only licensed clinicians are permitted to ever ask this question",
+    ],
+    correctIdx: 1,
+    explain: "Asking directly doesn't increase risk. A direct, plain question makes it easier for a client to answer honestly than a euphemistic one does."
+  },
+];
+
+function cocRenderSiReframeQuiz(){
+  buildQuiz('cocSiReframeQuizCard', COC_SI_REFRAME_QUIZ_ITEMS, ()=>cocMarkComplete('coc-si-reframe'));
+}
+
+/* ---- Suicidality: what you actually do (+ hands-on practice, tied to policy) ---- */
+const COC_SI_RESPONSE_BEATS = [
+  `<p class="lede">"Monitor, contact your supervisor, make the necessary referral" isn't just a helpful summary — it's the shape of Woodhaven's actual official procedure, <strong>Handling a Client with Suicidal/Homicidal Ideation/Intent</strong>. This section walks through it at the level every staff member needs to know, and then you'll practice using it.</p>`,
+
+  `<h3>Two categories, two different urgencies</h3>
+   <ul class="checklist">
+     <li><strong>Ideation:</strong> the client is having thoughts of harming themselves (or others), but reports no intention to act on them right now.</li>
+     <li><strong>Intent:</strong> the client expresses that they are going to act — right now, in that moment. This is more urgent and moves faster.</li>
+   </ul>
+   <p>You don't have to be certain which one you're looking at before you act — both start the same way, and if you're unsure, ask directly and treat it with the greater urgency until someone with more training tells you otherwise.</p>`,
+
+  `<h3>What's true no matter which category it is</h3>
+   <ul class="checklist">
+     <li>Do not leave the client alone — stay with them until they're in the presence of the staff member or clinician who will assess or assist them further. This includes accompanying them to the bathroom: staying in the room if there's a stall, or remaining just outside with the door cracked if there isn't.</li>
+     <li>Do a warm handoff — when you bring in your supervisor or the clinical/medical staff member taking over, tell them what the client said, their demeanor, and anything else relevant, so they're not starting from zero.</li>
+     <li>Contact your supervisor or the clinical/medical staff assigned to your area right away. This is never a judgment call you have to carry alone.</li>
+   </ul>`,
+
+  `<h3>Where the two paths differ</h3>
+   <p><strong>Ideation:</strong> clinical staff completes a lethality assessment/suicide screener, and a safety plan if it's clinically appropriate. If there's any chance exclusionary criteria could apply, staff consult the Clinical Director or Clinical Supervisor to review the case together.</p>
+   <p><strong>Intent:</strong> this moves immediately — clinical/medical staff or the supervisor on duty completes a crisis intervention and lethality assessment right away. If risk comes back severe, that can mean an outside referral for further assessment, or 911 if that resource isn't reachable. <strong>A safety plan is not written when intent is present</strong> — intent calls for a faster, higher level of response than a safety plan is built for.</p>
+   <div class="callout"><strong>Always consult your supervisor with any uncertainty</strong> — about which category you're looking at, whether something counts as a disclosure at all, or what to do next. That instruction isn't a formality here; it's built into the actual procedure at nearly every step.</div>`,
+
+  `<h3>Try it: draft your response</h3>
+   <p>You're mid-session with a client. She quietly says, "Honestly, sometimes I think everyone would be better off without me." She doesn't say anything about a plan, and when you gently follow up, she says she wouldn't actually do anything — just that the thought shows up sometimes.</p>
+
+   <h3>What your answer needs</h3>
+   <ul class="checklist">
+     <li>A calm, direct follow-up question that clarifies ideation vs. intent — asked plainly, not euphemistically</li>
+     <li>What you'll say to her, in plain language, about what happens next (who you're looping in, and why — not vague reassurance)</li>
+     <li>What you do physically — you don't leave her alone while this gets sorted out</li>
+     <li>Who you contact, and that a warm handoff includes what she actually said and how she seemed</li>
+   </ul>
+
+   <div class="scenario-box">
+     <div class="who">Session — individual check-in, mid-conversation</div>
+     <div class="meta">Client statement: "Sometimes I think everyone would be better off without me." Denies plan or intent on follow-up.</div>
+     <p style="margin:0;">Write out, in your own words, exactly what you'd say and do in the next five minutes — from your first response to her, through who you contact and what you tell them.</p>
+   </div>
+   <textarea id="cocSiResponseAnswer" placeholder="e.g. I'd stay calm and ask her directly whether she's had any thoughts of acting on this or a plan to hurt herself. I'd tell her..." style="min-height:160px;" oninput="document.getElementById('cocSiResponseRevealBtn').disabled = !this.value.trim()"></textarea>
+   <div style="margin-top:10px;">
+     <button class="btn" id="cocSiResponseRevealBtn" disabled onclick="cocRevealModel('cocSiResponse'); cocMarkComplete('coc-si-response')">Reveal model answer</button>
+   </div>
+   <div class="reveal" id="cocSiResponseReveal">
+     <div class="card-label">One reasonable way to handle this</div>
+     <div class="model-answer">"Can I ask you something directly? Are you having any thoughts of hurting yourself, or a plan to?"
+
+[She says no plan, no intent — just the thought showing up sometimes.]
+
+"Thank you for telling me that — I know that's not easy to say. I'm not going anywhere right now, and I do want to loop in [supervisor/clinical staff] so we can make sure you've got the right support around this. That's not a punishment, it's just what we do to take this seriously."
+
+[Stay with her. Do not leave her alone, including if she needs the bathroom before the handoff happens.]
+
+[Contact supervisor/clinical staff]: "She just told me, unprompted, that sometimes she thinks everyone would be better off without her. I asked directly and she denied any plan or intent. She seemed calm but a little embarrassed after saying it. I haven't left her alone."</div>
+     <ul class="checklist">
+       <li>The direct question isn't softened, and it isn't skipped — that's what actually clarifies ideation vs. intent instead of guessing</li>
+       <li>What's said to the client is calm, honest, and doesn't overpromise — it names what happens next without turning it into a crisis performance</li>
+       <li>She's never left alone, which matches the policy's requirement regardless of which category this turns out to be</li>
+       <li>The handoff includes her exact words, her demeanor, and the fact that a direct follow-up was already done — exactly the information the next person needs to not start from zero</li>
+       <li>This scenario reads as ideation, not intent — so a lethality assessment/suicide screener and, if clinically appropriate, a safety plan are next. This mirrors Woodhaven's official Crisis Intervention procedure — for the complete steps, required contacts, and documentation, see <strong>"Handling a Client with Suicidal/Homicidal Ideation/Intent."</strong> This module gives you the shape of it; the policy is the source of truth.</li>
+     </ul>
+     <div class="card-label" style="margin-top:18px;">Quick check</div>
+     <div class="quiz-card" id="cocSiResponseQuizCard"></div>
+   </div>`,
+];
+const COC_SI_RESPONSE_FINAL = `<button class="btn" onclick="cocGoTo('coc-assembly')">Next: Put it together — Danielle →</button>`;
+
+const COC_SI_RESPONSE_QUIZ_ITEMS = [
+  {
+    q: "A client says she's going to hurt herself tonight and describes how. What category is this, and what changes?",
+    options: [
+      "Ideation — complete a safety plan and continue the session",
+      "Intent — this moves immediately, with clinical/medical staff or the supervisor on duty involved right away, and no safety plan is written",
+      "Neither — this only counts if she's already attempted something",
+    ],
+    correctIdx: 1,
+    explain: "A stated plan to act, in that moment, is intent — not ideation. Intent moves faster and skips the safety plan entirely, since a safety plan isn't the right tool for this level of urgency."
+  },
+  {
+    q: "A client discloses passive thoughts of self-harm, with no plan or intent. A staff member is unsure whether this needs anything more than 'keeping an eye on it.' What should they do?",
+    options: [
+      "Handle it informally and mention it later if it seems relevant",
+      "Follow the procedure — stay with the client, contact a supervisor or clinical staff for the lethality assessment/safety plan process, and do a warm handoff",
+      "Wait to see if the client brings it up again before doing anything",
+    ],
+    correctIdx: 1,
+    explain: "Even ideation without intent starts the same procedural response — staying with the client, contacting supervisor/clinical staff, and a warm handoff. 'Keeping an eye on it' informally isn't the same as following the actual steps."
+  },
+];
+
+function cocRenderSiResponseQuiz(){
+  buildQuiz('cocSiResponseQuizCard', COC_SI_RESPONSE_QUIZ_ITEMS, ()=>cocMarkComplete('coc-si-response'));
+}
+
+/* ---- Final assembly: Danielle ---- */
+const COC_ASSEMBLY_BEATS = [
+  `<p class="lede">One more scenario, no checklist scaffolding this time — just you, applying everything from this module to a client you already know from the rest of this training.</p>`,
+
+  `<div class="scenario-box">
+     <div class="who">Danielle — individual session, week three</div>
+     <div class="meta">Established baseline: engaged in groups, occasional low mood tied to family stress, no prior risk history noted.</div>
+     <p style="margin:0;">Near the end of session, Danielle goes quiet and says, "Some nights I lie there thinking it would just be easier if I wasn't around anymore." When you ask her directly whether she's thought about how she'd do that, she pauses and says, "I have, actually. I've thought about it more than I probably should."</p>
+   </div>`,
+
+  `<h3>Work through it</h3>
+   <p>Answer each question based on everything you've covered in this module.</p>
+   <div class="classify-card" id="cocAssemblyClassifyCard"></div>`,
+
+  `<div class="reveal" id="cocAssemblyOverallReveal">
+     <div class="card-label">Putting the whole picture together</div>
+     <div class="callout">This is what "specific response, not panic" actually looks like end to end: a direct question resolved ideation vs. intent, she was never left alone, a safety plan stayed on the table because intent wasn't present, and the handoff carried her exact words forward instead of a vague summary. Nothing here required Danielle's mental health to "supersede" her substance use treatment — she stays in the program, on a safety plan, with everyone around her now paying closer attention. That's the system working the way it's supposed to.</div>
+   </div>`,
+
+  `<h3>Bringing it all together</h3>
+   <p>Step back for a second from Danielle specifically. Every piece of this module was building toward the same underlying skill: telling the difference between what's within your scope to hold, steadily, and what needs someone with more training or a different setting — without either panicking or minimizing.</p>
+   <ul class="checklist">
+     <li>Mental health isn't a separate caseload here — it's already woven into the substance use work you're doing, for the vast majority of the clients you'll see</li>
+     <li>The scope question is a comparison, not a symptom checklist: does the substance use concern still outweigh the mental health concern, or has that flipped?</li>
+     <li>Early recovery isn't a reliable diagnostic window — document what you observe, not a conclusion, and give withdrawal time to clear before drawing one</li>
+     <li>The goal is a held baseline, not zero symptoms — and the functional question is simply whether a client can still engage, even minimally</li>
+     <li>A disclosure of suicidal thoughts is an opening, not an alarm to panic over — stay calm, ask directly, and follow the specific response the policy lays out</li>
+     <li>None of this is a judgment call you're expected to make alone — consulting your supervisor is built into the procedure at nearly every step, not a fallback for when you're unsure</li>
+   </ul>
+   <div class="callout"><strong>The thing to actually carry with you:</strong> almost every client walking through this door is bringing some mental health need along with their substance use, and you are already equipped to work with that — calmly, and mostly by doing exactly what you already do well. The rare cases that genuinely need something more are easier to recognize precisely because you're not treating every symptom as one of them.</div>
+   <span class="badge-done" id="cocFinalBadge" style="display:none;">🎉 You've completed the Co-Occurring Disorders module — nice work</span>
+   <div class="callout" style="margin-top:16px;">
+     <strong>Keep this handy:</strong> the <span class="inline-link" onclick="cocGoTo('coc-cheatsheet')" role="link" tabindex="0">quick reference cheat sheet</span> is built to be reopened anytime you're actually facing one of these calls — not just read once during training. And for the full procedural detail behind the suicidality section, the official policy — <strong>"Handling a Client with Suicidal/Homicidal Ideation/Intent"</strong> — is always the source of truth over this module.</div>
+   <div class="callout" style="margin-top:16px;">
+     <strong>Where this connects:</strong> anything you observe or act on here — a symptom, a disclosure, a safety plan — still has to make it into the client's record. The <span class="inline-link" onclick="openModule('view-note')" role="link" tabindex="0">Individual Notes module</span> covers how a risk & safety line actually gets documented, session by session.
+   </div>`,
+];
+const COC_ASSEMBLY_FINAL = `<div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+  <button class="btn secondary" onclick="cocGoTo('coc-cheatsheet')">View quick reference cheat sheet</button>
+  <button class="btn" onclick="goHome()">Finish: Back to Clinical Training →</button>
+</div>`;
+
+const COC_ASSEMBLY_ITEMS = [
+  {
+    prompt: "Based on what Danielle said, is this ideation or intent?",
+    options: ["Ideation", "Intent"],
+    correctIdx: 0,
+    explain: "She's describing thoughts and some level of having considered a method — but she hasn't stated she's going to act, and there's no stated plan for right now. This reads as ideation, though it's serious enough to warrant a careful lethality assessment, not a casual one."
+  },
+  {
+    prompt: "Do you leave her alone while you go find your supervisor or clinical staff?",
+    options: ["No — stay with her until she's handed off", "Yes, briefly, since she seems calm"],
+    correctIdx: 0,
+    explain: "This rule doesn't bend based on how calm someone seems. She stays with you, or with the staff member taking over, the whole way through — no exceptions for a client who seems okay in the moment."
+  },
+  {
+    prompt: "Is a safety plan written right now?",
+    options: ["Possibly, if clinically appropriate — that determination belongs to clinical staff", "No, since intent is present"],
+    correctIdx: 0,
+    explain: "This is ideation, not intent, so a safety plan is on the table if clinical staff judges it clinically appropriate. Since intent isn't present here, the rule against writing one during intent doesn't apply — but the actual decision still belongs to clinical staff completing the assessment, not to you in the moment."
+  },
+  {
+    prompt: "What do you say to your supervisor in the handoff?",
+    options: [
+      "Her exact words, that you asked directly and she confirmed thinking about a method, and how she seemed — then let the assessment take it from there",
+      "Just that she seems a little down today",
+    ],
+    correctIdx: 0,
+    explain: "A warm handoff means the next person isn't starting from zero — her exact statement, your direct follow-up question and her answer, and her demeanor. Understating it as 'a little down' would strip out exactly the information that determines urgency."
+  },
+];
+
+function cocShowAssemblyOverall(){
+  const el = document.getElementById('cocAssemblyOverallReveal');
+  if(el) el.classList.add('show');
+}
+function cocRenderAssembly(){
+  cocRenderDecision('cocAssemblyClassifyCard', COC_ASSEMBLY_ITEMS, 'coc-assembly', cocShowAssemblyOverall);
+  renderCOCNav();
+}
+
 /* ---- Init ---- */
 registerBeats('welcomeBeats', WELCOME_BEATS, WELCOME_FINAL);
 registerBeats('threadBeats', THREAD_BEATS, THREAD_FINAL);
@@ -5225,6 +5897,15 @@ renderNoteNav();
 registerBeats('conclArcBeats', CONCL_ARC_BEATS, CONCL_ARC_FINAL, renderConclArcQuiz, ()=>!!conclusionProgress['concl-arc']);
 registerBeats('conclMondayBeats', CONCL_MONDAY_BEATS, CONCL_MONDAY_FINAL, conclMondayAfterRender);
 renderConclusionNav();
+
+registerBeats('cocWhyBeats', COC_WHY_BEATS, COC_WHY_FINAL);
+registerBeats('cocScopeBeats', COC_SCOPE_BEATS, COC_SCOPE_FINAL, cocRenderScope, ()=>!!cocProgress['coc-scope']);
+registerBeats('cocWithdrawalBeats', COC_WITHDRAWAL_BEATS, COC_WITHDRAWAL_FINAL, cocRenderWithdrawalQuiz, ()=>!!cocProgress['coc-withdrawal']);
+registerBeats('cocBaselineBeats', COC_BASELINE_BEATS, COC_BASELINE_FINAL, cocRenderBaseline, ()=>!!cocProgress['coc-baseline']);
+registerBeats('cocSiReframeBeats', COC_SI_REFRAME_BEATS, COC_SI_REFRAME_FINAL, cocRenderSiReframeQuiz, ()=>!!cocProgress['coc-si-reframe']);
+registerBeats('cocSiResponseBeats', COC_SI_RESPONSE_BEATS, COC_SI_RESPONSE_FINAL, cocRenderSiResponseQuiz, ()=>!!cocProgress['coc-si-response']);
+registerBeats('cocAssemblyBeats', COC_ASSEMBLY_BEATS, COC_ASSEMBLY_FINAL, cocRenderAssembly, ()=>!!cocProgress['coc-assembly']);
+renderCOCNav();
 
 showView('view-home');
 </script>
