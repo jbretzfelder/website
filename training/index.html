@@ -643,6 +643,18 @@
     transition:border-color .15s ease, background .15s ease;
   }
   .docassist-pill:hover{background:var(--green-100); border-color:var(--green-500);}
+
+  /* "In development" track — dashed treatment on the card, same sectioning as other tracks */
+  .home-card.soon{
+    cursor:default; background:rgba(255,255,255,.5); border:1px dashed var(--border);
+  }
+  .home-card.soon:hover{border-color:var(--border); box-shadow:none; transform:none;}
+  .home-card.soon .home-card-icon{background:transparent; border:1px dashed var(--border); color:var(--ink-soft);}
+  .home-card.soon .home-card-title{color:var(--ink-soft);}
+  .home-card-status.soon{
+    background:transparent; border:1px dashed var(--border); color:var(--ink-soft);
+    font-family:'IBM Plex Mono', monospace; text-transform:uppercase; letter-spacing:.04em; font-size:10.5px;
+  }
   .home-grid{
     display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:12px;
   }
@@ -859,7 +871,24 @@
     </div>
     </div>
 
-    <p class="more-coming">More modules coming soon.</p>
+  </div>
+
+  <div class="track-section">
+    <div class="track-head">
+      <span class="track-number">03</span>
+      <div class="track-label">In Development</div>
+    </div>
+    <p class="track-desc">More modules coming soon.</p>
+    <div class="home-grid">
+    <div class="home-card soon" id="cardConflict">
+      <div class="home-card-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="13" y2="13"/></svg></div>
+      <div class="home-card-body">
+        <div class="home-card-title">Conflict De-escalation &amp; Resolution</div>
+        <div class="home-card-desc">Handling tension between clients before and after it escalates</div>
+      </div>
+      <span class="home-card-status soon">In development</span>
+    </div>
+    </div>
   </div>
 
   <div class="home-footer">
