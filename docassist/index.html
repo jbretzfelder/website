@@ -4643,7 +4643,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       <div id="de-bridge-wrap" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
         <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:12px;">Staff Involvement</div>
 
-        <div style="margin-bottom:6px;">
+        <div id="de-bridge-required-wrap" style="margin-bottom:6px;">
           <label class="form-label">Was The Bridge Contacted?<span class="req-star">*</span></label>
           <div style="display:flex;gap:6px;margin-bottom:6px;">
             <button class="ds-pill" onclick="deSetYN('bridgeContacted','yes','de-bridge')" id="de-bridge-yes">Yes</button>
@@ -4659,13 +4659,15 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
 
         <div id="de-staff-wrap" style="margin-top:10px;">
-          <label class="form-label">Responsible Clinical Staff Member<span class="req-star">*</span></label>
-          <div style="font-size:11px;color:var(--text-secondary);margin-bottom:6px;line-height:1.4;">This person owns the Remarkable documentation.</div>
-          <input class="form-input" id="de-staff-name" type="text" placeholder="Full name" oninput="deStaffNameInput(this.value)" style="margin-bottom:6px;">
-          <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-secondary);cursor:pointer;">
-            <input type="checkbox" id="de-staff-none" onchange="deSetStaffNone(this.checked)">
-            No clinical staff member was available
-          </label>
+          <div id="de-staff-required-wrap">
+            <label class="form-label">Responsible Clinical Staff Member<span class="req-star">*</span></label>
+            <div style="font-size:11px;color:var(--text-secondary);margin-bottom:6px;line-height:1.4;">This person owns the Remarkable documentation.</div>
+            <input class="form-input" id="de-staff-name" type="text" placeholder="Full name" oninput="deStaffNameInput(this.value)" style="margin-bottom:6px;">
+            <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-secondary);cursor:pointer;">
+              <input type="checkbox" id="de-staff-none" onchange="deSetStaffNone(this.checked)">
+              No clinical staff member was available
+            </label>
+          </div>
 
           <div style="margin-top:10px;">
             <label class="form-label">Other Staff Involved</label>
@@ -4677,7 +4679,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       <!-- Staff Involvement (Admin Discharge — Staff Involved only) -->
       <div id="de-admin-staff-wrap" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
         <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:12px;">Staff Involvement</div>
-        <label class="form-label">Staff Involved</label>
+        <label class="form-label">Staff Involved<span class="req-star">*</span></label>
         <input class="form-input" id="de-admin-staff-other" type="text" placeholder="Names of staff involved" oninput="deState.otherStaffInvolved=this.value;deSyncOtherStaff('de-admin-staff-other');deRenderOutput()">
       </div>
 
@@ -10934,7 +10936,7 @@ function deUpdateBridgeAlert() {
   const status = deBridgeStatus();
   deState._bridgeMissing = status.incomplete;
 
-  const bridgeWrap = document.getElementById('de-bridge-wrap');
+  const bridgeWrap = document.getElementById('de-bridge-required-wrap');
   if (bridgeWrap) bridgeWrap.classList.toggle('field-error', status.contactedMissing);
   const reasonWrap = document.getElementById('de-bridge-reason-wrap');
   if (reasonWrap) reasonWrap.classList.toggle('field-error', status.reasonMissing);
@@ -10953,8 +10955,11 @@ function deUpdateBridgeAlert() {
     }
   }
 
-  const staffWrap = document.getElementById('de-staff-wrap');
+  const staffWrap = document.getElementById('de-staff-required-wrap');
   if (staffWrap) staffWrap.classList.toggle('field-error', status.bridgeRequired && !deState.staffInvolved && !deState.staffNone);
+
+  const adminStaffWrap = document.getElementById('de-admin-staff-wrap');
+  if (adminStaffWrap) adminStaffWrap.classList.toggle('field-error', deState.dischargeSubtype === 'admin' && !deState.otherStaffInvolved);
 
   return status;
 }
@@ -10971,9 +10976,10 @@ function deComputeErrors() {
   if (s.dischargeType === 'unsuccessful' && !s.unsuccessfulReason) errors.push({ label: 'Reason for leaving', id: 'de-unsuccessful-reason-wrap' });
   if (s.dischargeType === 'unsuccessful' && !s.dischargeSubtype) errors.push({ label: 'Reason (ASA or Admin Discharge)', id: 'de-subtype-wrap', critical: true });
   if (s.dischargeType === 'neutral' && !s.neutralReason) errors.push({ label: 'Reason for neutral discharge', id: 'de-neutral-reason-wrap' });
-  if (bridgeStatus.contactedMissing) errors.push({ label: 'Bridge contact', id: 'de-bridge-wrap', critical: true });
+  if (bridgeStatus.contactedMissing) errors.push({ label: 'Bridge contact', id: 'de-bridge-required-wrap', critical: true });
   if (bridgeStatus.reasonMissing) errors.push({ label: "Bridge — reason not contacted", id: 'de-bridge-reason-wrap', critical: true });
-  if (bridgeStatus.bridgeRequired && !s.staffInvolved && !s.staffNone) errors.push({ label: 'Clinical staff member (or mark none available)', id: 'de-staff-wrap', critical: true });
+  if (bridgeStatus.bridgeRequired && !s.staffInvolved && !s.staffNone) errors.push({ label: 'Clinical staff member (or mark none available)', id: 'de-staff-required-wrap', critical: true });
+  if (s.dischargeSubtype === 'admin' && !s.otherStaffInvolved) errors.push({ label: 'Staff involved', id: 'de-admin-staff-wrap', critical: true });
   if (!isOP && !s.destination && !s.destinationUnknown) errors.push({ label: 'Where client is going', id: 'de-destination-wrap' });
   if (!isOP && !s.resourceSheetProvided) errors.push({ label: 'Resource sheet provided', id: 'de-resource-sheet-wrap' });
   if (!s.onProbation) errors.push({ label: 'On probation status', id: 'de-prob-yes' });
