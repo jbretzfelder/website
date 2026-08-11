@@ -4669,9 +4669,16 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 
           <div style="margin-top:10px;">
             <label class="form-label">Other Staff Involved</label>
-            <input class="form-input" id="de-staff-other" type="text" placeholder="Names of any other staff involved" oninput="deState.otherStaffInvolved=this.value;deRenderOutput()">
+            <input class="form-input" id="de-staff-other" type="text" placeholder="Names of any other staff involved" oninput="deState.otherStaffInvolved=this.value;deSyncOtherStaff('de-staff-other');deRenderOutput()">
           </div>
         </div>
+      </div>
+
+      <!-- Staff Involvement (Admin Discharge — Staff Involved only) -->
+      <div id="de-admin-staff-wrap" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:12px;">Staff Involvement</div>
+        <label class="form-label">Staff Involved</label>
+        <input class="form-input" id="de-admin-staff-other" type="text" placeholder="Names of staff involved" oninput="deState.otherStaffInvolved=this.value;deSyncOtherStaff('de-admin-staff-other');deRenderOutput()">
       </div>
 
       <!-- Departure Logistics -->
@@ -10757,6 +10764,15 @@ function deToggleForwardingNone(checked) {
   deRenderOutput();
 }
 
+function deSyncOtherStaff(sourceId) {
+  const val = deState.otherStaffInvolved;
+  ['de-staff-other','de-admin-staff-other'].forEach(id => {
+    if (id === sourceId) return;
+    const el = document.getElementById(id);
+    if (el) el.value = val;
+  });
+}
+
 function deStaffNameInput(val) {
   deState.staffInvolved = val;
   deRenderOutput();
@@ -10847,6 +10863,7 @@ function deSetDischargeType(val) {
 
   if (newVal !== 'unsuccessful') {
     document.getElementById('de-bridge-wrap').style.display = 'none';
+    document.getElementById('de-admin-staff-wrap').style.display = 'none';
   }
   deRenderOutput();
 }
@@ -10858,6 +10875,7 @@ function deSetSubtype(val) {
     document.getElementById('de-sub-' + v).classList.toggle('active', v === newVal);
   });
   document.getElementById('de-bridge-wrap').style.display = (newVal === 'asa' && deState.unit !== 'Community OP') ? 'block' : 'none';
+  document.getElementById('de-admin-staff-wrap').style.display = (newVal === 'admin') ? 'block' : 'none';
   deRenderOutput();
 }
 
@@ -11077,7 +11095,7 @@ function deGenerate() {
     lines.push(`Clinical Staff Member (Owns Remarkable Documentation): ${s.staffInvolved}`);
   } else if (s.staffNone) {
     lines.push('');
-    lines.push(`Clinical Staff Member (Owns Intervention/Documentation): None available — escalated per ASA response protocol (The Bridge → Counselor → CDCA → Clinical Supervisor).`);
+    lines.push(`Clinical Staff Member (Owns Remarkable Documentation): None available.`);
   }
   if (s.otherStaffInvolved) lines.push(`Other Staff Involved: ${s.otherStaffInvolved}`);
 
@@ -11167,7 +11185,7 @@ function deReset() {
     additionalInfo: ''
   };
   ['de-client-name','de-discharge-date','de-departure-time','de-unsuccessful-reason','de-neutral-reason','de-bridge-reason',
-   'de-staff-name','de-staff-other','de-destination','de-meds-reason','de-rs-reason','de-room','de-census','de-forwarding','de-additional'].forEach(id => {
+   'de-staff-name','de-staff-other','de-admin-staff-other','de-destination','de-meds-reason','de-rs-reason','de-room','de-census','de-forwarding','de-additional'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
@@ -11202,6 +11220,7 @@ function deReset() {
   document.getElementById('de-unsuccessful-reason-wrap').style.display = 'none';
   document.getElementById('de-neutral-reason-wrap').style.display = 'none';
   document.getElementById('de-bridge-wrap').style.display = 'none';
+  document.getElementById('de-admin-staff-wrap').style.display = 'none';
   document.getElementById('de-bridge-reason-wrap').style.display = 'none';
   document.getElementById('de-meds-reason-wrap').style.display = 'none';
   document.getElementById('de-rs-reason-wrap').style.display = 'none';
