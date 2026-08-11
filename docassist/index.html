@@ -4650,11 +4650,16 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
           <div id="de-bridge-alert" style="display:none;background:#fdecea;border:2px solid #c0392b;border-radius:6px;padding:8px 10px;margin-bottom:8px;font-size:12px;color:#7a1f1f;font-weight:600;align-items:flex-start;gap:6px;">
             <span id="de-bridge-alert-text" style="font-size:14px;line-height:1.3;"></span>
           </div>
-        </div>
 
-        <div>
-          <label class="form-label">Staff Involved with Discharge</label>
-          <textarea class="form-textarea" id="de-staff-involved" rows="2" placeholder="Names of staff involved in the discharge…" oninput="deState.staffInvolved=this.value;deRenderOutput()" style="min-height:50px;"></textarea>
+          <div id="de-staff-wrap" style="margin-top:10px;">
+            <label class="form-label">Responsible Clinical Staff Member<span class="req-star">*</span></label>
+            <div style="font-size:11px;color:var(--text-secondary);margin-bottom:6px;line-height:1.4;">This person owns the Remarkable documentation.</div>
+            <input class="form-input" id="de-staff-name" type="text" placeholder="Full name" oninput="deStaffNameInput(this.value)" style="margin-bottom:6px;">
+            <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-secondary);cursor:pointer;">
+              <input type="checkbox" id="de-staff-none" onchange="deSetStaffNone(this.checked)">
+              No clinical staff member was available
+            </label>
+          </div>
         </div>
       </div>
 
@@ -4859,6 +4864,22 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     </div>
   </div>
 </div><!-- /view-discharge-email -->
+
+<div id="deStaffNoneModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;align-items:center;justify-content:center">
+  <div style="background:white;border-radius:10px;padding:28px 32px;max-width:440px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.2)">
+    <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:10px">ASA Response — Who Responds?</div>
+    <div style="font-size:13px;color:var(--text-secondary);line-height:1.7;margin-bottom:18px">
+      <div style="margin-bottom:10px;"><strong style="color:var(--text)">1. The Bridge</strong><br>Call The Bridge first.</div>
+      <div style="margin-bottom:10px;"><strong style="color:var(--text)">2. Counselor</strong><br>If The Bridge is unavailable, notify the client's counselor.</div>
+      <div style="margin-bottom:10px;"><strong style="color:var(--text)">3. CDCA</strong><br>If neither is available, a CDCA is assigned and responds.</div>
+      <div><strong style="color:var(--text)">4. Clinical Supervisor</strong><br>If no clinical staff members are available, contact the clinical supervisor.</div>
+      <div style="margin-top:14px;font-weight:600;color:var(--text);">The person who responds owns the ASA intervention and documentation.</div>
+    </div>
+    <div style="display:flex;justify-content:flex-end">
+      <button class="btn btn-primary" onclick="hideModal('deStaffNoneModal')">Got it</button>
+    </div>
+  </div>
+</div>
 
 <!-- ═══ NURSING NOTE VIEW ════════════════════════════ -->
 <div id="view-nn" class="tool-view">
@@ -5291,9 +5312,9 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 
 <div id="pcDaysWorkedHelpModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;align-items:center;justify-content:center">
   <div style="background:white;border-radius:10px;padding:28px 32px;max-width:420px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.2)">
-    <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:10px">What counts as "Days Worked"</div>
+    <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:10px">What counts as "Scheduled Workdays"</div>
     <div style="font-size:13px;color:var(--text-secondary);line-height:1.7;margin-bottom:24px">
-      This is the counselor's regular scheduled weekday count for the period — not how many hours they physically worked. A standard Monday–Friday counselor is 5 days. If they work a compressed schedule (like 4 ten-hour days), this is still just the day count — set the hours themselves in <strong>Hours Per Day</strong> next to it.<br><br>
+      This is the counselor's regular scheduled weekday count for the period — not how many days they actually worked. A standard Monday–Friday counselor is 5 days, even if they took PTO during the period. If they work a compressed schedule (like 4 ten-hour days), this is still just the day count — set the hours themselves in <strong>Hours Per Day</strong> next to it.<br><br>
       <strong style="color:var(--text)">Only search the weekday dates they regularly work.</strong> When you pull hours in Remarkable, run the search across just those weekday dates — skip weekend dates entirely, even if the counselor covered an extra group on a Saturday or Sunday. That keeps weekend billing out of every number in this section, so it doesn't inflate the total or the day count.
     </div>
     <div style="display:flex;justify-content:flex-end">
@@ -5396,7 +5417,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
           <strong>Residential:</strong> Open Paychex and pull the PTO or leave hours the counselor actually took during the period. Enter that into <strong>PTO</strong> — this calculator subtracts it from a standard work period to get available working hours, so only enter time off, not hours worked.
         </div>
         <div style="font-size:13px;line-height:1.7;color:var(--text);margin-bottom:8px;">
-          <strong>PHP / OP:</strong> this one doesn't use hours worked at all anymore — physical hours in the building don't matter, only billed hours against the days they were scheduled. Enter their regular scheduled days for the period into <strong>Days Worked</strong> (a standard Monday–Friday counselor is 5). <strong>Hours Per Day</strong> defaults to 8 — change it if someone works a compressed schedule, like four 10-hour days. Then pull PTO the same way you would for Residential, and enter it into <strong>PTO</strong>.
+          <strong>PHP / OP:</strong> this one doesn't use hours worked at all anymore — physical hours in the building don't matter, only billed hours against the days they were scheduled. Enter their regular scheduled days for the period into <strong>Scheduled Workdays</strong> (a standard Monday–Friday counselor is 5, even if they took PTO). <strong>Hours Per Day</strong> defaults to 8 — change it if someone works a compressed schedule, like four 10-hour days. Then pull PTO the same way you would for Residential, and enter it into <strong>PTO</strong>.
         </div>
         <div style="font-size:13px;line-height:1.7;color:var(--text);">
           The calculator turns that into a target: Days Worked × Hours Per Day, minus PTO, times 80% (PHP) or 75% (OP) — that's the number of billed hours they actually need. A full 5-day, 8-hour week with no PTO needs 32 billed hours for PHP, 30 for OP — and a 4-day, 10-hour week with no PTO lands on the same 32 and 30, since both add up to 40 hours. Ten hours of PTO lowers that target by 8 hours (PHP) or 7.5 hours (OP), regardless of how the days are split. You'll see this as <strong>Required Billable Hours</strong> once you've entered Days Worked.
@@ -10663,7 +10684,7 @@ function dsReset() {
 let deState = {
   clientName: '', dischargeDate: '', departureTime: '', unit: '', dischargeType: '', dischargeSubtype: '',
   unsuccessfulReason: '', neutralReason: '',
-  bridgeContacted: '', bridgeNotContactedReason: '', staffInvolved: '',
+  bridgeContacted: '', bridgeNotContactedReason: '', staffInvolved: '', staffNone: false,
   destination: '', destinationUnknown: false, resourceSheetProvided: '', resourceSheetReason: '', forwardingInfo: '', forwardingNone: false,
   medsReceived: '', medsNotReceivedReason: '',
   propertyReceived: '', phoneReceived: '', woodhavenPropertyCollected: '', paperworkSigned: '', phoneCallMade: '',
@@ -10678,7 +10699,7 @@ const DE_YN_FIELDS = ['bridgeContacted','resourceSheetProvided','medsReceived',
 const DE_OP_HIDDEN_FIELDS = ['destination','destinationUnknown','resourceSheetProvided','resourceSheetReason',
   'propertyReceived','phoneReceived','woodhavenPropertyCollected','medsReceived','medsNotReceivedReason',
   'paperworkSigned','phoneCallMade','outpatientOffered','roomVacated','clientsOnUnit','roomCleanedSearched',
-  'bridgeContacted','bridgeNotContactedReason'];
+  'bridgeContacted','bridgeNotContactedReason','staffInvolved','staffNone'];
 
 function deSetUnit(val) {
   deState.unit = val;
@@ -10692,13 +10713,17 @@ function deSetUnit(val) {
   if (isOP) document.getElementById('de-bridge-wrap').style.display = 'none';
 
   if (isOP) {
-    DE_OP_HIDDEN_FIELDS.forEach(f => { deState[f] = (f === 'destinationUnknown' ? false : ''); });
-    ['de-destination','de-rs-reason','de-meds-reason','de-room','de-census','de-bridge-reason'].forEach(id => {
+    DE_OP_HIDDEN_FIELDS.forEach(f => { deState[f] = (f === 'destinationUnknown' || f === 'staffNone') ? false : ''; });
+    ['de-destination','de-rs-reason','de-meds-reason','de-room','de-census','de-bridge-reason','de-staff-name'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.value = '';
     });
     document.getElementById('de-destination-unknown').checked = false;
     document.getElementById('de-destination').disabled = false;
+    const staffNoneCb = document.getElementById('de-staff-none');
+    if (staffNoneCb) staffNoneCb.checked = false;
+    const staffNameInput = document.getElementById('de-staff-name');
+    if (staffNameInput) staffNameInput.disabled = false;
     document.getElementById('de-bridge-reason-wrap').style.display = 'none';
     ['de-rs','de-prop','de-phn','de-wp','de-meds','de-pw','de-call','de-clean','de-bridge'].forEach(prefix => {
       ['yes','no','na'].forEach(v => { const el = document.getElementById(prefix + '-' + v); if (el) el.classList.remove('active'); });
@@ -10717,6 +10742,24 @@ function deToggleForwardingNone(checked) {
     input.disabled = true;
   } else {
     input.disabled = false;
+  }
+  deRenderOutput();
+}
+
+function deStaffNameInput(val) {
+  deState.staffInvolved = val;
+  deRenderOutput();
+}
+
+function deSetStaffNone(checked) {
+  deState.staffNone = checked;
+  const nameInput = document.getElementById('de-staff-name');
+  if (checked) {
+    deState.staffInvolved = '';
+    if (nameInput) { nameInput.value = ''; nameInput.disabled = true; }
+    showModal('deStaffNoneModal');
+  } else if (nameInput) {
+    nameInput.disabled = false;
   }
   deRenderOutput();
 }
@@ -10880,6 +10923,10 @@ function deUpdateBridgeAlert() {
       bridgeAlert.style.display = 'none';
     }
   }
+
+  const staffWrap = document.getElementById('de-staff-wrap');
+  if (staffWrap) staffWrap.classList.toggle('field-error', status.bridgeRequired && !deState.staffInvolved && !deState.staffNone);
+
   return status;
 }
 
@@ -10897,6 +10944,7 @@ function deComputeErrors() {
   if (s.dischargeType === 'neutral' && !s.neutralReason) errors.push({ label: 'Reason for neutral discharge', id: 'de-neutral-reason-wrap' });
   if (bridgeStatus.contactedMissing) errors.push({ label: 'Bridge contact', id: 'de-bridge-wrap', critical: true });
   if (bridgeStatus.reasonMissing) errors.push({ label: "Bridge — reason not contacted", id: 'de-bridge-reason-wrap', critical: true });
+  if (bridgeStatus.bridgeRequired && !s.staffInvolved && !s.staffNone) errors.push({ label: 'Clinical staff member (or mark none available)', id: 'de-staff-wrap', critical: true });
   if (!isOP && !s.destination && !s.destinationUnknown) errors.push({ label: 'Where client is going', id: 'de-destination-wrap' });
   if (!isOP && !s.resourceSheetProvided) errors.push({ label: 'Resource sheet provided', id: 'de-resource-sheet-wrap' });
   if (!s.onProbation) errors.push({ label: 'On probation status', id: 'de-prob-yes' });
@@ -11015,7 +11063,10 @@ function deGenerate() {
 
   if (s.staffInvolved) {
     lines.push('');
-    lines.push(`Staff Involved with Intervention: ${s.staffInvolved}`);
+    lines.push(`Clinical Staff Member (Owns Remarkable Documentation): ${s.staffInvolved}`);
+  } else if (s.staffNone) {
+    lines.push('');
+    lines.push(`Clinical Staff Member (Owns Intervention/Documentation): None available — escalated per ASA response protocol (The Bridge → Counselor → CDCA → Clinical Supervisor).`);
   }
 
   if (s.unit !== 'Community OP') {
@@ -11104,10 +11155,14 @@ function deReset() {
     additionalInfo: ''
   };
   ['de-client-name','de-discharge-date','de-departure-time','de-unsuccessful-reason','de-neutral-reason','de-bridge-reason',
-   'de-staff-involved','de-destination','de-meds-reason','de-rs-reason','de-room','de-census','de-forwarding','de-additional'].forEach(id => {
+   'de-staff-name','de-destination','de-meds-reason','de-rs-reason','de-room','de-census','de-forwarding','de-additional'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
+  const staffNoneCb = document.getElementById('de-staff-none');
+  if (staffNoneCb) staffNoneCb.checked = false;
+  const staffNameInput = document.getElementById('de-staff-name');
+  if (staffNameInput) staffNameInput.disabled = false;
   document.getElementById('de-unit').value = '';
   document.getElementById('de-destination-wrap').style.display = 'block';
   document.getElementById('de-resource-sheet-wrap').style.display = 'block';
@@ -11584,8 +11639,8 @@ function fillSampleClient() {
   document.getElementById('de-bridge-reason').value = deBridgeReasonText;
   deState.bridgeNotContactedReason = deBridgeReasonText;
 
-  const deStaffText = 'Primary Counselor J. Smith, On-Call Clinician R. Davis';
-  document.getElementById('de-staff-involved').value = deStaffText;
+  const deStaffText = 'R. Davis, CDCA';
+  document.getElementById('de-staff-name').value = deStaffText;
   deState.staffInvolved = deStaffText;
 
   const deDestinationText = "Returned to his mother's residence in Dayton, OH";
@@ -13224,7 +13279,7 @@ function pcPhpOpFieldsHTML(id, weekIdx, w) {
         <div class="pc-field"><label>404T Billing Hours</label><input class="gn-input" type="number" step="any" value="${w.c404t}" oninput="${upd('c404t')}"></div>
         <div class="pc-field"><label>"No Show" Time <button type="button" class="pc-help" onclick="showModal('pcNoShowHelpModal')">ⓘ</button></label><input class="gn-input" type="number" step="any" value="${w.noShow}" oninput="${upd('noShow')}"></div>
         <div class="pc-field"><label>Time Spent in Group</label><input class="gn-input" type="number" step="any" value="${w.timeGroup}" oninput="${upd('timeGroup')}"></div>
-        <div class="pc-field"><label>Days Worked <button type="button" class="pc-help" onclick="showModal('pcDaysWorkedHelpModal')">ⓘ</button></label><input class="gn-input" type="number" step="any" value="${w.daysWorked}" oninput="${upd('daysWorked')}"></div>
+        <div class="pc-field"><label>Scheduled Workdays <button type="button" class="pc-help" onclick="showModal('pcDaysWorkedHelpModal')">ⓘ</button></label><input class="gn-input" type="number" step="any" value="${w.daysWorked}" oninput="${upd('daysWorked')}"></div>
         <div class="pc-field"><label>Hours Per Day <button type="button" class="pc-help" onclick="showModal('pcHoursPerDayHelpModal')">ⓘ</button></label><input class="gn-input" type="number" step="any" value="${w.hoursPerDay !== undefined ? w.hoursPerDay : '8'}" oninput="${upd('hoursPerDay')}"></div>
         <div class="pc-field"><label>PTO</label><input class="gn-input" type="number" step="any" value="${w.pto}" oninput="${upd('pto')}"></div>
       </div>`;
@@ -14169,7 +14224,7 @@ function autosaveHasContent() {
   if (gnState.counselor || gnClients.some(c => c.name || c.responseTopic || c.responseReading || c.responseMindfulness || c.cjText)) return true;
   if (dsState.clientName) return true;
   if (deState.clientName || deState.dischargeType || deState.dischargeSubtype || deState.dischargeDate ||
-      deState.unsuccessfulReason || deState.neutralReason || deState.staffInvolved || deState.additionalInfo) return true;
+      deState.unsuccessfulReason || deState.neutralReason || deState.staffInvolved || deState.staffNone || deState.additionalInfo) return true;
   if (nnState.clientName) return true;
   if (asaState.clientName) return true;
   if (itpSelected.A.size || itpSelected.B.size || itpSelected.C.size) return true;
@@ -14476,6 +14531,8 @@ function autosaveApply(snap) {
   Object.assign(deState, savedDe);
   if (deState.destinationUnknown) deToggleDestinationUnknown(true);
   if (deState.forwardingNone) deToggleForwardingNone(true);
+  const restoredStaffName = document.getElementById('de-staff-name');
+  if (restoredStaffName) restoredStaffName.disabled = !!deState.staffNone;
   if (typeof deRenderOutput === 'function') deRenderOutput();
 
   // ── Risk ratings (carried over; regenerate the narrative to refresh fully) ──
