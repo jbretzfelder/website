@@ -10742,18 +10742,8 @@ const DE_OP_HIDDEN_FIELDS = ['destination','destinationUnknown','resourceSheetPr
   'paperworkSigned','phoneCallMade','outpatientOffered','roomVacated','clientsOnUnit','roomCleanedSearched',
   'bridgeContacted','bridgeNotContactedReason','staffInvolved','staffNone','otherStaffInvolved'];
 
-function deSetUnit(val) {
-  deState.unit = val;
-  const isOP = (val === 'Community OP');
-  const isResUnit = RES_UNITS.includes(val);
-
-  document.getElementById('de-destination-wrap').style.display = isOP ? 'none' : 'block';
-  document.getElementById('de-resource-sheet-wrap').style.display = isOP ? 'none' : 'block';
-  document.getElementById('de-property-paperwork-card').style.display = isOP ? 'none' : 'block';
-  document.getElementById('de-outpatient-wrap').style.display = isOP ? 'none' : 'block';
-  document.getElementById('de-room-census-card').style.display = isOP ? 'none' : 'block';
-  if (isOP) document.getElementById('de-bridge-wrap').style.display = 'none';
-
+function deUpdate2wmVisibility() {
+  const isResUnit = RES_UNITS.includes(deState.unit) && deState.dischargeType === 'unsuccessful';
   const wmWrap = document.getElementById('de-2wm-wrap');
   if (wmWrap) wmWrap.style.display = isResUnit ? 'block' : 'none';
   if (!isResUnit) {
@@ -10765,6 +10755,20 @@ function deSetUnit(val) {
     const wmReasonInput = document.getElementById('de-2wm-reason');
     if (wmReasonInput) wmReasonInput.value = '';
   }
+}
+
+function deSetUnit(val) {
+  deState.unit = val;
+  const isOP = (val === 'Community OP');
+
+  document.getElementById('de-destination-wrap').style.display = isOP ? 'none' : 'block';
+  document.getElementById('de-resource-sheet-wrap').style.display = isOP ? 'none' : 'block';
+  document.getElementById('de-property-paperwork-card').style.display = isOP ? 'none' : 'block';
+  document.getElementById('de-outpatient-wrap').style.display = isOP ? 'none' : 'block';
+  document.getElementById('de-room-census-card').style.display = isOP ? 'none' : 'block';
+  if (isOP) document.getElementById('de-bridge-wrap').style.display = 'none';
+
+  deUpdate2wmVisibility();
 
   if (isOP) {
     DE_OP_HIDDEN_FIELDS.forEach(f => { deState[f] = (f === 'destinationUnknown' || f === 'staffNone') ? false : ''; });
@@ -10911,6 +10915,7 @@ function deSetDischargeType(val) {
     document.getElementById('de-bridge-wrap').style.display = 'none';
     document.getElementById('de-admin-staff-wrap').style.display = 'none';
   }
+  deUpdate2wmVisibility();
   deRenderOutput();
 }
 
@@ -11011,7 +11016,7 @@ function deUpdateBridgeAlert() {
 function deComputeErrors() {
   const s = deState;
   const isOP = (s.unit === 'Community OP');
-  const isResUnit = RES_UNITS.includes(s.unit);
+  const isResUnit = RES_UNITS.includes(s.unit) && s.dischargeType === 'unsuccessful';
   const bridgeStatus = deBridgeStatus();
   const errors = [];
   if (!s.clientName) errors.push({ label: 'Client full name', id: 'de-client-name' });
@@ -11203,7 +11208,7 @@ function deGenerate() {
     }
   }
 
-  if (RES_UNITS.includes(s.unit) && s.detox2wmOffered) {
+  if (RES_UNITS.includes(s.unit) && s.dischargeType === 'unsuccessful' && s.detox2wmOffered) {
     const wmDisplay = s.detox2wmOffered === 'yes' ? 'Yes' : s.detox2wmOffered === 'no' ? 'No' : 'Client Not in WM';
     lines.push(`Offered 2WM Ambulatory Detox Services: ${wmDisplay}`);
     if (s.detox2wmOffered === 'no' && s.detox2wmReason) lines.push(`Reason: ${s.detox2wmReason}`);
