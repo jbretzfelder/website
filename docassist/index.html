@@ -4782,9 +4782,9 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
       </div>
 
-      <!-- Probation & Outpatient -->
+      <!-- Probation & Referrals -->
       <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
-        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:12px;">Probation & Outpatient</div>
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:12px;">Probation & Referrals</div>
 
         <div style="margin-bottom:10px;">
           <label class="form-label">Is the Client on Probation?<span class="req-star">*</span></label>
@@ -4802,12 +4802,29 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
           </div>
         </div>
 
+        <div id="de-2wm-wrap" style="display:none;margin-bottom:10px;">
+          <label class="form-label">Was Client Offered 2WM Ambulatory Detox Services?<span class="req-star">*</span></label>
+          <div style="display:flex;gap:6px;">
+            <button class="ds-pill" onclick="deSetTri('detox2wmOffered','yes','de-2wm','notinwm')" id="de-2wm-yes">Yes</button>
+            <button class="ds-pill" onclick="deSetTri('detox2wmOffered','no','de-2wm','notinwm')" id="de-2wm-no">No</button>
+            <button class="ds-pill" onclick="deSetTri('detox2wmOffered','notinwm','de-2wm','notinwm')" id="de-2wm-notinwm">Client Not in WM</button>
+          </div>
+          <div id="de-2wm-reason-wrap" style="display:none;margin-top:8px;">
+            <label class="form-label">Why Not?<span class="req-star">*</span></label>
+            <textarea class="form-textarea" id="de-2wm-reason" rows="2" placeholder="Reason 2WM was not offered…" oninput="deState.detox2wmReason=this.value;deRenderOutput()"></textarea>
+          </div>
+        </div>
+
         <div id="de-outpatient-wrap">
           <label class="form-label">Was Client Offered Woodhaven Outpatient Services?<span class="req-star">*</span></label>
           <div style="display:flex;gap:6px;">
             <button class="ds-pill" onclick="deSetTri('outpatientOffered','yes','de-op')" id="de-op-yes">Yes</button>
             <button class="ds-pill" onclick="deSetTri('outpatientOffered','no','de-op')" id="de-op-no">No</button>
             <button class="ds-pill" onclick="deSetTri('outpatientOffered','unknown','de-op')" id="de-op-unknown">Unknown</button>
+          </div>
+          <div id="de-op-reason-wrap" style="display:none;margin-top:8px;">
+            <label class="form-label">Why Not?<span class="req-star">*</span></label>
+            <textarea class="form-textarea" id="de-op-reason" rows="2" placeholder="Reason outpatient was not offered…" oninput="deState.outpatientNoReason=this.value;deRenderOutput()"></textarea>
           </div>
         </div>
       </div>
@@ -10708,13 +10725,17 @@ let deState = {
   destination: '', destinationUnknown: false, resourceSheetProvided: '', resourceSheetReason: '', forwardingInfo: '', forwardingNone: false,
   medsReceived: '', medsNotReceivedReason: '',
   propertyReceived: '', phoneReceived: '', woodhavenPropertyCollected: '', paperworkSigned: '', phoneCallMade: '',
-  onProbation: '', poNotified: '', outpatientOffered: '',
+  onProbation: '', poNotified: '',
+  detox2wmOffered: '', detox2wmReason: '',
+  outpatientOffered: '', outpatientNoReason: '',
   roomVacated: '', clientsOnUnit: '', roomCleanedSearched: '',
   additionalInfo: ''
 };
 
 const DE_YN_FIELDS = ['bridgeContacted','resourceSheetProvided','medsReceived',
   'woodhavenPropertyCollected','paperworkSigned','phoneCallMade','onProbation','poNotified','outpatientOffered','roomCleanedSearched'];
+
+const RES_UNITS = ['5th Floor','6th Floor','8th Floor'];
 
 const DE_OP_HIDDEN_FIELDS = ['destination','destinationUnknown','resourceSheetProvided','resourceSheetReason',
   'propertyReceived','phoneReceived','woodhavenPropertyCollected','medsReceived','medsNotReceivedReason',
@@ -10724,6 +10745,7 @@ const DE_OP_HIDDEN_FIELDS = ['destination','destinationUnknown','resourceSheetPr
 function deSetUnit(val) {
   deState.unit = val;
   const isOP = (val === 'Community OP');
+  const isResUnit = RES_UNITS.includes(val);
 
   document.getElementById('de-destination-wrap').style.display = isOP ? 'none' : 'block';
   document.getElementById('de-resource-sheet-wrap').style.display = isOP ? 'none' : 'block';
@@ -10731,6 +10753,18 @@ function deSetUnit(val) {
   document.getElementById('de-outpatient-wrap').style.display = isOP ? 'none' : 'block';
   document.getElementById('de-room-census-card').style.display = isOP ? 'none' : 'block';
   if (isOP) document.getElementById('de-bridge-wrap').style.display = 'none';
+
+  const wmWrap = document.getElementById('de-2wm-wrap');
+  if (wmWrap) wmWrap.style.display = isResUnit ? 'block' : 'none';
+  if (!isResUnit) {
+    deState.detox2wmOffered = '';
+    deState.detox2wmReason = '';
+    ['yes','no','notinwm'].forEach(v => { const el = document.getElementById('de-2wm-' + v); if (el) el.classList.remove('active'); });
+    const wmReasonWrap = document.getElementById('de-2wm-reason-wrap');
+    if (wmReasonWrap) wmReasonWrap.style.display = 'none';
+    const wmReasonInput = document.getElementById('de-2wm-reason');
+    if (wmReasonInput) wmReasonInput.value = '';
+  }
 
   if (isOP) {
     DE_OP_HIDDEN_FIELDS.forEach(f => { deState[f] = (f === 'destinationUnknown' || f === 'staffNone') ? false : ''; });
@@ -10809,16 +10843,26 @@ function deSetYN(field, val, prefix) {
   deRenderOutput();
 }
 
-function deSetTri(field, val, prefix) {
+function deSetTri(field, val, prefix, thirdVal = 'unknown') {
   const newVal = (deState[field] === val) ? '' : val;
   deState[field] = newVal;
-  ['yes','no','unknown'].forEach(v => {
+  ['yes','no',thirdVal].forEach(v => {
     const el = document.getElementById(prefix + '-' + v);
     if (el) el.classList.toggle('active', v === newVal);
   });
   if (field === 'onProbation') {
     document.getElementById('de-po-wrap').style.display = newVal === 'yes' ? 'block' : 'none';
     if (newVal !== 'yes') { deState.poNotified = ''; ['yes','no'].forEach(v => document.getElementById('de-po-'+v).classList.remove('active')); }
+  }
+  if (field === 'outpatientOffered') {
+    const opReasonWrap = document.getElementById('de-op-reason-wrap');
+    if (opReasonWrap) opReasonWrap.style.display = newVal === 'no' ? 'block' : 'none';
+    if (newVal !== 'no') { deState.outpatientNoReason = ''; const el = document.getElementById('de-op-reason'); if (el) el.value = ''; }
+  }
+  if (field === 'detox2wmOffered') {
+    const wmReasonWrap = document.getElementById('de-2wm-reason-wrap');
+    if (wmReasonWrap) wmReasonWrap.style.display = newVal === 'no' ? 'block' : 'none';
+    if (newVal !== 'no') { deState.detox2wmReason = ''; const el = document.getElementById('de-2wm-reason'); if (el) el.value = ''; }
   }
   deRenderOutput();
 }
@@ -10967,6 +11011,7 @@ function deUpdateBridgeAlert() {
 function deComputeErrors() {
   const s = deState;
   const isOP = (s.unit === 'Community OP');
+  const isResUnit = RES_UNITS.includes(s.unit);
   const bridgeStatus = deBridgeStatus();
   const errors = [];
   if (!s.clientName) errors.push({ label: 'Client full name', id: 'de-client-name' });
@@ -10984,8 +11029,11 @@ function deComputeErrors() {
   if (!isOP && !s.resourceSheetProvided) errors.push({ label: 'Resource sheet provided', id: 'de-resource-sheet-wrap' });
   if (!s.onProbation) errors.push({ label: 'On probation status', id: 'de-prob-yes' });
   if (s.onProbation === 'yes' && !s.poNotified) errors.push({ label: 'Probation officer notified', id: 'de-po-wrap' });
+  if (isResUnit && !s.detox2wmOffered) errors.push({ label: '2WM Ambulatory Detox offered', id: 'de-2wm-yes' });
+  if (s.detox2wmOffered === 'no' && !s.detox2wmReason) errors.push({ label: 'Reason 2WM was not offered', id: 'de-2wm-reason-wrap' });
   if (!isOP && !s.outpatientOffered) errors.push({ label: 'Outpatient services offered', id: 'de-outpatient-wrap' });
-  return { errors, isOP, bridgeStatus };
+  if (!isOP && s.outpatientOffered === 'no' && !s.outpatientNoReason) errors.push({ label: 'Reason outpatient was not offered', id: 'de-op-reason-wrap' });
+  return { errors, isOP, isResUnit, bridgeStatus };
 }
 
 // dirty: form has changed since the last render/generate call
@@ -11027,6 +11075,12 @@ function deRenderOutput() {
 
   const neutralWrap = document.getElementById('de-neutral-reason-wrap');
   if (neutralWrap) neutralWrap.classList.toggle('field-error', s.dischargeType === 'neutral' && !s.neutralReason);
+
+  const opReasonWrap = document.getElementById('de-op-reason-wrap');
+  if (opReasonWrap) opReasonWrap.classList.toggle('field-error', s.outpatientOffered === 'no' && !s.outpatientNoReason);
+
+  const wmReasonWrap = document.getElementById('de-2wm-reason-wrap');
+  if (wmReasonWrap) wmReasonWrap.classList.toggle('field-error', s.detox2wmOffered === 'no' && !s.detox2wmReason);
 
   // Mark output stale — any field change after a generate means the visible
   // text no longer reflects the current form until Generate is clicked again.
@@ -11149,8 +11203,15 @@ function deGenerate() {
     }
   }
 
+  if (RES_UNITS.includes(s.unit) && s.detox2wmOffered) {
+    const wmDisplay = s.detox2wmOffered === 'yes' ? 'Yes' : s.detox2wmOffered === 'no' ? 'No' : 'Client Not in WM';
+    lines.push(`Offered 2WM Ambulatory Detox Services: ${wmDisplay}`);
+    if (s.detox2wmOffered === 'no' && s.detox2wmReason) lines.push(`Reason: ${s.detox2wmReason}`);
+  }
+
   if (s.outpatientOffered) {
     lines.push(deYN('Offered Connection to Woodhaven Outpatient Services', s.outpatientOffered));
+    if (s.outpatientOffered === 'no' && s.outpatientNoReason) lines.push(`Reason: ${s.outpatientNoReason}`);
   }
 
   const roomLines = [];
@@ -11186,12 +11247,15 @@ function deReset() {
     destination: '', destinationUnknown: false, resourceSheetProvided: '', resourceSheetReason: '', forwardingInfo: '', forwardingNone: false,
     medsReceived: '', medsNotReceivedReason: '',
     propertyReceived: '', phoneReceived: '', woodhavenPropertyCollected: '', paperworkSigned: '', phoneCallMade: '',
-    onProbation: '', poNotified: '', outpatientOffered: '',
+    onProbation: '', poNotified: '',
+    detox2wmOffered: '', detox2wmReason: '',
+    outpatientOffered: '', outpatientNoReason: '',
     roomVacated: '', clientsOnUnit: '', roomCleanedSearched: '',
     additionalInfo: ''
   };
   ['de-client-name','de-discharge-date','de-departure-time','de-unsuccessful-reason','de-neutral-reason','de-bridge-reason',
-   'de-staff-name','de-staff-other','de-admin-staff-other','de-destination','de-meds-reason','de-rs-reason','de-room','de-census','de-forwarding','de-additional'].forEach(id => {
+   'de-staff-name','de-staff-other','de-admin-staff-other','de-destination','de-meds-reason','de-rs-reason','de-room','de-census','de-forwarding','de-additional',
+   'de-2wm-reason','de-op-reason'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
@@ -11219,6 +11283,7 @@ function deReset() {
   ['de-prob','de-op'].forEach(prefix => {
     ['yes','no','unknown'].forEach(v => { const el = document.getElementById(prefix + '-' + v); if (el) el.classList.remove('active'); });
   });
+  ['yes','no','notinwm'].forEach(v => { const el = document.getElementById('de-2wm-' + v); if (el) el.classList.remove('active'); });
   ['de-prop','de-phn','de-meds'].forEach(prefix => {
     ['yes','no','na'].forEach(v => { const el = document.getElementById(prefix + '-' + v); if (el) el.classList.remove('active'); });
   });
@@ -11232,6 +11297,9 @@ function deReset() {
   document.getElementById('de-rs-reason-wrap').style.display = 'none';
   document.getElementById('de-call-wrap').style.display = 'none';
   document.getElementById('de-po-wrap').style.display = 'none';
+  document.getElementById('de-2wm-wrap').style.display = 'none';
+  document.getElementById('de-2wm-reason-wrap').style.display = 'none';
+  document.getElementById('de-op-reason-wrap').style.display = 'none';
   document.getElementById('de-error-panel').style.display = 'none';
   document.getElementById('de-stale-banner').style.display = 'none';
   document.getElementById('de-generate-bar').classList.remove('de-stale');
@@ -11718,6 +11786,14 @@ function fillSampleClient() {
   document.getElementById('de-po-wrap').style.display = 'block';
   document.getElementById('de-po-yes').classList.add('active');
   deState.poNotified = 'yes';
+
+  document.getElementById('de-2wm-wrap').style.display = 'block';
+  document.getElementById('de-2wm-no').classList.add('active');
+  deState.detox2wmOffered = 'no';
+  document.getElementById('de-2wm-reason-wrap').style.display = 'block';
+  const de2wmReasonText = 'Marcus left the building before staff could complete a 2WM ambulatory detox referral.';
+  document.getElementById('de-2wm-reason').value = de2wmReasonText;
+  deState.detox2wmReason = de2wmReasonText;
 
   document.getElementById('de-op-yes').classList.add('active');
   deState.outpatientOffered = 'yes';
@@ -14564,9 +14640,10 @@ function autosaveApply(snap) {
   if (savedDe.woodhavenPropertyCollected) { deState.woodhavenPropertyCollected = ''; deSetYN('woodhavenPropertyCollected', savedDe.woodhavenPropertyCollected, 'de-whprop'); }
   if (savedDe.paperworkSigned) { deState.paperworkSigned = ''; deSetYN('paperworkSigned', savedDe.paperworkSigned, 'de-paperwork'); }
   if (savedDe.phoneCallMade) { deState.phoneCallMade = ''; deSetYN('phoneCallMade', savedDe.phoneCallMade, 'de-callmade'); }
-  if (savedDe.onProbation) { deState.onProbation = ''; deSetTri('onProbation', savedDe.onProbation, 'de-po'); }
-  if (savedDe.poNotified) { deState.poNotified = ''; deSetYN('poNotified', savedDe.poNotified, 'de-ponotify'); }
-  if (savedDe.outpatientOffered) { deState.outpatientOffered = ''; deSetYN('outpatientOffered', savedDe.outpatientOffered, 'de-op'); }
+  if (savedDe.onProbation) { deState.onProbation = ''; deSetTri('onProbation', savedDe.onProbation, 'de-prob'); }
+  if (savedDe.poNotified) { deState.poNotified = ''; deSetYN('poNotified', savedDe.poNotified, 'de-po'); }
+  if (savedDe.detox2wmOffered) { deState.detox2wmOffered = ''; deSetTri('detox2wmOffered', savedDe.detox2wmOffered, 'de-2wm', 'notinwm'); }
+  if (savedDe.outpatientOffered) { deState.outpatientOffered = ''; deSetTri('outpatientOffered', savedDe.outpatientOffered, 'de-op'); }
   if (savedDe.roomCleanedSearched) { deState.roomCleanedSearched = ''; deSetYN('roomCleanedSearched', savedDe.roomCleanedSearched, 'de-room'); }
   // Restore whichever fields the toggle calls above didn't touch (free text etc.)
   Object.assign(deState, savedDe);
