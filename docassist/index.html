@@ -13141,6 +13141,8 @@ function pcNewCounselor() {
     workdaysMonth: '', workdaysLeft: '',
     c400: '', c400t: '', c402: '', c402t: '', c403: '', c404: '', c404t: '',
     noShow: '', timeGroup: '', daysWorked: '', hoursPerDay: '8',
+    ranTelehealthGroups: false, ran61RSGGroups: false,
+    ranTelehealthGroups: false,
     weeks: []           // PHP/OP monthly only — array of week field sets
   };
 }
@@ -13177,6 +13179,8 @@ function pcLoad() {
       if (typeof c.isOpen !== 'boolean') c.isOpen = true;
       if (c.type === 'iopop') c.type = 'op'; // migrate old label
       if (c.hoursPerDay === undefined) c.hoursPerDay = '8';
+      if (c.ranTelehealthGroups === undefined) c.ranTelehealthGroups = false;
+      if (c.ran61RSGGroups === undefined) c.ran61RSGGroups = false;
       if (Array.isArray(c.weeks)) {
         c.weeks.forEach(w => { if (w.hoursPerDay === undefined) w.hoursPerDay = '8'; });
       }
@@ -13209,9 +13213,21 @@ function pcSetType(id, type) {
   const c = pcCounselors.find(c => c.id === id);
   if (!c) return;
   c.type = type;
-  if ((type === 'php' || type === 'op') && c.period === 'monthly' && (!c.weeks || c.weeks.length === 0)) {
-    c.weeks = [pcNewWeek()];
+  if (type === 'php' || type === 'op') {
+    const defaults = type === 'php'
+      ? { daysWorked: '5', hoursPerDay: '8' }
+      : { daysWorked: '4', hoursPerDay: '10' };
+    c.daysWorked = defaults.daysWorked;
+    c.hoursPerDay = defaults.hoursPerDay;
+    if (c.period === 'monthly') {
+      if (!c.weeks || c.weeks.length === 0) c.weeks = [pcNewWeek()];
+      c.weeks.forEach(w => {
+        w.daysWorked = defaults.daysWorked;
+        w.hoursPerDay = defaults.hoursPerDay;
+      });
+    }
   }
+  if (type !== 'php') c.ranTelehealthGroups = false;
   pcSave();
   pcRenderAll();
 }
@@ -13221,7 +13237,10 @@ function pcSetPeriod(id, period) {
   if (!c) return;
   c.period = period;
   if (period === 'monthly' && (c.type === 'php' || c.type === 'op') && (!c.weeks || c.weeks.length === 0)) {
-    c.weeks = [pcNewWeek()];
+    const w = pcNewWeek();
+    if (c.type === 'php') { w.daysWorked = '5'; w.hoursPerDay = '8'; }
+    if (c.type === 'op') { w.daysWorked = '4'; w.hoursPerDay = '10'; }
+    c.weeks = [w];
   }
   pcSave();
   pcRenderAll();
@@ -13231,7 +13250,10 @@ function pcAddWeek(id) {
   const c = pcCounselors.find(c => c.id === id);
   if (!c) return;
   if (!c.weeks) c.weeks = [];
-  c.weeks.push(pcNewWeek());
+  const w = pcNewWeek();
+  if (c.type === 'php') { w.daysWorked = '5'; w.hoursPerDay = '8'; }
+  if (c.type === 'op') { w.daysWorked = '4'; w.hoursPerDay = '10'; }
+  c.weeks.push(w);
   pcSave();
   pcRenderAll();
 }
@@ -13278,17 +13300,36 @@ function pcUpdate(id, field, value) {
   pcUpdateResults(id);
 }
 
-function pcComputePhpOpWeek(w) {
+function pcSet61RSGGroups(id, checked) {
+  const c = pcCounselors.find(c => c.id === id);
+  if (!c || c.type !== 'res') return;
+  c.ran61RSGGroups = !!checked;
+  pcSave();
+  pcRenderAll();
+}
+
+function pcSetTelehealthGroups(id, checked) {
+  const c = pcCounselors.find(c => c.id === id);
+  if (!c || c.type !== 'php') return;
+  c.ranTelehealthGroups = !!checked;
+  pcSave();
+  pcRenderAll();
+}
+
+function pcComputePhpOpWeek(w, showTelehealth = false) {
   const hoursPerDay = pcNum(w.hoursPerDay) || 8;
   const denom = (pcNum(w.daysWorked) * hoursPerDay) - pcNum(w.pto);
-  const numerator = (((pcNum(w.totalHrs) - pcNum(w.c400) - pcNum(w.c400t) - pcNum(w.c402) - pcNum(w.c402t) - pcNum(w.c403) - pcNum(w.c404) - pcNum(w.c404t)) + pcNum(w.timeGroup)) - pcNum(w.noShow));
+  const tHours = showTelehealth ? (pcNum(w.c400t) + pcNum(w.c402t) + pcNum(w.c404t)) : 0;
+  const numerator = (((pcNum(w.totalHrs) - pcNum(w.c400) - tHours - pcNum(w.c402) - pcNum(w.c403) - pcNum(w.c404)) + pcNum(w.timeGroup)) - pcNum(w.noShow));
   return { numerator, denom };
 }
 
 function pcCompute(c) {
   const noData = pcHasNoData(c);
   if (c.type === 'res') {
-    const total = ((pcNum(c.totalHrs) - (pcNum(c.code1) + pcNum(c.code2))) + (pcNum(c.time1) + pcNum(c.time2))) - pcNum(c.noShow);
+    const rsgBilling = c.ran61RSGGroups ? pcNum(c.code2) : 0;
+    const rsgTime = c.ran61RSGGroups ? pcNum(c.time2) : 0;
+    const total = ((pcNum(c.totalHrs) - (pcNum(c.code1) + rsgBilling)) + (pcNum(c.time1) + rsgTime)) - pcNum(c.noShow);
     const target = 0.65;
     let denom, minTotal = null, prodLeft = null, prodPerDay = null;
     if (c.period === 'weekly') {
@@ -13307,7 +13348,7 @@ function pcCompute(c) {
       const weeks = (c.weeks && c.weeks.length) ? c.weeks : [pcNewWeek()];
       let numerator = 0, denom = 0;
       weeks.forEach(w => {
-        const wr = pcComputePhpOpWeek(w);
+        const wr = pcComputePhpOpWeek(w, (c.type === 'op' || (c.type === 'php' && c.ranTelehealthGroups)));
         numerator += wr.numerator;
         denom += wr.denom;
       });
@@ -13315,7 +13356,7 @@ function pcCompute(c) {
       const prod = (!noData && denom > 0) ? numerator / denom : null;
       return { numerator, prod, target, denom, requiredHours };
     }
-    const { numerator, denom } = pcComputePhpOpWeek(c);
+    const { numerator, denom } = pcComputePhpOpWeek(c, (c.type === 'op' || (c.type === 'php' && c.ranTelehealthGroups)));
     const requiredHours = denom > 0 ? denom * target : null;
     const prod = (!noData && denom > 0) ? numerator / denom : null;
     return { numerator, prod, target, denom, requiredHours };
@@ -13353,7 +13394,7 @@ function pcUpdateResults(id) {
     if (requiredEl) requiredEl.textContent = pcFmtNum(r.requiredHours);
     if (c.period === 'monthly' && c.weeks) {
       c.weeks.forEach((w, i) => {
-        const wr = pcComputePhpOpWeek(w);
+        const wr = pcComputePhpOpWeek(w, (c.type === 'op' || (c.type === 'php' && c.ranTelehealthGroups)));
         const wReq = wr.denom > 0 ? wr.denom * r.target : null;
         const billedEl = document.getElementById('pc-week-billed-' + id + '-' + i);
         const weekReqEl = document.getElementById('pc-week-required-' + id + '-' + i);
@@ -13372,9 +13413,9 @@ function pcFieldsHTML(c) {
       <div class="pc-field-grid">
         <div class="pc-field"><label>Total Billing Hours</label><input class="gn-input" type="number" step="any" value="${c.totalHrs}" oninput="pcUpdate(${c.id},'totalHrs',this.value)"></div>
         <div class="pc-field"><label>${code1Label}</label><input class="gn-input" type="number" step="any" value="${c.code1}" oninput="pcUpdate(${c.id},'code1',this.value)"></div>
-        <div class="pc-field"><label>${code2Label}</label><input class="gn-input" type="number" step="any" value="${c.code2}" oninput="pcUpdate(${c.id},'code2',this.value)"></div>
+        ${c.ran61RSGGroups ? `<div class="pc-field"><label>${code2Label}</label><input class="gn-input" type="number" step="any" value="${c.code2}" oninput="pcUpdate(${c.id},'code2',this.value)"></div>` : ''}
         <div class="pc-field"><label>Time Spent in 401</label><input class="gn-input" type="number" step="any" value="${c.time1}" oninput="pcUpdate(${c.id},'time1',this.value)"></div>
-        <div class="pc-field"><label>Time Spent in 61RSG</label><input class="gn-input" type="number" step="any" value="${c.time2}" oninput="pcUpdate(${c.id},'time2',this.value)"></div>
+        ${c.ran61RSGGroups ? `<div class="pc-field"><label>Time Spent in 61RSG</label><input class="gn-input" type="number" step="any" value="${c.time2}" oninput="pcUpdate(${c.id},'time2',this.value)"></div>` : ''}
         <div class="pc-field"><label>"No Show" Time <button type="button" class="pc-help" onclick="showModal('pcNoShowHelpModal')">ⓘ</button></label><input class="gn-input" type="number" step="any" value="${c.noShow}" oninput="pcUpdate(${c.id},'noShow',this.value)"></div>
         <div class="pc-field"><label>PTO</label><input class="gn-input" type="number" step="any" value="${c.pto}" oninput="pcUpdate(${c.id},'pto',this.value)"></div>
         ${c.period === 'monthly' ? `
@@ -13385,7 +13426,7 @@ function pcFieldsHTML(c) {
   return pcPhpOpBodyHTML(c);
 }
 
-function pcPhpOpFieldsHTML(id, weekIdx, w) {
+function pcPhpOpFieldsHTML(id, weekIdx, w, showTelehealth) {
   const upd = (field) => weekIdx === null
     ? `pcUpdate(${id},'${field}',this.value)`
     : `pcUpdateWeek(${id},${weekIdx},'${field}',this.value)`;
@@ -13393,12 +13434,12 @@ function pcPhpOpFieldsHTML(id, weekIdx, w) {
       <div class="pc-field-grid">
         <div class="pc-field"><label>Total Billing Hours</label><input class="gn-input" type="number" step="any" value="${w.totalHrs}" oninput="${upd('totalHrs')}"></div>
         <div class="pc-field"><label>400 Billing Hours</label><input class="gn-input" type="number" step="any" value="${w.c400}" oninput="${upd('c400')}"></div>
-        <div class="pc-field"><label>400T Billing Hours</label><input class="gn-input" type="number" step="any" value="${w.c400t}" oninput="${upd('c400t')}"></div>
+        ${showTelehealth ? `<div class="pc-field"><label>400T Billing Hours</label><input class="gn-input" type="number" step="any" value="${w.c400t}" oninput="${upd('c400t')}"></div>` : ''}
         <div class="pc-field"><label>402 Billing Hours</label><input class="gn-input" type="number" step="any" value="${w.c402}" oninput="${upd('c402')}"></div>
-        <div class="pc-field"><label>402T Billing Hours</label><input class="gn-input" type="number" step="any" value="${w.c402t}" oninput="${upd('c402t')}"></div>
+        ${showTelehealth ? `<div class="pc-field"><label>402T Billing Hours</label><input class="gn-input" type="number" step="any" value="${w.c402t}" oninput="${upd('c402t')}"></div>` : ''}
         <div class="pc-field"><label>403 Billing Hours</label><input class="gn-input" type="number" step="any" value="${w.c403}" oninput="${upd('c403')}"></div>
         <div class="pc-field"><label>404 Billing Hours</label><input class="gn-input" type="number" step="any" value="${w.c404}" oninput="${upd('c404')}"></div>
-        <div class="pc-field"><label>404T Billing Hours</label><input class="gn-input" type="number" step="any" value="${w.c404t}" oninput="${upd('c404t')}"></div>
+        ${showTelehealth ? `<div class="pc-field"><label>404T Billing Hours</label><input class="gn-input" type="number" step="any" value="${w.c404t}" oninput="${upd('c404t')}"></div>` : ''}
         <div class="pc-field"><label>"No Show" Time <button type="button" class="pc-help" onclick="showModal('pcNoShowHelpModal')">ⓘ</button></label><input class="gn-input" type="number" step="any" value="${w.noShow}" oninput="${upd('noShow')}"></div>
         <div class="pc-field"><label>Time Spent in Group</label><input class="gn-input" type="number" step="any" value="${w.timeGroup}" oninput="${upd('timeGroup')}"></div>
         <div class="pc-field"><label>Scheduled Workdays <button type="button" class="pc-help" onclick="showModal('pcDaysWorkedHelpModal')">ⓘ</button></label><input class="gn-input" type="number" step="any" value="${w.daysWorked}" oninput="${upd('daysWorked')}"></div>
@@ -13414,7 +13455,7 @@ function pcPhpOpBodyHTML(c) {
     return `
       <div class="pc-weeks-list">
         ${weeks.map((w, i) => {
-          const wr = pcComputePhpOpWeek(w);
+          const wr = pcComputePhpOpWeek(w, (c.type === 'op' || (c.type === 'php' && c.ranTelehealthGroups)));
           const wReq = wr.denom > 0 ? wr.denom * target : null;
           return `
           <div class="pc-week-block">
@@ -13423,14 +13464,14 @@ function pcPhpOpBodyHTML(c) {
               <input type="text" class="pc-week-label-input" placeholder="e.g. 3/3–3/7 (optional)" value="${w.label || ''}" onclick="event.stopPropagation()" oninput="pcUpdateWeek(${c.id},${i},'label',this.value)">
               ${weeks.length > 1 ? `<button type="button" class="pc-week-remove" onclick="pcRemoveWeek(${c.id},${i})">Remove Week</button>` : ''}
             </div>
-            ${pcPhpOpFieldsHTML(c.id, i, w)}
+            ${pcPhpOpFieldsHTML(c.id, i, w, (c.type === 'op' || (c.type === 'php' && c.ranTelehealthGroups)))}
             <div class="pc-week-summary">Billed: <strong id="pc-week-billed-${c.id}-${i}">${pcFmtNum(wr.numerator)}</strong> · Required: <strong id="pc-week-required-${c.id}-${i}">${pcFmtNum(wReq)}</strong></div>
           </div>
         `; }).join('')}
       </div>
       <button type="button" class="btn btn-ghost" style="align-self:flex-start;" onclick="pcAddWeek(${c.id})">+ Add Week</button>`;
   }
-  return pcPhpOpFieldsHTML(c.id, null, c);
+  return pcPhpOpFieldsHTML(c.id, null, c, (c.type === 'op' || (c.type === 'php' && c.ranTelehealthGroups)));
 }
 
 function pcResultsHTML(c, r) {
@@ -13475,6 +13516,16 @@ function pcCardHTML(c) {
             <button class="toggle-btn ${c.period === 'weekly' ? 'active' : ''}" onclick="pcSetPeriod(${c.id},'weekly')">Weekly</button>
             <button class="toggle-btn ${c.period === 'monthly' ? 'active' : ''}" onclick="pcSetPeriod(${c.id},'monthly')">Monthly</button>
           </div>
+          ${c.type === 'php' ? `
+          <label style="display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--text-secondary);cursor:pointer;">
+            <input type="checkbox" ${c.ranTelehealthGroups ? 'checked' : ''} onchange="pcSetTelehealthGroups(${c.id},this.checked)" style="accent-color:var(--accent);cursor:pointer;">
+            Ran telehealth groups?
+          </label>` : ''}
+          ${c.type === 'res' ? `
+          <label style="display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--text-secondary);cursor:pointer;">
+            <input type="checkbox" ${c.ran61RSGGroups ? 'checked' : ''} onchange="pcSet61RSGGroups(${c.id},this.checked)" style="accent-color:var(--accent);cursor:pointer;">
+            Ran 61RSG groups?
+          </label>` : ''}
         </div>
         ${pcFieldsHTML(c)}
         ${pcResultsHTML(c, r)}
@@ -13533,7 +13584,14 @@ function pcConfirmNewPeriod() {
   if (!c) return;
   const clearFields = ['totalHrs', 'code1', 'code2', 'time1', 'time2', 'pto', 'workdaysMonth', 'workdaysLeft', 'noShow', 'c400', 'c400t', 'c402', 'c402t', 'c403', 'c404', 'c404t', 'timeGroup', 'daysWorked'];
   clearFields.forEach(f => c[f] = '');
-  if (c.weeks && c.weeks.length) c.weeks = [pcNewWeek()];
+  if (c.type === 'php') { c.daysWorked = '5'; c.hoursPerDay = '8'; }
+  if (c.type === 'op') { c.daysWorked = '4'; c.hoursPerDay = '10'; }
+  if (c.weeks && c.weeks.length) {
+    const w = pcNewWeek();
+    if (c.type === 'php') { w.daysWorked = '5'; w.hoursPerDay = '8'; }
+    if (c.type === 'op') { w.daysWorked = '4'; w.hoursPerDay = '10'; }
+    c.weeks = [w];
+  }
   pcSave();
   pcRenderAll();
 }
