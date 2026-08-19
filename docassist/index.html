@@ -5392,16 +5392,6 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       </div>
 
       <div style="margin-bottom:22px;">
-        <div style="font-size:13px;font-weight:700;color:#1b4332;margin-bottom:8px;">Weekly vs. Monthly</div>
-        <div style="font-size:13px;line-height:1.7;color:var(--text);margin-bottom:8px;">
-          <strong>PHP / OP</strong> has its own Monthly mode now, but it doesn't work by widening the date range like you might expect. Since weekend dates are never in the search, one long date range would blur together across weeks in a way that's hard to untangle. Instead, Monthly gives you a week-by-week entry: fill in a normal week's worth of fields for Week 1, add a Week 2 block, and so on — one block per week in that month. Use Add Week / Remove Week to match however many weeks the month actually has. The calculator adds every week's billed hours and every week's required hours together behind the scenes, so the final percentage reflects the whole month at once.
-        </div>
-        <div style="font-size:13px;line-height:1.7;color:var(--text);">
-          <strong>Residential</strong> works differently again for Monthly — it compares progress against a running target, so you can tell a counselor before the month ends exactly how much productivity they still need per day to hit goal. That's why Residential's Monthly mode has its own extra fields (Workdays in Month, Workdays Left) that don't apply to PHP/OP.
-        </div>
-      </div>
-
-      <div style="margin-bottom:22px;">
         <div style="font-size:13px;font-weight:700;color:#1b4332;margin-bottom:8px;">Step 1 — Match your date range</div>
         <div style="font-size:13px;line-height:1.65;color:var(--text);margin-bottom:8px;">
           Use the exact same start and end dates in Remarkable, Paychex, and this calculator. If any of the three cover a different span, nothing else here will line up.
@@ -13134,32 +13124,18 @@ function pcNewCounselor() {
   return {
     id: pcNextId++,
     name: '',
-    type: 'res',        // 'res' | 'php' | 'op'
-    period: 'weekly',    // 'weekly' | 'monthly'
+    type: 'res',
+    period: 'weekly',
     isOpen: true,
     totalHrs: '', code1: '', code2: '', time1: '', time2: '', pto: '',
-    workdaysMonth: '', workdaysLeft: '',
     c400: '', c400t: '', c402: '', c402t: '', c403: '', c404: '', c404t: '',
     noShow: '', timeGroup: '', daysWorked: '', hoursPerDay: '8',
-    ranTelehealthGroups: false, ran61RSGGroups: false,
     ranTelehealthGroups: false,
-    weeks: []           // PHP/OP monthly only — array of week field sets
-  };
-}
-
-function pcNewWeek() {
-  return {
-    label: '',
-    totalHrs: '', c400: '', c400t: '', c402: '', c402t: '', c403: '', c404: '', c404t: '',
-    noShow: '', timeGroup: '', daysWorked: '', pto: '', hoursPerDay: '8'
+    ran61RSGGroups: false
   };
 }
 
 function pcHasNoData(c) {
-  if ((c.type === 'php' || c.type === 'op') && c.period === 'monthly') {
-    const weeks = (c.weeks && c.weeks.length) ? c.weeks : [];
-    return !weeks.some(w => w.totalHrs !== '');
-  }
   return c.totalHrs === '' || c.totalHrs === null || c.totalHrs === undefined;
 }
 
@@ -13177,13 +13153,13 @@ function pcLoad() {
     let maxId = 0;
     pcCounselors.forEach(c => {
       if (typeof c.isOpen !== 'boolean') c.isOpen = true;
-      if (c.type === 'iopop') c.type = 'op'; // migrate old label
-      if (c.hoursPerDay === undefined) c.hoursPerDay = '8';
+      if (c.type === 'iopop') c.type = 'op';
+      c.period = 'weekly';
       if (c.ranTelehealthGroups === undefined) c.ranTelehealthGroups = false;
       if (c.ran61RSGGroups === undefined) c.ran61RSGGroups = false;
-      if (Array.isArray(c.weeks)) {
-        c.weeks.forEach(w => { if (w.hoursPerDay === undefined) w.hoursPerDay = '8'; });
-      }
+      if (c.hoursPerDay === undefined) c.hoursPerDay = c.type === 'op' ? '10' : '8';
+      if (c.type === 'php' && (c.daysWorked === '' || c.daysWorked === undefined)) c.daysWorked = '5';
+      if (c.type === 'op' && (c.daysWorked === '' || c.daysWorked === undefined)) c.daysWorked = '4';
       if (c.id > maxId) maxId = c.id;
     });
     pcNextId = (typeof data.nextId === 'number' && data.nextId > maxId) ? data.nextId : maxId + 1;
@@ -13213,67 +13189,27 @@ function pcSetType(id, type) {
   const c = pcCounselors.find(c => c.id === id);
   if (!c) return;
   c.type = type;
-  if (type === 'php' || type === 'op') {
-    const defaults = type === 'php'
-      ? { daysWorked: '5', hoursPerDay: '8' }
-      : { daysWorked: '4', hoursPerDay: '10' };
-    c.daysWorked = defaults.daysWorked;
-    c.hoursPerDay = defaults.hoursPerDay;
-    if (c.period === 'monthly') {
-      if (!c.weeks || c.weeks.length === 0) c.weeks = [pcNewWeek()];
-      c.weeks.forEach(w => {
-        w.daysWorked = defaults.daysWorked;
-        w.hoursPerDay = defaults.hoursPerDay;
-      });
-    }
-  }
+  c.period = 'weekly';
+  if (type === 'php') { c.daysWorked = '5'; c.hoursPerDay = '8'; }
+  if (type === 'op') { c.daysWorked = '4'; c.hoursPerDay = '10'; }
   if (type !== 'php') c.ranTelehealthGroups = false;
+  if (type !== 'res') c.ran61RSGGroups = false;
   pcSave();
   pcRenderAll();
 }
 
 function pcSetPeriod(id, period) {
+  // Retained only for compatibility with older saved pages; the calculator is weekly-only.
   const c = pcCounselors.find(c => c.id === id);
   if (!c) return;
-  c.period = period;
-  if (period === 'monthly' && (c.type === 'php' || c.type === 'op') && (!c.weeks || c.weeks.length === 0)) {
-    const w = pcNewWeek();
-    if (c.type === 'php') { w.daysWorked = '5'; w.hoursPerDay = '8'; }
-    if (c.type === 'op') { w.daysWorked = '4'; w.hoursPerDay = '10'; }
-    c.weeks = [w];
-  }
+  c.period = 'weekly';
   pcSave();
   pcRenderAll();
 }
 
-function pcAddWeek(id) {
-  const c = pcCounselors.find(c => c.id === id);
-  if (!c) return;
-  if (!c.weeks) c.weeks = [];
-  const w = pcNewWeek();
-  if (c.type === 'php') { w.daysWorked = '5'; w.hoursPerDay = '8'; }
-  if (c.type === 'op') { w.daysWorked = '4'; w.hoursPerDay = '10'; }
-  c.weeks.push(w);
-  pcSave();
-  pcRenderAll();
-}
-
-function pcRemoveWeek(id, idx) {
-  const c = pcCounselors.find(c => c.id === id);
-  if (!c || !c.weeks) return;
-  c.weeks.splice(idx, 1);
-  if (c.weeks.length === 0) c.weeks.push(pcNewWeek());
-  pcSave();
-  pcRenderAll();
-}
-
-function pcUpdateWeek(id, idx, field, value) {
-  const c = pcCounselors.find(c => c.id === id);
-  if (!c || !c.weeks || !c.weeks[idx]) return;
-  c.weeks[idx][field] = value;
-  pcSave();
-  pcUpdateResults(id);
-}
+function pcUpdateWeek() {}
+function pcAddWeek() {}
+function pcRemoveWeek() {}
 
 function pcToggleOpen(id) {
   const c = pcCounselors.find(c => c.id === id);
@@ -13316,6 +13252,14 @@ function pcSetTelehealthGroups(id, checked) {
   pcRenderAll();
 }
 
+function pcComputeResidentialWeek(w, include61RSG = false) {
+  const rsgBilling = include61RSG ? pcNum(w.code2) : 0;
+  const rsgTime = include61RSG ? pcNum(w.time2) : 0;
+  const total = ((pcNum(w.totalHrs) - (pcNum(w.code1) + rsgBilling)) + (pcNum(w.time1) + rsgTime)) - pcNum(w.noShow);
+  const denom = 40 - pcNum(w.pto);
+  return { total, denom };
+}
+
 function pcComputePhpOpWeek(w, showTelehealth = false) {
   const hoursPerDay = pcNum(w.hoursPerDay) || 8;
   const denom = (pcNum(w.daysWorked) * hoursPerDay) - pcNum(w.pto);
@@ -13327,40 +13271,17 @@ function pcComputePhpOpWeek(w, showTelehealth = false) {
 function pcCompute(c) {
   const noData = pcHasNoData(c);
   if (c.type === 'res') {
-    const rsgBilling = c.ran61RSGGroups ? pcNum(c.code2) : 0;
-    const rsgTime = c.ran61RSGGroups ? pcNum(c.time2) : 0;
-    const total = ((pcNum(c.totalHrs) - (pcNum(c.code1) + rsgBilling)) + (pcNum(c.time1) + rsgTime)) - pcNum(c.noShow);
     const target = 0.65;
-    let denom, minTotal = null, prodLeft = null, prodPerDay = null;
-    if (c.period === 'weekly') {
-      denom = 40 - pcNum(c.pto);
-    } else {
-      denom = (pcNum(c.workdaysMonth) * 8) - pcNum(c.pto);
-      minTotal = denom * target;
-      prodLeft = minTotal - total;
-      prodPerDay = pcNum(c.workdaysLeft) > 0 ? prodLeft / pcNum(c.workdaysLeft) : null;
-    }
-    const prod = (!noData && denom > 0) ? total / denom : null;
-    return { total, prod, target, minTotal, prodLeft, prodPerDay };
-  } else {
-    const target = c.type === 'php' ? 0.80 : 0.75;
-    if (c.period === 'monthly') {
-      const weeks = (c.weeks && c.weeks.length) ? c.weeks : [pcNewWeek()];
-      let numerator = 0, denom = 0;
-      weeks.forEach(w => {
-        const wr = pcComputePhpOpWeek(w, (c.type === 'op' || (c.type === 'php' && c.ranTelehealthGroups)));
-        numerator += wr.numerator;
-        denom += wr.denom;
-      });
-      const requiredHours = denom > 0 ? denom * target : null;
-      const prod = (!noData && denom > 0) ? numerator / denom : null;
-      return { numerator, prod, target, denom, requiredHours };
-    }
-    const { numerator, denom } = pcComputePhpOpWeek(c, (c.type === 'op' || (c.type === 'php' && c.ranTelehealthGroups)));
-    const requiredHours = denom > 0 ? denom * target : null;
-    const prod = (!noData && denom > 0) ? numerator / denom : null;
-    return { numerator, prod, target, denom, requiredHours };
+    const wr = pcComputeResidentialWeek(c, c.ran61RSGGroups);
+    const prod = (!noData && wr.denom > 0) ? wr.total / wr.denom : null;
+    const requiredHours = wr.denom > 0 ? wr.denom * target : null;
+    return { total: wr.total, prod, target, denom: wr.denom, requiredHours };
   }
+  const target = c.type === 'php' ? 0.80 : 0.75;
+  const { numerator, denom } = pcComputePhpOpWeek(c, (c.type === 'op' || (c.type === 'php' && c.ranTelehealthGroups)));
+  const requiredHours = denom > 0 ? denom * target : null;
+  const prod = (!noData && denom > 0) ? numerator / denom : null;
+  return { numerator, prod, target, denom, requiredHours };
 }
 
 function pcFmtPct(v) { return (v === null || !isFinite(v)) ? '—' : (v * 100).toFixed(1) + '%'; }
@@ -13383,53 +13304,32 @@ function pcUpdateResults(id) {
   if (headerPct) { headerPct.textContent = pcFmtPct(r.prod); headerPct.className = 'pc-header-pct ' + info.pctCls; }
   const badge = document.getElementById('pc-badge-' + id);
   if (badge) { badge.textContent = info.short; badge.className = 'pc-badge ' + info.cls; }
-  if (c.type === 'res' && c.period === 'monthly') {
-    const perDayEl = document.getElementById('pc-perday-' + id);
-    if (perDayEl) perDayEl.textContent = pcFmtNum(r.prodPerDay);
-  }
-  if (c.type === 'php' || c.type === 'op') {
-    const numeratorEl = document.getElementById('pc-numerator-' + id);
-    if (numeratorEl) numeratorEl.textContent = pcFmtNum(r.numerator);
-    const requiredEl = document.getElementById('pc-required-' + id);
-    if (requiredEl) requiredEl.textContent = pcFmtNum(r.requiredHours);
-    if (c.period === 'monthly' && c.weeks) {
-      c.weeks.forEach((w, i) => {
-        const wr = pcComputePhpOpWeek(w, (c.type === 'op' || (c.type === 'php' && c.ranTelehealthGroups)));
-        const wReq = wr.denom > 0 ? wr.denom * r.target : null;
-        const billedEl = document.getElementById('pc-week-billed-' + id + '-' + i);
-        const weekReqEl = document.getElementById('pc-week-required-' + id + '-' + i);
-        if (billedEl) billedEl.textContent = pcFmtNum(wr.numerator);
-        if (weekReqEl) weekReqEl.textContent = pcFmtNum(wReq);
-      });
-    }
-  }
+  const numeratorEl = document.getElementById('pc-numerator-' + id);
+  if (numeratorEl) numeratorEl.textContent = pcFmtNum(c.type === 'res' ? r.total : r.numerator);
+  const requiredEl = document.getElementById('pc-required-' + id);
+  if (requiredEl) requiredEl.textContent = pcFmtNum(r.requiredHours);
 }
 
 function pcFieldsHTML(c) {
   if (c.type === 'res') {
-    const code1Label = c.period === 'weekly' ? '401 Service Hours' : '401 Billing Hours';
-    const code2Label = c.period === 'weekly' ? '61RSG Service Hours' : '61RSG Billing Hours';
     return `
       <div class="pc-field-grid">
         <div class="pc-field"><label>Total Billing Hours</label><input class="gn-input" type="number" step="any" value="${c.totalHrs}" oninput="pcUpdate(${c.id},'totalHrs',this.value)"></div>
-        <div class="pc-field"><label>${code1Label}</label><input class="gn-input" type="number" step="any" value="${c.code1}" oninput="pcUpdate(${c.id},'code1',this.value)"></div>
-        ${c.ran61RSGGroups ? `<div class="pc-field"><label>${code2Label}</label><input class="gn-input" type="number" step="any" value="${c.code2}" oninput="pcUpdate(${c.id},'code2',this.value)"></div>` : ''}
+        <div class="pc-field"><label>401 Billing Hours</label><input class="gn-input" type="number" step="any" value="${c.code1}" oninput="pcUpdate(${c.id},'code1',this.value)"></div>
+        ${c.ran61RSGGroups ? `<div class="pc-field"><label>61RSG Billing Hours</label><input class="gn-input" type="number" step="any" value="${c.code2}" oninput="pcUpdate(${c.id},'code2',this.value)"></div>` : ''}
         <div class="pc-field"><label>Time Spent in 401</label><input class="gn-input" type="number" step="any" value="${c.time1}" oninput="pcUpdate(${c.id},'time1',this.value)"></div>
         ${c.ran61RSGGroups ? `<div class="pc-field"><label>Time Spent in 61RSG</label><input class="gn-input" type="number" step="any" value="${c.time2}" oninput="pcUpdate(${c.id},'time2',this.value)"></div>` : ''}
         <div class="pc-field"><label>"No Show" Time <button type="button" class="pc-help" onclick="showModal('pcNoShowHelpModal')">ⓘ</button></label><input class="gn-input" type="number" step="any" value="${c.noShow}" oninput="pcUpdate(${c.id},'noShow',this.value)"></div>
         <div class="pc-field"><label>PTO</label><input class="gn-input" type="number" step="any" value="${c.pto}" oninput="pcUpdate(${c.id},'pto',this.value)"></div>
-        ${c.period === 'monthly' ? `
-        <div class="pc-field"><label>Workdays in Month</label><input class="gn-input" type="number" step="any" value="${c.workdaysMonth}" oninput="pcUpdate(${c.id},'workdaysMonth',this.value)"></div>
-        <div class="pc-field"><label>Workdays Left</label><input class="gn-input" type="number" step="any" value="${c.workdaysLeft}" oninput="pcUpdate(${c.id},'workdaysLeft',this.value)"></div>` : ''}
       </div>`;
   }
-  return pcPhpOpBodyHTML(c);
+  return pcPhpOpFieldsHTML(c.id, c);
 }
 
-function pcPhpOpFieldsHTML(id, weekIdx, w, showTelehealth) {
-  const upd = (field) => weekIdx === null
-    ? `pcUpdate(${id},'${field}',this.value)`
-    : `pcUpdateWeek(${id},${weekIdx},'${field}',this.value)`;
+function pcPhpOpFieldsHTML(id, w) {
+  const c = pcCounselors.find(c => c.id === id);
+  const upd = (field) => `pcUpdate(${id},'${field}',this.value)`;
+  const showTelehealth = c && (c.type === 'op' || (c.type === 'php' && c.ranTelehealthGroups));
   return `
       <div class="pc-field-grid">
         <div class="pc-field"><label>Total Billing Hours</label><input class="gn-input" type="number" step="any" value="${w.totalHrs}" oninput="${upd('totalHrs')}"></div>
@@ -13443,64 +13343,28 @@ function pcPhpOpFieldsHTML(id, weekIdx, w, showTelehealth) {
         <div class="pc-field"><label>"No Show" Time <button type="button" class="pc-help" onclick="showModal('pcNoShowHelpModal')">ⓘ</button></label><input class="gn-input" type="number" step="any" value="${w.noShow}" oninput="${upd('noShow')}"></div>
         <div class="pc-field"><label>Time Spent in Group</label><input class="gn-input" type="number" step="any" value="${w.timeGroup}" oninput="${upd('timeGroup')}"></div>
         <div class="pc-field"><label>Scheduled Workdays <button type="button" class="pc-help" onclick="showModal('pcDaysWorkedHelpModal')">ⓘ</button></label><input class="gn-input" type="number" step="any" value="${w.daysWorked}" oninput="${upd('daysWorked')}"></div>
-        <div class="pc-field"><label>Hours Per Day <button type="button" class="pc-help" onclick="showModal('pcHoursPerDayHelpModal')">ⓘ</button></label><input class="gn-input" type="number" step="any" value="${w.hoursPerDay !== undefined ? w.hoursPerDay : '8'}" oninput="${upd('hoursPerDay')}"></div>
+        <div class="pc-field"><label>Hours Per Day <button type="button" class="pc-help" onclick="showModal('pcHoursPerDayHelpModal')">ⓘ</button></label><input class="gn-input" type="number" step="any" value="${w.hoursPerDay !== undefined ? w.hoursPerDay : (c && c.type === 'op' ? '10' : '8')}" oninput="${upd('hoursPerDay')}"></div>
         <div class="pc-field"><label>PTO</label><input class="gn-input" type="number" step="any" value="${w.pto}" oninput="${upd('pto')}"></div>
       </div>`;
 }
 
-function pcPhpOpBodyHTML(c) {
-  if (c.period === 'monthly') {
-    const target = c.type === 'php' ? 0.80 : 0.75;
-    const weeks = (c.weeks && c.weeks.length) ? c.weeks : [pcNewWeek()];
-    return `
-      <div class="pc-weeks-list">
-        ${weeks.map((w, i) => {
-          const wr = pcComputePhpOpWeek(w, (c.type === 'op' || (c.type === 'php' && c.ranTelehealthGroups)));
-          const wReq = wr.denom > 0 ? wr.denom * target : null;
-          return `
-          <div class="pc-week-block">
-            <div class="pc-week-header">
-              <span class="pc-week-title">Week ${i + 1}</span>
-              <input type="text" class="pc-week-label-input" placeholder="e.g. 3/3–3/7 (optional)" value="${w.label || ''}" onclick="event.stopPropagation()" oninput="pcUpdateWeek(${c.id},${i},'label',this.value)">
-              ${weeks.length > 1 ? `<button type="button" class="pc-week-remove" onclick="pcRemoveWeek(${c.id},${i})">Remove Week</button>` : ''}
-            </div>
-            ${pcPhpOpFieldsHTML(c.id, i, w, (c.type === 'op' || (c.type === 'php' && c.ranTelehealthGroups)))}
-            <div class="pc-week-summary">Billed: <strong id="pc-week-billed-${c.id}-${i}">${pcFmtNum(wr.numerator)}</strong> · Required: <strong id="pc-week-required-${c.id}-${i}">${pcFmtNum(wReq)}</strong></div>
-          </div>
-        `; }).join('')}
-      </div>
-      <button type="button" class="btn btn-ghost" style="align-self:flex-start;" onclick="pcAddWeek(${c.id})">+ Add Week</button>`;
-  }
-  return pcPhpOpFieldsHTML(c.id, null, c, (c.type === 'op' || (c.type === 'php' && c.ranTelehealthGroups)));
-}
-
 function pcResultsHTML(c, r) {
-  if (c.type === 'res' && c.period === 'monthly') {
-    return `
-      <div class="pc-result-grid">
-        <div class="pc-result-item"><div class="pc-result-label">Prod. Per Day</div><div class="pc-result-value" id="pc-perday-${c.id}">${pcFmtNum(r.prodPerDay)}</div></div>
-      </div>`;
-  }
-  if (c.type === 'php' || c.type === 'op') {
-    return `
-      <div class="pc-result-grid">
-        <div class="pc-result-item"><div class="pc-result-label">Calculated Billable Hours</div><div class="pc-result-value" id="pc-numerator-${c.id}">${pcFmtNum(r.numerator)}</div></div>
-        <div class="pc-result-item"><div class="pc-result-label">Required Billable Hours</div><div class="pc-result-value" id="pc-required-${c.id}">${pcFmtNum(r.requiredHours)}</div></div>
-      </div>`;
-  }
-  return '';
+  return `
+    <div class="pc-result-grid">
+      <div class="pc-result-item"><div class="pc-result-label">Calculated Billable Hours</div><div class="pc-result-value" id="pc-numerator-${c.id}">${pcFmtNum(c.type === 'res' ? r.total : r.numerator)}</div></div>
+      <div class="pc-result-item"><div class="pc-result-label">Required Billable Hours</div><div class="pc-result-value" id="pc-required-${c.id}">${pcFmtNum(r.requiredHours)}</div></div>
+    </div>`;
 }
 
 function pcCardHTML(c) {
   const r = pcCompute(c);
   const badge = pcBadgeInfo(r, c.type);
-  const typeLabel = pcTypeLabel(c.type) + (c.period === 'monthly' ? ' · Monthly' : ' · Weekly');
   return `
     <div class="pc-card" id="pc-card-${c.id}">
       <div class="pc-card-header" onclick="pcToggleOpen(${c.id})">
         <span class="pc-chevron" id="pc-chevron-${c.id}">${c.isOpen ? '−' : '+'}</span>
         <input class="pc-name-input" type="text" placeholder="Counselor name" value="${c.name}" onclick="event.stopPropagation()" oninput="pcUpdate(${c.id},'name',this.value)">
-        <span class="pc-type-label">${typeLabel}</span>
+        <span class="pc-type-label">${pcTypeLabel(c.type)} · Weekly</span>
         <span class="pc-header-pct ${badge.pctCls}" id="pc-header-pct-${c.id}">${pcFmtPct(r.prod)}</span>
         <span class="pc-badge ${badge.cls}" id="pc-badge-${c.id}">${badge.short}</span>
         <button class="pc-remove-btn" title="Remove" onclick="event.stopPropagation();pcRemoveCounselor(${c.id})">✕</button>
@@ -13511,10 +13375,6 @@ function pcCardHTML(c) {
             <button class="toggle-btn ${c.type === 'res' ? 'active' : ''}" onclick="pcSetType(${c.id},'res')">Residential</button>
             <button class="toggle-btn ${c.type === 'php' ? 'active' : ''}" onclick="pcSetType(${c.id},'php')">PHP</button>
             <button class="toggle-btn ${c.type === 'op' ? 'active' : ''}" onclick="pcSetType(${c.id},'op')">OP</button>
-          </div>
-          <div class="toggle-group">
-            <button class="toggle-btn ${c.period === 'weekly' ? 'active' : ''}" onclick="pcSetPeriod(${c.id},'weekly')">Weekly</button>
-            <button class="toggle-btn ${c.period === 'monthly' ? 'active' : ''}" onclick="pcSetPeriod(${c.id},'monthly')">Monthly</button>
           </div>
           ${c.type === 'php' ? `
           <label style="display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--text-secondary);cursor:pointer;">
@@ -13582,40 +13442,14 @@ function pcConfirmNewPeriod() {
   pcPendingNewPeriodId = null;
   const c = pcCounselors.find(c => c.id === id);
   if (!c) return;
-  const clearFields = ['totalHrs', 'code1', 'code2', 'time1', 'time2', 'pto', 'workdaysMonth', 'workdaysLeft', 'noShow', 'c400', 'c400t', 'c402', 'c402t', 'c403', 'c404', 'c404t', 'timeGroup', 'daysWorked'];
+  const clearFields = ['totalHrs','code1','code2','time1','time2','pto','noShow','c400','c400t','c402','c402t','c403','c404','c404t','timeGroup'];
   clearFields.forEach(f => c[f] = '');
   if (c.type === 'php') { c.daysWorked = '5'; c.hoursPerDay = '8'; }
   if (c.type === 'op') { c.daysWorked = '4'; c.hoursPerDay = '10'; }
-  if (c.weeks && c.weeks.length) {
-    const w = pcNewWeek();
-    if (c.type === 'php') { w.daysWorked = '5'; w.hoursPerDay = '8'; }
-    if (c.type === 'op') { w.daysWorked = '4'; w.hoursPerDay = '10'; }
-    c.weeks = [w];
-  }
+  if (c.type === 'res') { c.daysWorked = ''; c.hoursPerDay = '8'; }
   pcSave();
   pcRenderAll();
 }
-
-// Init on load
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('sn-date').value = snState.date;
-  snBuildInterventionChips();
-  snRenderReviewed();
-  snRenderNext();
-  renderITPGoals();
-  setHomeGreeting();
-  document.getElementById('nn-date').value = nnState.date;
-  nnBuildAllChips();
-  nnUpdateCloserButton();
-  const nnViewEl = document.getElementById('view-nn');
-  nnViewEl.addEventListener('input', nnUpdateProgress);
-  nnViewEl.addEventListener('change', nnUpdateProgress);
-  nnViewEl.addEventListener('click', nnUpdateProgress);
-  nnUpdateProgress();
-  document.getElementById('asa-date').value = asaState.date;
-  asaBuildChips();
-  pcInit();
-});
 
 // ─────────────────────────────────────────────────────────────────────────────
 // TUTORIAL
@@ -14775,6 +14609,7 @@ function autosaveShowRestorePrompt(snap) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  pcInit();
   try {
     const raw = localStorage.getItem(AUTOSAVE_KEY);
     if (!raw) return;
