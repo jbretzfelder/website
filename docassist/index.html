@@ -14609,6 +14609,20 @@ function autosaveShowRestorePrompt(snap) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Initialize Nursing Note dynamic sections on first load.
+  // Without this, the containers for symptoms, MSE, physical observations,
+  // medications, stability, and psychiatric symptoms remain empty until an
+  // autosave restore rebuilds them.
+  try {
+    nnBuildAllChips();
+    const nnDateEl = document.getElementById('nn-date');
+    if (nnDateEl) nnDateEl.value = nnState.date || '';
+    if (typeof nnUpdateCloserButton === 'function') nnUpdateCloserButton();
+    if (typeof nnUpdateProgress === 'function') nnUpdateProgress();
+  } catch (err) {
+    console.error('Nursing Note initialization failed:', err);
+  }
+
   pcInit();
   try {
     const raw = localStorage.getItem(AUTOSAVE_KEY);
