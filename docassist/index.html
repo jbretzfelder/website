@@ -6246,7 +6246,7 @@ function updateLocFields() {
   const loc = state.loc;
   // CIWA/COWS scores and active withdrawal symptom checkboxes are only
   // relevant at 3.7WM. At all other LOCs these fields are hidden.
-  const wmOnly = loc === '3.7WM';
+  const wmOnly = loc === '3.7WM' && state.admissionType !== 'discharge';
   const toggle = (id, visible) => {
     const el = document.getElementById(id);
     if (el) el.style.display = visible ? '' : 'none';
