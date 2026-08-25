@@ -136,6 +136,27 @@ body {
   flex-wrap: wrap;
 }
 .toolbar-group { display: flex; flex-direction: column; gap: 3px; }
+#grp-asam-date.discharge-date-active {
+  background: #fff8e6;
+  border: 2px solid #e6a817;
+  border-radius: 7px;
+  padding: 6px 9px 7px;
+  margin: -7px -10px -8px 0;
+  box-shadow: 0 0 0 3px rgba(230,168,23,0.10);
+}
+#grp-asam-date.discharge-date-active .toolbar-label { color: #7a5200; font-weight: 700; }
+#grp-asam-date.discharge-date-active input.ctrl { border-color: #e6a817; }
+#grp-asam-date.field-error input.ctrl { border-color: #c0392b !important; background: #fff8f8; }
+#grp-asam-date.field-error .toolbar-label { color: #c0392b; }
+.discharge-date-hint {
+  display: none;
+  font-size: 9px;
+  font-weight: 600;
+  color: #7a5200;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+#grp-asam-date.discharge-date-active .discharge-date-hint { display: block; }
 .toolbar-label {
   font-size: 9px;
   font-weight: 600;
@@ -2602,9 +2623,10 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <span class="toolbar-label">Client First Name</span>
     <input type="text" class="ctrl" id="clientName" placeholder="e.g. Joseph" style="width:140px" oninput="state.clientName=this.value">
   </div>
-  <div class="toolbar-group">
-    <span class="toolbar-label">Date</span>
-    <input type="date" class="ctrl" id="docDate" style="width:140px" oninput="state.date=this.value">
+  <div class="toolbar-group" id="grp-asam-date">
+    <span class="toolbar-label"><span id="docDateLabel">Date</span><span class="req-star" id="docDateReq" style="display:none">*</span></span>
+    <input type="date" class="ctrl" id="docDate" style="width:140px" oninput="state.date=this.value;clearGrpError('grp-asam-date')">
+    <span class="discharge-date-hint">Required · enter actual discharge date</span>
   </div>
 </div>
 
@@ -2709,10 +2731,11 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 
         <div class="discharge-section" id="dim1-dc" style="display:none">
           <div class="discharge-section-title">Discharge — Dimension 1</div>
-          <div class="form-group">
-            <label class="form-label">Withdrawal Status at Discharge</label>
-            <div class="sentence-hint">✎ Write in complete sentences — pasted verbatim into output</div>
-            <textarea class="form-textarea" rows="3" placeholder="e.g. Withdrawal resolved without significant complication. CIWA scores trended to 0 prior to discharge. No acute withdrawal concerns at time of transition." oninput="state.dim1.dcStatus=this.value"></textarea>
+          <div class="form-group" id="grp-dim1-dc-status">
+            <label class="form-label">Withdrawal Status at Discharge<span class="req-star">*</span></label>
+            <select class="form-select" onchange="state.dim1.dcStatus=this.value;clearGrpError('grp-dim1-dc-status')">
+              <option value="">— Select —</option><option value="resolved">Resolved</option><option value="stable_minimal">Stable / Minimal symptoms</option><option value="ongoing">Ongoing concern</option>
+            </select>
           </div>
         </div>
       </div>
@@ -2777,10 +2800,11 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 
         <div class="discharge-section" id="dim2-dc" style="display:none">
           <div class="discharge-section-title">Discharge — Dimension 2</div>
-          <div class="form-group">
-            <label class="form-label">Medical Status at Discharge</label>
-            <div class="sentence-hint">✎ Write in complete sentences — pasted verbatim into output</div>
-            <textarea class="form-textarea" rows="3" placeholder="e.g. Hypertension stable on current medications at time of discharge. No acute medical concerns. Client discharged with instructions to follow up with primary care within two weeks." oninput="state.dim2.dcStatus=this.value"></textarea>
+          <div class="form-group" id="grp-dim2-dc-status">
+            <label class="form-label">Biomedical Status at Discharge<span class="req-star">*</span></label>
+            <select class="form-select" onchange="state.dim2.dcStatus=this.value;clearGrpError('grp-dim2-dc-status')">
+              <option value="">— Select —</option><option value="stable">Stable</option><option value="followup">Stable with follow-up needed</option><option value="ongoing">Ongoing medical concern</option>
+            </select>
           </div>
         </div>
       </div>
@@ -2858,10 +2882,11 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 
         <div class="discharge-section" id="dim3-dc" style="display:none">
           <div class="discharge-section-title">Discharge — Dimension 3</div>
-          <div class="form-group">
-            <label class="form-label">Psychiatric Status at Discharge</label>
-            <div class="sentence-hint">✎ Write in complete sentences — pasted verbatim into output</div>
-            <textarea class="form-textarea" rows="3" placeholder="e.g. Psychiatric symptoms were stable at time of discharge. No active suicidal or homicidal ideation. Client reported improved mood and denied acute distress. Will continue outpatient psychiatric follow-up as part of aftercare plan." oninput="state.dim3.dcStatus=this.value"></textarea>
+          <div class="form-group" id="grp-dim3-dc-status">
+            <label class="form-label">Emotional / Behavioral Status at Discharge<span class="req-star">*</span></label>
+            <select class="form-select" onchange="state.dim3.dcStatus=this.value;clearGrpError('grp-dim3-dc-status')">
+              <option value="">— Select —</option><option value="stable">Stable</option><option value="improved_ongoing">Improved but ongoing symptoms</option><option value="ongoing">Ongoing clinical concern</option>
+            </select>
           </div>
         </div>
       </div>
@@ -2940,10 +2965,11 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 
         <div class="discharge-section" id="dim4-dc" style="display:none">
           <div class="discharge-section-title">Discharge — Dimension 4</div>
-          <div class="form-group">
-            <label class="form-label">Readiness to Change at Discharge</label>
-            <div class="sentence-hint">✎ Write in complete sentences — pasted verbatim into output</div>
-            <textarea class="form-textarea" rows="3" placeholder="e.g. Client demonstrated consistent engagement throughout the episode of care and expressed genuine commitment to maintaining sobriety. Stage of change at discharge assessed as action, with improved insight into the nature of the substance use disorder." oninput="state.dim4.dcStatus=this.value"></textarea>
+          <div class="form-group" id="grp-dim4-dc-status">
+            <label class="form-label">Readiness to Change at Discharge<span class="req-star">*</span></label>
+            <select class="form-select" onchange="state.dim4.dcStatus=this.value;clearGrpError('grp-dim4-dc-status')">
+              <option value="">— Select —</option><option value="good">Good</option><option value="fair">Fair</option><option value="poor">Poor</option>
+            </select>
           </div>
         </div>
       </div>
@@ -3018,10 +3044,11 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 
         <div class="discharge-section" id="dim5-dc" style="display:none">
           <div class="discharge-section-title">Discharge — Dimension 5</div>
-          <div class="form-group">
-            <label class="form-label">Relapse Risk and Coping Skills at Discharge</label>
-            <div class="sentence-hint">✎ Write in complete sentences — pasted verbatim into output</div>
-            <textarea class="form-textarea" rows="3" placeholder="e.g. Relapse risk at discharge is assessed as moderate. Client developed foundational relapse prevention skills during this episode of care, including trigger identification and coping strategies. Client identified primary support contacts and has a discharge plan in place." oninput="state.dim5.dcStatus=this.value"></textarea>
+          <div class="form-group" id="grp-dim5-dc-status">
+            <label class="form-label">Relapse / Continued Use Risk at Discharge<span class="req-star">*</span></label>
+            <select class="form-select" onchange="state.dim5.dcStatus=this.value;clearGrpError('grp-dim5-dc-status')">
+              <option value="">— Select —</option><option value="low">Low</option><option value="moderate">Moderate</option><option value="high">High</option>
+            </select>
           </div>
         </div>
       </div>
@@ -3102,10 +3129,19 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 
         <div class="discharge-section" id="dim6-dc" style="display:none">
           <div class="discharge-section-title">Discharge — Dimension 6</div>
-          <div class="form-group">
-            <label class="form-label">Recovery Environment at Discharge</label>
-            <div class="sentence-hint">✎ Write in complete sentences — pasted verbatim into output</div>
-            <textarea class="form-textarea" rows="3" placeholder="e.g. Client discharged to sober living housing. Recovery support system includes family involvement and engagement with a sponsor identified during treatment. Environmental risks have been reviewed and an aftercare plan has been established to address ongoing concerns." oninput="state.dim6.dcStatus=this.value"></textarea>
+          <div class="form-group" id="grp-dim6-dc-status">
+            <label class="form-label">Recovery Environment at Discharge<span class="req-star">*</span></label>
+            <select class="form-select" onchange="state.dim6.dcStatus=this.value;clearGrpError('grp-dim6-dc-status')">
+              <option value="">— Select —</option><option value="supportive">Supportive</option><option value="mixed">Mixed / Limited support</option><option value="high_risk">High risk / Unstable</option>
+            </select>
+          </div>
+          <div class="form-group" id="grp-discharge-prognosis">
+            <label class="form-label">Overall Prognosis at Discharge<span class="req-star">*</span></label>
+            <div class="severity-pills" id="discharge-prognosis-pills">
+              <button class="severity-pill" onclick="setDischargePrognosis('poor',this)">Poor</button>
+              <button class="severity-pill" onclick="setDischargePrognosis('fair',this)">Fair</button>
+              <button class="severity-pill" onclick="setDischargePrognosis('good',this)">Good</button>
+            </div>
           </div>
         </div>
       </div><!-- /dim-6 -->
@@ -5347,6 +5383,32 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   </div>
 </div>
 
+<div id="pcDaysWorkedHelpModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;align-items:center;justify-content:center">
+  <div style="background:white;border-radius:10px;padding:28px 32px;max-width:420px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.2)">
+    <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:10px">What counts as "Scheduled Workdays"</div>
+    <div style="font-size:13px;color:var(--text-secondary);line-height:1.7;margin-bottom:24px">
+      This is the counselor's regular scheduled weekday count for the period — not how many days they actually worked. A standard Monday–Friday counselor is 5 days, even if they took PTO during the period. If they work a compressed schedule (like 4 ten-hour days), this is still just the day count — set the hours themselves in <strong>Hours Per Day</strong> next to it.<br><br>
+      <strong style="color:var(--text)">Only search the weekday dates they regularly work.</strong> When you pull hours in Remarkable, run the search across just those weekday dates — skip weekend dates entirely, even if the counselor covered an extra group on a Saturday or Sunday. That keeps weekend billing out of every number in this section, so it doesn't inflate the total or the day count.
+    </div>
+    <div style="display:flex;justify-content:flex-end">
+      <button class="btn btn-primary" onclick="hideModal('pcDaysWorkedHelpModal')">Got it</button>
+    </div>
+  </div>
+</div>
+
+<div id="pcHoursPerDayHelpModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;align-items:center;justify-content:center">
+  <div style="background:white;border-radius:10px;padding:28px 32px;max-width:420px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.2)">
+    <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:10px">What "Hours Per Day" changes</div>
+    <div style="font-size:13px;color:var(--text-secondary);line-height:1.7;margin-bottom:24px">
+      Defaults to 8, for a standard workday. Change it if the counselor works a compressed schedule — for example, four 10-hour days instead of five 8-hour days.<br><br>
+      This is what the target scales against: Days Worked × Hours Per Day, minus PTO, times 80% (PHP) or 75% (OP). A 4-day, 10-hour schedule with no PTO still comes out to the same 40-hour week as 5 days at 8 hours — so the required billable hours end up the same either way, as long as this is set correctly.
+    </div>
+    <div style="display:flex;justify-content:flex-end">
+      <button class="btn btn-primary" onclick="hideModal('pcHoursPerDayHelpModal')">Got it</button>
+    </div>
+  </div>
+</div>
+
 <div id="pcCalcGuideModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;align-items:center;justify-content:center;" onclick="if(event.target===this)hideModal('pcCalcGuideModal')">
   <div style="background:#f8faf9;border-radius:10px;max-width:680px;width:92%;max-height:86vh;box-shadow:0 20px 60px rgba(0,0,0,0.2);display:flex;flex-direction:column;">
     <div style="display:flex;justify-content:space-between;align-items:center;padding:20px 24px 16px;border-bottom:1px solid var(--border);flex-shrink:0;">
@@ -5413,12 +5475,15 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       </div>
 
       <div style="margin-bottom:22px;">
-        <div style="font-size:13px;font-weight:700;color:#1b4332;margin-bottom:8px;">Step 5 — PTO (Paychex)</div>
+        <div style="font-size:13px;font-weight:700;color:#1b4332;margin-bottom:8px;">Step 5 — Days Worked, Hours Per Day, and PTO (Paychex + your own knowledge of the schedule)</div>
         <div style="font-size:13px;line-height:1.7;color:var(--text);margin-bottom:8px;">
-          Open Paychex and pull the PTO or leave hours the counselor actually took during the period. Enter that into <strong>PTO</strong> — the calculator subtracts it from a standard 40-hour workweek for Residential, PHP, and OP, so only enter time off, not hours worked.
+          <strong>Residential:</strong> Open Paychex and pull the PTO or leave hours the counselor actually took during the period. Enter that into <strong>PTO</strong> — this calculator subtracts it from a standard work period to get available working hours, so only enter time off, not hours worked.
+        </div>
+        <div style="font-size:13px;line-height:1.7;color:var(--text);margin-bottom:8px;">
+          <strong>PHP / OP:</strong> this one doesn't use hours worked at all anymore — physical hours in the building don't matter, only billed hours against the days they were scheduled. Enter their regular scheduled days for the period into <strong>Scheduled Workdays</strong> (a standard Monday–Friday counselor is 5, even if they took PTO). <strong>Hours Per Day</strong> defaults to 8 — change it if someone works a compressed schedule, like four 10-hour days. Then pull PTO the same way you would for Residential, and enter it into <strong>PTO</strong>.
         </div>
         <div style="font-size:13px;line-height:1.7;color:var(--text);">
-          The calculator uses a flat 40-hour workweek for every program type, subtracts PTO, then applies the productivity target: 65% for Residential, 80% for PHP, and 75% for OP. With no PTO, required billable hours are 26 for Residential, 32 for PHP, and 30 for OP. Ten hours of PTO lowers the available workweek to 30 hours before the target is applied.
+          The calculator turns that into a target: Days Worked × Hours Per Day, minus PTO, times 80% (PHP) or 75% (OP) — that's the number of billed hours they actually need. A full 5-day, 8-hour week with no PTO needs 32 billed hours for PHP, 30 for OP — and a 4-day, 10-hour week with no PTO lands on the same 32 and 30, since both add up to 40 hours. Ten hours of PTO lowers that target by 8 hours (PHP) or 7.5 hours (OP), regardless of how the days are split. You'll see this as <strong>Required Billable Hours</strong> once you've entered Days Worked.
         </div>
       </div>
 
@@ -5426,6 +5491,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         <div style="font-size:13px;font-weight:700;color:#1b4332;margin-bottom:8px;">Quick accuracy checks</div>
         <div style="display:flex;flex-direction:column;gap:6px;font-size:13px;line-height:1.6;color:var(--text);">
           <div>✔ Productivity over 100%? Recheck your group time — this almost always means a session got counted more than once.</div>
+          <div>✔ For PHP/OP, Days Worked should match their regular schedule — don't inflate it for extra weekend groups they picked up.</div>
           <div>✔ A service code's billing hours should always be greater than or equal to the physical group time you counted for that code.</div>
           <div>✔ Every date range — Remarkable, Paychex, and this calculator — should match exactly.</div>
         </div>
@@ -5953,7 +6019,7 @@ function copyCriteria(btn) {
 // STATE
 // ═══════════════════════════════════════════════════
 const state = {
-  loc: '', admissionType: 'initial', clientName: '', date: '',
+  loc: '', admissionType: 'initial', clientName: '', date: '', dischargePrognosis: '',
   dim1: { severity:'', substances:'', lastUse:'', ciwa:'', cows:'', symptoms:[], complicatedHistory:'', notes:'', csStatus:'', csProgress:'', dcStatus:'' },
   dim2: { severity:'', conditions:'', impact:'', medications:'', notes:'', csStatus:'', csProgress:'', dcStatus:'' },
   dim3: { severity:'', diagnoses:'', noDx:false, symptoms:[], impact:'', notes:'', csStatus:'', csGoals:'', dcStatus:'' },
@@ -6070,6 +6136,23 @@ function toggleNoDx(checked) {
 }
 
 function setAdmissionType(type) {
+  const previousType = state.admissionType;
+  const dateInput = document.getElementById('docDate');
+  const dateGroup = document.getElementById('grp-asam-date');
+
+  if (type === 'discharge' && previousType !== 'discharge') {
+    if (dateInput) dateInput.dataset.preDischargeDate = state.date || dateInput.value || '';
+    state.date = '';
+    if (dateInput) dateInput.value = '';
+    clearGrpError('grp-asam-date');
+  } else if (type !== 'discharge' && previousType === 'discharge' && dateInput) {
+    const priorDate = dateInput.dataset.preDischargeDate || '';
+    state.date = priorDate;
+    dateInput.value = priorDate;
+    delete dateInput.dataset.preDischargeDate;
+    clearGrpError('grp-asam-date');
+  }
+
   state.admissionType = type;
   document.getElementById('btnInitial').classList.toggle('active', type === 'initial');
   document.getElementById('btnContinued').classList.toggle('active', type === 'continued');
@@ -6077,6 +6160,11 @@ function setAdmissionType(type) {
 
   const showCS = type === 'continued';
   const showDC = type === 'discharge';
+  const dateLabel = document.getElementById('docDateLabel');
+  const dateReq = document.getElementById('docDateReq');
+  if (dateLabel) dateLabel.textContent = showDC ? 'Discharge Date' : 'Date';
+  if (dateReq) dateReq.style.display = showDC ? 'inline' : 'none';
+  if (dateGroup) dateGroup.classList.toggle('discharge-date-active', showDC);
 
   [1,2,3,4,5,6].forEach(i => {
     const csEl = document.getElementById(`dim${i}-cs`);
@@ -6087,13 +6175,12 @@ function setAdmissionType(type) {
 
   // Fields irrelevant in discharge mode
   const DISCHARGE_HIDE = [
-    'grp-dim1-substances','grp-dim1-lastuse','grp-dim1-scores',
-    'grp-dim1-symptoms','grp-dim1-complicated','grp-dim1-notes',
-    'grp-dim2-conditions','grp-dim2-impact','grp-dim2-medications','grp-dim2-notes',
-    'grp-dim3-impact','grp-dim3-notes',
-    'grp-dim4-barriers','grp-dim4-rationale',
-    'grp-dim5-priortx','grp-dim5-triggers','grp-dim5-notes',
-    'grp-dim6-envrisk','grp-dim6-risks','grp-dim6-notes',
+    'grp-dim1-severity','grp-dim1-substances','grp-dim1-lastuse','grp-dim1-scores','grp-dim1-symptoms','grp-dim1-complicated','grp-dim1-notes',
+    'grp-dim2-severity','grp-dim2-conditions','grp-dim2-impact','grp-dim2-medications','grp-dim2-notes',
+    'grp-dim3-severity','grp-dim3-diagnoses','grp-dim3-symptoms','grp-dim3-impact','grp-dim3-notes',
+    'grp-dim4-stage','grp-dim4-insight','grp-dim4-engagement','grp-dim4-barriers','grp-dim4-rationale',
+    'grp-dim5-risk','grp-dim5-priortx','grp-dim5-triggers','grp-dim5-coping','grp-dim5-notes',
+    'grp-dim6-envrisk','grp-dim6-living','grp-dim6-support','grp-dim6-risks','grp-dim6-notes',
   ];
   DISCHARGE_HIDE.forEach(id => {
     const el = document.getElementById(id);
@@ -6103,6 +6190,13 @@ function setAdmissionType(type) {
   // Suppress challenge messages and consult alerts in discharge mode
   const dimContent = document.getElementById('dim-content');
   if (dimContent) dimContent.classList.toggle('discharge-mode', showDC);
+}
+
+function setDischargePrognosis(value, el) {
+  state.dischargePrognosis = value;
+  document.querySelectorAll('#discharge-prognosis-pills .severity-pill').forEach(p => p.classList.remove('selected'));
+  if (el) el.classList.add('selected');
+  clearGrpError('grp-discharge-prognosis');
 }
 
 function showDim(num, el) {
@@ -6183,6 +6277,7 @@ function fmtDate(d) {
 // DIMENSION GENERATORS
 // ═══════════════════════════════════════════════════
 function genDim1() {
+  if (state.admissionType === 'discharge') { const m={resolved:'withdrawal status was resolved',stable_minimal:'withdrawal status was stable with minimal symptoms',ongoing:'ongoing withdrawal-related concerns remained'}; return state.dim1.dcStatus ? `At discharge on ${fmtDate(state.date)}, ${m[state.dim1.dcStatus]}.` : null; }
   const d = state.dim1, loc = state.loc, type = state.admissionType;
   const hasContent = d.severity || d.substances || d.symptoms.length || d.ciwa || d.cows || d.complicatedHistory || d.notes || d.csStatus || d.csProgress;
   if (!hasContent) return null;
@@ -6259,6 +6354,7 @@ function genDim1() {
 }
 
 function genDim2() {
+  if (state.admissionType === 'discharge') { const m={stable:'biomedical status was stable',followup:'biomedical status was stable with follow-up needed',ongoing:'ongoing biomedical concerns remained'}; return state.dim2.dcStatus ? `At discharge on ${fmtDate(state.date)}, ${m[state.dim2.dcStatus]}.` : null; }
   const d = state.dim2, loc = state.loc, type = state.admissionType;
   const hasContent = d.severity || d.conditions || d.impact || d.medications || d.notes || d.csStatus || d.csProgress;
   if (!hasContent) return null;
@@ -6307,6 +6403,7 @@ function genDim2() {
 }
 
 function genDim3() {
+  if (state.admissionType === 'discharge') { const m={stable:'emotional and behavioral status was stable',improved_ongoing:'emotional and behavioral status had improved, with ongoing symptoms present',ongoing:'ongoing emotional or behavioral clinical concerns remained'}; return state.dim3.dcStatus ? `At discharge on ${fmtDate(state.date)}, ${m[state.dim3.dcStatus]}.` : null; }
   const d = state.dim3, loc = state.loc, type = state.admissionType;
   const hasContent = d.severity || d.diagnoses || d.noDx || d.symptoms.length || d.impact || d.notes || d.csStatus || d.csGoals;
   if (!hasContent) return null;
@@ -6378,6 +6475,7 @@ function genDim3() {
 }
 
 function genDim4() {
+  if (state.admissionType === 'discharge') { return state.dim4.dcStatus ? `At discharge on ${fmtDate(state.date)}, readiness to change was assessed as ${state.dim4.dcStatus}.` : null; }
   const d = state.dim4, loc = state.loc, type = state.admissionType;
   const hasContent = d.stage || d.insight || d.engagement || d.barriers || d.locRationale || d.csStatus || d.csGoals;
   if (!hasContent) return null;
@@ -6442,6 +6540,7 @@ function genDim4() {
 }
 
 function genDim5() {
+  if (state.admissionType === 'discharge') { return state.dim5.dcStatus ? `At discharge on ${fmtDate(state.date)}, relapse/continued use risk was assessed as ${state.dim5.dcStatus}.` : null; }
   const d = state.dim5, loc = state.loc, type = state.admissionType;
   const hasContent = d.risk || d.priorTx || d.triggers.length || d.coping || d.notes || d.csStatus || d.csProgress;
   if (!hasContent) return null;
@@ -6497,6 +6596,7 @@ function genDim5() {
 }
 
 function genDim6() {
+  if (state.admissionType === 'discharge') { const m={supportive:'supportive',mixed:'mixed with limited support',high_risk:'high risk/unstable'}; if(!state.dim6.dcStatus)return null; const prognosis=state.dischargePrognosis ? ` Overall prognosis at discharge was assessed as ${state.dischargePrognosis}.` : ''; return `At discharge on ${fmtDate(state.date)}, the recovery environment was assessed as ${m[state.dim6.dcStatus]}.${prognosis}`; }
   const d = state.dim6, loc = state.loc, type = state.admissionType;
   const hasContent = d.envRisk || d.living || d.support || d.risks.length || d.notes || d.csStatus || d.csProgress;
   if (!hasContent) return null;
@@ -6658,6 +6758,17 @@ const CS_REQUIRED = [
   { get: () => state.dim5.csProgress, grp: 'grp-dim5-cs-progress', dim: 5, label: 'Dim 5 — Relapse Prevention Progress / Remaining Goals' },
   { get: () => state.dim6.csStatus,   grp: 'grp-dim6-cs-status',   dim: 6, label: 'Dim 6 — Current Environmental Status' },
   { get: () => state.dim6.csProgress, grp: 'grp-dim6-cs-progress', dim: 6, label: 'Dim 6 — Discharge / Step-Down Planning Progress' },
+ ];
+
+const DC_REQUIRED = [
+  { get: () => state.date, grp: 'grp-asam-date', dim: 1, label: 'Discharge Date' },
+  { get: () => state.dim1.dcStatus, grp: 'grp-dim1-dc-status', dim: 1, label: 'Dim 1 — Withdrawal Status at Discharge' },
+  { get: () => state.dim2.dcStatus, grp: 'grp-dim2-dc-status', dim: 2, label: 'Dim 2 — Biomedical Status at Discharge' },
+  { get: () => state.dim3.dcStatus, grp: 'grp-dim3-dc-status', dim: 3, label: 'Dim 3 — Emotional / Behavioral Status at Discharge' },
+  { get: () => state.dim4.dcStatus, grp: 'grp-dim4-dc-status', dim: 4, label: 'Dim 4 — Readiness to Change at Discharge' },
+  { get: () => state.dim5.dcStatus, grp: 'grp-dim5-dc-status', dim: 5, label: 'Dim 5 — Relapse / Continued Use Risk at Discharge' },
+  { get: () => state.dim6.dcStatus, grp: 'grp-dim6-dc-status', dim: 6, label: 'Dim 6 — Recovery Environment at Discharge' },
+  { get: () => state.dischargePrognosis, grp: 'grp-discharge-prognosis', dim: 6, label: 'Dim 6 — Overall Prognosis at Discharge' },
 ];
 
 function validate() {
@@ -6677,8 +6788,9 @@ function validate() {
     }
   }
 
-  // Discharge mode — no required fields, status fields are optional
-  if (type !== 'discharge') {
+  if (type === 'discharge') {
+    DC_REQUIRED.forEach(item => check(item, item.dim));
+  } else {
     // Primary driver dimensions — always required for initial and continued
     cfg.primary.forEach(dimNum => {
       (DIM_REQUIRED[dimNum] || []).forEach(item => check(item, dimNum));
@@ -11286,7 +11398,8 @@ function doReset() {
   document.getElementById('locSelect').value = '';
   document.getElementById('clientName').value = '';
   document.getElementById('docDate').value = new Date().toISOString().split('T')[0];
-  state.loc = ''; state.clientName = ''; state.date = document.getElementById('docDate').value;
+  delete document.getElementById('docDate').dataset.preDischargeDate;
+  state.loc = ''; state.clientName = ''; state.date = document.getElementById('docDate').value; state.dischargePrognosis = ''; state.admissionType = 'initial';
   document.getElementById('noLocOverlay').style.display = 'flex';
   setAdmissionType('initial');
   updateDimBadges();
@@ -11306,13 +11419,13 @@ function doReset() {
 
   // Reset state dims
   Object.assign(state, {
-    clientName:'', date: document.getElementById('docDate').value,
-    dim1:{ severity:'', substances:'', lastUse:'', ciwa:'', cows:'', symptoms:[], complicatedHistory:'', notes:'', csStatus:'', csProgress:'' },
-    dim2:{ severity:'', conditions:'', impact:'', medications:'', notes:'', csStatus:'', csProgress:'' },
-    dim3:{ severity:'', diagnoses:'', noDx:false, symptoms:[], impact:'', notes:'', csStatus:'', csGoals:'' },
-    dim4:{ stage:'', insight:'', engagement:'', barriers:'', locRationale:'', csStatus:'', csGoals:'' },
-    dim5:{ risk:'', priorTx:'', triggers:[], coping:'', notes:'', csStatus:'', csProgress:'' },
-    dim6:{ envRisk:'', living:'', support:'', risks:[], notes:'', csStatus:'', csProgress:'' },
+    clientName:'', date: document.getElementById('docDate').value, dischargePrognosis:'',
+    dim1:{ severity:'', substances:'', lastUse:'', ciwa:'', cows:'', symptoms:[], complicatedHistory:'', notes:'', csStatus:'', csProgress:'', dcStatus:'' },
+    dim2:{ severity:'', conditions:'', impact:'', medications:'', notes:'', csStatus:'', csProgress:'', dcStatus:'' },
+    dim3:{ severity:'', diagnoses:'', noDx:false, symptoms:[], impact:'', notes:'', csStatus:'', csGoals:'', dcStatus:'' },
+    dim4:{ stage:'', insight:'', engagement:'', barriers:'', locRationale:'', csStatus:'', csGoals:'', dcStatus:'' },
+    dim5:{ risk:'', priorTx:'', triggers:[], coping:'', notes:'', csStatus:'', csProgress:'', dcStatus:'' },
+    dim6:{ envRisk:'', living:'', support:'', risks:[], notes:'', csStatus:'', csProgress:'', dcStatus:'' },
   });
 
   // Uncheck all checkbox groups
@@ -13099,7 +13212,7 @@ function pcNewCounselor() {
     isOpen: true,
     totalHrs: '', code1: '', code2: '', time1: '', time2: '', pto: '',
     c400: '', c400t: '', c402: '', c402t: '', c403: '', c404: '', c404t: '',
-    noShow: '', timeGroup: '',
+    noShow: '', timeGroup: '', daysWorked: '', hoursPerDay: '8',
     ranTelehealthGroups: false,
     ran61RSGGroups: false
   };
@@ -13127,6 +13240,9 @@ function pcLoad() {
       c.period = 'weekly';
       if (c.ranTelehealthGroups === undefined) c.ranTelehealthGroups = false;
       if (c.ran61RSGGroups === undefined) c.ran61RSGGroups = false;
+      if (c.hoursPerDay === undefined) c.hoursPerDay = c.type === 'op' ? '10' : '8';
+      if (c.type === 'php' && (c.daysWorked === '' || c.daysWorked === undefined)) c.daysWorked = '5';
+      if (c.type === 'op' && (c.daysWorked === '' || c.daysWorked === undefined)) c.daysWorked = '4';
       if (c.id > maxId) maxId = c.id;
     });
     pcNextId = (typeof data.nextId === 'number' && data.nextId > maxId) ? data.nextId : maxId + 1;
@@ -13157,6 +13273,8 @@ function pcSetType(id, type) {
   if (!c) return;
   c.type = type;
   c.period = 'weekly';
+  if (type === 'php') { c.daysWorked = '5'; c.hoursPerDay = '8'; }
+  if (type === 'op') { c.daysWorked = '4'; c.hoursPerDay = '10'; }
   if (type !== 'php') c.ranTelehealthGroups = false;
   if (type !== 'res') c.ran61RSGGroups = false;
   pcSave();
@@ -13226,7 +13344,8 @@ function pcComputeResidentialWeek(w, include61RSG = false) {
 }
 
 function pcComputePhpOpWeek(w, showTelehealth = false) {
-  const denom = 40 - pcNum(w.pto);
+  const hoursPerDay = pcNum(w.hoursPerDay) || 8;
+  const denom = (pcNum(w.daysWorked) * hoursPerDay) - pcNum(w.pto);
   const tHours = showTelehealth ? (pcNum(w.c400t) + pcNum(w.c402t) + pcNum(w.c404t)) : 0;
   const numerator = (((pcNum(w.totalHrs) - pcNum(w.c400) - tHours - pcNum(w.c402) - pcNum(w.c403) - pcNum(w.c404)) + pcNum(w.timeGroup)) - pcNum(w.noShow));
   return { numerator, denom };
@@ -13306,6 +13425,8 @@ function pcPhpOpFieldsHTML(id, w) {
         ${showTelehealth ? `<div class="pc-field"><label>404T Billing Hours</label><input class="gn-input" type="number" step="any" value="${w.c404t}" oninput="${upd('c404t')}"></div>` : ''}
         <div class="pc-field"><label>"No Show" Time <button type="button" class="pc-help" onclick="showModal('pcNoShowHelpModal')">ⓘ</button></label><input class="gn-input" type="number" step="any" value="${w.noShow}" oninput="${upd('noShow')}"></div>
         <div class="pc-field"><label>Time Spent in Group</label><input class="gn-input" type="number" step="any" value="${w.timeGroup}" oninput="${upd('timeGroup')}"></div>
+        <div class="pc-field"><label>Scheduled Workdays <button type="button" class="pc-help" onclick="showModal('pcDaysWorkedHelpModal')">ⓘ</button></label><input class="gn-input" type="number" step="any" value="${w.daysWorked}" oninput="${upd('daysWorked')}"></div>
+        <div class="pc-field"><label>Hours Per Day <button type="button" class="pc-help" onclick="showModal('pcHoursPerDayHelpModal')">ⓘ</button></label><input class="gn-input" type="number" step="any" value="${w.hoursPerDay !== undefined ? w.hoursPerDay : (c && c.type === 'op' ? '10' : '8')}" oninput="${upd('hoursPerDay')}"></div>
         <div class="pc-field"><label>PTO</label><input class="gn-input" type="number" step="any" value="${w.pto}" oninput="${upd('pto')}"></div>
       </div>`;
 }
@@ -13406,6 +13527,9 @@ function pcConfirmNewPeriod() {
   if (!c) return;
   const clearFields = ['totalHrs','code1','code2','time1','time2','pto','noShow','c400','c400t','c402','c402t','c403','c404','c404t','timeGroup'];
   clearFields.forEach(f => c[f] = '');
+  if (c.type === 'php') { c.daysWorked = '5'; c.hoursPerDay = '8'; }
+  if (c.type === 'op') { c.daysWorked = '4'; c.hoursPerDay = '10'; }
+  if (c.type === 'res') { c.daysWorked = ''; c.hoursPerDay = '8'; }
   pcSave();
   pcRenderAll();
 }
@@ -14353,6 +14477,18 @@ function autosaveRestoreDsSetGroup(containerId, setValues) {
 function autosaveApply(snap) {
   // ── ASAM state ──
   Object.assign(state, snap.state);
+  const dcAllowed = {
+    dim1: ['resolved','stable_minimal','ongoing'],
+    dim2: ['stable','followup','ongoing'],
+    dim3: ['stable','improved_ongoing','ongoing'],
+    dim4: ['good','fair','poor'],
+    dim5: ['low','moderate','high'],
+    dim6: ['supportive','mixed','high_risk'],
+  };
+  Object.keys(dcAllowed).forEach(dim => {
+    if (!dcAllowed[dim].includes(state[dim].dcStatus)) state[dim].dcStatus = '';
+  });
+  if (!['good','fair','poor'].includes(state.dischargePrognosis)) state.dischargePrognosis = '';
   document.getElementById('locSelect').value = state.loc || '';
   document.getElementById('noLocOverlay').style.display = state.loc ? 'none' : 'flex';
   document.getElementById('clientName').value = state.clientName || '';
@@ -14380,14 +14516,14 @@ function autosaveApply(snap) {
   autosaveSetGroupField('grp-dim1-notes', state.dim1.notes);
   autosaveSetGroupField('grp-dim1-cs-status', state.dim1.csStatus);
   autosaveSetGroupField('grp-dim1-cs-progress', state.dim1.csProgress);
-  autosaveSetGroupField('dim1-dc', state.dim1.dcStatus);
+  autosaveSetGroupField('grp-dim1-dc-status', state.dim1.dcStatus);
   autosaveSetGroupField('grp-dim2-conditions', state.dim2.conditions);
   autosaveSetGroupField('grp-dim2-impact', state.dim2.impact);
   autosaveSetGroupField('grp-dim2-medications', state.dim2.medications);
   autosaveSetGroupField('grp-dim2-notes', state.dim2.notes);
   autosaveSetGroupField('grp-dim2-cs-status', state.dim2.csStatus);
   autosaveSetGroupField('grp-dim2-cs-progress', state.dim2.csProgress);
-  autosaveSetGroupField('dim2-dc', state.dim2.dcStatus);
+  autosaveSetGroupField('grp-dim2-dc-status', state.dim2.dcStatus);
   if (!state.dim3.noDx) {
     const dxInput = document.getElementById('dim3-dx-input');
     if (dxInput) dxInput.value = state.dim3.diagnoses || '';
@@ -14396,7 +14532,7 @@ function autosaveApply(snap) {
   autosaveSetGroupField('grp-dim3-notes', state.dim3.notes);
   autosaveSetGroupField('grp-dim3-cs-status', state.dim3.csStatus);
   autosaveSetGroupField('grp-dim3-cs-goals', state.dim3.csGoals);
-  autosaveSetGroupField('dim3-dc', state.dim3.dcStatus);
+  autosaveSetGroupField('grp-dim3-dc-status', state.dim3.dcStatus);
   checkDim3ConsultFlag();
   autosaveSetGroupField('grp-dim4-stage', state.dim4.stage);
   autosaveSetGroupField('grp-dim4-engagement', state.dim4.engagement);
@@ -14404,18 +14540,23 @@ function autosaveApply(snap) {
   autosaveSetGroupField('grp-dim4-rationale', state.dim4.locRationale);
   autosaveSetGroupField('grp-dim4-cs-status', state.dim4.csStatus);
   autosaveSetGroupField('grp-dim4-cs-goals', state.dim4.csGoals);
-  autosaveSetGroupField('dim4-dc', state.dim4.dcStatus);
+  autosaveSetGroupField('grp-dim4-dc-status', state.dim4.dcStatus);
   autosaveSetGroupField('grp-dim5-priortx', state.dim5.priorTx);
   autosaveSetGroupField('grp-dim5-notes', state.dim5.notes);
   autosaveSetGroupField('grp-dim5-cs-status', state.dim5.csStatus);
   autosaveSetGroupField('grp-dim5-cs-progress', state.dim5.csProgress);
-  autosaveSetGroupField('dim5-dc', state.dim5.dcStatus);
+  autosaveSetGroupField('grp-dim5-dc-status', state.dim5.dcStatus);
   autosaveSetGroupField('grp-dim6-living', state.dim6.living);
   autosaveSetGroupField('grp-dim6-support', state.dim6.support);
   autosaveSetGroupField('grp-dim6-notes', state.dim6.notes);
   autosaveSetGroupField('grp-dim6-cs-status', state.dim6.csStatus);
   autosaveSetGroupField('grp-dim6-cs-progress', state.dim6.csProgress);
-  autosaveSetGroupField('dim6-dc', state.dim6.dcStatus);
+  autosaveSetGroupField('grp-dim6-dc-status', state.dim6.dcStatus);
+  document.querySelectorAll('#discharge-prognosis-pills .severity-pill').forEach(p => p.classList.remove('selected'));
+  if (state.dischargePrognosis) {
+    const progBtn = Array.from(document.querySelectorAll('#discharge-prognosis-pills .severity-pill')).find(p => (p.getAttribute('onclick') || '').includes(`'${state.dischargePrognosis}'`));
+    if (progBtn) progBtn.classList.add('selected');
+  }
 
   // ── ITP ──
   itpSelected.A = new Set(snap.itpSelected.A);
