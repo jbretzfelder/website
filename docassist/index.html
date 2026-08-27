@@ -11028,6 +11028,7 @@ const DE_TYPE_LABELS = {
   unsuccessful: 'Unsuccessful'
 };
 const DE_SUBTYPE_LABELS = { planned: 'Planned / Completed Transition', asa: 'Left Against Staff Advice (ASA)', admin: 'Administrative Discharge' };
+const DE_SUBJECT_SUBTYPE_LABELS = { planned: 'Planned / Completed', asa: 'ASA', admin: 'Admin Discharge' };
 
 function deFmtDate(d) {
   if (!d) return '';
@@ -11218,8 +11219,9 @@ function deGenerate() {
   const dateStr = deFmtDate(s.dischargeDate) || '[Date of Discharge]';
   const unitStr = s.unit || '[Unit]';
   const typeLabel = DE_TYPE_LABELS[s.dischargeType] || '[Type of Discharge]';
+  const subjectSubtypeLabel = DE_SUBJECT_SUBTYPE_LABELS[s.dischargeSubtype] || '[Discharge Circumstance]';
 
-  subjectOut.textContent = `Discharge - ${typeLabel} - ${unitStr} - ${dateStr}`;
+  subjectOut.textContent = `Discharge - ${typeLabel} - ${subjectSubtypeLabel} - ${unitStr} - ${dateStr}`;
 
   let typeLine = typeLabel;
   if (s.dischargeSubtype) {
