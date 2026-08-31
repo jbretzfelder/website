@@ -23,80 +23,77 @@
     </div>
     <p class="track-desc">The Golden Thread — why ASAM, ITP, and Individual Notes are one connected system — plus how to determine and justify a level of care.</p>
     <a class="docassist-pill" href="https://bretzfelder.com/docassist" target="_blank" rel="noopener">Draft the real documents in DocAssist →</a>
+
     <div class="home-grid">
-    <div class="home-card" onclick="openModule('view-bigpicture')" id="cardThread">
-      <div class="home-card-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3"/><path d="M9 17H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
-      <div class="home-card-body">
-        <div class="home-card-title">The Golden Thread</div>
-        <div class="home-card-desc">Why ASAM, ITP, and Individual Notes are one connected system — not three separate forms</div>
+      <div class="home-card" onclick="openModule('view-bigpicture')" id="cardThread">
+        <div class="home-card-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3"/><path d="M9 17H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
+        <div class="home-card-body">
+          <div class="home-card-title">The Golden Thread</div>
+          <div class="home-card-desc">Why ASAM, ITP, and Individual Notes are one connected system — not three separate forms</div>
+        </div>
+        <span class="home-card-status" id="statusThread"></span>
+        <span class="home-card-arrow">→</span>
       </div>
-      <span class="home-card-status" id="statusThread"></span>
-      <span class="home-card-arrow">→</span>
-    </div>
 
-    <div class="home-card" onclick="openModule('view-asam')" id="cardAsam">
-      <div class="home-card-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
-      <div class="home-card-body">
-        <div class="home-card-title">ASAM Documentation</div>
-        <div class="home-card-desc">Writing narratives, risk ratings, and criteria that survive payer review, then drafting them in DocAssist</div>
+      <div class="home-card" onclick="openModule('view-asam')" id="cardAsam">
+        <div class="home-card-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+        <div class="home-card-body">
+          <div class="home-card-title">ASAM Documentation</div>
+          <div class="home-card-desc">Writing narratives, risk ratings, and criteria that survive payer review, then drafting them in DocAssist</div>
+        </div>
+        <span class="home-card-status" id="statusAsam"></span>
+        <span class="home-card-arrow">→</span>
       </div>
-      <span class="home-card-status" id="statusAsam"></span>
-      <span class="home-card-arrow">→</span>
-    </div>
 
-    <div class="home-card" onclick="openModule('view-itp')" id="cardItp">
-      <div class="home-card-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg></div>
-      <div class="home-card-body">
-        <div class="home-card-title">ITP Development</div>
-        <div class="home-card-desc">Turning ASAM findings into individualized, defensible goals and objectives</div>
+      <div class="home-card" onclick="openModule('view-itp')" id="cardItp">
+        <div class="home-card-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg></div>
+        <div class="home-card-body">
+          <div class="home-card-title">ITP Development</div>
+          <div class="home-card-desc">Turning ASAM findings into individualized, defensible goals and objectives</div>
+        </div>
+        <span class="home-card-status" id="statusItp"></span>
+        <span class="home-card-arrow">→</span>
       </div>
-      <span class="home-card-status" id="statusItp"></span>
-      <span class="home-card-arrow">→</span>
-    </div>
 
-    <div class="home-card" onclick="openModule('view-note')" id="cardNote">
-      <div class="home-card-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></div>
-      <div class="home-card-body">
-        <div class="home-card-title">Individual Notes</div>
-        <div class="home-card-desc">Documenting session progress that ties back to the ITP</div>
+      <div class="home-card" onclick="openModule('view-note')" id="cardNote">
+        <div class="home-card-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></div>
+        <div class="home-card-body">
+          <div class="home-card-title">Individual Notes</div>
+          <div class="home-card-desc">Documenting session progress that ties back to the ITP</div>
+        </div>
+        <span class="home-card-status" id="statusNote"></span>
+        <span class="home-card-arrow">→</span>
       </div>
-      <span class="home-card-status" id="statusNote"></span>
-      <span class="home-card-arrow">→</span>
-    </div>
 
-    <div class="home-card" onclick="openModule('view-loc')" id="cardLoc">
-      <div class="home-card-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></div>
-      <div class="home-card-body">
-        <div class="home-card-title">Levels of Care</div>
-        <div class="home-card-desc">What each level of care actually means, and how to determine — and justify — the right one for a client</div>
+      <div class="home-card" onclick="openModule('view-loc')" id="cardLoc">
+        <div class="home-card-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></div>
+        <div class="home-card-body">
+          <div class="home-card-title">Levels of Care</div>
+          <div class="home-card-desc">What each level of care actually means, and how to determine — and justify — the right one for a client</div>
+        </div>
+        <span class="home-card-status" id="statusLoc"></span>
+        <span class="home-card-arrow">→</span>
       </div>
-      <span class="home-card-status" id="statusLoc"></span>
-      <span class="home-card-arrow">→</span>
-    </div>
 
-    <div class="home-card" onclick="openModule('view-conclusion')" id="cardConclusion">
-      <div class="home-card-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
-      <div class="home-card-body">
-        <div class="home-card-title">Case Walkthrough: Danielle</div>
-        <div class="home-card-desc">Every piece of the Documentation track, followed through one real case from intake to discharge</div>
+      <div class="home-card" onclick="openModule('view-conclusion')" id="cardConclusion">
+        <div class="home-card-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+        <div class="home-card-body">
+          <div class="home-card-title">Case Walkthrough: Danielle</div>
+          <div class="home-card-desc">Every piece of the Documentation track, followed through one real case from intake to discharge</div>
+        </div>
+        <span class="home-card-status" id="statusConclusion"></span>
+        <span class="home-card-arrow">→</span>
       </div>
-      <span class="home-card-status" id="statusConclusion"></span>
-      <span class="home-card-arrow">→</span>
-    </div>
 
-    <div class="home-card" onclick="openModule('view-updated-assessments')" id="cardUpdatedAssessments">
-      <div class="home-card-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5V4.5A2.5 2.5 0 0 1 6.5 2H19v17H6.5A2.5 2.5 0 0 0 4 21.5"/><path d="M8 7h7"/><path d="M8 11h5"/><path d="m14 15 2 2 4-4"/></svg></div>
-      <div class="home-card-body">
-        <div class="home-card-title">Updated Assessments</div>
-        <div class="home-card-desc">Knowing when the clinical picture changes and the assessment needs to change with it</div>
+      <div class="home-card" onclick="openModule('view-updated-assessments')" id="cardUpdatedAssessments">
+        <div class="home-card-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5V4.5A2.5 2.5 0 0 1 6.5 2H19v17H6.5A2.5 2.5 0 0 0 4 21.5"/><path d="M8 7h7"/><path d="M8 11h5"/><path d="m14 15 2 2 4-4"/></svg></div>
+        <div class="home-card-body">
+          <div class="home-card-title">Updated Assessments</div>
+          <div class="home-card-desc">Knowing when the clinical picture changes and the assessment needs to change with it</div>
+        </div>
+        <span class="home-card-status" id="statusUpdatedAssessments"></span>
+        <span class="home-card-arrow">→</span>
       </div>
-      <span class="home-card-status" id="statusUpdatedAssessments"></span>
-      <span class="home-card-arrow">&rarr;</span>
-    </div>
-    </div>
-      <span class="home-card-status" id="statusUpdatedAssessments"></span>
-      <span class="home-card-arrow">â†’</span>
-    </div>
     </div>
   </div>
 
@@ -106,64 +103,67 @@
       <div class="track-label">Clinical Skills</div>
     </div>
     <p class="track-desc">The skills underneath the paperwork — motivational interviewing, group facilitation, ethics, family systems, cultural humility, and working with co-occurring disorders.</p>
+
     <div class="home-grid">
-    <div class="home-card" onclick="openModule('view-cooccurring')" id="cardCooccurring">
-      <div class="home-card-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18"/></svg></div>
-      <div class="home-card-body">
-        <div class="home-card-title">Co-Occurring Disorders</div>
-        <div class="home-card-desc">Working with mental health alongside substance use — integrated treatment, not two separate problems</div>
+      <div class="home-card" onclick="openModule('view-cooccurring')" id="cardCooccurring">
+        <div class="home-card-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18"/></svg></div>
+        <div class="home-card-body">
+          <div class="home-card-title">Co-Occurring Disorders</div>
+          <div class="home-card-desc">Working with mental health alongside substance use — integrated treatment, not two separate problems</div>
+        </div>
+        <span class="home-card-status" id="statusCooccurring"></span>
+        <span class="home-card-arrow">→</span>
       </div>
-      <span class="home-card-status" id="statusCooccurring"></span>
-      <span class="home-card-arrow">→</span>
-    </div>
 
-    <div class="home-card" onclick="openModule('view-mi')" id="cardMI">
-      <div class="home-card-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
-      <div class="home-card-body">
-        <div class="home-card-title">Motivational Interviewing</div>
-        <div class="home-card-desc">Keeping clients in treatment long enough for the work to matter — stages of change, OARS, rolling with resistance, evoking change talk</div>
+      <div class="home-card" onclick="openModule('view-mi')" id="cardMI">
+        <div class="home-card-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+        <div class="home-card-body">
+          <div class="home-card-title">Motivational Interviewing</div>
+          <div class="home-card-desc">Keeping clients in treatment long enough for the work to matter — stages of change, OARS, rolling with resistance, evoking change talk</div>
+        </div>
+        <span class="home-card-status" id="statusMI"></span>
+        <span class="home-card-arrow">→</span>
       </div>
-      <span class="home-card-status" id="statusMI"></span>
-      <span class="home-card-arrow">→</span>
-    </div>
 
-    <div class="home-card" onclick="openModule('view-group')" id="cardGroup">
-      <div class="home-card-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="3"/><circle cx="17" cy="7" r="3"/><path d="M2 21v-2a5 5 0 0 1 5-5h1"/><path d="M13 21v-2a5 5 0 0 1 5-5h1"/></svg></div>
-      <div class="home-card-body">
-        <div class="home-card-title">Group Facilitation Skills</div>
-        <div class="home-card-desc">Handling monopolizers, silence, cross-talk, and conflict while keeping a group therapeutic</div>
+      <div class="home-card" onclick="openModule('view-group')" id="cardGroup">
+        <div class="home-card-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="3"/><circle cx="17" cy="7" r="3"/><path d="M2 21v-2a5 5 0 0 1 5-5h1"/><path d="M13 21v-2a5 5 0 0 1 5-5h1"/></svg></div>
+        <div class="home-card-body">
+          <div class="home-card-title">Group Facilitation Skills</div>
+          <div class="home-card-desc">Handling monopolizers, silence, cross-talk, and conflict while keeping a group therapeutic</div>
+        </div>
+        <span class="home-card-status" id="statusGroup"></span>
+        <span class="home-card-arrow">→</span>
       </div>
-      <span class="home-card-status" id="statusGroup"></span>
-      <span class="home-card-arrow">→</span>
-    </div>
 
-    <div class="home-card" onclick="openModule('view-ethics')" id="cardEthics">
-      <div class="home-card-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 3 6v6c0 5 4 9 9 10 5-1 9-5 9-10V6z"/></svg></div>
-      <div class="home-card-body">
-        <div class="home-card-title">Ethics &amp; Boundaries</div>
-        <div class="home-card-desc">Dual relationships, self-disclosure, gifts, confidentiality limits — the gray areas you'll actually run into</div>
+      <div class="home-card" onclick="openModule('view-ethics')" id="cardEthics">
+        <div class="home-card-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 3 6v6c0 5 4 9 9 10 5-1 9-5 9-10V6z"/></svg></div>
+        <div class="home-card-body">
+          <div class="home-card-title">Ethics &amp; Boundaries</div>
+          <div class="home-card-desc">Dual relationships, self-disclosure, gifts, confidentiality limits — the gray areas you'll actually run into</div>
+        </div>
+        <span class="home-card-status" id="statusEthics"></span>
+        <span class="home-card-arrow">→</span>
       </div>
-      <span class="home-card-status" id="statusEthics"></span>
-      <span class="home-card-arrow">→</span>
-    </div>
-    <div class="home-card" onclick="openModule('view-family')" id="cardFamily">
-      <div class="home-card-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="6" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
-      <div class="home-card-body">
-        <div class="home-card-title">Family Systems</div>
-        <div class="home-card-desc">Enabling patterns, roles, boundaries, and why family sessions are one of the most vital things we do here</div>
+
+      <div class="home-card" onclick="openModule('view-family')" id="cardFamily">
+        <div class="home-card-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="6" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <div class="home-card-body">
+          <div class="home-card-title">Family Systems</div>
+          <div class="home-card-desc">Enabling patterns, roles, boundaries, and why family sessions are one of the most vital things we do here</div>
+        </div>
+        <span class="home-card-status" id="statusFamily"></span>
+        <span class="home-card-arrow">→</span>
       </div>
-      <span class="home-card-status" id="statusFamily"></span>
-      <span class="home-card-arrow">→</span>
-    </div>
-    <div class="home-card" onclick="openModule('view-culture')" id="cardCulture">
-      <div class="home-card-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
-      <div class="home-card-body">
-        <div class="home-card-title">Cultural Humility</div>
-        <div class="home-card-desc">Working across difference with curiosity instead of assumption — race, class, faith, politics, gender, sexuality, and intersectionality</div>
+
+      <div class="home-card" onclick="openModule('view-culture')" id="cardCulture">
+        <div class="home-card-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+        <div class="home-card-body">
+          <div class="home-card-title">Cultural Humility</div>
+          <div class="home-card-desc">Working across difference with curiosity instead of assumption — race, class, faith, politics, gender, sexuality, and intersectionality</div>
+        </div>
+        <span class="home-card-status" id="statusCulture"></span>
+        <span class="home-card-arrow">→</span>
       </div>
-      <span class="home-card-status" id="statusCulture"></span>
-      <span class="home-card-arrow">→</span>
-    </div>
     </div>
 
     <p class="more-coming">More modules coming soon.</p>
