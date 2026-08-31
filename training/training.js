@@ -6733,27 +6733,6 @@ registerBeats('cultAssemblyBeats', CULT_ASSEMBLY_BEATS, CULT_ASSEMBLY_FINAL, cul
 renderCultureNav();
 
 
-/* =====================================================
-   UPDATED ASSESSMENTS MODULE
-   ===================================================== */
-const uaCHAPTERS = [
-  {title:'Updated Assessments', sections:[
-    {id:'ua-why', label:'When an update is needed'},
-    {id:'ua-newinfo', label:'New clinical information'},
-    {id:'ua-gap', label:'24-hour service gaps'},
-    {id:'ua-scenarios', label:'Does this need an update?'},
-    {id:'ua-assembly', label:'Put it into practice'},
-  ]},
-];
-const uaSECTIONS = uaCHAPTERS.flatMap(c => c.sections);
-const uaTRACKED_SECTIONS = uaSECTIONS.filter(s => s.trackProgress !== false);
-
-let uaProgress = {};
-try{ uaProgress = JSON.parse(localStorage.getItem('doctrain-updated-assessments-progress') || '{}'); }catch(e){ uaProgress = {}; }
-
-function uaSaveProgress(){
-  localStorage.setItem('doctrain-updated-assessments-progress', JSON.stringify(uaProgress));
-  renderUaNav();
 }
 function uaMarkComplete(id){
   uaProgress[id] = true;
@@ -7013,6 +6992,382 @@ registerBeats('uaNewInfoBeats', UA_NEWINFO_BEATS, UA_NEWINFO_FINAL, uaRenderNewI
 registerBeats('uaGapBeats', UA_GAP_BEATS, UA_GAP_FINAL, uaRenderGap, ()=>!!uaProgress['ua-gap']);
 registerBeats('uaScenariosBeats', UA_SCENARIOS_BEATS, UA_SCENARIOS_FINAL, uaRenderScenarios, ()=>!!uaProgress['ua-scenarios']);
 registerBeats('uaAssemblyBeats', UA_ASSEMBLY_BEATS, UA_ASSEMBLY_FINAL, uaRenderAssembly, ()=>!!uaProgress['ua-assembly']);
+renderUaNav();
+
+/* =====================================================
+   UPDATED ASSESSMENTS MODULE
+   ===================================================== */
+const uaCHAPTERS = [
+  {title:'Updated Assessments', sections:[
+    {id:'ua-why', label:'When an update is needed'},
+    {id:'ua-newinfo', label:'New clinical information'},
+    {id:'ua-gap', label:'24-hour service gaps'},
+    {id:'ua-scenarios', label:'Practice the decision'},
+    {id:'ua-assembly', label:'Put it into practice'},
+  ]},
+];
+
+const uaSECTIONS = uaCHAPTERS.flatMap(c => c.sections);
+const uaTRACKED_SECTIONS = uaSECTIONS.filter(s => s.trackProgress !== false);
+
+let uaProgress = {};
+try{
+  uaProgress = JSON.parse(localStorage.getItem('doctrain-updated-assessments-progress') || '{}');
+}catch(e){
+  uaProgress = {};
+}
+
+function uaSaveProgress(){
+  localStorage.setItem('doctrain-updated-assessments-progress', JSON.stringify(uaProgress));
+  renderUaNav();
+}
+
+function uaMarkComplete(id){
+  uaProgress[id] = true;
+  uaSaveProgress();
+  updateBeatNav(SECTION_TO_CONTAINER[id]);
+}
+
+let uaCurrentSection = 'ua-why';
+
+function renderUaNav(){
+  const navList = document.getElementById('navList-ua');
+  if(!navList) return;
+
+  navList.innerHTML = '';
+
+  uaCHAPTERS.forEach(chapter => {
+    const heading = document.createElement('li');
+    heading.style.cssText = 'font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:#7b9587; font-weight:700; margin:16px 0 6px; padding:0 8px;';
+    heading.textContent = chapter.title;
+    navList.appendChild(heading);
+
+    chapter.sections.forEach(s => {
+      const li = document.createElement('li');
+      li.className = 'nav-item' + (uaCurrentSection === s.id ? ' active' : '');
+      li.onclick = () => uaGoTo(s.id);
+
+      const check = document.createElement('span');
+      check.className = 'nav-check' + (uaProgress[s.id] ? ' done' : '');
+      check.textContent = uaProgress[s.id] ? '\u2713' : '';
+      li.appendChild(check);
+
+      const label = document.createElement('span');
+      label.textContent = s.label;
+      li.appendChild(label);
+
+      navList.appendChild(li);
+    });
+  });
+
+  const doneCount = uaTRACKED_SECTIONS.filter(s => uaProgress[s.id]).length;
+
+  const progressLabel = document.getElementById('progressLabel-ua');
+  const progressFill = document.getElementById('progressFill-ua');
+
+  if(progressLabel){
+    progressLabel.textContent = doneCount + ' of ' + uaTRACKED_SECTIONS.length + ' complete';
+  }
+  if(progressFill){
+    progressFill.style.width = (doneCount / uaTRACKED_SECTIONS.length * 100) + '%';
+  }
+
+  const finalBadge = document.getElementById('uaFinalBadge');
+  if(finalBadge){
+    finalBadge.style.display = doneCount === uaTRACKED_SECTIONS.length ? 'inline-block' : 'none';
+  }
+}
+
+function uaGoTo(id){
+  uaCurrentSection = id;
+
+  document.querySelectorAll('#view-updated-assessments section.module').forEach(sec => {
+    sec.classList.toggle('active', sec.dataset.id === id);
+  });
+
+  renderUaNav();
+  closeMobileNav();
+  window.scrollTo({top:0, behavior:'instant'});
+}
+
+const uaResetProgress = document.getElementById('resetProgress-ua');
+if(uaResetProgress){
+  uaResetProgress.onclick = () => {
+    if(confirm('Reset all Updated Assessments module progress?')){
+      localStorage.removeItem('doctrain-updated-assessments-progress');
+      uaProgress = {};
+      uaSaveProgress();
+      [
+        'uaWhyBeats',
+        'uaNewInfoBeats',
+        'uaGapBeats',
+        'uaScenariosBeats',
+        'uaAssemblyBeats'
+      ].forEach(resetBeats);
+    }
+  };
+}
+
+/* ---- Why this matters ---- */
+const UA_WHY_BEATS = [
+  `<p class="lede">An assessment is a picture of what we know about a client at a particular point in treatment. When that picture changes in a clinically meaningful way, the assessment has to change too.</p>`,
+
+  `<p>There are two triggers to keep in your head.</p>
+   <div class="card">
+     <div class="step-header"><span class="step-number">1</span><span class="step-title">New clinically relevant information</span></div>
+     <p>If we learn clinically relevant information that was not reflected in the prior assessment, the assessment needs to be updated.</p>
+   </div>
+   <div class="card">
+     <div class="step-header"><span class="step-number">2</span><span class="step-title">24 hours or longer without services</span></div>
+     <p>If the client receives no services for 24 hours or longer, there needs to be a brief updated assessment explaining why the gap occurred.</p>
+   </div>`,
+
+  `<p>This fits the Golden Thread. The assessment is the clinical picture the treatment plan is built from. If the picture changes but the assessment does not, the rest of the documentation is working from an outdated foundation.</p>
+   <div class="callout"><strong>The short version:</strong> new clinically relevant information gets reflected in an updated assessment, and a 24-hour-or-longer service gap gets explained in a brief updated assessment.</div>`
+];
+
+const UA_WHY_FINAL = `<button class="btn" onclick="uaMarkComplete('ua-why'); uaGoTo('ua-newinfo')">Next: New clinical information &rarr;</button>`;
+
+/* ---- New clinically relevant information ---- */
+const UA_NEWINFO_BEATS = [
+  `<p class="lede">The first trigger is new information that matters clinically and was not reflected in the assessment before.</p>
+   <p>The key phrase is <strong>clinically relevant</strong>. Not every new fact about a client requires an updated assessment.</p>`,
+
+  `<div class="scenario-box">
+     <div class="who">Example</div>
+     A client discloses that they were sexually abused. That history was not identified in the original assessment, and it is now going to be addressed as part of treatment.
+   </div>
+   <p>That is new, clinically relevant information. The assessment now needs to reflect it.</p>`,
+
+  `<p>A progress note can document that the disclosure occurred in session, but the progress note does not replace the assessment. If the new information changes or adds to the clinical picture, the assessment itself needs to be updated.</p>
+   <div class="callout"><strong>Useful gut-check:</strong> Does this new information matter to how we understand the client's needs, risks, treatment focus, or clinical presentation? If yes, the assessment should reflect it.</div>`,
+
+  `<h3>Check your understanding</h3>
+   <div class="quiz-card" id="uaNewInfoQuizCard"></div>`
+];
+
+const UA_NEWINFO_QUIZ = [
+  {
+    q: "A client discloses clinically relevant trauma history that was not reflected in the original assessment, and it will now be addressed in treatment. What should happen?",
+    options: [
+      "Document it only in the next progress note",
+      "Complete an updated assessment that includes the new clinically relevant information",
+      "Wait until discharge to add it to the record"
+    ],
+    correctIdx: 1,
+    explain: "The clinical picture now includes relevant information the assessment did not contain before. The assessment needs to be updated."
+  },
+  {
+    q: "Which new information requires an updated assessment?",
+    options: [
+      "Every new fact learned about a client",
+      "New clinically relevant information that was not reflected in the prior assessment",
+      "Only information that changes the client's diagnosis"
+    ],
+    correctIdx: 1,
+    explain: "The trigger is new clinically relevant information, not every new detail and not only a diagnosis change."
+  }
+];
+
+function uaRenderNewInfo(){
+  buildQuiz('uaNewInfoQuizCard', UA_NEWINFO_QUIZ, () => uaMarkComplete('ua-newinfo'));
+}
+
+const UA_NEWINFO_FINAL = `<button class="btn" onclick="uaGoTo('ua-gap')">Next: The 24-hour rule &rarr;</button>`;
+
+/* ---- 24-hour service gap ---- */
+const UA_GAP_BEATS = [
+  `<p class="lede">The second trigger is a gap in services. If a client receives no services for 24 hours or longer, there needs to be a brief updated assessment explaining why.</p>`,
+
+  `<div class="scenario-box">
+     <div class="who">Example</div>
+     A client goes to the hospital and receives no services for more than 24 hours.
+   </div>
+   <p>The chart now has a 24-hour-or-longer service gap. A brief updated assessment is needed to explain why that gap occurred.</p>`,
+
+  `<div class="callout"><strong>Keep the rule precise:</strong> the trigger is 24 hours or longer without services. It is not simply that the client was physically away from the facility.</div>`,
+
+  `<h3>Check your understanding</h3>
+   <div class="quiz-card" id="uaGapQuizCard"></div>`
+];
+
+const UA_GAP_QUIZ = [
+  {
+    q: "A client receives no services for 30 hours because they were at the hospital. What is required?",
+    options: [
+      "Nothing, because the reason for the gap is already known",
+      "A brief updated assessment explaining why the 24-hour-or-longer service gap occurred",
+      "Only a progress note after the client returns"
+    ],
+    correctIdx: 1,
+    explain: "A gap of 24 hours or longer without services needs to be explained in a brief updated assessment."
+  },
+  {
+    q: "A client misses one scheduled group but receives other services that same day. Does the 24-hour service-gap rule apply based on that missed group alone?",
+    options: [
+      "Yes",
+      "No"
+    ],
+    correctIdx: 1,
+    explain: "The trigger is 24 hours or longer without receiving services, not one missed service while other services continue."
+  }
+];
+
+function uaRenderGap(){
+  buildQuiz('uaGapQuizCard', UA_GAP_QUIZ, () => uaMarkComplete('ua-gap'));
+}
+
+const UA_GAP_FINAL = `<button class="btn" onclick="uaGoTo('ua-scenarios')">Next: Practice the decision &rarr;</button>`;
+
+/* ---- Practice scenarios ---- */
+const UA_SCENARIO_QUIZ = [
+  {
+    q: "During an individual session, a client discloses a history of sexual abuse that was not reflected in the original assessment. The client and counselor are beginning to address it in treatment.",
+    options: [
+      "Updated assessment needed",
+      "No updated assessment based on these facts alone"
+    ],
+    correctIdx: 0,
+    explain: "This is new clinically relevant information that was not reflected in the prior assessment and is now part of the clinical picture."
+  },
+  {
+    q: "A client is at the hospital and receives no services for 27 hours.",
+    options: [
+      "Updated assessment needed",
+      "No updated assessment based on these facts alone"
+    ],
+    correctIdx: 0,
+    explain: "There has been a 24-hour-or-longer gap without services, so a brief updated assessment is needed to explain why."
+  },
+  {
+    q: "A client misses morning group, attends an individual session and afternoon programming the same day, and no new clinically relevant information emerges.",
+    options: [
+      "Updated assessment needed",
+      "No updated assessment based on these facts alone"
+    ],
+    correctIdx: 1,
+    explain: "There is no 24-hour service gap and no new clinically relevant information in this scenario."
+  },
+  {
+    q: "For the first time, a client reports information about the planned discharge environment that changes the treatment team's clinical understanding of the client's recovery environment.",
+    options: [
+      "Updated assessment needed",
+      "No updated assessment based on these facts alone"
+    ],
+    correctIdx: 0,
+    explain: "The information is new and clinically relevant because it changes the clinical picture the team is using."
+  }
+];
+
+const UA_SCENARIOS_BEATS = [
+  `<p class="lede">For each situation, ask the same two questions: Is there new clinically relevant information? Has there been 24 hours or longer without services?</p>`,
+  `<div class="quiz-card" id="uaScenarioQuizCard"></div>`
+];
+
+function uaRenderScenarios(){
+  buildQuiz('uaScenarioQuizCard', UA_SCENARIO_QUIZ, () => uaMarkComplete('ua-scenarios'));
+}
+
+const UA_SCENARIOS_FINAL = `<button class="btn" onclick="uaGoTo('ua-assembly')">Next: Put it together &rarr;</button>`;
+
+/* ---- Final assembly ---- */
+const UA_ASSEMBLY_BEATS = [
+  `<p class="lede">You do not need a complicated decision tree. You need to recognize when the assessment on file no longer tells the current clinical story.</p>
+   <div class="card">
+     <div class="step-header"><span class="step-number">1</span><span class="step-title">Ask about new information</span></div>
+     <p>Did we learn clinically relevant information that was not reflected in the prior assessment?</p>
+   </div>
+   <div class="card">
+     <div class="step-header"><span class="step-number">2</span><span class="step-title">Ask about a service gap</span></div>
+     <p>Has the client gone 24 hours or longer without receiving services?</p>
+   </div>`,
+
+  `<p>If the first answer is yes, update the assessment so it reflects the current clinical picture. If the second answer is yes, complete a brief updated assessment explaining why the service gap occurred. Sometimes both triggers can be present.</p>`,
+
+  `<h3>Final check</h3>
+   <div class="quiz-card" id="uaAssemblyQuizCard"></div>`,
+
+  `<div class="callout"><strong>Keep the principle:</strong> the assessment is not frozen at admission. When clinically relevant information changes what we know, or a 24-hour-or-longer gap interrupts services, the record needs an updated assessment that reflects what happened.</div>
+   <span class="badge-done" id="uaFinalBadge" style="display:none;">You've completed the Updated Assessments module</span>`
+];
+
+const UA_ASSEMBLY_QUIZ = [
+  {
+    q: "Which statement best describes when new information requires an updated assessment?",
+    options: [
+      "Whenever any new fact is learned, even if it has no clinical relevance",
+      "When new clinically relevant information emerges that was not reflected in the prior assessment",
+      "Only when a diagnosis changes"
+    ],
+    correctIdx: 1,
+    explain: "The trigger is new clinically relevant information that was not reflected in the prior assessment."
+  },
+  {
+    q: "A client has gone 24 hours or longer without receiving services. What should happen?",
+    options: [
+      "A brief updated assessment should explain why the service gap occurred",
+      "The original assessment must be copied word for word",
+      "Nothing is required if staff already know the reason"
+    ],
+    correctIdx: 0,
+    explain: "The 24-hour-or-longer gap needs to be explained in a brief updated assessment."
+  },
+  {
+    q: "Why does this matter to the Golden Thread?",
+    options: [
+      "Because the assessment should reflect the clinical picture that the treatment plan and notes are working from",
+      "Because every progress note should be copied into the assessment",
+      "Because an assessment replaces the treatment plan"
+    ],
+    correctIdx: 0,
+    explain: "The assessment is the clinical foundation. When the picture changes, that foundation needs to reflect the current picture."
+  }
+];
+
+function uaRenderAssembly(){
+  buildQuiz('uaAssemblyQuizCard', UA_ASSEMBLY_QUIZ, () => uaMarkComplete('ua-assembly'));
+}
+
+const UA_ASSEMBLY_FINAL = `<button class="btn secondary" onclick="goHome()">&larr; Back to Clinical Training home</button>`;
+
+registerBeats(
+  'uaWhyBeats',
+  UA_WHY_BEATS,
+  UA_WHY_FINAL
+);
+
+registerBeats(
+  'uaNewInfoBeats',
+  UA_NEWINFO_BEATS,
+  UA_NEWINFO_FINAL,
+  uaRenderNewInfo,
+  () => !!uaProgress['ua-newinfo']
+);
+
+registerBeats(
+  'uaGapBeats',
+  UA_GAP_BEATS,
+  UA_GAP_FINAL,
+  uaRenderGap,
+  () => !!uaProgress['ua-gap']
+);
+
+registerBeats(
+  'uaScenariosBeats',
+  UA_SCENARIOS_BEATS,
+  UA_SCENARIOS_FINAL,
+  uaRenderScenarios,
+  () => !!uaProgress['ua-scenarios']
+);
+
+registerBeats(
+  'uaAssemblyBeats',
+  UA_ASSEMBLY_BEATS,
+  UA_ASSEMBLY_FINAL,
+  uaRenderAssembly,
+  () => !!uaProgress['ua-assembly']
+);
+
 renderUaNav();
 
 showView('view-home');
