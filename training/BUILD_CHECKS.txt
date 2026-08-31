@@ -1,0 +1,6 @@
+styles.css present: True
+training.js present: True
+Updated Assessments view present: True
+Home card present: True
+Updated Assessments localStorage key present: True
+Loader includes all 14 views: True

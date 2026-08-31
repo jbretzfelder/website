@@ -1,0 +1,180 @@
+<div id="view-mi" class="top-view">
+  <div class="app">
+    <div class="mobile-topbar">
+      <button onclick="toggleMobileNav()" type="button" aria-label="Open menu">☰</button>
+      <span class="mobile-topbar-title">Motivational Interviewing</span>
+      <button onclick="goHome()" type="button" aria-label="Back to Clinical Training">🏠</button>
+    </div>
+    <div class="sidebar-backdrop" onclick="toggleMobileNav()"></div>
+    <nav class="sidebar">
+      <button class="sidebar-back" onclick="goHome()" type="button">← Back to Clinical Training</button>
+      <div class="sidebar-title">Clinical Training</div>
+      <div class="sidebar-sub">Motivational Interviewing</div>
+      <ul class="nav-list" id="navList-mi"></ul>
+      <div class="progress-track">
+        <span id="progressLabel-mi">0 of 8 complete</span>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill-mi" style="width:0%"></div></div>
+        <span class="reset-link" id="resetProgress-mi">Reset progress</span>
+      </div>
+    </nav>
+
+    <main class="main">
+
+    <!-- SECTION: WHY -->
+    <section class="module active" data-id="mi-why">
+      <div class="eyebrow">Start here</div>
+      <h1>Motivation is the thing you're actually treating</h1>
+      <div class="beat-flow wide" id="miWhyBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="goHome()">← Back to Clinical Training</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION: SPIRIT -->
+    <section class="module" data-id="mi-spirit">
+      <div class="eyebrow">Foundations</div>
+      <h1>What MI actually is — and isn't</h1>
+      <div class="beat-flow wide" id="miSpiritBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="miGoTo('mi-why')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION: STAGES OF CHANGE -->
+    <section class="module" data-id="mi-stages">
+      <div class="eyebrow">Foundations</div>
+      <h1>The Stages of Change — and why almost no one here is in "action"</h1>
+      <div class="beat-flow wide" id="miStagesBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="miGoTo('mi-spirit')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION: OARS -->
+    <section class="module" data-id="mi-oars">
+      <div class="eyebrow">Core skills</div>
+      <h1>OARS: the four skills underneath everything else</h1>
+      <div class="beat-flow wide" id="miOarsBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="miGoTo('mi-stages')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION: REFLECTIONS -->
+    <section class="module" data-id="mi-reflections">
+      <div class="eyebrow">Core skills</div>
+      <h1>Reflections, one level deeper</h1>
+      <div class="beat-flow wide" id="miReflectionsBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="miGoTo('mi-oars')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION: RESISTANCE -->
+    <section class="module" data-id="mi-resistance">
+      <div class="eyebrow">When it gets hard</div>
+      <h1>Rolling with resistance instead of fighting it</h1>
+      <div class="beat-flow wide" id="miResistanceBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="miGoTo('mi-reflections')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION: CHANGE TALK -->
+    <section class="module" data-id="mi-changetalk">
+      <div class="eyebrow">When it gets hard</div>
+      <h1>Listening for — and growing — change talk</h1>
+      <div class="beat-flow wide" id="miChangetalkBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="miGoTo('mi-resistance')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION: ASSEMBLY -->
+    <section class="module" data-id="mi-assembly">
+      <div class="eyebrow">Practice · Final section</div>
+      <h1>Put it together: Danielle wants to leave</h1>
+      <div class="beat-flow wide" id="miAssemblyBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="miGoTo('mi-changetalk')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- REFERENCE: CHEAT SHEET -->
+    <section class="module" data-id="mi-cheatsheet">
+      <div class="eyebrow">Reference · look at this anytime</div>
+      <h1>Motivational interviewing quick reference</h1>
+      <p class="lede">The spirit, the stages, OARS, and the change-talk categories — one page, meant to sit open next to you before a hard conversation, not read start to finish.</p>
+      <div style="margin:14px 0 24px;">
+        <button class="btn secondary" onclick="window.print()">🖨️ Print / Save as PDF</button>
+      </div>
+
+      <div id="miCheatSheetPrintArea">
+        <div class="callout"><strong>The core reframe:</strong> motivation isn't a fixed trait a client either has or doesn't — it's a state that fluctuates by the hour, and your job in nearly every interaction is to protect and grow it, not test for it.</div>
+
+        <h2 style="margin-top:22px;">The MI spirit — PACE</h2>
+        <div class="cheat-grid">
+          <div class="cheat-item"><strong>Partnership:</strong> you and the client work side by side. You're not the expert fixing them.</div>
+          <div class="cheat-item"><strong>Acceptance:</strong> absolute worth, accurate empathy, autonomy support, affirmation — all four, all the time.</div>
+          <div class="cheat-item"><strong>Compassion:</strong> acting in the client's best interest, not your own relief or convenience.</div>
+          <div class="cheat-item"><strong>Evocation:</strong> the reasons to change already live in the client. Your job is to draw them out, not install them.</div>
+        </div>
+
+        <h2 style="margin-top:22px;">Stages of Change</h2>
+        <ul class="checklist">
+          <li><strong>Precontemplation</strong> — not seeing a problem, or not yet. Goal: raise doubt, don't argue.</li>
+          <li><strong>Contemplation</strong> — ambivalent. Sees both sides. Goal: tip the balance, explore both sides honestly.</li>
+          <li><strong>Preparation</strong> — decided, not yet acting. Goal: help build a concrete plan.</li>
+          <li><strong>Action</strong> — actively doing the work. Goal: support and reinforce.</li>
+          <li><strong>Maintenance</strong> — sustaining the change. Goal: prevent relapse, plan for triggers.</li>
+        </ul>
+        <p style="font-size:13px; color:var(--ink-soft);">Most clients arrive in precontemplation or contemplation, often pushed here by someone else's ultimatum, not their own resolve. Meet them where they actually are, not where you wish they were.</p>
+
+        <h2 style="margin-top:22px;">OARS</h2>
+        <div class="cheat-grid">
+          <div class="cheat-item"><strong>Open questions:</strong> can't be answered in one word. "What worries you about your use?" not "Are you worried about your use?"</div>
+          <div class="cheat-item"><strong>Affirmations:</strong> name a genuine strength or effort. Specific, not generic praise.</div>
+          <div class="cheat-item"><strong>Reflections:</strong> state back what you heard, including the meaning underneath it. Aim for more reflections than questions.</div>
+          <div class="cheat-item"><strong>Summaries:</strong> collect several threads together, often ending on the change-talk thread.</div>
+        </div>
+
+        <h2 style="margin-top:22px;">Change talk — DARN-CAT</h2>
+        <ul class="checklist">
+          <li><strong>D-A-R-N</strong> (preparatory): Desire ("I want to"), Ability ("I could"), Reason ("because"), Need ("I have to")</li>
+          <li><strong>C-A-T</strong> (mobilizing): Commitment ("I will"), Activation ("I'm ready to"), Taking Steps ("I already did")</li>
+        </ul>
+
+        <h2 style="margin-top:22px;">The righting reflex — catch yourself doing this</h2>
+        <ul class="checklist">
+          <li>Arguing for change while the client argues the other side — it recruits them straight into defending the status quo</li>
+          <li>Lecturing, warning, or listing reasons to change before they've asked</li>
+          <li>Confronting denial head-on instead of rolling with it</li>
+          <li>Playing the expert who has the answer, instead of drawing the answer out of the client</li>
+        </ul>
+      </div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="miGoTo('mi-assembly')">← Back to Motivational Interviewing Module</button>
+        <span></span>
+      </div>
+    </section>
+
+    </main>
+  </div>
+</div>

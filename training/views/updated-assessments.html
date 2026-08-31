@@ -1,0 +1,73 @@
+<div id="view-updated-assessments" class="top-view">
+  <div class="app">
+    <div class="mobile-topbar">
+      <button onclick="toggleMobileNav()" type="button" aria-label="Open menu">â˜°</button>
+      <span class="mobile-topbar-title">Updated Assessments</span>
+      <button onclick="goHome()" type="button" aria-label="Back to Clinical Training">ðŸ </button>
+    </div>
+    <div class="sidebar-backdrop" onclick="toggleMobileNav()"></div>
+    <nav class="sidebar">
+      <button class="sidebar-back" onclick="goHome()" type="button">â† Back to Clinical Training</button>
+      <div class="sidebar-title">Clinical Training</div>
+      <div class="sidebar-sub">Updated Assessments</div>
+      <ul class="nav-list" id="navList-ua"></ul>
+      <div class="progress-track">
+        <span id="progressLabel-ua">0 of 5 complete</span>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill-ua" style="width:0%"></div></div>
+        <span class="reset-link" id="resetProgress-ua">Reset progress</span>
+      </div>
+    </nav>
+
+    <main class="main">
+      <section class="module active" data-id="ua-why">
+        <div class="eyebrow">Start here</div>
+        <h1>When the assessment needs to change</h1>
+        <div class="beat-flow wide" id="uaWhyBeats"></div>
+        <div class="section-nav-btns">
+          <button class="btn secondary" onclick="goHome()">â† Back to Clinical Training</button>
+          <span></span>
+        </div>
+      </section>
+
+      <section class="module" data-id="ua-newinfo">
+        <div class="eyebrow">The first trigger</div>
+        <h1>New clinically relevant information</h1>
+        <div class="beat-flow wide" id="uaNewInfoBeats"></div>
+        <div class="section-nav-btns">
+          <button class="btn secondary" onclick="uaGoTo('ua-why')">â† Back</button>
+          <span></span>
+        </div>
+      </section>
+
+      <section class="module" data-id="ua-gap">
+        <div class="eyebrow">The second trigger</div>
+        <h1>A gap of 24 hours or longer</h1>
+        <div class="beat-flow wide" id="uaGapBeats"></div>
+        <div class="section-nav-btns">
+          <button class="btn secondary" onclick="uaGoTo('ua-newinfo')">â† Back</button>
+          <span></span>
+        </div>
+      </section>
+
+      <section class="module" data-id="ua-scenarios">
+        <div class="eyebrow">Practice</div>
+        <h1>Does this need an updated assessment?</h1>
+        <div class="beat-flow wide" id="uaScenariosBeats"></div>
+        <div class="section-nav-btns">
+          <button class="btn secondary" onclick="uaGoTo('ua-gap')">â† Back</button>
+          <span></span>
+        </div>
+      </section>
+
+      <section class="module" data-id="ua-assembly">
+        <div class="eyebrow">Practice Â· Final section</div>
+        <h1>Put the rule into practice</h1>
+        <div class="beat-flow wide" id="uaAssemblyBeats"></div>
+        <div class="section-nav-btns">
+          <button class="btn secondary" onclick="uaGoTo('ua-scenarios')">â† Back</button>
+          <span></span>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>

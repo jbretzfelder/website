@@ -1,0 +1,252 @@
+<div id="view-note" class="top-view">
+  <div class="app">
+    <div class="mobile-topbar">
+      <button onclick="toggleMobileNav()" type="button" aria-label="Open menu">☰</button>
+      <span class="mobile-topbar-title">Individual Notes Module</span>
+      <button onclick="goHome()" type="button" aria-label="Back to Clinical Training">🏠</button>
+    </div>
+    <div class="sidebar-backdrop" onclick="toggleMobileNav()"></div>
+    <nav class="sidebar">
+      <button class="sidebar-back" onclick="goHome()" type="button">← Back to Clinical Training</button>
+      <div class="sidebar-title">Clinical Training</div>
+      <div class="sidebar-sub">Individual Notes Module</div>
+      <ul class="nav-list" id="navList-note"></ul>
+      <div class="progress-track">
+        <span id="progressLabel-note">0 of 7 complete</span>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill-note" style="width:0%"></div></div>
+        <span class="reset-link" id="resetProgress-note">Reset progress</span>
+      </div>
+    </nav>
+
+    <main class="main">
+
+    <!-- SECTION 0: WHY -->
+    <section class="module active" data-id="notewhy">
+      <div class="eyebrow">Start here</div>
+      <h1>What an Individual Note actually proves</h1>
+      <div class="beat-flow wide" id="noteWhyBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="openModule('view-itp')">← Back to ITP Module</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION 1: ANATOMY -->
+    <section class="module" data-id="noteanatomy">
+      <div class="eyebrow">Foundations · Section 1</div>
+      <h1>The anatomy of a note</h1>
+      <div class="beat-flow wide" id="noteAnatomyBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="noteGoTo('notewhy')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION 2: SESSION TYPES -->
+    <section class="module" data-id="notetypes">
+      <div class="eyebrow">Practice · Section 2</div>
+      <h1>Four session types, four different notes</h1>
+      <div class="beat-flow wide" id="noteTypesBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="noteGoTo('noteanatomy')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION 3: SESSION DESCRIPTION -->
+    <section class="module" data-id="notedescribe">
+      <div class="eyebrow">Practice · Section 3</div>
+      <h1>Writing the session description</h1>
+      <div class="beat-flow wide" id="noteDescribeBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="noteGoTo('notetypes')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION 4: RESPONSE -->
+    <section class="module" data-id="noteresponse">
+      <div class="eyebrow">Practice · Section 4</div>
+      <h1>Writing the response and progress</h1>
+      <div class="beat-flow wide" id="noteResponseBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="noteGoTo('notedescribe')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION 5: RISK & SAFETY -->
+    <section class="module" data-id="noterisk">
+      <div class="eyebrow">Section 5</div>
+      <h1>Risk &amp; safety: the line you can't skip</h1>
+      <div class="beat-flow wide" id="noteRiskBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="noteGoTo('noteresponse')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION 6: FULL ASSEMBLY -->
+    <section class="module" data-id="noteassembly">
+      <div class="eyebrow">Practice · Final section</div>
+      <h1>Put it all together</h1>
+      <div class="beat-flow wide" id="noteAssemblyBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="noteGoTo('noterisk')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- REFERENCE: CHEAT SHEET -->
+    <section class="module" data-id="notecheatsheet">
+      <div class="eyebrow">Reference · look at this anytime</div>
+      <h1>Individual Note quick reference</h1>
+      <p class="lede">One page — the two output boxes, the reference format, the four session types, and the risk line — meant to be open next to Remarkable, alongside <a href="https://bretzfelder.com/docassist" target="_blank" rel="noopener">DocAssist</a>, while you're actually writing a note.</p>
+      <div style="margin:14px 0 24px;">
+        <button class="btn secondary" onclick="window.print()">🖨️ Print / Save as PDF</button>
+      </div>
+
+      <div id="noteCheatSheetPrintArea">
+        <div class="callout"><strong>Before anything else:</strong> a progress note is not a therapy note. Document progress toward the objective — not a transcript of everything discussed. Overly detailed personal disclosures can be subpoenaed and used against the client; they don't belong here.</div>
+        <div class="callout" style="margin-top:10px;"><strong>Second reminder:</strong> if a note doesn't reference a specific goal letter and objective number, it isn't documentation of treatment toward a plan — it's just a record that a conversation happened.</div>
+
+        <h2 style="margin-top:28px;">Progress note, not therapy note</h2>
+        <ul class="checklist">
+          <li>Ask: does this document progress toward the objective, or does it just repeat what she told me? If it's the second, leave it out.</li>
+          <li>Acknowledge clinical relevance without transcribing the disclosure — "client identified a trigger connected to a past event" not the details of the event itself.</li>
+          <li>This record can be subpoenaed. Anything written here beyond what's needed to show progress can end up used against the client, not for them.</li>
+        </ul>
+
+        <h2 style="margin-top:28px;">Two output boxes</h2>
+        <div class="cheat-grid">
+          <div class="cheat-item"><strong>Describe Therapeutic Interventions Provided:</strong> what objective(s) you worked on and what you did in session — built from your Session Description plus auto-generated lines about which objectives were reviewed or assigned.</div>
+          <div class="cheat-item"><strong>Response — Intervention/Progress/Clinical Judgement:</strong> how the client responded, whether reviewed objectives were completed, what's next, and the risk &amp; safety line — every note gets one, even if nothing is wrong.</div>
+        </div>
+
+        <h2 style="margin-top:28px;">The reference format</h2>
+        <ul class="checklist">
+          <li>Objective reference = Section + Goal Letter + Objective Number: "Objective 1A of Goal A of Section C" — the section is now included, so a bare "Goal A" no longer has to be disambiguated from memory.</li>
+          <li>It's still worth a glance that the section named actually matches where that goal lives, especially with similarly-named goals across sections.</li>
+          <li>"Objective(s) Reviewed" rows can be marked Completed; "Objective(s) Assigned Next" rows cannot — they haven't happened yet.</li>
+        </ul>
+
+        <h2 style="margin-top:28px;">Four session types</h2>
+        <ul class="checklist">
+          <li><strong>Working off ITP (Reviewing)</strong> — the default, routine session type.</li>
+          <li><strong>Updating/Revising ITP</strong> — when the plan itself is changing, not just being worked.</li>
+          <li><strong>First Meeting/Initial ITP</strong> — no "reviewed" objectives yet; only "assigned next."</li>
+          <li><strong>Crisis Intervention</strong> — hides ITP reference fields entirely; today's note isn't measured against the existing plan.</li>
+        </ul>
+
+        <h2 style="margin-top:28px;">Risk &amp; safety</h2>
+        <ul class="checklist">
+          <li>Leave every risk checkbox unchecked and the note still generates: "No risk or safety concerns identified this session." That's a real clinical claim — only let it stand if it's true.</li>
+          <li>If something concerning happened, check "Concerns present" <em>and</em> write it out — a checkbox alone says nothing about what occurred.</li>
+        </ul>
+      </div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="noteGoTo('noteassembly')">← Back to Individual Notes Module</button>
+        <button class="btn" onclick="noteGoTo('notemistakes')">Next: Common mistakes recap →</button>
+      </div>
+    </section>
+
+    <!-- REFERENCE: COMMON MISTAKES -->
+    <section class="module" data-id="notemistakes">
+      <div class="eyebrow">Reference · look at this anytime</div>
+      <h1>Common Individual Note mistakes, at a glance</h1>
+      <p class="lede">Every pitfall from this module, gathered in one place.</p>
+
+      <div class="mistake-grid">
+        <div class="mistake-card mistake-wide">
+          <div class="mistake-dim">Scope</div>
+          <div class="mistake-title">Writing it like a therapy transcript</div>
+          <div class="mistake-body">Documenting everything discussed, every disclosure, every backstory detail. This is part of the discoverable legal record — it can be subpoenaed and used against the client. Document progress toward the objective, not the session's full emotional content.</div>
+        </div>
+        <div class="mistake-card">
+          <div class="mistake-dim">Reference format</div>
+          <div class="mistake-title">Not double-checking the section on similarly-named goals</div>
+          <div class="mistake-body">The note now includes the section automatically ("Objective 1A of Goal A of Section C"), which fixes the old ambiguity — but if a client has goals with the same letter in more than one section, it's still worth a glance to confirm the right one generated.</div>
+        </div>
+        <div class="mistake-card">
+          <div class="mistake-dim">Session types</div>
+          <div class="mistake-title">Using "Reviewing" for a first meeting</div>
+          <div class="mistake-body">A first session has nothing to review yet. Use First Meeting/Initial ITP so the note doesn't claim progress that hasn't happened.</div>
+        </div>
+        <div class="mistake-card">
+          <div class="mistake-dim">Session description</div>
+          <div class="mistake-title">Letting the auto-text stand alone</div>
+          <div class="mistake-body">The generated line just says an objective was reviewed — your free text is what proves what actually happened in the room.</div>
+        </div>
+        <div class="mistake-card">
+          <div class="mistake-dim">Response</div>
+          <div class="mistake-title">Marking an objective "Completed" without evidence</div>
+          <div class="mistake-body">The checkbox generates a clean sentence either way. Only check it when your progress notes actually back it up.</div>
+        </div>
+        <div class="mistake-card">
+          <div class="mistake-dim">Risk &amp; safety</div>
+          <div class="mistake-title">Leaving concerns unchecked out of habit</div>
+          <div class="mistake-body">The default line reassures a reviewer nothing is wrong. If something is, "Concerns present" plus real detail is the only way that shows up.</div>
+        </div>
+        <div class="mistake-card">
+          <div class="mistake-dim">Every note</div>
+          <div class="mistake-title">A note with no goal or objective reference at all</div>
+          <div class="mistake-body">Without a reference, the note reads as an unstructured conversation, not treatment toward a documented plan.</div>
+        </div>
+      </div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="noteGoTo('notecheatsheet')">← Back</button>
+        <button class="btn" onclick="noteGoTo('notefaq')">Next: FAQ →</button>
+      </div>
+    </section>
+
+    <!-- REFERENCE: FAQ -->
+    <section class="module" data-id="notefaq">
+      <div class="eyebrow">Reference · look at this anytime</div>
+      <h1>Frequently asked questions</h1>
+      <p class="lede">The questions staff actually ask about writing Individual Notes, answered directly. Click each one.</p>
+
+      <div class="break-cards">
+        <div class="break-card" onclick="this.classList.toggle('expanded')">
+          <div class="break-card-title"><span class="break-card-icon">+</span> Can I include everything the client told me in session?</div>
+          <div class="break-card-body">No — and this matters more than it might seem. A progress note is not a therapy note. It documents progress toward a specific objective, not a transcript of the session. These notes are part of the legal medical record and can be subpoenaed in court proceedings — a note full of extensive personal disclosures can end up used against the client, not for them. If something is clinically relevant, acknowledge it briefly and connect it to the objective; don't reproduce the disclosure itself.</div>
+        </div>
+        <div class="break-card" onclick="this.classList.toggle('expanded')">
+          <div class="break-card-title"><span class="break-card-icon">+</span> What if a session touched on more than one goal?</div>
+          <div class="break-card-body">Add a row for each objective you reviewed or assigned — the tool supports multiple. Reference each one by its own goal letter and objective number.</div>
+        </div>
+        <div class="break-card" onclick="this.classList.toggle('expanded')">
+          <div class="break-card-title"><span class="break-card-icon">+</span> Does selecting "Motivational Interviewing" or "CBT" write anything into the note?</div>
+          <div class="break-card-body">Not directly — those selections don't currently generate their own sentences. Pick whichever technique the session actually centered on for your own record; if it mattered clinically, say so in your free text too.</div>
+        </div>
+        <div class="break-card" onclick="this.classList.toggle('expanded')">
+          <div class="break-card-title"><span class="break-card-icon">+</span> What if nothing eventful happened this session?</div>
+          <div class="break-card-body">Same rule as everywhere else in this training: "nothing eventful" is still information, if you say what it means. Client attended, engaged with the assigned objective, no new concerns — that's a complete, honest note.</div>
+        </div>
+        <div class="break-card" onclick="this.classList.toggle('expanded')">
+          <div class="break-card-title"><span class="break-card-icon">+</span> Do I have to assign a new objective at the end of every session?</div>
+          <div class="break-card-body">No. If the client is still actively working the same objective, leave "Assigned Next" pointed at it, or blank if genuinely nothing changed. Don't invent a new one just to fill the field.</div>
+        </div>
+        <div class="break-card" onclick="this.classList.toggle('expanded')">
+          <div class="break-card-title"><span class="break-card-icon">+</span> Why does Crisis Intervention hide the ITP reference fields entirely?</div>
+          <div class="break-card-body">A crisis note is documenting an acute event, not routine progress on the existing plan — the tool's own auto-text says as much: the client's original ITP goals aren't a reflection of the crisis note.</div>
+        </div>
+      </div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="noteGoTo('notemistakes')">← Back</button>
+        <button class="btn" onclick="noteGoTo('noteassembly')">Back to the module →</button>
+      </div>
+    </section>
+
+    </main>
+  </div>
+</div>

@@ -1,0 +1,177 @@
+<div id="view-culture" class="top-view">
+  <div class="app">
+    <div class="mobile-topbar">
+      <button onclick="toggleMobileNav()" type="button" aria-label="Open menu">☰</button>
+      <span class="mobile-topbar-title">Cultural Humility</span>
+      <button onclick="goHome()" type="button" aria-label="Back to Clinical Training">🏠</button>
+    </div>
+    <div class="sidebar-backdrop" onclick="toggleMobileNav()"></div>
+    <nav class="sidebar">
+      <button class="sidebar-back" onclick="goHome()" type="button">← Back to Clinical Training</button>
+      <div class="sidebar-title">Clinical Training</div>
+      <div class="sidebar-sub">Cultural Humility</div>
+      <ul class="nav-list" id="navList-culture"></ul>
+      <div class="progress-track">
+        <span id="progressLabel-culture">0 of 8 complete</span>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill-culture" style="width:0%"></div></div>
+        <span class="reset-link" id="resetProgress-culture">Reset progress</span>
+      </div>
+    </nav>
+
+    <main class="main">
+
+    <!-- SECTION: WHY -->
+    <section class="module active" data-id="cult-why">
+      <div class="eyebrow">Start here</div>
+      <h1>The person in front of you is not a category</h1>
+      <div class="beat-flow wide" id="cultWhyBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="goHome()">← Back to Clinical Training</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION: WHAT COUNTS AS CULTURE -->
+    <section class="module" data-id="cult-define">
+      <div class="eyebrow">Foundations</div>
+      <h1>Everything that shapes how someone sees the world</h1>
+      <div class="beat-flow wide" id="cultDefineBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="cultGoTo('cult-why')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION: YOUR OWN LENS -->
+    <section class="module" data-id="cult-lens">
+      <div class="eyebrow">Foundations</div>
+      <h1>You have a culture too — and it's in the room with you</h1>
+      <div class="beat-flow wide" id="cultLensBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="cultGoTo('cult-define')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION: WHAT HUMILITY MEANS -->
+    <section class="module" data-id="cult-humility">
+      <div class="eyebrow">Foundations</div>
+      <h1>What "humility" actually means here</h1>
+      <div class="beat-flow wide" id="cultHumilityBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="cultGoTo('cult-lens')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION: AUTHORSHIP -->
+    <section class="module" data-id="cult-authorship">
+      <div class="eyebrow">Core skill</div>
+      <h1>They are the only true author of their own story</h1>
+      <div class="beat-flow wide" id="cultAuthorshipBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="cultGoTo('cult-humility')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION: INTERSECTIONALITY -->
+    <section class="module" data-id="cult-intersectionality">
+      <div class="eyebrow">Core skill</div>
+      <h1>Intersectionality: identities layer, they don't just add up</h1>
+      <div class="beat-flow wide" id="cultIntersectionalityBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="cultGoTo('cult-authorship')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION: PRACTICE SKILLS -->
+    <section class="module" data-id="cult-practice">
+      <div class="eyebrow">Core skill</div>
+      <h1>Asking well, and recovering when you get it wrong</h1>
+      <div class="beat-flow wide" id="cultPracticeBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="cultGoTo('cult-intersectionality')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION: ASSEMBLY -->
+    <section class="module" data-id="cult-assembly">
+      <div class="eyebrow">Practice · Final section</div>
+      <h1>Put it together: what you assumed about Danielle</h1>
+      <div class="beat-flow wide" id="cultAssemblyBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="cultGoTo('cult-practice')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- REFERENCE: CHEAT SHEET -->
+    <section class="module" data-id="cult-cheatsheet">
+      <div class="eyebrow">Reference · look at this anytime</div>
+      <h1>Cultural humility quick reference</h1>
+      <p class="lede">The definition, what counts as culture, and the core habits of mind — one page, meant to sit open before a session where difference is showing up, not read start to finish.</p>
+      <div style="margin:14px 0 24px;">
+        <button class="btn secondary" onclick="window.print()">🖨️ Print / Save as PDF</button>
+      </div>
+
+      <div id="cultCheatSheetPrintArea">
+        <div class="callout"><strong>The core reframe:</strong> you cannot know someone's story by knowing their category. The client in front of you is always the leading expert on their own life — your job is to stay curious, not to already know.</div>
+
+        <h2 style="margin-top:22px;">Cultural humility vs. cultural competence</h2>
+        <ul class="checklist">
+          <li><strong>Cultural competence</strong> implies a body of knowledge you can finish learning.</li>
+          <li><strong>Cultural humility</strong> is a lifelong stance of curiosity and self-reflection — never complete, never a credential you earn once.</li>
+        </ul>
+
+        <h2 style="margin-top:22px;">What counts as "culture"</h2>
+        <p style="font-size:13px; color:var(--ink-soft); margin:-4px 0 6px;">All of it shapes how someone sees the world, help, and recovery — no single one defines a person.</p>
+        <div class="cheat-grid">
+          <div class="cheat-item">Race &amp; ethnicity</div>
+          <div class="cheat-item">Income &amp; class</div>
+          <div class="cheat-item">Geography (rural/urban)</div>
+          <div class="cheat-item">Religion &amp; spirituality</div>
+          <div class="cheat-item">Political views</div>
+          <div class="cheat-item">Gender</div>
+          <div class="cheat-item">Sexual orientation</div>
+          <div class="cheat-item">Disability</div>
+          <div class="cheat-item">Age &amp; generation</div>
+          <div class="cheat-item">Language &amp; immigration history</div>
+          <div class="cheat-item">Family structure</div>
+          <div class="cheat-item">Military/veteran status</div>
+        </div>
+
+        <h2 style="margin-top:22px;">Intersectionality</h2>
+        <ul class="checklist">
+          <li>Overlapping identities interact — they don't just stack up one at a time.</li>
+          <li>Two people who share one identity can have completely different experiences once you factor in the rest of who they are.</li>
+        </ul>
+
+        <h2 style="margin-top:22px;">Practical habits</h2>
+        <ul class="checklist">
+          <li>Ask open, respectful questions instead of guessing from appearance or category — "What's important for me to understand about your background?"</li>
+          <li>Notice your own reaction or assumption, name it to yourself, and set it aside rather than acting on it</li>
+          <li>Political views, like faith, are something to stay curious and neutral about — never something to share, debate, or judge in session</li>
+          <li>When you get something wrong, a brief, genuine correction and moving on works better than an extended apology that centers your discomfort</li>
+        </ul>
+      </div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="cultGoTo('cult-assembly')">← Back to Cultural Humility Module</button>
+        <span></span>
+      </div>
+    </section>
+
+    </main>
+  </div>
+</div>

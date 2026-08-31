@@ -1,0 +1,171 @@
+<div id="view-family" class="top-view">
+  <div class="app">
+    <div class="mobile-topbar">
+      <button onclick="toggleMobileNav()" type="button" aria-label="Open menu">☰</button>
+      <span class="mobile-topbar-title">Family Systems</span>
+      <button onclick="goHome()" type="button" aria-label="Back to Clinical Training">🏠</button>
+    </div>
+    <div class="sidebar-backdrop" onclick="toggleMobileNav()"></div>
+    <nav class="sidebar">
+      <button class="sidebar-back" onclick="goHome()" type="button">← Back to Clinical Training</button>
+      <div class="sidebar-title">Clinical Training</div>
+      <div class="sidebar-sub">Family Systems</div>
+      <ul class="nav-list" id="navList-family"></ul>
+      <div class="progress-track">
+        <span id="progressLabel-family">0 of 8 complete</span>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill-family" style="width:0%"></div></div>
+        <span class="reset-link" id="resetProgress-family">Reset progress</span>
+      </div>
+    </nav>
+
+    <main class="main">
+
+    <!-- SECTION: WHY -->
+    <section class="module active" data-id="fam-why">
+      <div class="eyebrow">Start here</div>
+      <h1>The people who never walk through our doors</h1>
+      <div class="beat-flow wide" id="famWhyBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="goHome()">← Back to Clinical Training</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION: THE FAMILY WEB -->
+    <section class="module" data-id="fam-web">
+      <div class="eyebrow">Foundations</div>
+      <h1>Addiction is a family disease — the whole system gets sick</h1>
+      <div class="beat-flow wide" id="famWebBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="famGoTo('fam-why')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION: FAMILY ROLES -->
+    <section class="module" data-id="fam-roles">
+      <div class="eyebrow">Foundations</div>
+      <h1>Five roles families fall into, and the pain each one hides</h1>
+      <div class="beat-flow wide" id="famRolesBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="famGoTo('fam-web')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION: ENABLING -->
+    <section class="module" data-id="fam-enabling">
+      <div class="eyebrow">Where it gets real</div>
+      <h1>Enabling: love that quietly protects the addiction</h1>
+      <div class="beat-flow wide" id="famEnablingBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="famGoTo('fam-roles')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION: CODEPENDENCY -->
+    <section class="module" data-id="fam-codependency">
+      <div class="eyebrow">Where it gets real</div>
+      <h1>Codependency: when someone else's addiction becomes your whole identity</h1>
+      <div class="beat-flow wide" id="famCodependencyBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="famGoTo('fam-enabling')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION: FAMILY SESSIONS -->
+    <section class="module" data-id="fam-sessions">
+      <div class="eyebrow">Why this matters most</div>
+      <h1>Family sessions: the most vital work you'll do here</h1>
+      <div class="beat-flow wide" id="famSessionsBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="famGoTo('fam-codependency')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION: RESISTANCE -->
+    <section class="module" data-id="fam-resistance">
+      <div class="eyebrow">When it gets hard</div>
+      <h1>When a family — or the client — doesn't want to engage</h1>
+      <div class="beat-flow wide" id="famResistanceBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="famGoTo('fam-sessions')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION: ASSEMBLY -->
+    <section class="module" data-id="fam-assembly">
+      <div class="eyebrow">Practice · Final section</div>
+      <h1>Put it together: Danielle's family session</h1>
+      <div class="beat-flow wide" id="famAssemblyBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="famGoTo('fam-resistance')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- REFERENCE: CHEAT SHEET -->
+    <section class="module" data-id="fam-cheatsheet">
+      <div class="eyebrow">Reference · look at this anytime</div>
+      <h1>Family systems quick reference</h1>
+      <p class="lede">The family roles, enabling vs. helping, and why family sessions matter so much — one page, meant to sit open before a family session, not read start to finish.</p>
+      <div style="margin:14px 0 24px;">
+        <button class="btn secondary" onclick="window.print()">🖨️ Print / Save as PDF</button>
+      </div>
+
+      <div id="famCheatSheetPrintArea">
+        <div class="callout"><strong>The core reframe:</strong> every client who walks through our doors is connected to people who never do — children, spouses, parents, whole communities — whose lives improve or don't based partly on what happens in here. Family work isn't an add-on to treatment. It's treatment.</div>
+
+        <h2 style="margin-top:22px;">Five family roles</h2>
+        <ul class="checklist">
+          <li><strong>Enabler/Caretaker:</strong> shields the addicted member from consequences, holds the family together on the surface.</li>
+          <li><strong>Hero:</strong> overachieves to bring the family pride and a sense of normalcy.</li>
+          <li><strong>Scapegoat:</strong> acts out, pulling attention away from the addiction.</li>
+          <li><strong>Lost Child:</strong> withdraws and becomes invisible to avoid adding to the chaos.</li>
+          <li><strong>Mascot:</strong> uses humor to relieve unbearable tension.</li>
+        </ul>
+        <p style="font-size:13px; color:var(--ink-soft);">Every role is a survival strategy, not a character flaw — and every person in one is carrying real, hidden pain.</p>
+
+        <h2 style="margin-top:22px;">Enabling vs. helping</h2>
+        <ul class="checklist">
+          <li><strong>Enabling:</strong> removes the natural consequences of use — paying debts, lying for them, cleaning up messes.</li>
+          <li><strong>Helping:</strong> supports recovery without absorbing the consequences of active use.</li>
+          <li>Enabling almost always comes from love and fear, not indifference — that's what makes it so hard to see from inside it.</li>
+        </ul>
+
+        <h2 style="margin-top:22px;">Codependency signs</h2>
+        <ul class="checklist">
+          <li>Self-worth tied to managing or controlling another person's addiction</li>
+          <li>Chronic self-neglect in favor of caretaking</li>
+          <li>Difficulty setting or holding boundaries, even when they know they should</li>
+        </ul>
+
+        <h2 style="margin-top:22px;">Why family sessions can't be skipped</h2>
+        <ul class="checklist">
+          <li>The client is returning to the same family system that existed before treatment — unless it changes too, relapse risk rises sharply.</li>
+          <li>Reconnecting with family is one of the strongest motivators clients have to stay in treatment and stay sober.</li>
+          <li>Family sessions are where enabling and codependent patterns can first be named safely, with support in the room.</li>
+        </ul>
+      </div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="famGoTo('fam-assembly')">← Back to Family Systems Module</button>
+        <span></span>
+      </div>
+    </section>
+
+    </main>
+  </div>
+</div>

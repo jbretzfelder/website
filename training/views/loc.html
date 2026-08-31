@@ -1,0 +1,193 @@
+<div id="view-loc" class="top-view">
+  <div class="app">
+    <div class="mobile-topbar">
+      <button onclick="toggleMobileNav()" type="button" aria-label="Open menu">☰</button>
+      <span class="mobile-topbar-title">Levels of Care Module</span>
+      <button onclick="goHome()" type="button" aria-label="Back to Clinical Training">🏠</button>
+    </div>
+    <div class="sidebar-backdrop" onclick="toggleMobileNav()"></div>
+    <nav class="sidebar">
+      <button class="sidebar-back" onclick="goHome()" type="button">← Back to Clinical Training</button>
+      <div class="sidebar-title">Clinical Training</div>
+      <div class="sidebar-sub">Levels of Care Module</div>
+      <ul class="nav-list" id="navList-loc"></ul>
+      <div class="progress-track">
+        <span id="progressLabel-loc">0 of 10 complete</span>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill-loc" style="width:0%"></div></div>
+        <span class="reset-link" id="resetProgress-loc">Reset progress</span>
+      </div>
+    </nav>
+
+    <main class="main">
+
+    <!-- SECTION: WHY -->
+    <section class="module active" data-id="loc-why">
+      <div class="eyebrow">Start here</div>
+      <h1>What "level of care" actually means</h1>
+      <div class="beat-flow wide" id="locWhyBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="goHome()">← Back to Clinical Training</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION: CONTINUUM -->
+    <section class="module" data-id="loc-continuum">
+      <div class="eyebrow">Foundations</div>
+      <h1>The continuum of care</h1>
+      <div class="beat-flow wide" id="locContinuumBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="locGoTo('loc-why')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION: FOCUS -->
+    <section class="module" data-id="loc-focus">
+      <div class="eyebrow">Foundations</div>
+      <h1>Same continuum, different jobs</h1>
+      <div class="beat-flow wide" id="locFocusBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="locGoTo('loc-continuum')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION: THE TEST -->
+    <section class="module" data-id="loc-test">
+      <div class="eyebrow">The decision framework</div>
+      <h1>The residential necessity test</h1>
+      <div class="beat-flow wide" id="locTestBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="locGoTo('loc-focus')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION: PRACTICE 1 -->
+    <section class="module" data-id="loc-practice1">
+      <div class="eyebrow">Practice</div>
+      <h1>Case study: is Maria ready to step down?</h1>
+      <div class="beat-flow wide" id="locPractice1Beats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="locGoTo('loc-test')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION: TRANSITIONS -->
+    <section class="module" data-id="loc-transitions">
+      <div class="eyebrow">The decision framework</div>
+      <h1>Transition readiness, level by level</h1>
+      <div class="beat-flow wide" id="locTransitionsBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="locGoTo('loc-practice1')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION: PRACTICE 2 -->
+    <section class="module" data-id="loc-practice2">
+      <div class="eyebrow">Practice</div>
+      <h1>One more case, then three quick scenarios</h1>
+      <div class="beat-flow wide" id="locPractice2Beats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="locGoTo('loc-transitions')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION: DOMAINS -->
+    <section class="module" data-id="loc-domains">
+      <div class="eyebrow">The decision framework</div>
+      <h1>Five domains, one weak link</h1>
+      <div class="beat-flow wide" id="locDomainsBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="locGoTo('loc-practice2')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION: JUSTIFY -->
+    <section class="module" data-id="loc-justify">
+      <div class="eyebrow">Documentation</div>
+      <h1>Justifying the level of care on paper</h1>
+      <div class="beat-flow wide" id="locJustifyBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="locGoTo('loc-domains')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- SECTION: ASSEMBLY -->
+    <section class="module" data-id="loc-assembly">
+      <div class="eyebrow">Practice · Final section</div>
+      <h1>Determine Danielle's level of care</h1>
+      <div class="beat-flow wide" id="locAssemblyBeats"></div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="locGoTo('loc-justify')">← Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- REFERENCE: CHEAT SHEET -->
+    <section class="module" data-id="loc-cheatsheet">
+      <div class="eyebrow">Reference · look at this anytime</div>
+      <h1>Levels of Care quick reference</h1>
+      <p class="lede">The continuum, the litmus test, and the five domains — one page, meant to sit open next to a chart while you're actually weighing a transition, not read start to finish.</p>
+      <div style="margin:14px 0 24px;">
+        <button class="btn secondary" onclick="window.print()">🖨️ Print / Save as PDF</button>
+      </div>
+
+      <div id="locCheatSheetPrintArea">
+        <div class="callout"><strong>Before anything else:</strong> the litmus test — can this person maintain their recovery gains for 12–16 hours without professional oversight? If no, they need more structure. If yes across every domain, they're ready for less.</div>
+
+        <h2 style="margin-top:28px;">The continuum, low to high</h2>
+        <div class="cheat-grid">
+          <div class="cheat-item"><strong>0.5 — Early Intervention:</strong> Education and monitoring for at-risk use, not yet a diagnosable disorder.</div>
+          <div class="cheat-item"><strong>1 — Outpatient:</strong> Scheduled sessions, client living independently full-time.</div>
+          <div class="cheat-item"><strong>2.1 — Intensive Outpatient (IOP):</strong> Several hours of programming, several days a week, living independently.</div>
+          <div class="cheat-item"><strong>2.5 — Partial Hospitalization (Day Treatment):</strong> 20+ hours/week programming, evenings and nights at home.</div>
+          <div class="cheat-item"><strong>3.1 — Clinically Managed Low-Intensity Residential:</strong> Live-in, lighter clinical structure, often longer-term.</div>
+          <div class="cheat-item"><strong>3.5 — Clinically Managed High-Intensity Residential:</strong> Live-in, 24/7 clinical (non-medical) oversight, no nursing on site.</div>
+          <div class="cheat-item"><strong>3.7 / 3.7WM — Medically Monitored Intensive Inpatient / Withdrawal Management:</strong> Live-in, 24/7 medical monitoring, nursing and physician availability.</div>
+          <div class="cheat-item"><strong>4 — Medically Managed Intensive Inpatient:</strong> Hospital-level care for the most acute medical/psychiatric presentations.</div>
+        </div>
+
+        <h2 style="margin-top:28px;">3.7WM / 3.5 / 2.5 — the job, not just the intensity</h2>
+        <ul class="checklist">
+          <li><strong>3.7WM:</strong> Medical stabilization. Nursing always available.</li>
+          <li><strong>3.5:</strong> Skill-building and behavioral change. No nursing on site — clinical staff only.</li>
+          <li><strong>2.5:</strong> Real-world application. Evenings at home; the point is proving skills hold up with less supervision.</li>
+        </ul>
+
+        <h2 style="margin-top:28px;">Five domains for a 3.5 → 2.5 decision</h2>
+        <ul class="checklist">
+          <li><strong>Medical Complexity</strong> — independent medication management, recognizing emergencies, communicating with providers</li>
+          <li><strong>Psychiatric Stability</strong> — managing symptoms without 24/7 oversight, using coping skills consistently, recognizing warning signs</li>
+          <li><strong>Social Skills</strong> — navigating relationships and conflict without staff mediation</li>
+          <li><strong>Daily Living Skills</strong> — cooking, cleaning, budgeting, time management, transportation</li>
+          <li><strong>Support Systems</strong> — recovery-oriented relationships, appropriately engaged family/social supports, accessible community resources</li>
+        </ul>
+        <div class="callout"><strong>One weak domain is enough to hold someone at the higher level of care</strong> — even when every other domain looks ready. That's not overcaution; a single unresolved risk area is exactly what a relapse exploits.</div>
+      </div>
+
+      <div class="section-nav-btns">
+        <button class="btn secondary" onclick="locGoTo('loc-assembly')">← Back to Levels of Care Module</button>
+        <span></span>
+      </div>
+    </section>
+
+    </main>
+  </div>
+</div>
