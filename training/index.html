@@ -715,34 +715,6 @@
   font-size: 12px;
 }
 
-#view-updated-assessments #uaWhyBeats-nav .btn,
-#view-updated-assessments #uaNewInfoBeats-nav .btn,
-#view-updated-assessments #uaGapBeats-nav .btn,
-#view-updated-assessments #uaScenariosBeats-nav .btn,
-#view-updated-assessments #uaAssemblyBeats-nav .btn {
-  font-size: 0;
-}
-
-#view-updated-assessments #uaWhyBeats-nav .btn::after {
-  content: "Next: New clinical information \2192";
-  font-size: 14px;
-}
-#view-updated-assessments #uaNewInfoBeats-nav .btn::after {
-  content: "Next: The 24-hour rule \2192";
-  font-size: 14px;
-}
-#view-updated-assessments #uaGapBeats-nav .btn::after {
-  content: "Next: Practice the decision \2192";
-  font-size: 14px;
-}
-#view-updated-assessments #uaScenariosBeats-nav .btn::after {
-  content: "Next: Put it into practice \2192";
-  font-size: 14px;
-}
-#view-updated-assessments #uaAssemblyBeats-nav .btn::after {
-  content: "\2190 Back to Clinical Training home";
-  font-size: 14px;
-}
 </style>
 </head>
 <body>
@@ -10190,55 +10162,67 @@ const UA_SCENARIOS_FINAL = `<button class="btn" onclick="uaGoTo('ua-assembly')">
 
 /* ---- Final assembly ---- */
 const UA_ASSEMBLY_BEATS = [
-  `<p class="lede">You do not need a complicated decision tree. You need to recognize when the assessment on file no longer tells the current clinical story.</p>
-   <div class="card">
-     <div class="step-header"><span class="step-number">1</span><span class="step-title">Ask about new information</span></div>
-     <p>Did we learn clinically relevant information that was not reflected in the prior assessment?</p>
-   </div>
-   <div class="card">
-     <div class="step-header"><span class="step-number">2</span><span class="step-title">Ask about a service gap</span></div>
-     <p>Has the client gone 24 hours or longer without receiving services?</p>
+  `<p class="lede">By the end of this module, the decision should be quick: compare what is happening now with the assessment already on file, then check whether services were interrupted for 24 hours or longer.</p>`,
+
+  `<div class="card">
+     <div class="step-header"><span class="step-number">1</span><span class="step-title">Compare the current clinical picture to the assessment on file</span></div>
+     <p>Did new <strong>clinically relevant</strong> information emerge that the existing assessment does not reflect?</p>
+     <ul class="checklist">
+       <li>If no, this trigger does not require an updated assessment.</li>
+       <li>If yes, update the assessment so the new information is part of the clinical picture the record is working from.</li>
+       <li>A progress note can document where the information came from, but it does not substitute for updating the assessment itself.</li>
+     </ul>
    </div>`,
 
-  `<p>If the first answer is yes, update the assessment so it reflects the current clinical picture. If the second answer is yes, complete a brief updated assessment explaining why the service gap occurred. Sometimes both triggers can be present.</p>`,
+  `<div class="card">
+     <div class="step-header"><span class="step-number">2</span><span class="step-title">Check for a 24-hour-or-longer gap in services</span></div>
+     <p>Has the client gone <strong>24 hours or longer without receiving services</strong>?</p>
+     <ul class="checklist">
+       <li>If no, this trigger does not apply.</li>
+       <li>If yes, complete a brief updated assessment explaining why the service gap occurred.</li>
+       <li>The key is the gap in services—not simply whether the client was physically away from the facility.</li>
+     </ul>
+   </div>`,
 
-  `<h3>Final check</h3>
+  `<div class="callout"><strong>Then make the decision.</strong> Either trigger can require an updated assessment, and both can occur at the same time. If neither trigger is present, these rules alone do not call for one.</div>`,
+
+  `<h3>Apply it one last time</h3>
    <div class="quiz-card" id="uaAssemblyQuizCard"></div>`,
 
-  `<div class="callout"><strong>Keep the principle:</strong> the assessment is not frozen at admission. When clinically relevant information changes what we know, or a 24-hour-or-longer gap interrupts services, the record needs an updated assessment that reflects what happened.</div>
+  `<div class="callout"><strong>What to remember after this module:</strong> the assessment on file should match the clinical picture the team is actually treating from. Update it when new clinically relevant information is missing from that picture, and document a 24-hour-or-longer interruption in services with a brief updated assessment explaining the gap.</div>
    <span class="badge-done" id="uaFinalBadge" style="display:none;">You've completed the Updated Assessments module</span>`
 ];
 
 const UA_ASSEMBLY_QUIZ = [
   {
-    q: "Which statement best describes when new information requires an updated assessment?",
+    q: "A client shares a new family detail that does not affect the team's understanding of the client's needs, risks, treatment focus, or clinical presentation. There has been no service gap. Based on these rules, what should happen?",
     options: [
-      "Whenever any new fact is learned, even if it has no clinical relevance",
-      "When new clinically relevant information emerges that was not reflected in the prior assessment",
-      "Only when a diagnosis changes"
+      "Complete an updated assessment because every new fact requires one",
+      "No updated assessment is required based on these facts alone",
+      "Wait until discharge and then rewrite the original assessment"
     ],
     correctIdx: 1,
-    explain: "The trigger is new clinically relevant information that was not reflected in the prior assessment."
+    explain: "The new-information trigger is clinical relevance, not simply novelty. With no clinically relevant change and no 24-hour service gap, these rules alone do not require an update."
   },
   {
-    q: "A client has gone 24 hours or longer without receiving services. What should happen?",
+    q: "A client is hospitalized for 30 hours and receives no treatment-program services during that time. No other new clinical information emerges. What should happen?",
     options: [
-      "A brief updated assessment should explain why the service gap occurred",
-      "The original assessment must be copied word for word",
-      "Nothing is required if staff already know the reason"
+      "Complete a brief updated assessment explaining the 24-hour-or-longer service gap",
+      "No update is needed because the hospital stay already explains it",
+      "Only add a progress note after the client returns"
     ],
     correctIdx: 0,
-    explain: "The 24-hour-or-longer gap needs to be explained in a brief updated assessment."
+    explain: "The service-gap trigger applies because the client went at least 24 hours without services. The brief updated assessment explains why that interruption occurred."
   },
   {
-    q: "Why does this matter to the Golden Thread?",
+    q: "A client returns after a 26-hour service gap and also discloses clinically relevant trauma history that was not reflected in the prior assessment. Which is the best response?",
     options: [
-      "Because the assessment should reflect the clinical picture that the treatment plan and notes are working from",
-      "Because every progress note should be copied into the assessment",
-      "Because an assessment replaces the treatment plan"
+      "Address only the service gap because it happened first",
+      "Address only the trauma disclosure because it is more clinically important",
+      "Update the assessment so the new clinical information is reflected and the 24-hour-or-longer service gap is explained"
     ],
-    correctIdx: 0,
-    explain: "The assessment is the clinical foundation. When the picture changes, that foundation needs to reflect the current picture."
+    correctIdx: 2,
+    explain: "Both triggers are present. The updated assessment should reflect the new clinically relevant information and explain the interruption in services."
   }
 ];
 
