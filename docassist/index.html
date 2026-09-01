@@ -4687,7 +4687,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
           <div id="de-subtype-wrap" style="display:none;margin-top:10px;margin-left:12px;padding-left:10px;border-left:2px solid var(--border);">
             <div style="font-size:10px;color:var(--text-secondary);margin-bottom:5px;">Discharge Circumstance<span class="req-star">*</span></div>
             <div style="display:flex;gap:6px;flex-wrap:wrap;">
-              <button class="ds-pill ds-subpill" onclick="deSetSubtype('planned')" id="de-sub-planned">Planned / Completed</button>
+              <button class="ds-pill ds-subpill" onclick="deSetSubtype('planned')" id="de-sub-planned">Planned</button>
               <button class="ds-pill ds-subpill" onclick="deSetSubtype('asa')" id="de-sub-asa">Left ASA</button>
               <button class="ds-pill ds-subpill" onclick="deSetSubtype('admin')" id="de-sub-admin">Admin Discharge</button>
             </div>
@@ -5570,7 +5570,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       <div style="display:flex;flex-direction:column;gap:7px;">
         <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 13px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;">
           <span style="font-size:9px;font-weight:600;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">WORKFLOW</span>
-          <span style="font-size:13px;line-height:1.55;">Discharge Email transition outcomes are now Successful or Unsuccessful; Neutral has been removed. Successful reflects connection to continued treatment or completion of 1.0 LOC, rather than a judgement of client performance. Discharge circumstance is tracked separately as Planned / Completed, Left ASA, or Administrative Discharge, so ASA/Admin can be classified as Successful when continued treatment is established. Successful transitions also require staff to verify whether the client was on the Transition Calendar and explain any No response before generating.</span>
+          <span style="font-size:13px;line-height:1.55;">Discharge Email transition outcomes are now Successful or Unsuccessful; Neutral has been removed. Successful reflects connection to continued treatment or completion of 1.0 LOC, rather than a judgement of client performance. Discharge circumstance is tracked separately as Planned, Left ASA, or Administrative Discharge, so ASA/Admin can be classified as Successful when continued treatment is established. Successful transitions also require staff to verify whether the client was on the Transition Calendar and explain any No response before generating.</span>
         </div>
       </div>
     </div>
@@ -11174,8 +11174,8 @@ const DE_TYPE_LABELS = {
   unsuccessful: 'Unsuccessful',
   neutral: 'Neutral'
 };
-const DE_SUBTYPE_LABELS = { planned: 'Planned / Completed Transition', asa: 'Left Against Staff Advice (ASA)', admin: 'Administrative Discharge', unable: 'Unable to Complete — External Circumstance' };
-const DE_SUBJECT_SUBTYPE_LABELS = { planned: 'Planned / Completed', asa: 'ASA', admin: 'Admin Discharge', unable: 'Unable to Complete' };
+const DE_SUBTYPE_LABELS = { planned: 'Planned Transition', asa: 'Left Against Staff Advice (ASA)', admin: 'Administrative Discharge', unable: 'Unable to Complete — External Circumstance' };
+const DE_SUBJECT_SUBTYPE_LABELS = { planned: 'Planned', asa: 'ASA', admin: 'Admin Discharge', unable: 'Unable to Complete' };
 
 function deFmtDate(d) {
   if (!d) return '';
@@ -11372,7 +11372,7 @@ function deGenerate() {
   const typeLabel = DE_TYPE_LABELS[s.dischargeType] || '[Type of Discharge]';
   const subjectSubtypeLabel = DE_SUBJECT_SUBTYPE_LABELS[s.dischargeSubtype] || '[Discharge Circumstance]';
 
-  subjectOut.textContent = `Discharge - ${typeLabel} - ${subjectSubtypeLabel} - ${unitStr} - ${dateStr}`;
+  subjectOut.textContent = `Discharge - ${unitStr} - ${typeLabel} - ${subjectSubtypeLabel} - ${dateStr}`;
 
   let typeLine = typeLabel;
   if (s.dischargeSubtype) {
@@ -14099,7 +14099,7 @@ const TUT_TOOL_STEPS = [
 
   { view:'discharge-email', sel:'#de-dischargetype-wrap', section:'Discharge Email', navigate:'discharge-email',
     title:'Transition outcome',
-    body:'Successful means the client is connected to continued treatment or completes 1.0 LOC. Unsuccessful means the client leaves without continued treatment arranged. Neutral is only for an external circumstance that prevents a client who is otherwise progressing appropriately from being able to complete the program, such as being taken into custody. Neutral is not a middle option for an unclear discharge. Successful and Unsuccessful transitions still separately identify Planned / Completed, Left ASA, or Administrative Discharge as applicable.' },
+    body:'Successful means the client is connected to continued treatment or completes 1.0 LOC. Unsuccessful means the client leaves without continued treatment arranged. Neutral is only for an external circumstance that prevents a client who is otherwise progressing appropriately from being able to complete the program, such as being taken into custody. Neutral is not a middle option for an unclear discharge. Successful and Unsuccessful transitions still separately identify Planned, Left ASA, or Administrative Discharge as applicable.' },
 
   { view:'discharge-email', sel:'#de-transition-calendar-wrap', section:'Discharge Email', navigate:'discharge-email',
     title:'Transition Calendar verification',
