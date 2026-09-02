@@ -4723,6 +4723,15 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
             <label class="form-label">If No, Why Not?<span class="req-star">*</span></label>
             <textarea class="form-textarea" id="de-transition-calendar-reason" rows="2" placeholder="Explain why the successful transition was not on the Transition Calendar…" oninput="deState.transitionCalendarNoReason=this.value;deRenderOutput()" style="min-height:55px;"></textarea>
           </div>
+          <div id="de-planned-calendar-warning" style="display:none;margin-top:8px;padding:10px 11px;border:2px solid #c0392b;border-radius:7px;background:#fdecea;color:#7a1f1f;">
+            <div style="font-size:11px;font-weight:700;margin-bottom:5px;">STOP — Please verify Planned.</div>
+            <div style="font-size:10px;line-height:1.45;margin-bottom:7px;">You selected <strong>Planned — Treatment Team Approved</strong>, but the client was <strong>not</strong> on the Transition Calendar. Planned means the treatment team approved this as the intended discharge/transition. It does <strong>NOT</strong> mean a plan was arranged after the client decided to leave.</div>
+            <div style="font-size:10px;font-weight:600;margin-bottom:6px;">Was this actually a treatment-team-approved planned discharge?<span class="req-star">*</span></div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;">
+              <button class="ds-pill" onclick="deSetPlannedCalendarConfirmation('yes')" id="de-planned-calendar-confirm-yes">Yes — Keep Planned</button>
+              <button class="ds-pill" onclick="deSetPlannedCalendarConfirmation('no')" id="de-planned-calendar-confirm-no">No — Change Discharge Circumstance</button>
+            </div>
+          </div>
         </div>
 
       </div>
@@ -10857,7 +10866,7 @@ function dsReset() {
 let deState = {
   clientName: '', dischargeDate: '', departureTime: '', unit: '', dischargeType: '', dischargeSubtype: '',
   outcomeCompleted1: 'no', outcomeContinuedTreatment: '', outcomeExternalBarrier: '',
-  unsuccessfulReason: '', neutralReason: '', neutralSupervisor: '', transitionCalendar: '', transitionCalendarNoReason: '', 
+  unsuccessfulReason: '', neutralReason: '', neutralSupervisor: '', transitionCalendar: '', transitionCalendarNoReason: '', plannedCalendarConfirmed: '', 
   bridgeContacted: '', bridgeNotContactedReason: '', staffInvolved: '', staffNone: false, otherStaffInvolved: '',
   destination: '', destinationUnknown: false, resourceSheetProvided: '', resourceSheetReason: '', forwardingInfo: '', forwardingNone: false,
   medsReceived: '', medsNotReceivedReason: '',
@@ -10985,11 +10994,41 @@ function deSetYN(field, val, prefix) {
     document.getElementById('de-transition-calendar-reason-wrap').style.display = newVal === 'no' ? 'block' : 'none';
     if (newVal !== 'no') {
       deState.transitionCalendarNoReason = '';
+      deState.plannedCalendarConfirmed = '';
       const el = document.getElementById('de-transition-calendar-reason');
       if (el) el.value = '';
     }
+    deRefreshPlannedCalendarWarning();
   }
   deRenderOutput();
+}
+
+function deRefreshPlannedCalendarWarning() {
+  const needsCheck = deState.dischargeType === 'successful' && deState.dischargeSubtype === 'planned' && deState.transitionCalendar === 'no';
+  const wrap = document.getElementById('de-planned-calendar-warning');
+  if (wrap) wrap.style.display = needsCheck ? 'block' : 'none';
+  ['yes','no'].forEach(v => {
+    const el = document.getElementById('de-planned-calendar-confirm-' + v);
+    if (el) el.classList.toggle('active', needsCheck && deState.plannedCalendarConfirmed === v);
+  });
+  if (!needsCheck) deState.plannedCalendarConfirmed = '';
+}
+
+function deSetPlannedCalendarConfirmation(val) {
+  if (val === 'yes') {
+    deState.plannedCalendarConfirmed = 'yes';
+    deRefreshPlannedCalendarWarning();
+    deRenderOutput();
+    return;
+  }
+
+  // Staff indicated this was not actually a treatment-team-approved planned discharge.
+  // Clear Planned and require them to choose the correct discharge circumstance.
+  deState.plannedCalendarConfirmed = '';
+  if (deState.dischargeSubtype === 'planned') deSetSubtype('planned');
+  deRefreshPlannedCalendarWarning();
+  const subtypeWrap = document.getElementById('de-subtype-wrap');
+  if (subtypeWrap) subtypeWrap.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
 function deSetTri(field, val, prefix, thirdVal = 'unknown') {
@@ -11160,10 +11199,13 @@ function deSetDischargeType(val) {
   if (newVal !== 'successful') {
     deState.transitionCalendar = '';
     deState.transitionCalendarNoReason = '';
+    deState.plannedCalendarConfirmed = '';
     ['yes','no'].forEach(v => { const el = document.getElementById('de-calendar-' + v); if (el) el.classList.remove('active'); });
     document.getElementById('de-transition-calendar-reason-wrap').style.display = 'none';
     const calendarReason = document.getElementById('de-transition-calendar-reason');
     if (calendarReason) calendarReason.value = '';
+    const plannedCalendarWarning = document.getElementById('de-planned-calendar-warning');
+    if (plannedCalendarWarning) plannedCalendarWarning.style.display = 'none';
   }
   document.getElementById('de-call-wrap').style.display = newVal === 'unsuccessful' ? 'block' : 'none';
 
@@ -11178,6 +11220,7 @@ function deSetDischargeType(val) {
 function deSetSubtype(val) {
   const newVal = (deState.dischargeSubtype === val) ? '' : val;
   deState.dischargeSubtype = newVal;
+  if (newVal !== 'planned') deState.plannedCalendarConfirmed = '';
   ['planned','asa','admin'].forEach(v => {
     document.getElementById('de-sub-' + v).classList.toggle('active', v === newVal);
   });
@@ -11190,6 +11233,7 @@ function deSetSubtype(val) {
   document.getElementById('de-unsuccessful-reason-wrap').style.display = isAsaOrAdmin ? 'block' : 'none';
   document.getElementById('de-bridge-wrap').style.display = (newVal === 'asa' && deState.unit !== 'Community OP') ? 'block' : 'none';
   document.getElementById('de-admin-staff-wrap').style.display = (newVal === 'admin') ? 'block' : 'none';
+  deRefreshPlannedCalendarWarning();
   deRenderOutput();
 }
 
@@ -11293,6 +11337,7 @@ function deComputeErrors() {
   if (s.dischargeType === 'neutral' && !s.neutralReason) errors.push({ label: 'External circumstance that made continued treatment impossible', id: 'de-neutral-reason-wrap', critical: true });
   if (s.dischargeType === 'successful' && !s.transitionCalendar) errors.push({ label: 'Transition Calendar verification', id: 'de-transition-calendar-wrap', critical: true });
   if (s.dischargeType === 'successful' && s.transitionCalendar === 'no' && !s.transitionCalendarNoReason) errors.push({ label: 'Reason successful transition was not on Transition Calendar', id: 'de-transition-calendar-reason-wrap', critical: true });
+  if (s.dischargeType === 'successful' && s.dischargeSubtype === 'planned' && s.transitionCalendar === 'no' && s.plannedCalendarConfirmed !== 'yes') errors.push({ label: 'Verify Planned discharge when not on Transition Calendar', id: 'de-planned-calendar-warning', critical: true });
   if (bridgeStatus.contactedMissing) errors.push({ label: 'Bridge contact', id: 'de-bridge-required-wrap', critical: true });
   if (bridgeStatus.reasonMissing) errors.push({ label: "Bridge — reason not contacted", id: 'de-bridge-reason-wrap', critical: true });
   if (bridgeStatus.bridgeRequired && !s.staffInvolved && !s.staffNone) errors.push({ label: 'Clinical staff member (or mark none available)', id: 'de-staff-required-wrap', critical: true });
@@ -11353,6 +11398,10 @@ function deRenderOutput() {
 
   const calendarReasonWrap = document.getElementById('de-transition-calendar-reason-wrap');
   if (calendarReasonWrap) calendarReasonWrap.classList.toggle('field-error', s.dischargeType === 'successful' && s.transitionCalendar === 'no' && !s.transitionCalendarNoReason);
+
+  deRefreshPlannedCalendarWarning();
+  const plannedCalendarWarning = document.getElementById('de-planned-calendar-warning');
+  if (plannedCalendarWarning) plannedCalendarWarning.classList.toggle('field-error', s.dischargeType === 'successful' && s.dischargeSubtype === 'planned' && s.transitionCalendar === 'no' && s.plannedCalendarConfirmed !== 'yes');
 
   const opReasonWrap = document.getElementById('de-op-reason-wrap');
   if (opReasonWrap) opReasonWrap.classList.toggle('field-error', s.outpatientOffered === 'no' && !s.outpatientNoReason);
@@ -11532,7 +11581,7 @@ function deReset() {
   deState = {
     clientName: '', dischargeDate: '', departureTime: '', unit: '', dischargeType: '', dischargeSubtype: '',
     outcomeCompleted1: 'no', outcomeContinuedTreatment: '', outcomeExternalBarrier: '',
-    unsuccessfulReason: '', neutralReason: '', neutralSupervisor: '', transitionCalendar: '', transitionCalendarNoReason: '',
+    unsuccessfulReason: '', neutralReason: '', neutralSupervisor: '', transitionCalendar: '', transitionCalendarNoReason: '', plannedCalendarConfirmed: '',
     bridgeContacted: '', bridgeNotContactedReason: '', staffInvolved: '', staffNone: false, otherStaffInvolved: '',
     destination: '', destinationUnknown: false, resourceSheetProvided: '', resourceSheetReason: '', forwardingInfo: '', forwardingNone: false,
     medsReceived: '', medsNotReceivedReason: '',
@@ -11595,6 +11644,7 @@ function deReset() {
   document.getElementById('de-neutral-reason-wrap').style.display = 'none';
   document.getElementById('de-transition-calendar-wrap').style.display = 'none';
   document.getElementById('de-transition-calendar-reason-wrap').style.display = 'none';
+  document.getElementById('de-planned-calendar-warning').style.display = 'none';
   document.getElementById('de-bridge-wrap').style.display = 'none';
   document.getElementById('de-admin-staff-wrap').style.display = 'none';
   document.getElementById('de-bridge-reason-wrap').style.display = 'none';
