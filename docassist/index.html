@@ -4661,15 +4661,17 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 
           <div id="de-transition-calendar-wrap" style="display:none;margin-top:10px;padding:10px 12px;border:1px solid var(--border);border-radius:7px;background:var(--output-bg);">
             <label class="form-label">Was the Client on the <a href="https://woodhavenohio.sharepoint.com/:x:/r/_layouts/15/Doc.aspx?sourcedoc=%7BAB20E2CB-864C-49CA-9635-44EAE4FBECC4%7D&amp;file=2026%20Discharge%20Transition%20Calendar.xlsx&amp;action=default&amp;mobileredirect=true" target="_blank" rel="noopener noreferrer">Transition Calendar</a> (Verify Before Answering)?<span class="req-star">*</span></label>
-            <div style="font-size:10px;color:var(--text-secondary);line-height:1.45;margin-bottom:7px;"><strong>A Successful transition must be on the Transition Calendar.</strong> If the client is not on the calendar, they should not be classified as Successful.</div>
+            <div style="font-size:10px;color:var(--text-secondary);line-height:1.45;margin-bottom:7px;"><strong>Successful transitions are expected to be on the Transition Calendar.</strong> A No response is unusual and may indicate the discharge should not be classified as Successful. If No, you must explain why.</div>
             <div style="display:flex;gap:6px;">
               <button class="ds-pill" onclick="deSetTransitionCalendar('yes')" id="de-calendar-yes">Yes</button>
               <button class="ds-pill" onclick="deSetTransitionCalendar('no')" id="de-calendar-no">No</button>
             </div>
           </div>
 
-          <div id="de-transition-calendar-rejected" style="display:none;margin-top:10px;padding:9px 11px;border:2px solid #c0392b;border-radius:7px;background:#fdecea;color:#7a1f1f;font-size:10px;line-height:1.45;">
-            <strong>Cannot classify as Successful.</strong> The client was not on the Transition Calendar. Select Unsuccessful or, only for a rare supervisor-approved exception, Neutral.
+          <div id="de-transition-calendar-reason-wrap" style="display:none;margin-top:8px;padding:9px 11px;border:2px solid #c0392b;border-radius:7px;background:#fdecea;color:#7a1f1f;">
+            <div style="font-size:10px;line-height:1.45;margin-bottom:7px;"><strong>Please verify this classification.</strong> A Successful transition should normally be on the Transition Calendar. If the client was not on the calendar, confirm that Successful is still appropriate and explain why the client was not listed.</div>
+            <label class="form-label">Why was this Successful transition not on the Transition Calendar?<span class="req-star">*</span></label>
+            <textarea class="form-textarea" id="de-transition-calendar-reason" rows="2" placeholder="Explain why the client was not on the Transition Calendar…" oninput="deState.transitionCalendarNoReason=this.value;deRenderOutput()" style="min-height:55px;"></textarea>
           </div>
 
           <div id="de-subtype-wrap" style="display:none;margin-top:10px;margin-left:12px;padding-left:10px;border-left:2px solid var(--border);">
@@ -5536,7 +5538,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       <div style="display:flex;flex-direction:column;gap:7px;">
         <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 13px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;">
           <span style="font-size:9px;font-weight:600;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">WORKFLOW</span>
-          <span style="font-size:13px;line-height:1.55;">Discharge Email transition classification has been reverted to the prior completion-based method. Successful means the client successfully completed treatment. Unsuccessful means the client left ASA or was administratively discharged. Neutral remains a rare supervisor-approved exception. The continued-treatment linkage decision tree has been removed. Successful transitions still require verified placement on the Transition Calendar; answering No prevents the discharge from being classified as Successful.</span>
+          <span style="font-size:13px;line-height:1.55;">Discharge Email transition classification has been reverted to the prior completion-based method. Successful means the client successfully completed treatment. Unsuccessful means the client left ASA or was administratively discharged. Neutral remains a rare supervisor-approved exception. The continued-treatment linkage decision tree has been removed. Successful transitions still require Transition Calendar verification. A No response is flagged as atypical and requires a written explanation before generation, but does not automatically change the classification.</span>
         </div>
       </div>
     </div>
@@ -11053,8 +11055,10 @@ function deSetDischargeType(val) {
     const el = document.getElementById('de-calendar-' + v);
     if (el) el.classList.remove('active');
   });
-  const calendarRejected = document.getElementById('de-transition-calendar-rejected');
-  if (calendarRejected) calendarRejected.style.display = 'none';
+  const calendarReasonWrap = document.getElementById('de-transition-calendar-reason-wrap');
+  if (calendarReasonWrap) calendarReasonWrap.style.display = 'none';
+  const calendarReason = document.getElementById('de-transition-calendar-reason');
+  if (calendarReason) calendarReason.value = '';
 
   document.getElementById('de-call-wrap').style.display = newVal === 'unsuccessful' ? 'block' : 'none';
   if (newVal !== 'unsuccessful') {
@@ -11066,32 +11070,19 @@ function deSetDischargeType(val) {
 }
 
 function deSetTransitionCalendar(val) {
-  if (val === 'yes') {
-    deState.transitionCalendar = 'yes';
-    const yesBtn = document.getElementById('de-calendar-yes');
-    const noBtn = document.getElementById('de-calendar-no');
-    if (yesBtn) yesBtn.classList.add('active');
-    if (noBtn) noBtn.classList.remove('active');
-    const rejected = document.getElementById('de-transition-calendar-rejected');
-    if (rejected) rejected.style.display = 'none';
-    deRenderOutput();
-    return;
-  }
-
-  // A client who is not on the Transition Calendar cannot remain Successful.
-  deState.transitionCalendar = 'no';
-  deState.dischargeType = '';
-  deState.dischargeSubtype = '';
-  const successfulBtn = document.getElementById('de-dt-successful');
-  if (successfulBtn) successfulBtn.classList.remove('active');
-  const calendarWrap = document.getElementById('de-transition-calendar-wrap');
-  if (calendarWrap) calendarWrap.style.display = 'none';
-  const rejected = document.getElementById('de-transition-calendar-rejected');
-  if (rejected) rejected.style.display = 'block';
+  const newVal = (deState.transitionCalendar === val) ? '' : val;
+  deState.transitionCalendar = newVal;
   ['yes','no'].forEach(v => {
     const el = document.getElementById('de-calendar-' + v);
-    if (el) el.classList.remove('active');
+    if (el) el.classList.toggle('active', v === newVal);
   });
+  const reasonWrap = document.getElementById('de-transition-calendar-reason-wrap');
+  if (reasonWrap) reasonWrap.style.display = newVal === 'no' ? 'block' : 'none';
+  if (newVal !== 'no') {
+    deState.transitionCalendarNoReason = '';
+    const reason = document.getElementById('de-transition-calendar-reason');
+    if (reason) reason.value = '';
+  }
   deRenderOutput();
 }
 
@@ -11207,7 +11198,8 @@ function deComputeErrors() {
   if (!s.dischargeDate) errors.push({ label: 'Date of discharge', id: 'de-discharge-date' });
   if (!s.unit) errors.push({ label: 'Unit', id: 'de-unit' });
   if (!s.dischargeType) errors.push({ label: 'Transition outcome', id: 'de-dischargetype-wrap' });
-  if (s.dischargeType === 'successful' && s.transitionCalendar !== 'yes') errors.push({ label: 'Transition Calendar verification — Successful requires Yes', id: 'de-transition-calendar-wrap', critical: true });
+  if (s.dischargeType === 'successful' && !s.transitionCalendar) errors.push({ label: 'Transition Calendar verification', id: 'de-transition-calendar-wrap', critical: true });
+  if (s.dischargeType === 'successful' && s.transitionCalendar === 'no' && !s.transitionCalendarNoReason) errors.push({ label: 'Reason Successful transition was not on Transition Calendar', id: 'de-transition-calendar-reason-wrap', critical: true });
   if (s.dischargeType === 'unsuccessful' && !s.dischargeSubtype) errors.push({ label: 'ASA or Administrative Discharge', id: 'de-subtype-wrap', critical: true });
   if ((s.dischargeSubtype === 'asa' || s.dischargeSubtype === 'admin') && !s.unsuccessfulReason) errors.push({ label: 'Reason for leaving / discharge', id: 'de-unsuccessful-reason-wrap' });
   if (s.dischargeType === 'neutral' && !s.neutralSupervisor) errors.push({ label: 'Supervisor who approved Neutral', id: 'de-neutral-reason-wrap', critical: true });
@@ -11325,7 +11317,8 @@ function deGenerate() {
   lines.push(`Transition Outcome: ${typeLine}`);
 
   if (s.dischargeType === 'successful') {
-    lines.push('Transition Calendar (Verified): Yes');
+    lines.push(`Transition Calendar (Verified): ${s.transitionCalendar === 'yes' ? 'Yes' : 'No'}`);
+    if (s.transitionCalendar === 'no' && s.transitionCalendarNoReason) lines.push(`Reason Not on Transition Calendar: ${s.transitionCalendarNoReason}`);
   }
 
   if ((s.dischargeSubtype === 'asa' || s.dischargeSubtype === 'admin') && s.unsuccessfulReason) {
@@ -11453,7 +11446,7 @@ function deReset() {
     roomVacated: '', clientsOnUnit: '', roomCleanedSearched: '',
     additionalInfo: ''
   };
-  ['de-client-name','de-discharge-date','de-departure-time','de-unsuccessful-reason','de-neutral-supervisor','de-neutral-reason','de-bridge-reason',
+  ['de-client-name','de-discharge-date','de-departure-time','de-unsuccessful-reason','de-neutral-supervisor','de-neutral-reason','de-transition-calendar-reason','de-bridge-reason',
    'de-staff-name','de-staff-other','de-admin-staff-other','de-destination','de-meds-reason','de-rs-reason','de-room','de-census','de-forwarding','de-additional',
    'de-2wm-reason','de-op-reason'].forEach(id => {
     const el = document.getElementById(id);
@@ -11495,7 +11488,7 @@ function deReset() {
   document.getElementById('de-unsuccessful-reason-wrap').style.display = 'none';
   document.getElementById('de-neutral-reason-wrap').style.display = 'none';
   document.getElementById('de-transition-calendar-wrap').style.display = 'none';
-  document.getElementById('de-transition-calendar-rejected').style.display = 'none';
+  document.getElementById('de-transition-calendar-reason-wrap').style.display = 'none';
   ['yes','no'].forEach(v => { const el = document.getElementById('de-calendar-' + v); if (el) el.classList.remove('active'); });
   document.getElementById('de-bridge-wrap').style.display = 'none';
   document.getElementById('de-admin-staff-wrap').style.display = 'none';
@@ -14763,16 +14756,23 @@ function autosaveApply(snap) {
   deState.outcomeCompleted1 = '';
   deState.outcomeContinuedTreatment = '';
   deState.outcomeExternalBarrier = '';
-  deState.transitionCalendarNoReason = '';
   deState.plannedCalendarConfirmed = '';
   if (deState.dischargeType === 'successful') {
-    deState.transitionCalendar = savedDe.transitionCalendar === 'yes' ? 'yes' : '';
+    deState.transitionCalendar = ['yes','no'].includes(savedDe.transitionCalendar) ? savedDe.transitionCalendar : '';
+    deState.transitionCalendarNoReason = deState.transitionCalendar === 'no' ? (savedDe.transitionCalendarNoReason || '') : '';
     const calendarWrap = document.getElementById('de-transition-calendar-wrap');
     if (calendarWrap) calendarWrap.style.display = 'block';
-    const calendarYes = document.getElementById('de-calendar-yes');
-    if (calendarYes) calendarYes.classList.toggle('active', deState.transitionCalendar === 'yes');
+    ['yes','no'].forEach(v => {
+      const el = document.getElementById('de-calendar-' + v);
+      if (el) el.classList.toggle('active', deState.transitionCalendar === v);
+    });
+    const calendarReasonWrap = document.getElementById('de-transition-calendar-reason-wrap');
+    if (calendarReasonWrap) calendarReasonWrap.style.display = deState.transitionCalendar === 'no' ? 'block' : 'none';
+    const calendarReason = document.getElementById('de-transition-calendar-reason');
+    if (calendarReason) calendarReason.value = deState.transitionCalendarNoReason;
   } else {
     deState.transitionCalendar = '';
+    deState.transitionCalendarNoReason = '';
   }
   if (deState.destinationUnknown) deToggleDestinationUnknown(true);
   if (deState.forwardingNone) deToggleForwardingNone(true);
