@@ -4648,54 +4648,37 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
 
         <div style="margin-bottom:10px;">
-          <label class="form-label">Determine Transition Outcome<span class="req-star">*</span></label>
+          <label class="form-label">Transition Outcome<span class="req-star">*</span></label>
           <div id="de-dischargetype-wrap" style="border:1px solid var(--border);border-radius:8px;padding:12px 14px;background:var(--output-bg);">
-            <div style="font-size:11px;color:var(--text-secondary);line-height:1.5;margin-bottom:10px;">Answer the questions below and DocAssist will determine the transition outcome.</div>
-
-            <div id="de-outcome-step1" style="margin-bottom:10px;">
-              <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px;">1. Did the client complete treatment through 1.0 LOC?</div>
-              <div style="font-size:10px;color:var(--text-secondary);line-height:1.45;margin-bottom:6px;"><strong>No is selected by default. Only change this to Yes if you know what completing 1.0 LOC means and know that the client completed it.</strong></div>
-              <div style="display:flex;gap:6px;">
-                <button class="ds-pill" onclick="deSetOutcomeGuide('outcomeCompleted1','yes','de-guide-complete')" id="de-guide-complete-yes">Yes</button>
-                <button class="ds-pill active" onclick="deSetOutcomeGuide('outcomeCompleted1','no','de-guide-complete')" id="de-guide-complete-no">No</button>
-              </div>
+            <div style="font-size:11px;color:var(--text-secondary);line-height:1.5;margin-bottom:9px;"><strong>Use the discharge outcome based on how treatment ended.</strong></div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;">
+              <button class="ds-pill" onclick="deSetDischargeType('successful')" id="de-dt-successful">Successful — Completed Treatment</button>
+              <button class="ds-pill" onclick="deSetDischargeType('unsuccessful')" id="de-dt-unsuccessful">Unsuccessful — ASA / Administrative Discharge</button>
+              <button class="ds-pill" onclick="deSetDischargeType('neutral')" id="de-dt-neutral">Neutral — Rare Exception</button>
             </div>
+            <div style="font-size:10px;color:var(--text-secondary);line-height:1.45;margin-top:8px;"><strong>Successful</strong> means the client successfully completed treatment. <strong>Unsuccessful</strong> means the client left ASA or was administratively discharged. <strong>Neutral</strong> should be used only in rare circumstances and requires supervisor approval.</div>
+          </div>
 
-            <div id="de-outcome-step2" style="display:block;margin-bottom:10px;padding-top:10px;border-top:1px solid var(--border);">
-              <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px;">2. Before the client left, was continued treatment with a specific treatment provider actually arranged?</div>
-              <div style="font-size:10px;color:var(--text-secondary);line-height:1.45;margin-bottom:6px;"><strong>Select Yes only when a specific provider and an actual plan to continue treatment there were arranged.</strong> A recommendation, referral, phone number, resource sheet, or the client saying they plan to seek treatment <strong>does NOT count.</strong></div>
-              <div style="display:flex;gap:6px;">
-                <button class="ds-pill" onclick="deSetOutcomeGuide('outcomeContinuedTreatment','yes','de-guide-continuing')" id="de-guide-continuing-yes">Yes — Treatment Arranged</button>
-                <button class="ds-pill" onclick="deSetOutcomeGuide('outcomeContinuedTreatment','no','de-guide-continuing')" id="de-guide-continuing-no">No — Not Arranged</button>
-              </div>
-            </div>
-
-            <div id="de-outcome-step3" style="display:none;margin-bottom:10px;padding-top:10px;border-top:1px solid var(--border);">
-              <div style="padding:8px 10px;border:1px solid var(--border);border-radius:6px;background:var(--surface);margin-bottom:7px;font-size:10px;line-height:1.45;color:var(--text);"><strong>STOP: This transition is Unsuccessful unless a supervisor has specifically approved Neutral.</strong></div>
-              <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px;">3. Did a supervisor specifically review this discharge and approve Neutral because an external event made it impossible for the client to continue treatment?</div>
-              <div style="font-size:10px;color:var(--text-secondary);line-height:1.45;margin-bottom:6px;">Select Yes only after discussing this specific discharge with a supervisor and receiving approval to classify it as Neutral. Example: the client was taken into custody. Neutral is not for a client who was doing well, had a reasonable reason for leaving, or when “Unsuccessful” feels unfair.</div>
-              <div style="display:flex;gap:6px;flex-wrap:wrap;">
-                <button class="ds-pill" onclick="deSetOutcomeGuide('outcomeExternalBarrier','yes','de-guide-external')" id="de-guide-external-yes">Yes — Supervisor Approved Neutral</button>
-                <button class="ds-pill" onclick="deSetOutcomeGuide('outcomeExternalBarrier','no','de-guide-external')" id="de-guide-external-no">No — Unsuccessful Transition</button>
-              </div>
-            </div>
-
-            <div id="de-outcome-result" style="display:none;margin-top:10px;padding:10px 12px;border:1px solid var(--continued-border);border-radius:7px;background:var(--continued-bg);">
-              <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-secondary);margin-bottom:2px;">Transition Outcome</div>
-              <div id="de-outcome-result-title" style="font-size:14px;font-weight:700;color:var(--text);"></div>
-              <div id="de-outcome-result-detail" style="font-size:11px;color:var(--text-secondary);line-height:1.45;margin-top:2px;"></div>
+          <div id="de-transition-calendar-wrap" style="display:none;margin-top:10px;padding:10px 12px;border:1px solid var(--border);border-radius:7px;background:var(--output-bg);">
+            <label class="form-label">Was the Client on the <a href="https://woodhavenohio.sharepoint.com/:x:/r/_layouts/15/Doc.aspx?sourcedoc=%7BAB20E2CB-864C-49CA-9635-44EAE4FBECC4%7D&amp;file=2026%20Discharge%20Transition%20Calendar.xlsx&amp;action=default&amp;mobileredirect=true" target="_blank" rel="noopener noreferrer">Transition Calendar</a> (Verify Before Answering)?<span class="req-star">*</span></label>
+            <div style="font-size:10px;color:var(--text-secondary);line-height:1.45;margin-bottom:7px;"><strong>A Successful transition must be on the Transition Calendar.</strong> If the client is not on the calendar, they should not be classified as Successful.</div>
+            <div style="display:flex;gap:6px;">
+              <button class="ds-pill" onclick="deSetTransitionCalendar('yes')" id="de-calendar-yes">Yes</button>
+              <button class="ds-pill" onclick="deSetTransitionCalendar('no')" id="de-calendar-no">No</button>
             </div>
           </div>
 
+          <div id="de-transition-calendar-rejected" style="display:none;margin-top:10px;padding:9px 11px;border:2px solid #c0392b;border-radius:7px;background:#fdecea;color:#7a1f1f;font-size:10px;line-height:1.45;">
+            <strong>Cannot classify as Successful.</strong> The client was not on the Transition Calendar. Select Unsuccessful or, only for a rare supervisor-approved exception, Neutral.
+          </div>
+
           <div id="de-subtype-wrap" style="display:none;margin-top:10px;margin-left:12px;padding-left:10px;border-left:2px solid var(--border);">
-            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:5px;">How did the discharge occur?<span class="req-star">*</span></div>
-            <div style="font-size:10px;color:var(--text-secondary);line-height:1.45;margin-bottom:6px;"><strong>Planned means the treatment team approved this as the intended discharge/transition.</strong> A client planning their own departure, telling staff ahead of time, or arranging to leave on a certain date does <strong>NOT</strong> make the discharge Planned.</div>
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:5px;">How did the unsuccessful discharge occur?<span class="req-star">*</span></div>
             <div style="display:flex;gap:6px;flex-wrap:wrap;">
-              <button class="ds-pill ds-subpill" onclick="deSetSubtype('planned')" id="de-sub-planned">Planned — Treatment Team Approved</button>
               <button class="ds-pill ds-subpill" onclick="deSetSubtype('asa')" id="de-sub-asa">Left Against Staff Advice (ASA)</button>
               <button class="ds-pill ds-subpill" onclick="deSetSubtype('admin')" id="de-sub-admin">Administrative Discharge</button>
+              <button class="ds-pill ds-subpill" onclick="deSetSubtype('planned')" id="de-sub-planned" style="display:none;">Planned</button>
             </div>
-            <div style="font-size:10px;color:var(--text-secondary);line-height:1.45;margin-top:5px;">ASA or Administrative Discharge describes how the client left; it does not determine whether the transition was successful.</div>
           </div>
         </div>
 
@@ -4708,31 +4691,12 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
           <div style="padding:9px 11px;border:1px solid var(--border);border-radius:7px;background:var(--output-bg);margin-bottom:8px;font-size:10px;line-height:1.45;color:var(--text);"><strong>Neutral requires supervisor approval.</strong> Do not continue unless a supervisor reviewed this specific discharge and approved Neutral.</div>
           <label class="form-label">Supervisor Who Approved Neutral<span class="req-star">*</span></label>
           <input class="form-input" id="de-neutral-supervisor" type="text" placeholder="Enter the supervisor's name" oninput="deState.neutralSupervisor=this.value;deRenderOutput()" style="margin-bottom:8px;" />
-          <label class="form-label">External Circumstance That Made Continued Treatment Impossible<span class="req-star">*</span></label>
-          <div style="font-size:10px;color:var(--text-secondary);line-height:1.45;margin-bottom:5px;">Neutral is an exception, not a middle option between Successful and Unsuccessful. Do not use Neutral because the client was doing well, had a reasonable reason for leaving, or because calling the transition Unsuccessful seems unfair.</div>
-          <textarea class="form-textarea" id="de-neutral-reason" rows="2" placeholder="Describe the external event that made continued treatment impossible (e.g., taken into custody)…" oninput="deState.neutralReason=this.value;deRenderOutput()" style="min-height:55px;"></textarea>
+          <label class="form-label">Reason for Rare Neutral Classification<span class="req-star">*</span></label>
+          <div style="font-size:10px;color:var(--text-secondary);line-height:1.45;margin-bottom:5px;">Neutral is a rare exception and requires supervisor approval. Do not use Neutral as a middle option between Successful and Unsuccessful.</div>
+          <textarea class="form-textarea" id="de-neutral-reason" rows="2" placeholder="Describe the rare circumstance supporting the Neutral classification…" oninput="deState.neutralReason=this.value;deRenderOutput()" style="min-height:55px;"></textarea>
         </div>
 
-        <div id="de-transition-calendar-wrap" style="display:none;margin-bottom:10px;">
-          <label class="form-label">Was the Client on the <a href="https://woodhavenohio.sharepoint.com/:x:/r/_layouts/15/Doc.aspx?sourcedoc=%7BAB20E2CB-864C-49CA-9635-44EAE4FBECC4%7D&amp;file=2026%20Discharge%20Transition%20Calendar.xlsx&amp;action=default&amp;mobileredirect=true" target="_blank" rel="noopener noreferrer">Transition Calendar</a> (Verify Before Answering)?<span class="req-star">*</span></label>
-          <div style="display:flex;gap:6px;margin-bottom:6px;">
-            <button class="ds-pill" onclick="deSetYN('transitionCalendar','yes','de-calendar')" id="de-calendar-yes">Yes</button>
-            <button class="ds-pill" onclick="deSetYN('transitionCalendar','no','de-calendar')" id="de-calendar-no">No</button>
-          </div>
-          <div id="de-transition-calendar-reason-wrap" style="display:none;">
-            <label class="form-label">If No, Why Not?<span class="req-star">*</span></label>
-            <textarea class="form-textarea" id="de-transition-calendar-reason" rows="2" placeholder="Explain why the successful transition was not on the Transition Calendar…" oninput="deState.transitionCalendarNoReason=this.value;deRenderOutput()" style="min-height:55px;"></textarea>
-          </div>
-          <div id="de-planned-calendar-warning" style="display:none;margin-top:8px;padding:10px 11px;border:2px solid #c0392b;border-radius:7px;background:#fdecea;color:#7a1f1f;">
-            <div style="font-size:11px;font-weight:700;margin-bottom:5px;">STOP — Please verify Planned.</div>
-            <div style="font-size:10px;line-height:1.45;margin-bottom:7px;">You selected <strong>Planned — Treatment Team Approved</strong>, but the client was <strong>not</strong> on the Transition Calendar. Planned means the treatment team approved this as the intended discharge/transition. It does <strong>NOT</strong> mean a plan was arranged after the client decided to leave.</div>
-            <div style="font-size:10px;font-weight:600;margin-bottom:6px;">Was this actually a treatment-team-approved planned discharge?<span class="req-star">*</span></div>
-            <div style="display:flex;gap:6px;flex-wrap:wrap;">
-              <button class="ds-pill" onclick="deSetPlannedCalendarConfirmation('yes')" id="de-planned-calendar-confirm-yes">Yes — Keep Planned</button>
-              <button class="ds-pill" onclick="deSetPlannedCalendarConfirmation('no')" id="de-planned-calendar-confirm-no">No — Change Discharge Circumstance</button>
-            </div>
-          </div>
-        </div>
+
 
       </div>
 
@@ -5567,12 +5531,12 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <div style="margin-bottom:28px;">
       <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px;">
         <span style="font-family:'DM Mono',monospace;font-size:11px;color:#5a6a62;">September 2, 2026</span>
-        <span style="font-size:14px;font-weight:600;color:#1b4332;">Transition classification clarified</span>
+        <span style="font-size:14px;font-weight:600;color:#1b4332;">Transition classification reverted</span>
       </div>
       <div style="display:flex;flex-direction:column;gap:7px;">
         <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 13px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;">
           <span style="font-size:9px;font-weight:600;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);background:#edf7f1;border:1px solid #b7e4c7;padding:2px 6px;border-radius:3px;white-space:nowrap;margin-top:1px;">WORKFLOW</span>
-          <span style="font-size:13px;line-height:1.55;">Discharge Email questions now use stricter factual criteria. Successful continued-treatment transitions require treatment to be actually arranged with a specific provider; referrals or stated plans alone do not count. Planned now explicitly means treatment-team approved. Neutral requires documented supervisor approval, the approving supervisor's name, and the external circumstance that made continued treatment impossible.</span>
+          <span style="font-size:13px;line-height:1.55;">Discharge Email transition classification has been reverted to the prior completion-based method. Successful means the client successfully completed treatment. Unsuccessful means the client left ASA or was administratively discharged. Neutral remains a rare supervisor-approved exception. The continued-treatment linkage decision tree has been removed. Successful transitions still require verified placement on the Transition Calendar; answering No prevents the discharge from being classified as Successful.</span>
         </div>
       </div>
     </div>
@@ -10865,7 +10829,7 @@ function dsReset() {
 
 let deState = {
   clientName: '', dischargeDate: '', departureTime: '', unit: '', dischargeType: '', dischargeSubtype: '',
-  outcomeCompleted1: 'no', outcomeContinuedTreatment: '', outcomeExternalBarrier: '',
+  outcomeCompleted1: '', outcomeContinuedTreatment: '', outcomeExternalBarrier: '',
   unsuccessfulReason: '', neutralReason: '', neutralSupervisor: '', transitionCalendar: '', transitionCalendarNoReason: '', plannedCalendarConfirmed: '', 
   bridgeContacted: '', bridgeNotContactedReason: '', staffInvolved: '', staffNone: false, otherStaffInvolved: '',
   destination: '', destinationUnknown: false, resourceSheetProvided: '', resourceSheetReason: '', forwardingInfo: '', forwardingNone: false,
@@ -10990,46 +10954,9 @@ function deSetYN(field, val, prefix) {
   if (field === 'resourceSheetProvided') {
     document.getElementById('de-rs-reason-wrap').style.display = newVal === 'no' ? 'block' : 'none';
   }
-  if (field === 'transitionCalendar') {
-    document.getElementById('de-transition-calendar-reason-wrap').style.display = newVal === 'no' ? 'block' : 'none';
-    if (newVal !== 'no') {
-      deState.transitionCalendarNoReason = '';
-      deState.plannedCalendarConfirmed = '';
-      const el = document.getElementById('de-transition-calendar-reason');
-      if (el) el.value = '';
-    }
-    deRefreshPlannedCalendarWarning();
-  }
   deRenderOutput();
 }
 
-function deRefreshPlannedCalendarWarning() {
-  const needsCheck = deState.dischargeType === 'successful' && deState.dischargeSubtype === 'planned' && deState.transitionCalendar === 'no';
-  const wrap = document.getElementById('de-planned-calendar-warning');
-  if (wrap) wrap.style.display = needsCheck ? 'block' : 'none';
-  ['yes','no'].forEach(v => {
-    const el = document.getElementById('de-planned-calendar-confirm-' + v);
-    if (el) el.classList.toggle('active', needsCheck && deState.plannedCalendarConfirmed === v);
-  });
-  if (!needsCheck) deState.plannedCalendarConfirmed = '';
-}
-
-function deSetPlannedCalendarConfirmation(val) {
-  if (val === 'yes') {
-    deState.plannedCalendarConfirmed = 'yes';
-    deRefreshPlannedCalendarWarning();
-    deRenderOutput();
-    return;
-  }
-
-  // Staff indicated this was not actually a treatment-team-approved planned discharge.
-  // Clear Planned and require them to choose the correct discharge circumstance.
-  deState.plannedCalendarConfirmed = '';
-  if (deState.dischargeSubtype === 'planned') deSetSubtype('planned');
-  deRefreshPlannedCalendarWarning();
-  const subtypeWrap = document.getElementById('de-subtype-wrap');
-  if (subtypeWrap) subtypeWrap.scrollIntoView({ behavior: 'smooth', block: 'center' });
-}
 
 function deSetTri(field, val, prefix, thirdVal = 'unknown') {
   const newVal = (deState[field] === val) ? '' : val;
@@ -11081,111 +11008,31 @@ function deSetYNA(field, val, prefix) {
   deRenderOutput();
 }
 
-function deSetOutcomeGuide(field, val, prefix) {
-  const newVal = (deState[field] === val) ? '' : val;
-  deState[field] = newVal;
-  ['yes','no'].forEach(v => {
-    const el = document.getElementById(prefix + '-' + v);
-    if (el) el.classList.toggle('active', v === newVal);
-  });
-
-  if (field === 'outcomeCompleted1') {
-    deState.outcomeContinuedTreatment = '';
-    deState.outcomeExternalBarrier = '';
-  } else if (field === 'outcomeContinuedTreatment') {
-    deState.outcomeExternalBarrier = '';
-  }
-
-  let outcome = '';
-  if (deState.outcomeCompleted1 === 'yes') {
-    outcome = 'successful';
-  } else if (deState.outcomeCompleted1 === 'no') {
-    if (deState.outcomeContinuedTreatment === 'yes') {
-      outcome = 'successful';
-    } else if (deState.outcomeContinuedTreatment === 'no') {
-      if (deState.outcomeExternalBarrier === 'yes') outcome = 'neutral';
-      if (deState.outcomeExternalBarrier === 'no') outcome = 'unsuccessful';
-    }
-  }
-
-  if (outcome !== deState.dischargeType) {
-    if (deState.dischargeType) deSetDischargeType('');
-    if (outcome) deSetDischargeType(outcome);
-  }
-
-  // Completing 1.0 always represents a planned successful completion, so
-  // there is no need to ask staff for a separate discharge circumstance.
-  if (deState.outcomeCompleted1 === 'yes' && deState.dischargeType === 'successful' && deState.dischargeSubtype !== 'planned') {
-    deSetSubtype('planned');
-  }
-
-  deRefreshOutcomeGuide();
-  deRenderOutput();
-}
-
-function deRefreshOutcomeGuide() {
-  const step2 = document.getElementById('de-outcome-step2');
-  const step3 = document.getElementById('de-outcome-step3');
-  const result = document.getElementById('de-outcome-result');
-  const resultTitle = document.getElementById('de-outcome-result-title');
-  const resultDetail = document.getElementById('de-outcome-result-detail');
-
-  ['complete','continuing','external'].forEach(prefix => {
-    const field = prefix === 'complete' ? 'outcomeCompleted1' : prefix === 'continuing' ? 'outcomeContinuedTreatment' : 'outcomeExternalBarrier';
-    ['yes','no'].forEach(v => {
-      const el = document.getElementById('de-guide-' + prefix + '-' + v);
-      if (el) el.classList.toggle('active', deState[field] === v);
-    });
-  });
-
-  if (step2) step2.style.display = deState.outcomeCompleted1 === 'no' ? 'block' : 'none';
-  if (step3) step3.style.display = (deState.outcomeCompleted1 === 'no' && deState.outcomeContinuedTreatment === 'no') ? 'block' : 'none';
-
-  const subtypeWrap = document.getElementById('de-subtype-wrap');
-  if (subtypeWrap && deState.outcomeCompleted1 === 'yes' && deState.dischargeType === 'successful') {
-    subtypeWrap.style.display = 'none';
-  }
-
-  if (!result || !resultTitle || !resultDetail) return;
-  if (!deState.dischargeType) {
-    result.style.display = 'none';
-    resultTitle.textContent = '';
-    resultDetail.textContent = '';
-    return;
-  }
-
-  result.style.display = 'block';
-  if (deState.dischargeType === 'successful') {
-    resultTitle.textContent = 'Successful';
-    resultDetail.textContent = deState.outcomeCompleted1 === 'yes'
-      ? 'Client completed 1.0 LOC.'
-      : 'Continued treatment with a specific provider was arranged.';
-  } else if (deState.dischargeType === 'neutral') {
-    resultTitle.textContent = 'Neutral';
-    resultDetail.textContent = 'Supervisor-approved Neutral — external event made continued treatment impossible.';
-  } else {
-    resultTitle.textContent = 'Unsuccessful';
-    resultDetail.textContent = 'Client left without continued treatment arranged.';
-  }
-}
 
 function deSetDischargeType(val) {
   const newVal = (deState.dischargeType === val) ? '' : val;
   deState.dischargeType = newVal;
-  deState.dischargeSubtype = newVal === 'neutral' ? 'unable' : '';
+
+  // Old-method classification: Successful = completed treatment; Unsuccessful = ASA/Admin;
+  // Neutral = rare supervisor-approved exception.
+  deState.dischargeSubtype = newVal === 'successful' ? 'planned' : (newVal === 'neutral' ? 'unable' : '');
   ['successful','unsuccessful','neutral'].forEach(v => {
     const el = document.getElementById('de-dt-' + v);
     if (el) el.classList.toggle('active', v === newVal);
   });
-  document.getElementById('de-subtype-wrap').style.display = (newVal === 'successful' || newVal === 'unsuccessful') ? 'block' : 'none';
-  ['planned','asa','admin'].forEach(v => document.getElementById('de-sub-' + v).classList.remove('active'));
-  const plannedBtn = document.getElementById('de-sub-planned');
-  if (plannedBtn) plannedBtn.style.display = newVal === 'successful' ? '' : 'none';
+
+  const subtypeWrap = document.getElementById('de-subtype-wrap');
+  if (subtypeWrap) subtypeWrap.style.display = newVal === 'unsuccessful' ? 'block' : 'none';
+  ['planned','asa','admin'].forEach(v => {
+    const el = document.getElementById('de-sub-' + v);
+    if (el) el.classList.toggle('active', v === deState.dischargeSubtype);
+  });
 
   deState.unsuccessfulReason = '';
   const dischargeReason = document.getElementById('de-unsuccessful-reason');
   if (dischargeReason) dischargeReason.value = '';
   document.getElementById('de-unsuccessful-reason-wrap').style.display = 'none';
+
   document.getElementById('de-neutral-reason-wrap').style.display = newVal === 'neutral' ? 'block' : 'none';
   if (newVal !== 'neutral') {
     deState.neutralReason = '';
@@ -11195,20 +11042,21 @@ function deSetDischargeType(val) {
     const neutralSupervisor = document.getElementById('de-neutral-supervisor');
     if (neutralSupervisor) neutralSupervisor.value = '';
   }
-  document.getElementById('de-transition-calendar-wrap').style.display = newVal === 'successful' ? 'block' : 'none';
-  if (newVal !== 'successful') {
-    deState.transitionCalendar = '';
-    deState.transitionCalendarNoReason = '';
-    deState.plannedCalendarConfirmed = '';
-    ['yes','no'].forEach(v => { const el = document.getElementById('de-calendar-' + v); if (el) el.classList.remove('active'); });
-    document.getElementById('de-transition-calendar-reason-wrap').style.display = 'none';
-    const calendarReason = document.getElementById('de-transition-calendar-reason');
-    if (calendarReason) calendarReason.value = '';
-    const plannedCalendarWarning = document.getElementById('de-planned-calendar-warning');
-    if (plannedCalendarWarning) plannedCalendarWarning.style.display = 'none';
-  }
-  document.getElementById('de-call-wrap').style.display = newVal === 'unsuccessful' ? 'block' : 'none';
 
+  // Successful transitions must be verified on the Transition Calendar.
+  deState.transitionCalendar = '';
+  deState.transitionCalendarNoReason = '';
+  deState.plannedCalendarConfirmed = '';
+  const calendarWrap = document.getElementById('de-transition-calendar-wrap');
+  if (calendarWrap) calendarWrap.style.display = newVal === 'successful' ? 'block' : 'none';
+  ['yes','no'].forEach(v => {
+    const el = document.getElementById('de-calendar-' + v);
+    if (el) el.classList.remove('active');
+  });
+  const calendarRejected = document.getElementById('de-transition-calendar-rejected');
+  if (calendarRejected) calendarRejected.style.display = 'none';
+
+  document.getElementById('de-call-wrap').style.display = newVal === 'unsuccessful' ? 'block' : 'none';
   if (newVal !== 'unsuccessful') {
     document.getElementById('de-bridge-wrap').style.display = 'none';
     document.getElementById('de-admin-staff-wrap').style.display = 'none';
@@ -11217,10 +11065,39 @@ function deSetDischargeType(val) {
   deRenderOutput();
 }
 
+function deSetTransitionCalendar(val) {
+  if (val === 'yes') {
+    deState.transitionCalendar = 'yes';
+    const yesBtn = document.getElementById('de-calendar-yes');
+    const noBtn = document.getElementById('de-calendar-no');
+    if (yesBtn) yesBtn.classList.add('active');
+    if (noBtn) noBtn.classList.remove('active');
+    const rejected = document.getElementById('de-transition-calendar-rejected');
+    if (rejected) rejected.style.display = 'none';
+    deRenderOutput();
+    return;
+  }
+
+  // A client who is not on the Transition Calendar cannot remain Successful.
+  deState.transitionCalendar = 'no';
+  deState.dischargeType = '';
+  deState.dischargeSubtype = '';
+  const successfulBtn = document.getElementById('de-dt-successful');
+  if (successfulBtn) successfulBtn.classList.remove('active');
+  const calendarWrap = document.getElementById('de-transition-calendar-wrap');
+  if (calendarWrap) calendarWrap.style.display = 'none';
+  const rejected = document.getElementById('de-transition-calendar-rejected');
+  if (rejected) rejected.style.display = 'block';
+  ['yes','no'].forEach(v => {
+    const el = document.getElementById('de-calendar-' + v);
+    if (el) el.classList.remove('active');
+  });
+  deRenderOutput();
+}
+
 function deSetSubtype(val) {
   const newVal = (deState.dischargeSubtype === val) ? '' : val;
   deState.dischargeSubtype = newVal;
-  if (newVal !== 'planned') deState.plannedCalendarConfirmed = '';
   ['planned','asa','admin'].forEach(v => {
     document.getElementById('de-sub-' + v).classList.toggle('active', v === newVal);
   });
@@ -11233,7 +11110,6 @@ function deSetSubtype(val) {
   document.getElementById('de-unsuccessful-reason-wrap').style.display = isAsaOrAdmin ? 'block' : 'none';
   document.getElementById('de-bridge-wrap').style.display = (newVal === 'asa' && deState.unit !== 'Community OP') ? 'block' : 'none';
   document.getElementById('de-admin-staff-wrap').style.display = (newVal === 'admin') ? 'block' : 'none';
-  deRefreshPlannedCalendarWarning();
   deRenderOutput();
 }
 
@@ -11330,14 +11206,12 @@ function deComputeErrors() {
   if (!s.clientName) errors.push({ label: 'Client full name', id: 'de-client-name' });
   if (!s.dischargeDate) errors.push({ label: 'Date of discharge', id: 'de-discharge-date' });
   if (!s.unit) errors.push({ label: 'Unit', id: 'de-unit' });
-  if (!s.dischargeType) errors.push({ label: 'Complete the transition outcome questions', id: 'de-dischargetype-wrap' });
-  if (!s.dischargeSubtype) errors.push({ label: 'Discharge circumstance', id: 'de-subtype-wrap', critical: true });
+  if (!s.dischargeType) errors.push({ label: 'Transition outcome', id: 'de-dischargetype-wrap' });
+  if (s.dischargeType === 'successful' && s.transitionCalendar !== 'yes') errors.push({ label: 'Transition Calendar verification — Successful requires Yes', id: 'de-transition-calendar-wrap', critical: true });
+  if (s.dischargeType === 'unsuccessful' && !s.dischargeSubtype) errors.push({ label: 'ASA or Administrative Discharge', id: 'de-subtype-wrap', critical: true });
   if ((s.dischargeSubtype === 'asa' || s.dischargeSubtype === 'admin') && !s.unsuccessfulReason) errors.push({ label: 'Reason for leaving / discharge', id: 'de-unsuccessful-reason-wrap' });
   if (s.dischargeType === 'neutral' && !s.neutralSupervisor) errors.push({ label: 'Supervisor who approved Neutral', id: 'de-neutral-reason-wrap', critical: true });
-  if (s.dischargeType === 'neutral' && !s.neutralReason) errors.push({ label: 'External circumstance that made continued treatment impossible', id: 'de-neutral-reason-wrap', critical: true });
-  if (s.dischargeType === 'successful' && !s.transitionCalendar) errors.push({ label: 'Transition Calendar verification', id: 'de-transition-calendar-wrap', critical: true });
-  if (s.dischargeType === 'successful' && s.transitionCalendar === 'no' && !s.transitionCalendarNoReason) errors.push({ label: 'Reason successful transition was not on Transition Calendar', id: 'de-transition-calendar-reason-wrap', critical: true });
-  if (s.dischargeType === 'successful' && s.dischargeSubtype === 'planned' && s.transitionCalendar === 'no' && s.plannedCalendarConfirmed !== 'yes') errors.push({ label: 'Verify Planned discharge when not on Transition Calendar', id: 'de-planned-calendar-warning', critical: true });
+  if (s.dischargeType === 'neutral' && !s.neutralReason) errors.push({ label: 'Reason for Neutral classification', id: 'de-neutral-reason-wrap', critical: true });
   if (bridgeStatus.contactedMissing) errors.push({ label: 'Bridge contact', id: 'de-bridge-required-wrap', critical: true });
   if (bridgeStatus.reasonMissing) errors.push({ label: "Bridge — reason not contacted", id: 'de-bridge-reason-wrap', critical: true });
   if (bridgeStatus.bridgeRequired && !s.staffInvolved && !s.staffNone) errors.push({ label: 'Clinical staff member (or mark none available)', id: 'de-staff-required-wrap', critical: true });
@@ -11392,16 +11266,6 @@ function deRenderOutput() {
 
   const neutralReasonWrap = document.getElementById('de-neutral-reason-wrap');
   if (neutralReasonWrap) neutralReasonWrap.classList.toggle('field-error', s.dischargeType === 'neutral' && (!s.neutralSupervisor || !s.neutralReason));
-
-  const calendarWrap = document.getElementById('de-transition-calendar-wrap');
-  if (calendarWrap) calendarWrap.classList.toggle('field-error', s.dischargeType === 'successful' && !s.transitionCalendar);
-
-  const calendarReasonWrap = document.getElementById('de-transition-calendar-reason-wrap');
-  if (calendarReasonWrap) calendarReasonWrap.classList.toggle('field-error', s.dischargeType === 'successful' && s.transitionCalendar === 'no' && !s.transitionCalendarNoReason);
-
-  deRefreshPlannedCalendarWarning();
-  const plannedCalendarWarning = document.getElementById('de-planned-calendar-warning');
-  if (plannedCalendarWarning) plannedCalendarWarning.classList.toggle('field-error', s.dischargeType === 'successful' && s.dischargeSubtype === 'planned' && s.transitionCalendar === 'no' && s.plannedCalendarConfirmed !== 'yes');
 
   const opReasonWrap = document.getElementById('de-op-reason-wrap');
   if (opReasonWrap) opReasonWrap.classList.toggle('field-error', s.outpatientOffered === 'no' && !s.outpatientNoReason);
@@ -11460,11 +11324,8 @@ function deGenerate() {
   lines.push(`Unit: ${unitStr}`);
   lines.push(`Transition Outcome: ${typeLine}`);
 
-  if (s.dischargeType === 'successful' && s.transitionCalendar) {
-    lines.push(`Transition Calendar (Verified): ${s.transitionCalendar === 'yes' ? 'Yes' : 'No'}`);
-    if (s.transitionCalendar === 'no' && s.transitionCalendarNoReason) {
-      lines.push(`Reason Not on Transition Calendar: ${s.transitionCalendarNoReason}`);
-    }
+  if (s.dischargeType === 'successful') {
+    lines.push('Transition Calendar (Verified): Yes');
   }
 
   if ((s.dischargeSubtype === 'asa' || s.dischargeSubtype === 'admin') && s.unsuccessfulReason) {
@@ -11475,7 +11336,7 @@ function deGenerate() {
   if (s.dischargeType === 'neutral') {
     lines.push('');
     if (s.neutralSupervisor) lines.push(`Neutral Approved By: ${s.neutralSupervisor}`);
-    if (s.neutralReason) lines.push(`External Circumstance Preventing Continued Treatment: ${s.neutralReason}`);
+    if (s.neutralReason) lines.push(`Reason for Neutral Classification: ${s.neutralReason}`);
   }
 
   if (!isOP && s.dischargeSubtype === 'asa' && s.bridgeContacted) {
@@ -11580,7 +11441,7 @@ function deJumpToField(id) {
 function deReset() {
   deState = {
     clientName: '', dischargeDate: '', departureTime: '', unit: '', dischargeType: '', dischargeSubtype: '',
-    outcomeCompleted1: 'no', outcomeContinuedTreatment: '', outcomeExternalBarrier: '',
+    outcomeCompleted1: '', outcomeContinuedTreatment: '', outcomeExternalBarrier: '',
     unsuccessfulReason: '', neutralReason: '', neutralSupervisor: '', transitionCalendar: '', transitionCalendarNoReason: '', plannedCalendarConfirmed: '',
     bridgeContacted: '', bridgeNotContactedReason: '', staffInvolved: '', staffNone: false, otherStaffInvolved: '',
     destination: '', destinationUnknown: false, resourceSheetProvided: '', resourceSheetReason: '', forwardingInfo: '', forwardingNone: false,
@@ -11592,7 +11453,7 @@ function deReset() {
     roomVacated: '', clientsOnUnit: '', roomCleanedSearched: '',
     additionalInfo: ''
   };
-  ['de-client-name','de-discharge-date','de-departure-time','de-unsuccessful-reason','de-neutral-supervisor','de-neutral-reason','de-transition-calendar-reason','de-bridge-reason',
+  ['de-client-name','de-discharge-date','de-departure-time','de-unsuccessful-reason','de-neutral-supervisor','de-neutral-reason','de-bridge-reason',
    'de-staff-name','de-staff-other','de-admin-staff-other','de-destination','de-meds-reason','de-rs-reason','de-room','de-census','de-forwarding','de-additional',
    'de-2wm-reason','de-op-reason'].forEach(id => {
     const el = document.getElementById(id);
@@ -11618,16 +11479,7 @@ function deReset() {
   const destInput = document.getElementById('de-destination');
   destInput.disabled = false;
   document.getElementById('de-destination-unknown').checked = false;
-  ['complete','continuing','external'].forEach(prefix => {
-    ['yes','no'].forEach(v => { const el = document.getElementById('de-guide-' + prefix + '-' + v); if (el) el.classList.remove('active'); });
-  });
-  const outcomeStep2 = document.getElementById('de-outcome-step2');
-  const outcomeStep3 = document.getElementById('de-outcome-step3');
-  const outcomeResult = document.getElementById('de-outcome-result');
-  if (outcomeStep2) outcomeStep2.style.display = 'none';
-  if (outcomeStep3) outcomeStep3.style.display = 'none';
-  if (outcomeResult) outcomeResult.style.display = 'none';
-  ['yes','no'].forEach(v => { const el = document.getElementById('de-calendar-' + v); if (el) el.classList.remove('active'); });
+  ['successful','unsuccessful','neutral'].forEach(v => { const el = document.getElementById('de-dt-' + v); if (el) el.classList.remove('active'); });
   ['planned','asa','admin'].forEach(v => document.getElementById('de-sub-'+v).classList.remove('active'));
   ['de-bridge','de-rs','de-wp','de-pw','de-call','de-po','de-clean'].forEach(prefix => {
     ['yes','no'].forEach(v => { const el = document.getElementById(prefix + '-' + v); if (el) el.classList.remove('active'); });
@@ -11643,8 +11495,8 @@ function deReset() {
   document.getElementById('de-unsuccessful-reason-wrap').style.display = 'none';
   document.getElementById('de-neutral-reason-wrap').style.display = 'none';
   document.getElementById('de-transition-calendar-wrap').style.display = 'none';
-  document.getElementById('de-transition-calendar-reason-wrap').style.display = 'none';
-  document.getElementById('de-planned-calendar-warning').style.display = 'none';
+  document.getElementById('de-transition-calendar-rejected').style.display = 'none';
+  ['yes','no'].forEach(v => { const el = document.getElementById('de-calendar-' + v); if (el) el.classList.remove('active'); });
   document.getElementById('de-bridge-wrap').style.display = 'none';
   document.getElementById('de-admin-staff-wrap').style.display = 'none';
   document.getElementById('de-bridge-reason-wrap').style.display = 'none';
@@ -11663,7 +11515,6 @@ function deReset() {
   deState._dirty = false;
   document.getElementById('de-out-text').innerHTML = '<span class="ds-out-empty">Fill in the fields, then click Generate below.</span>';
   document.getElementById('de-out-subject-text').innerHTML = '<span class="ds-out-empty">Fill in the fields, then click Generate below.</span>';
-  deRefreshOutcomeGuide();
   deRenderOutput();
 }
 
@@ -12080,14 +11931,8 @@ function fillSampleClient() {
   document.getElementById('de-unit').value = '5th Floor';
   deState.unit = '5th Floor';
 
-  deSetOutcomeGuide('outcomeCompleted1','no','de-guide-complete');
-  deSetOutcomeGuide('outcomeContinuedTreatment','no','de-guide-continuing');
-  deSetOutcomeGuide('outcomeExternalBarrier','no','de-guide-external');
-
-  deState.dischargeSubtype = 'asa';
-  document.getElementById('de-sub-asa').classList.add('active');
-  document.getElementById('de-unsuccessful-reason-wrap').style.display = 'block';
-  document.getElementById('de-bridge-wrap').style.display = 'block';
+  deSetDischargeType('unsuccessful');
+  deSetSubtype('asa');
 
   const deReasonText = 'Marcus reported increasing frustration with the structure of the program and stated he "just needed a break." He packed his belongings and informed staff of his intent to leave despite being encouraged to process these feelings in session.';
   document.getElementById('de-unsuccessful-reason').value = deReasonText;
@@ -14168,7 +14013,7 @@ const TUT_TOOL_STEPS = [
   // ── DISCHARGE EMAIL ───────────────────────────────────────────────────────
   { view:'discharge-email', sel:'#view-discharge-email .tool-nav', section:'Discharge Email', navigate:'discharge-email',
     title:'Discharge Email',
-    body:'Every discharge needs one of these sent to discharge@woodhavenohio.com. DocAssist determines the transition outcome from concrete questions. Neutral is a supervisor-approved exception only when an external event made continued treatment impossible.' },
+    body:'Every discharge needs one of these sent to discharge@woodhavenohio.com. Select the outcome based on how treatment ended: Successful for completed treatment, Unsuccessful for ASA or Administrative Discharge, and Neutral only for rare supervisor-approved exceptions.' },
 
   { view:'discharge-email', sel:null, section:'Discharge Email', navigate:'discharge-email',
     title:'Required fields',
@@ -14176,15 +14021,11 @@ const TUT_TOOL_STEPS = [
 
   { view:'discharge-email', sel:'#de-dischargetype-wrap', section:'Discharge Email', navigate:'discharge-email',
     title:'Transition outcome',
-    body:'Successful means the client completed treatment through 1.0 LOC or had continued treatment actually arranged with a specific provider before leaving. A referral, resource sheet, phone number, or stated plan to seek treatment does not count as arranged treatment. If neither occurred, the transition is Unsuccessful unless a supervisor specifically reviewed the discharge and approved Neutral because an external event made continued treatment impossible. Planned means the treatment team approved the intended discharge; it does not mean the client planned their own departure.' },
-
-  { view:'discharge-email', sel:'#de-transition-calendar-wrap', section:'Discharge Email', navigate:'discharge-email',
-    title:'Transition Calendar verification',
-    body:'For every Successful transition, verify the Transition Calendar before answering. Yes or No is required. If the client was not on the calendar, explain why before the email can be generated.' },
+    body:'Successful means the client successfully completed treatment. Unsuccessful means the client left Against Staff Advice (ASA) or was administratively discharged. Neutral is reserved for rare circumstances and requires supervisor approval.' },
 
   { view:'discharge-email', sel:'#de-bridge-wrap', section:'Discharge Email', navigate:'discharge-email',
     title:'The Bridge contact',
-    body:'When the client left ASA, document whether The Bridge was contacted regardless of whether the transition outcome was Successful or Unsuccessful. If not, explain why and what other intervention was attempted — this shows up as an alert if left blank.' },
+    body:'When the client left ASA, document whether The Bridge was contacted. If not, explain why and what other intervention was attempted — this shows up as an alert if left blank.' },
 
   { view:'discharge-email', sel:'#de-generate-btn', section:'Discharge Email', navigate:'discharge-email',
     title:'Generate',
@@ -14899,10 +14740,9 @@ function autosaveApply(snap) {
   Object.assign(deState, savedDe);
   if (savedDe.unit) deSetUnit(savedDe.unit);
   if (savedDe.dischargeType) { deState.dischargeType = ''; deSetDischargeType(savedDe.dischargeType); }
-  if (savedDe.dischargeSubtype) { deState.dischargeSubtype = ''; deSetSubtype(savedDe.dischargeSubtype); }
+  if (savedDe.dischargeType === 'unsuccessful' && (savedDe.dischargeSubtype === 'asa' || savedDe.dischargeSubtype === 'admin')) { deState.dischargeSubtype = ''; deSetSubtype(savedDe.dischargeSubtype); }
   if (savedDe.bridgeContacted) { deState.bridgeContacted = ''; deSetYN('bridgeContacted', savedDe.bridgeContacted, 'de-bridge'); }
   if (savedDe.resourceSheetProvided) { deState.resourceSheetProvided = ''; deSetYN('resourceSheetProvided', savedDe.resourceSheetProvided, 'de-rs'); }
-  if (savedDe.transitionCalendar) { deState.transitionCalendar = ''; deSetYN('transitionCalendar', savedDe.transitionCalendar, 'de-calendar'); }
   if (savedDe.medsReceived) { deState.medsReceived = ''; deSetYNA('medsReceived', savedDe.medsReceived, 'de-meds'); }
   if (savedDe.propertyReceived) { deState.propertyReceived = ''; deSetYNA('propertyReceived', savedDe.propertyReceived, 'de-prop'); }
   if (savedDe.phoneReceived) { deState.phoneReceived = ''; deSetYNA('phoneReceived', savedDe.phoneReceived, 'de-phn'); }
@@ -14916,7 +14756,24 @@ function autosaveApply(snap) {
   if (savedDe.roomCleanedSearched) { deState.roomCleanedSearched = ''; deSetYN('roomCleanedSearched', savedDe.roomCleanedSearched, 'de-room'); }
   // Restore whichever fields the toggle calls above didn't touch (free text etc.)
   Object.assign(deState, savedDe);
-  if (typeof deRefreshOutcomeGuide === 'function') deRefreshOutcomeGuide();
+  // Normalize snapshots created under the retired transition-continuity workflow.
+  if (deState.dischargeType === 'successful') deState.dischargeSubtype = 'planned';
+  if (deState.dischargeType === 'neutral') deState.dischargeSubtype = 'unable';
+  if (deState.dischargeType === 'unsuccessful' && !['asa','admin'].includes(deState.dischargeSubtype)) deState.dischargeSubtype = '';
+  deState.outcomeCompleted1 = '';
+  deState.outcomeContinuedTreatment = '';
+  deState.outcomeExternalBarrier = '';
+  deState.transitionCalendarNoReason = '';
+  deState.plannedCalendarConfirmed = '';
+  if (deState.dischargeType === 'successful') {
+    deState.transitionCalendar = savedDe.transitionCalendar === 'yes' ? 'yes' : '';
+    const calendarWrap = document.getElementById('de-transition-calendar-wrap');
+    if (calendarWrap) calendarWrap.style.display = 'block';
+    const calendarYes = document.getElementById('de-calendar-yes');
+    if (calendarYes) calendarYes.classList.toggle('active', deState.transitionCalendar === 'yes');
+  } else {
+    deState.transitionCalendar = '';
+  }
   if (deState.destinationUnknown) deToggleDestinationUnknown(true);
   if (deState.forwardingNone) deToggleForwardingNone(true);
   const restoredStaffName = document.getElementById('de-staff-name');
