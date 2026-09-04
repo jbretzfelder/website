@@ -4681,7 +4681,6 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
             <div style="display:flex;gap:6px;flex-wrap:wrap;">
               <button class="ds-pill ds-subpill" onclick="deSetSubtype('asa')" id="de-sub-asa">Left Against Staff Advice (ASA)</button>
               <button class="ds-pill ds-subpill" onclick="deSetSubtype('admin')" id="de-sub-admin">Administrative Discharge</button>
-              <button class="ds-pill ds-subpill" onclick="deSetSubtype('planned')" id="de-sub-planned" style="display:none;">Planned</button>
             </div>
           </div>
         </div>
@@ -11046,7 +11045,7 @@ function deSetDischargeType(val) {
 
   const subtypeWrap = document.getElementById('de-subtype-wrap');
   if (subtypeWrap) subtypeWrap.style.display = newVal === 'unsuccessful' ? 'block' : 'none';
-  ['planned','asa','admin'].forEach(v => {
+  ['asa','admin'].forEach(v => {
     const el = document.getElementById('de-sub-' + v);
     if (el) el.classList.toggle('active', v === deState.dischargeSubtype);
   });
@@ -11175,7 +11174,7 @@ function deSetTransitionCalendar(val) {
 function deSetSubtype(val) {
   const newVal = (deState.dischargeSubtype === val) ? '' : val;
   deState.dischargeSubtype = newVal;
-  ['planned','asa','admin'].forEach(v => {
+  ['asa','admin'].forEach(v => {
     document.getElementById('de-sub-' + v).classList.toggle('active', v === newVal);
   });
   const isAsaOrAdmin = newVal === 'asa' || newVal === 'admin';
@@ -11543,8 +11542,6 @@ function deReset() {
   document.getElementById('de-unit').value = '';
   document.getElementById('de-subtype-wrap').style.display = 'none';
   document.getElementById('de-unsuccessful-reason-wrap').style.display = 'none';
-  const plannedBtn = document.getElementById('de-sub-planned');
-  if (plannedBtn) plannedBtn.style.display = '';
   document.getElementById('de-destination-wrap').style.display = 'block';
   document.getElementById('de-resource-sheet-wrap').style.display = 'block';
   document.getElementById('de-property-paperwork-card').style.display = 'block';
@@ -11557,7 +11554,7 @@ function deReset() {
   destInput.disabled = false;
   document.getElementById('de-destination-unknown').checked = false;
   ['successful','unsuccessful','neutral'].forEach(v => { const el = document.getElementById('de-dt-' + v); if (el) el.classList.remove('active'); });
-  ['planned','asa','admin'].forEach(v => document.getElementById('de-sub-'+v).classList.remove('active'));
+  ['asa','admin'].forEach(v => document.getElementById('de-sub-'+v).classList.remove('active'));
   ['de-bridge','de-rs','de-wp','de-pw','de-call','de-po','de-clean'].forEach(prefix => {
     ['yes','no'].forEach(v => { const el = document.getElementById(prefix + '-' + v); if (el) el.classList.remove('active'); });
   });
