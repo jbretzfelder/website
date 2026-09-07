@@ -4690,8 +4690,8 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
 
         <div id="de-unsuccessful-reason-wrap" style="display:none;margin-bottom:10px;">
-          <label class="form-label">Reason for ASA / Administrative Discharge<span class="req-star">*</span></label>
-          <textarea class="form-textarea" id="de-unsuccessful-reason" rows="2" placeholder="Why did the client leave ASA, or why were they administratively discharged?" oninput="deState.unsuccessfulReason=this.value;deRenderOutput()" style="min-height:55px;"></textarea>
+          <label class="form-label" id="de-unsuccessful-reason-label">Reason for ASA<span class="req-star">*</span></label>
+          <textarea class="form-textarea" id="de-unsuccessful-reason" rows="2" placeholder="Why did the client leave ASA?" oninput="deState.unsuccessfulReason=this.value;deRenderOutput()" style="min-height:55px;"></textarea>
         </div>
 
         <div id="de-neutral-reason-wrap" style="display:none;margin-bottom:10px;">
@@ -4721,9 +4721,6 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
             <label class="form-label">Why Not? What Other Attempts Were Made?<span class="req-star">*</span></label>
             <textarea class="form-textarea" id="de-bridge-reason" rows="2" placeholder="Explain why The Bridge wasn't contacted and what other intervention attempts were made…" oninput="deState.bridgeNotContactedReason=this.value;deRenderOutput()" style="min-height:55px;"></textarea>
           </div>
-          <div id="de-bridge-alert" style="display:none;background:#fdecea;border:2px solid #c0392b;border-radius:6px;padding:8px 10px;margin-bottom:8px;font-size:12px;color:#7a1f1f;font-weight:600;align-items:flex-start;gap:6px;">
-            <span id="de-bridge-alert-text" style="font-size:14px;line-height:1.3;"></span>
-          </div>
         </div>
 
         <div id="de-staff-wrap" style="margin-top:10px;">
@@ -4738,8 +4735,8 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
           </div>
 
           <div style="margin-top:10px;">
-            <label class="form-label">Other Staff Involved</label>
-            <input class="form-input" id="de-staff-other" type="text" placeholder="Names of any other staff involved" oninput="deState.otherStaffInvolved=this.value;deSyncOtherStaff('de-staff-other');deRenderOutput()">
+            <label class="form-label">Other Staff Involved in Intervention</label>
+            <input class="form-input" id="de-staff-other" type="text" placeholder="Names of any other staff involved in the intervention" oninput="deState.otherStaffInvolved=this.value;deSyncOtherStaff('de-staff-other');deRenderOutput()">
           </div>
         </div>
       </div>
@@ -4747,7 +4744,19 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       <!-- Staff Involvement (Admin Discharge — Staff Involved only) -->
       <div id="de-admin-staff-wrap" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
         <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:12px;">Staff Involvement</div>
-        <label class="form-label">Staff Involved<span class="req-star">*</span></label>
+        <div id="de-admin-director-approval-wrap" style="margin-bottom:12px;">
+          <label class="form-label">Clinical Director Approved?<span class="req-star">*</span></label>
+          <div style="display:flex;gap:6px;margin-bottom:6px;">
+            <button class="ds-pill" onclick="deSetAdminDirectorApproval('yes')" id="de-admin-director-yes">Yes</button>
+            <button class="ds-pill" onclick="deSetAdminDirectorApproval('no')" id="de-admin-director-no">No</button>
+          </div>
+          <div id="de-admin-director-no-warning" style="display:none;background:var(--warning-bg);border:1px solid var(--warning-border);border-radius:6px;padding:8px 10px;font-size:10px;line-height:1.45;color:var(--warning-text);font-weight:600;">No should only be used when immediate discharge was necessary because of an unsafe situation. Clinical Director must be notified.</div>
+          <div id="de-admin-director-no-reason-wrap" style="display:none;margin-top:8px;">
+            <label class="form-label">Reason Approval Was Not Obtained<span class="req-star">*</span></label>
+            <textarea class="form-textarea" id="de-admin-director-no-reason" rows="2" placeholder="Explain why Clinical Director approval was not obtained" oninput="deState.adminDirectorNoReason=this.value;deRenderOutput()"></textarea>
+          </div>
+        </div>
+        <label class="form-label">Staff Involved in Intervention<span class="req-star">*</span></label>
         <input class="form-input" id="de-admin-staff-other" type="text" placeholder="Names of staff involved" oninput="deState.otherStaffInvolved=this.value;deSyncOtherStaff('de-admin-staff-other');deRenderOutput()">
       </div>
 
@@ -10851,7 +10860,7 @@ function dsReset() {
 let deState = {
   clientName: '', dischargeDate: '', departureTime: '', unit: '', dischargeType: '', dischargeSubtype: '',
   outcomeCompleted1: '', outcomeContinuedTreatment: '', outcomeExternalBarrier: '',
-  unsuccessfulReason: '', neutralReason: '', neutralSupervisor: '', transitionCalendar: '', transitionCalendarOpened: false, transitionCalendarNoReason: '', plannedCalendarConfirmed: '', 
+  unsuccessfulReason: '', adminDirectorApproved: '', adminDirectorNoReason: '', neutralReason: '', neutralSupervisor: '', transitionCalendar: '', transitionCalendarOpened: false, transitionCalendarNoReason: '', plannedCalendarConfirmed: '', 
   bridgeContacted: '', bridgeNotContactedReason: '', staffInvolved: '', staffNone: false, otherStaffInvolved: '',
   destination: '', destinationUnknown: false, resourceSheetProvided: '', resourceSheetReason: '', forwardingInfo: '', forwardingNone: false,
   medsReceived: '', medsNotReceivedReason: '',
@@ -11055,9 +11064,21 @@ function deSetDischargeType(val) {
   });
 
   deState.unsuccessfulReason = '';
+  deState.adminDirectorApproved = '';
+  deState.adminDirectorNoReason = '';
   const dischargeReason = document.getElementById('de-unsuccessful-reason');
   if (dischargeReason) dischargeReason.value = '';
   document.getElementById('de-unsuccessful-reason-wrap').style.display = 'none';
+  ['yes','no'].forEach(v => {
+    const el = document.getElementById('de-admin-director-' + v);
+    if (el) el.classList.remove('active');
+  });
+  const adminDirectorWarning = document.getElementById('de-admin-director-no-warning');
+  if (adminDirectorWarning) adminDirectorWarning.style.display = 'none';
+  const adminDirectorNoReasonWrap = document.getElementById('de-admin-director-no-reason-wrap');
+  if (adminDirectorNoReasonWrap) adminDirectorNoReasonWrap.style.display = 'none';
+  const adminDirectorNoReason = document.getElementById('de-admin-director-no-reason');
+  if (adminDirectorNoReason) adminDirectorNoReason.value = '';
 
   document.getElementById('de-neutral-reason-wrap').style.display = newVal === 'neutral' ? 'block' : 'none';
   if (newVal !== 'neutral') {
@@ -11187,9 +11208,51 @@ function deSetSubtype(val) {
     const reasonInput = document.getElementById('de-unsuccessful-reason');
     if (reasonInput) reasonInput.value = '';
   }
+  const reasonLabel = document.getElementById('de-unsuccessful-reason-label');
+  const reasonInput = document.getElementById('de-unsuccessful-reason');
+  if (newVal === 'asa') {
+    if (reasonLabel) reasonLabel.innerHTML = 'Reason for ASA<span class="req-star">*</span>';
+    if (reasonInput) reasonInput.placeholder = 'Why did the client leave ASA?';
+  } else if (newVal === 'admin') {
+    if (reasonLabel) reasonLabel.innerHTML = 'Reason for Admin Discharge<span class="req-star">*</span>';
+    if (reasonInput) reasonInput.placeholder = 'Why was the client administratively discharged?';
+  }
+  if (newVal !== 'admin') {
+    deState.adminDirectorApproved = '';
+    deState.adminDirectorNoReason = '';
+    const noReason = document.getElementById('de-admin-director-no-reason');
+    if (noReason) noReason.value = '';
+    const noReasonWrap = document.getElementById('de-admin-director-no-reason-wrap');
+    if (noReasonWrap) noReasonWrap.style.display = 'none';
+    ['yes','no'].forEach(v => {
+      const el = document.getElementById('de-admin-director-' + v);
+      if (el) el.classList.remove('active');
+    });
+    const warning = document.getElementById('de-admin-director-no-warning');
+    if (warning) warning.style.display = 'none';
+  }
   document.getElementById('de-unsuccessful-reason-wrap').style.display = isAsaOrAdmin ? 'block' : 'none';
   document.getElementById('de-bridge-wrap').style.display = (newVal === 'asa' && deState.unit !== 'Community OP') ? 'block' : 'none';
   document.getElementById('de-admin-staff-wrap').style.display = (newVal === 'admin') ? 'block' : 'none';
+  deRenderOutput();
+}
+
+function deSetAdminDirectorApproval(val) {
+  const newVal = (deState.adminDirectorApproved === val) ? '' : val;
+  deState.adminDirectorApproved = newVal;
+  ['yes','no'].forEach(v => {
+    const el = document.getElementById('de-admin-director-' + v);
+    if (el) el.classList.toggle('active', v === newVal);
+  });
+  const warning = document.getElementById('de-admin-director-no-warning');
+  if (warning) warning.style.display = newVal === 'no' ? 'block' : 'none';
+  const noReasonWrap = document.getElementById('de-admin-director-no-reason-wrap');
+  if (noReasonWrap) noReasonWrap.style.display = newVal === 'no' ? 'block' : 'none';
+  if (newVal !== 'no') {
+    deState.adminDirectorNoReason = '';
+    const noReason = document.getElementById('de-admin-director-no-reason');
+    if (noReason) noReason.value = '';
+  }
   deRenderOutput();
 }
 
@@ -11254,20 +11317,6 @@ function deUpdateBridgeAlert() {
   const reasonWrap = document.getElementById('de-bridge-reason-wrap');
   if (reasonWrap) reasonWrap.classList.toggle('field-error', status.reasonMissing);
 
-  const bridgeAlert = document.getElementById('de-bridge-alert');
-  const bridgeAlertText = document.getElementById('de-bridge-alert-text');
-  if (bridgeAlert && bridgeAlertText) {
-    if (status.contactedMissing) {
-      bridgeAlertText.textContent = '⚠ Required — answer whether The Bridge was contacted.';
-      bridgeAlert.style.display = 'flex';
-    } else if (status.reasonMissing) {
-      bridgeAlertText.textContent = "⚠ Required — explain why The Bridge wasn't contacted and what other attempts were made.";
-      bridgeAlert.style.display = 'flex';
-    } else {
-      bridgeAlert.style.display = 'none';
-    }
-  }
-
   const staffWrap = document.getElementById('de-staff-required-wrap');
   if (staffWrap) staffWrap.classList.toggle('field-error', status.bridgeRequired && !deState.staffInvolved && !deState.staffNone);
 
@@ -11289,13 +11338,16 @@ function deComputeErrors() {
   if (!s.dischargeType) errors.push({ label: 'Transition outcome', id: 'de-dischargetype-wrap' });
   if (s.dischargeType === 'successful' && s.transitionCalendar !== 'yes') errors.push({ label: 'Verified Transition Calendar listing', id: 'de-transition-calendar-wrap', critical: true });
   if (s.dischargeType === 'unsuccessful' && !s.dischargeSubtype) errors.push({ label: 'ASA or Administrative Discharge', id: 'de-subtype-wrap', critical: true });
-  if ((s.dischargeSubtype === 'asa' || s.dischargeSubtype === 'admin') && !s.unsuccessfulReason) errors.push({ label: 'Reason for leaving / discharge', id: 'de-unsuccessful-reason-wrap' });
+  if (s.dischargeSubtype === 'asa' && !s.unsuccessfulReason) errors.push({ label: 'Reason for ASA', id: 'de-unsuccessful-reason-wrap' });
+  if (s.dischargeSubtype === 'admin' && !s.unsuccessfulReason) errors.push({ label: 'Reason for Admin Discharge', id: 'de-unsuccessful-reason-wrap' });
+  if (s.dischargeSubtype === 'admin' && !s.adminDirectorApproved) errors.push({ label: 'Clinical Director approval status', id: 'de-admin-director-approval-wrap', critical: true });
+  if (s.dischargeSubtype === 'admin' && s.adminDirectorApproved === 'no' && !s.adminDirectorNoReason) errors.push({ label: 'Reason approval was not obtained', id: 'de-admin-director-no-reason-wrap', critical: true });
   if (s.dischargeType === 'neutral' && !s.neutralSupervisor) errors.push({ label: 'Supervisor who approved Neutral', id: 'de-neutral-reason-wrap', critical: true });
   if (s.dischargeType === 'neutral' && !s.neutralReason) errors.push({ label: 'Reason for Neutral classification', id: 'de-neutral-reason-wrap', critical: true });
   if (bridgeStatus.contactedMissing) errors.push({ label: 'Bridge contact', id: 'de-bridge-required-wrap', critical: true });
   if (bridgeStatus.reasonMissing) errors.push({ label: "Bridge — reason not contacted", id: 'de-bridge-reason-wrap', critical: true });
   if (bridgeStatus.bridgeRequired && !s.staffInvolved && !s.staffNone) errors.push({ label: 'Clinical staff member (or mark none available)', id: 'de-staff-required-wrap', critical: true });
-  if (s.dischargeSubtype === 'admin' && !s.otherStaffInvolved) errors.push({ label: 'Staff involved', id: 'de-admin-staff-wrap', critical: true });
+  if (s.dischargeSubtype === 'admin' && !s.otherStaffInvolved) errors.push({ label: 'Staff involved in intervention', id: 'de-admin-staff-wrap', critical: true });
   if (!isOP && !s.destination && !s.destinationUnknown) errors.push({ label: 'Where client is going', id: 'de-destination-wrap' });
   if (!isOP && !s.resourceSheetProvided) errors.push({ label: 'Resource sheet provided', id: 'de-resource-sheet-wrap' });
   if (!s.onProbation) errors.push({ label: 'On probation status', id: 'de-prob-yes' });
@@ -11410,7 +11462,12 @@ function deGenerate() {
 
   if ((s.dischargeSubtype === 'asa' || s.dischargeSubtype === 'admin') && s.unsuccessfulReason) {
     lines.push('');
-    lines.push(`Reason for ASA / Administrative Discharge: ${s.unsuccessfulReason}`);
+    const reasonLabel = s.dischargeSubtype === 'asa' ? 'Reason for ASA' : 'Reason for Admin Discharge';
+    lines.push(`${reasonLabel}: ${s.unsuccessfulReason}`);
+  }
+  if (s.dischargeSubtype === 'admin' && s.adminDirectorApproved) {
+    lines.push(`Clinical Director Approved: ${s.adminDirectorApproved === 'yes' ? 'Yes' : 'No'}`);
+    if (s.adminDirectorApproved === 'no' && s.adminDirectorNoReason) lines.push(`Reason Approval Was Not Obtained: ${s.adminDirectorNoReason}`);
   }
 
   if (s.dischargeType === 'neutral') {
@@ -11436,7 +11493,7 @@ function deGenerate() {
     lines.push('');
     lines.push(`Clinical Staff Member (Owns Remarkable Documentation): None available.`);
   }
-  if (s.otherStaffInvolved) lines.push(`Other Staff Involved: ${s.otherStaffInvolved}`);
+  if (s.otherStaffInvolved) lines.push(`Other Staff Involved in Intervention: ${s.otherStaffInvolved}`);
 
   if (s.unit !== 'Community OP') {
     lines.push('');
@@ -11522,7 +11579,7 @@ function deReset() {
   deState = {
     clientName: '', dischargeDate: '', departureTime: '', unit: '', dischargeType: '', dischargeSubtype: '',
     outcomeCompleted1: '', outcomeContinuedTreatment: '', outcomeExternalBarrier: '',
-    unsuccessfulReason: '', neutralReason: '', neutralSupervisor: '', transitionCalendar: '', transitionCalendarOpened: false, transitionCalendarNoReason: '', plannedCalendarConfirmed: '',
+    unsuccessfulReason: '', adminDirectorApproved: '', adminDirectorNoReason: '', neutralReason: '', neutralSupervisor: '', transitionCalendar: '', transitionCalendarOpened: false, transitionCalendarNoReason: '', plannedCalendarConfirmed: '',
     bridgeContacted: '', bridgeNotContactedReason: '', staffInvolved: '', staffNone: false, otherStaffInvolved: '',
     destination: '', destinationUnknown: false, resourceSheetProvided: '', resourceSheetReason: '', forwardingInfo: '', forwardingNone: false,
     medsReceived: '', medsNotReceivedReason: '',
@@ -11581,6 +11638,11 @@ function deReset() {
   if (deCalendarOpenHint) deCalendarOpenHint.style.display = 'block';
   document.getElementById('de-bridge-wrap').style.display = 'none';
   document.getElementById('de-admin-staff-wrap').style.display = 'none';
+  ['yes','no'].forEach(v => { const el = document.getElementById('de-admin-director-' + v); if (el) el.classList.remove('active'); });
+  const adminDirectorWarning = document.getElementById('de-admin-director-no-warning');
+  if (adminDirectorWarning) adminDirectorWarning.style.display = 'none';
+  const adminDirectorNoReasonWrap = document.getElementById('de-admin-director-no-reason-wrap');
+  if (adminDirectorNoReasonWrap) adminDirectorNoReasonWrap.style.display = 'none';
   document.getElementById('de-bridge-reason-wrap').style.display = 'none';
   document.getElementById('de-meds-reason-wrap').style.display = 'none';
   document.getElementById('de-rs-reason-wrap').style.display = 'none';
@@ -11592,7 +11654,6 @@ function deReset() {
   document.getElementById('de-error-panel').style.display = 'none';
   document.getElementById('de-stale-banner').style.display = 'none';
   document.getElementById('de-generate-bar').classList.remove('de-stale');
-  document.getElementById('de-bridge-alert').style.display = 'none';
   deState._generated = false;
   deState._dirty = false;
   document.getElementById('de-out-text').innerHTML = '<span class="ds-out-empty">Fill in the fields, then click Generate below.</span>';
@@ -14515,7 +14576,7 @@ function autosaveHasContent() {
   if (gnState.counselor || gnClients.some(c => c.name || c.responseTopic || c.responseReading || c.responseMindfulness || c.cjText)) return true;
   if (dsState.clientName) return true;
   if (deState.clientName || deState.dischargeType || deState.dischargeSubtype || deState.dischargeDate ||
-      deState.unsuccessfulReason || deState.transitionCalendar || deState.transitionCalendarNoReason || deState.staffInvolved || deState.staffNone || deState.additionalInfo) return true;
+      deState.unsuccessfulReason || deState.adminDirectorApproved || deState.transitionCalendar || deState.transitionCalendarNoReason || deState.staffInvolved || deState.staffNone || deState.additionalInfo) return true;
   if (nnState.clientName) return true;
   if (asaState.clientName) return true;
   if (itpSelected.A.size || itpSelected.B.size || itpSelected.C.size) return true;
@@ -14823,6 +14884,7 @@ function autosaveApply(snap) {
   if (savedDe.unit) deSetUnit(savedDe.unit);
   if (savedDe.dischargeType) { deState.dischargeType = ''; deSetDischargeType(savedDe.dischargeType); }
   if (savedDe.dischargeType === 'unsuccessful' && (savedDe.dischargeSubtype === 'asa' || savedDe.dischargeSubtype === 'admin')) { deState.dischargeSubtype = ''; deSetSubtype(savedDe.dischargeSubtype); }
+  if (savedDe.dischargeSubtype === 'admin' && savedDe.adminDirectorApproved) { deState.adminDirectorApproved = ''; deSetAdminDirectorApproval(savedDe.adminDirectorApproved); }
   if (savedDe.bridgeContacted) { deState.bridgeContacted = ''; deSetYN('bridgeContacted', savedDe.bridgeContacted, 'de-bridge'); }
   if (savedDe.resourceSheetProvided) { deState.resourceSheetProvided = ''; deSetYN('resourceSheetProvided', savedDe.resourceSheetProvided, 'de-rs'); }
   if (savedDe.medsReceived) { deState.medsReceived = ''; deSetYNA('medsReceived', savedDe.medsReceived, 'de-meds'); }
