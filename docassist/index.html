@@ -4695,7 +4695,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
 
         <div id="de-neutral-reason-wrap" style="display:none;margin-bottom:10px;">
-          <div style="padding:9px 11px;border:1px solid var(--border);border-radius:7px;background:var(--output-bg);margin-bottom:8px;font-size:10px;line-height:1.45;color:var(--text);"><strong>Neutral requires supervisor approval.</strong> Do not continue unless a supervisor reviewed this specific discharge and approved Neutral.</div>
+          <div style="padding:10px 12px;border:1px solid var(--warning-border);border-left:4px solid var(--warning-border);border-radius:7px;background:var(--warning-bg);margin-bottom:10px;font-size:10px;line-height:1.45;color:var(--warning-text);"><strong>Neutral requires supervisor approval.</strong> Do not continue unless a supervisor reviewed this specific discharge and approved Neutral.</div>
           <label class="form-label">Reason for Rare Neutral Classification<span class="req-star">*</span></label>
           <div style="font-size:10px;color:var(--text-secondary);line-height:1.45;margin-bottom:5px;">Neutral is a rare exception and requires supervisor approval. Do not use Neutral as a middle option between Successful and Unsuccessful.</div>
           <textarea class="form-textarea" id="de-neutral-reason" rows="2" placeholder="Describe the rare circumstance supporting the Neutral classification…" oninput="deState.neutralReason=this.value;deRenderOutput()" style="min-height:55px;margin-bottom:8px;"></textarea>
@@ -10879,8 +10879,8 @@ const RES_UNITS = ['5th Floor','6th Floor','8th Floor'];
 
 const DE_OP_HIDDEN_FIELDS = ['destination','destinationUnknown','resourceSheetProvided','resourceSheetReason',
   'propertyReceived','phoneReceived','woodhavenPropertyCollected','medsReceived','medsNotReceivedReason',
-  'paperworkSigned','phoneCallMade','outpatientOffered','roomVacated','clientsOnUnit','roomCleanedSearched',
-  'bridgeContacted','bridgeNotContactedReason','staffInvolved','staffNone','otherStaffInvolved'];
+  'paperworkSigned','phoneCallMade','outpatientOffered','outpatientNoReason','roomVacated','clientsOnUnit','roomCleanedSearched',
+  'bridgeContacted','bridgeNotContactedReason','staffInvolved','staffNone'];
 
 function deUpdate2wmVisibility() {
   const isResUnit = RES_UNITS.includes(deState.unit) && deState.dischargeType === 'unsuccessful';
@@ -10906,27 +10906,57 @@ function deSetUnit(val) {
   document.getElementById('de-property-paperwork-card').style.display = isOP ? 'none' : 'block';
   document.getElementById('de-outpatient-wrap').style.display = isOP ? 'none' : 'block';
   document.getElementById('de-room-census-card').style.display = isOP ? 'none' : 'block';
-  if (isOP) document.getElementById('de-bridge-wrap').style.display = 'none';
+
+  // ASA Bridge/staff involvement is not used for Community OP, but must
+  // reappear automatically if an ASA discharge is switched back to another unit.
+  const bridgeWrap = document.getElementById('de-bridge-wrap');
+  if (bridgeWrap) {
+    bridgeWrap.style.display = (!isOP && deState.dischargeSubtype === 'asa') ? 'block' : 'none';
+  }
 
   deUpdate2wmVisibility();
 
   if (isOP) {
     DE_OP_HIDDEN_FIELDS.forEach(f => { deState[f] = (f === 'destinationUnknown' || f === 'staffNone') ? false : ''; });
-    ['de-destination','de-rs-reason','de-meds-reason','de-room','de-census','de-bridge-reason','de-staff-name','de-staff-other'].forEach(id => {
+
+    // ASA-only shared staff information should not survive into Community OP.
+    // Admin Discharge staff involvement remains applicable and is intentionally preserved.
+    if (deState.dischargeSubtype === 'asa') {
+      deState.otherStaffInvolved = '';
+      ['de-staff-other','de-admin-staff-other'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
+    }
+
+    ['de-destination','de-rs-reason','de-meds-reason','de-room','de-census','de-bridge-reason','de-staff-name','de-staff-other','de-op-reason'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.value = '';
     });
+
     document.getElementById('de-destination-unknown').checked = false;
     document.getElementById('de-destination').disabled = false;
+
     const staffNoneCb = document.getElementById('de-staff-none');
     if (staffNoneCb) staffNoneCb.checked = false;
     const staffNameInput = document.getElementById('de-staff-name');
     if (staffNameInput) staffNameInput.disabled = false;
-    document.getElementById('de-bridge-reason-wrap').style.display = 'none';
-    ['de-rs','de-prop','de-phn','de-wp','de-meds','de-pw','de-call','de-clean','de-bridge'].forEach(prefix => {
-      ['yes','no','na'].forEach(v => { const el = document.getElementById(prefix + '-' + v); if (el) el.classList.remove('active'); });
+
+    ['de-bridge-reason-wrap','de-rs-reason-wrap','de-meds-reason-wrap','de-op-reason-wrap'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
     });
-    ['yes','no','unknown'].forEach(v => { const el = document.getElementById('de-op-' + v); if (el) el.classList.remove('active'); });
+
+    ['de-rs','de-prop','de-phn','de-wp','de-meds','de-pw','de-call','de-clean','de-bridge'].forEach(prefix => {
+      ['yes','no','na'].forEach(v => {
+        const el = document.getElementById(prefix + '-' + v);
+        if (el) el.classList.remove('active');
+      });
+    });
+    ['yes','no','unknown'].forEach(v => {
+      const el = document.getElementById('de-op-' + v);
+      if (el) el.classList.remove('active');
+    });
   }
   deRenderOutput();
 }
@@ -11555,7 +11585,7 @@ function deGenerate() {
     }
   }
 
-  if (s.dischargeSubtype === 'asa' || s.dischargeSubtype === 'admin') {
+  if (s.dischargeSubtype === 'admin' || (s.dischargeSubtype === 'asa' && !isOP)) {
     if (s.staffInvolved) {
       lines.push('');
       lines.push(`Clinical Staff Member (Owns Remarkable Documentation): ${s.staffInvolved}`);
@@ -11571,12 +11601,12 @@ function deGenerate() {
     lines.push(`Destination: ${s.destinationUnknown ? 'Unknown' : (s.destination || '[Destination]')}`);
   }
 
-  if (s.resourceSheetProvided) {
+  if (!isOP && s.resourceSheetProvided) {
     lines.push(deYN('Resource Sheet Provided', s.resourceSheetProvided));
     if (s.resourceSheetProvided === 'no' && s.resourceSheetReason) lines.push(`Reason: ${s.resourceSheetReason}`);
   }
 
-  if (s.medsReceived) {
+  if (!isOP && s.medsReceived) {
     if (s.medsReceived === 'yes') {
       lines.push('Medications Received: Yes');
     } else if (s.medsReceived === 'na') {
@@ -11593,13 +11623,13 @@ function deGenerate() {
     lines.push(`Forwarding Address and/or Phone Number: ${s.forwardingInfo}`);
   }
 
-  const logisticsLines = [
+  const logisticsLines = !isOP ? [
     deYN('Property Received', s.propertyReceived),
     deYN('Phone Received', s.phoneReceived),
     deYN('Woodhaven Property Collected', s.woodhavenPropertyCollected),
     deYN('Discharge Paperwork Signed', s.paperworkSigned),
     (s.dischargeType === 'unsuccessful' ? deYN('Phone Call Made', s.phoneCallMade) : null)
-  ].filter(Boolean);
+  ].filter(Boolean) : [];
   if (logisticsLines.length) { lines.push(''); logisticsLines.forEach(l => lines.push(l)); }
 
   if (s.onProbation) {
@@ -11616,15 +11646,17 @@ function deGenerate() {
     if (s.detox2wmOffered === 'no' && s.detox2wmReason) lines.push(`Reason: ${s.detox2wmReason}`);
   }
 
-  if (s.outpatientOffered) {
+  if (!isOP && s.outpatientOffered) {
     lines.push(deYN('Offered Connection to Woodhaven Outpatient Services', s.outpatientOffered));
     if (s.outpatientOffered === 'no' && s.outpatientNoReason) lines.push(`Reason: ${s.outpatientNoReason}`);
   }
 
   const roomLines = [];
-  if (s.roomVacated) roomLines.push(`Room Vacated: ${s.roomVacated}${s.roomCleanedSearched ? ` (Cleaned and Searched: ${s.roomCleanedSearched === 'yes' ? 'Yes' : 'No'})` : ''}`);
-  else if (s.roomCleanedSearched) roomLines.push(deYN('Room Cleaned and Searched', s.roomCleanedSearched));
-  if (s.clientsOnUnit !== '' && s.clientsOnUnit !== undefined && s.clientsOnUnit !== null) roomLines.push(`Clients Remaining on Unit: ${s.clientsOnUnit}`);
+  if (!isOP) {
+    if (s.roomVacated) roomLines.push(`Room Vacated: ${s.roomVacated}${s.roomCleanedSearched ? ` (Cleaned and Searched: ${s.roomCleanedSearched === 'yes' ? 'Yes' : 'No'})` : ''}`);
+    else if (s.roomCleanedSearched) roomLines.push(deYN('Room Cleaned and Searched', s.roomCleanedSearched));
+    if (s.clientsOnUnit !== '' && s.clientsOnUnit !== undefined && s.clientsOnUnit !== null) roomLines.push(`Clients Remaining on Unit: ${s.clientsOnUnit}`);
+  }
   if (roomLines.length) { lines.push(''); roomLines.forEach(l => lines.push(l)); }
 
   if (s.additionalInfo) {
@@ -14961,14 +14993,14 @@ function autosaveApply(snap) {
   if (savedDe.medsReceived) { deState.medsReceived = ''; deSetYNA('medsReceived', savedDe.medsReceived, 'de-meds'); }
   if (savedDe.propertyReceived) { deState.propertyReceived = ''; deSetYNA('propertyReceived', savedDe.propertyReceived, 'de-prop'); }
   if (savedDe.phoneReceived) { deState.phoneReceived = ''; deSetYNA('phoneReceived', savedDe.phoneReceived, 'de-phn'); }
-  if (savedDe.woodhavenPropertyCollected) { deState.woodhavenPropertyCollected = ''; deSetYN('woodhavenPropertyCollected', savedDe.woodhavenPropertyCollected, 'de-whprop'); }
-  if (savedDe.paperworkSigned) { deState.paperworkSigned = ''; deSetYN('paperworkSigned', savedDe.paperworkSigned, 'de-paperwork'); }
-  if (savedDe.phoneCallMade) { deState.phoneCallMade = ''; deSetYN('phoneCallMade', savedDe.phoneCallMade, 'de-callmade'); }
+  if (savedDe.woodhavenPropertyCollected) { deState.woodhavenPropertyCollected = ''; deSetYN('woodhavenPropertyCollected', savedDe.woodhavenPropertyCollected, 'de-wp'); }
+  if (savedDe.paperworkSigned) { deState.paperworkSigned = ''; deSetYN('paperworkSigned', savedDe.paperworkSigned, 'de-pw'); }
+  if (savedDe.phoneCallMade) { deState.phoneCallMade = ''; deSetYN('phoneCallMade', savedDe.phoneCallMade, 'de-call'); }
   if (savedDe.onProbation) { deState.onProbation = ''; deSetTri('onProbation', savedDe.onProbation, 'de-prob'); }
   if (savedDe.poNotified) { deState.poNotified = ''; deSetYN('poNotified', savedDe.poNotified, 'de-po'); }
   if (savedDe.detox2wmOffered) { deState.detox2wmOffered = ''; deSetTri('detox2wmOffered', savedDe.detox2wmOffered, 'de-2wm', 'notinwm'); }
   if (savedDe.outpatientOffered) { deState.outpatientOffered = ''; deSetTri('outpatientOffered', savedDe.outpatientOffered, 'de-op'); }
-  if (savedDe.roomCleanedSearched) { deState.roomCleanedSearched = ''; deSetYN('roomCleanedSearched', savedDe.roomCleanedSearched, 'de-room'); }
+  if (savedDe.roomCleanedSearched) { deState.roomCleanedSearched = ''; deSetYN('roomCleanedSearched', savedDe.roomCleanedSearched, 'de-clean'); }
   // Restore whichever fields the toggle calls above didn't touch (free text etc.)
   Object.assign(deState, savedDe);
   // Normalize snapshots created under the retired transition-continuity workflow.
