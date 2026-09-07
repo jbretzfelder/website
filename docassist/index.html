@@ -4677,10 +4677,14 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
           </div>
 
           <div id="de-subtype-wrap" style="display:none;margin-top:10px;margin-left:12px;padding-left:10px;border-left:2px solid var(--border);">
-            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:5px;">How did the unsuccessful discharge occur?<span class="req-star">*</span></div>
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:6px;">Choose why the discharge was unsuccessful:<span class="req-star">*</span></div>
             <div style="display:flex;gap:6px;flex-wrap:wrap;">
-              <button class="ds-pill ds-subpill" onclick="deSetSubtype('asa')" id="de-sub-asa">Left Against Staff Advice (ASA)</button>
-              <button class="ds-pill ds-subpill" onclick="deSetSubtype('admin')" id="de-sub-admin">Administrative Discharge</button>
+              <button class="ds-pill ds-subpill" onclick="deSetSubtype('asa')" id="de-sub-asa">ASA — Client Left Against Staff Advice</button>
+              <button class="ds-pill ds-subpill" onclick="deSetSubtype('admin')" id="de-sub-admin">Administrative Discharge — Facility Decision</button>
+            </div>
+            <div style="margin-top:8px;padding:9px 11px;border:1px solid var(--border);border-radius:7px;background:var(--output-bg);font-size:10px;line-height:1.5;color:var(--text);">
+              <div style="margin-bottom:5px;"><strong>ASA:</strong> The client chooses to leave against staff advice and is not on the Transition Calendar.</div>
+              <div><strong>Administrative Discharge:</strong> The facility discharges the client due to violence, significant rule violations, or similar concerns. Administrative discharges require Clinical Director approval unless an immediate discharge is necessary because of an unsafe situation.</div>
             </div>
           </div>
         </div>
