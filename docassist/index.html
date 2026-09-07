@@ -2346,6 +2346,17 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 #tut-next-btn:hover { background: #1e4d38; border-color: #1e4d38; }
 </style>
 
+
+<style>
+  /* Discharge Email usability: progressive workflow + persistent status */
+  .de-workflow-status{position:sticky;top:0;z-index:8;margin:0 0 10px;padding:9px 11px;border:1px solid var(--border);border-radius:8px;background:var(--surface);box-shadow:0 2px 8px rgba(0,0,0,.06)}
+  .de-workflow-status-main{font-size:11px;font-weight:700;color:var(--text);line-height:1.35}
+  .de-workflow-status-sub{font-size:10px;color:var(--text-secondary);margin-top:2px}
+  .de-step-title{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:12px}
+  .de-step-num{display:inline-flex;align-items:center;justify-content:center;width:19px;height:19px;border-radius:50%;background:var(--output-bg);border:1px solid var(--border);font-size:10px;letter-spacing:0;color:var(--text-secondary);flex:0 0 auto}
+  .de-first-required{outline:2px solid var(--warning-border);outline-offset:2px}
+  #de-required-summary{font-size:10px;font-weight:700;line-height:1.35;margin-top:2px}
+</style>
 </head>
 <body>
 
@@ -4614,9 +4625,14 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <!-- LEFT PANEL: INPUTS -->
     <div style="width:420px;min-width:340px;display:flex;flex-direction:column;gap:0;overflow-y:auto;padding-right:6px;">
 
+      <div class="de-workflow-status" id="de-workflow-status">
+        <div class="de-workflow-status-main" id="de-current-classification">No discharge outcome selected</div>
+        <div class="de-workflow-status-sub" id="de-required-summary">Complete the client details and choose an outcome.</div>
+      </div>
+
       <!-- Client & Discharge -->
       <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
-        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:12px;">Client & Discharge</div>
+        <div class="de-step-title"><span class="de-step-num">1</span>Client &amp; Discharge</div>
 
         <div style="margin-bottom:10px;">
           <label class="form-label">Client Full Name<span class="req-star">*</span></label>
@@ -4677,7 +4693,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
           </div>
 
           <div id="de-subtype-wrap" style="display:none;margin-top:10px;margin-left:12px;padding-left:10px;border-left:2px solid var(--border);">
-            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:6px;">Choose why the discharge was unsuccessful:<span class="req-star">*</span></div>
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:6px;">Who ended treatment?<span class="req-star">*</span></div>
             <div style="display:flex;gap:6px;flex-wrap:wrap;">
               <button class="ds-pill ds-subpill" onclick="deSetSubtype('asa')" id="de-sub-asa">ASA — Client Ends Treatment</button>
               <button class="ds-pill ds-subpill" onclick="deSetSubtype('admin')" id="de-sub-admin">Admin Discharge — Facility Ends Treatment</button>
@@ -4708,14 +4724,14 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       </div>
 
       <!-- Staff Involvement -->
-      <div id="de-bridge-wrap" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
-        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:12px;">Staff Involvement</div>
+      <div id="de-bridge-wrap" data-de-progressive="true" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
+        <div class="de-step-title"><span class="de-step-num">2</span>Intervention / Staff Involvement</div>
 
         <div id="de-bridge-required-wrap" style="margin-bottom:6px;">
           <label class="form-label">Was The Bridge Contacted?<span class="req-star">*</span></label>
-          <div style="display:flex;gap:6px;margin-bottom:6px;">
-            <button class="ds-pill" onclick="deSetYN('bridgeContacted','yes','de-bridge')" id="de-bridge-yes">Yes</button>
-            <button class="ds-pill" onclick="deSetYN('bridgeContacted','no','de-bridge')" id="de-bridge-no">No</button>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
+            <button class="ds-pill" onclick="deSetYN('bridgeContacted','yes','de-bridge')" id="de-bridge-yes">Bridge Contacted</button>
+            <button class="ds-pill" onclick="deSetYN('bridgeContacted','no','de-bridge')" id="de-bridge-no">Bridge Not Contacted</button>
           </div>
           <div id="de-bridge-reason-wrap" style="display:none;">
             <label class="form-label">Why Not? What Other Attempts Were Made?<span class="req-star">*</span></label>
@@ -4742,13 +4758,13 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       </div>
 
       <!-- Staff Involvement (Admin Discharge — Staff Involved only) -->
-      <div id="de-admin-staff-wrap" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
-        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:12px;">Staff Involvement</div>
+      <div id="de-admin-staff-wrap" data-de-progressive="true" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
+        <div class="de-step-title"><span class="de-step-num">2</span>Intervention / Staff Involvement</div>
         <div id="de-admin-director-approval-wrap" style="margin-bottom:12px;">
           <label class="form-label">Clinical Director Approved?<span class="req-star">*</span></label>
-          <div style="display:flex;gap:6px;margin-bottom:6px;">
-            <button class="ds-pill" onclick="deSetAdminDirectorApproval('yes')" id="de-admin-director-yes">Yes</button>
-            <button class="ds-pill" onclick="deSetAdminDirectorApproval('no')" id="de-admin-director-no">No</button>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
+            <button class="ds-pill" onclick="deSetAdminDirectorApproval('yes')" id="de-admin-director-yes">Approved by Clinical Director</button>
+            <button class="ds-pill" onclick="deSetAdminDirectorApproval('no')" id="de-admin-director-no">Approval Not Obtained</button>
           </div>
           <div id="de-admin-director-no-warning" style="display:none;background:var(--warning-bg);border:1px solid var(--warning-border);border-radius:6px;padding:8px 10px;font-size:10px;line-height:1.45;color:var(--warning-text);font-weight:600;">No should only be used when immediate discharge was necessary because of an unsafe situation. Clinical Director must be notified.</div>
           <div id="de-admin-director-no-reason-wrap" style="display:none;margin-top:8px;">
@@ -4761,8 +4777,8 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       </div>
 
       <!-- Departure Logistics -->
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
-        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:12px;">Departure Logistics</div>
+      <div id="de-departure-logistics-card" data-de-progressive="true" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
+        <div class="de-step-title"><span class="de-step-num">3</span>Departure Logistics</div>
 
         <div id="de-destination-wrap" style="margin-bottom:10px;">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
@@ -4777,12 +4793,12 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 
         <div id="de-resource-sheet-wrap" style="margin-bottom:10px;">
           <label class="form-label">Resource Sheet Provided?<span class="req-star">*</span></label>
-          <div style="display:flex;gap:6px;margin-bottom:6px;">
-            <button class="ds-pill" onclick="deSetYN('resourceSheetProvided','yes','de-rs')" id="de-rs-yes">Yes</button>
-            <button class="ds-pill" onclick="deSetYN('resourceSheetProvided','no','de-rs')" id="de-rs-no">No</button>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
+            <button class="ds-pill" onclick="deSetYN('resourceSheetProvided','yes','de-rs')" id="de-rs-yes">Resource Sheet Provided</button>
+            <button class="ds-pill" onclick="deSetYN('resourceSheetProvided','no','de-rs')" id="de-rs-no">Not Provided</button>
           </div>
           <div id="de-rs-reason-wrap" style="display:none;">
-            <label class="form-label">If No, Why Not?</label>
+            <label class="form-label">If No, Why Not?<span class="req-star">*</span></label>
             <textarea class="form-textarea" id="de-rs-reason" rows="2" placeholder="Explain…" oninput="deState.resourceSheetReason=this.value;deRenderOutput()" style="min-height:50px;"></textarea>
           </div>
         </div>
@@ -4800,8 +4816,8 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       </div>
 
       <!-- Property & Paperwork -->
-      <div id="de-property-paperwork-card" style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
-        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:12px;">Property & Paperwork</div>
+      <div id="de-property-paperwork-card" data-de-progressive="true" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
+        <div class="de-step-title"><span class="de-step-num">4</span>Property &amp; Paperwork</div>
 
         <div style="margin-bottom:10px;">
           <label class="form-label">Did Client Receive Property?</label>
@@ -4860,8 +4876,8 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       </div>
 
       <!-- Probation & Referrals -->
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
-        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:12px;">Probation & Referrals</div>
+      <div id="de-probation-referrals-card" data-de-progressive="true" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
+        <div class="de-step-title"><span class="de-step-num">5</span>Probation &amp; Referrals</div>
 
         <div style="margin-bottom:10px;">
           <label class="form-label">Is the Client on Probation?<span class="req-star">*</span></label>
@@ -4872,9 +4888,9 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
           </div>
           <div id="de-po-wrap" style="display:none;margin-top:8px;">
             <label class="form-label">Has the Probation Officer Been Notified?<span class="req-star">*</span></label>
-            <div style="display:flex;gap:6px;">
-              <button class="ds-pill" onclick="deSetYN('poNotified','yes','de-po')" id="de-po-yes">Yes</button>
-              <button class="ds-pill" onclick="deSetYN('poNotified','no','de-po')" id="de-po-no">No</button>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;">
+              <button class="ds-pill" onclick="deSetYN('poNotified','yes','de-po')" id="de-po-yes">PO Notified</button>
+              <button class="ds-pill" onclick="deSetYN('poNotified','no','de-po')" id="de-po-no">PO Not Notified</button>
             </div>
           </div>
         </div>
@@ -4907,8 +4923,8 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       </div>
 
       <!-- Room & Census -->
-      <div id="de-room-census-card" style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
-        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:12px;">Room & Census</div>
+      <div id="de-room-census-card" data-de-progressive="true" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
+        <div class="de-step-title"><span class="de-step-num">6</span>Room &amp; Census</div>
 
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
           <div>
@@ -4931,8 +4947,8 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       </div>
 
       <!-- Additional Information -->
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
-        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:12px;">Additional Information</div>
+      <div id="de-additional-card" data-de-progressive="true" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
+        <div class="de-step-title"><span class="de-step-num">7</span>Additional Information</div>
         <textarea class="form-textarea" id="de-additional" rows="3" placeholder="Anything else important to document about this discharge…" oninput="deState.additionalInfo=this.value;deRenderOutput()" style="min-height:65px;"></textarea>
       </div>
 
@@ -11010,9 +11026,19 @@ function deSetYN(field, val, prefix) {
   });
   if (field === 'bridgeContacted') {
     document.getElementById('de-bridge-reason-wrap').style.display = newVal === 'no' ? 'block' : 'none';
+    if (newVal !== 'no') {
+      deState.bridgeNotContactedReason = '';
+      const reason = document.getElementById('de-bridge-reason');
+      if (reason) reason.value = '';
+    } else deFocusRevealed('de-bridge-reason');
   }
   if (field === 'resourceSheetProvided') {
     document.getElementById('de-rs-reason-wrap').style.display = newVal === 'no' ? 'block' : 'none';
+    if (newVal !== 'no') {
+      deState.resourceSheetReason = '';
+      const reason = document.getElementById('de-rs-reason');
+      if (reason) reason.value = '';
+    } else deFocusRevealed('de-rs-reason');
   }
   deRenderOutput();
 }
@@ -11033,11 +11059,13 @@ function deSetTri(field, val, prefix, thirdVal = 'unknown') {
     const opReasonWrap = document.getElementById('de-op-reason-wrap');
     if (opReasonWrap) opReasonWrap.style.display = newVal === 'no' ? 'block' : 'none';
     if (newVal !== 'no') { deState.outpatientNoReason = ''; const el = document.getElementById('de-op-reason'); if (el) el.value = ''; }
+    else deFocusRevealed('de-op-reason');
   }
   if (field === 'detox2wmOffered') {
     const wmReasonWrap = document.getElementById('de-2wm-reason-wrap');
     if (wmReasonWrap) wmReasonWrap.style.display = newVal === 'no' ? 'block' : 'none';
     if (newVal !== 'no') { deState.detox2wmReason = ''; const el = document.getElementById('de-2wm-reason'); if (el) el.value = ''; }
+    else deFocusRevealed('de-2wm-reason');
   }
   deRenderOutput();
 }
@@ -11064,6 +11092,11 @@ function deSetYNA(field, val, prefix) {
   });
   if (field === 'medsReceived') {
     document.getElementById('de-meds-reason-wrap').style.display = newVal === 'no' ? 'block' : 'none';
+    if (newVal !== 'no') {
+      deState.medsNotReceivedReason = '';
+      const reason = document.getElementById('de-meds-reason');
+      if (reason) reason.value = '';
+    } else deFocusRevealed('de-meds-reason');
   }
   deRenderOutput();
 }
@@ -11195,6 +11228,7 @@ function deSetDischargeType(val) {
     if (wmReasonWrap) wmReasonWrap.style.display = 'none';
   }
   deUpdate2wmVisibility();
+  if (newVal === 'neutral') deFocusRevealed('de-neutral-reason');
   deRenderOutput();
 }
 
@@ -11333,6 +11367,7 @@ function deSetSubtype(val) {
   document.getElementById('de-unsuccessful-reason-wrap').style.display = isAsaOrAdmin ? 'block' : 'none';
   document.getElementById('de-bridge-wrap').style.display = (newVal === 'asa' && deState.unit !== 'Community OP') ? 'block' : 'none';
   document.getElementById('de-admin-staff-wrap').style.display = (newVal === 'admin') ? 'block' : 'none';
+  if (newVal === 'asa' || newVal === 'admin') deFocusRevealed('de-unsuccessful-reason');
   deRenderOutput();
 }
 
@@ -11425,7 +11460,151 @@ function deUpdateBridgeAlert() {
   return status;
 }
 
+
+function deWorkflowClassificationLabel() {
+  const s = deState;
+  const calendarWrap = document.getElementById('de-transition-calendar-wrap');
+  const successfulPending = !s.dischargeType && calendarWrap && calendarWrap.style.display !== 'none';
+  if (successfulPending) return 'Successful — Calendar verification required';
+  if (s.dischargeType === 'successful') return 'Successful — Completed Treatment';
+  if (s.dischargeType === 'neutral') return 'Neutral — Rare Exception';
+  if (s.dischargeType === 'unsuccessful') {
+    if (s.dischargeSubtype === 'asa') return 'Unsuccessful — ASA (Client Ends Treatment)';
+    if (s.dischargeSubtype === 'admin') return 'Unsuccessful — Admin Discharge (Facility Ends Treatment)';
+    return 'Unsuccessful — Choose ASA or Admin Discharge';
+  }
+  return 'No discharge outcome selected';
+}
+
+function deWorkflowCanContinue() {
+  const s = deState;
+  return s.dischargeType === 'successful' || s.dischargeType === 'neutral' ||
+    (s.dischargeType === 'unsuccessful' && (s.dischargeSubtype === 'asa' || s.dischargeSubtype === 'admin'));
+}
+
+function deUpdateWorkflowVisibility() {
+  const s = deState;
+  const canContinue = deWorkflowCanContinue();
+  const isOP = s.unit === 'Community OP';
+
+  const departure = document.getElementById('de-departure-logistics-card');
+  const property = document.getElementById('de-property-paperwork-card');
+  const probation = document.getElementById('de-probation-referrals-card');
+  const room = document.getElementById('de-room-census-card');
+  const additional = document.getElementById('de-additional-card');
+
+  if (departure) departure.style.display = canContinue ? 'block' : 'none';
+  if (property) property.style.display = (canContinue && !isOP) ? 'block' : 'none';
+  if (probation) probation.style.display = canContinue ? 'block' : 'none';
+  if (room) room.style.display = (canContinue && !isOP) ? 'block' : 'none';
+  if (additional) additional.style.display = canContinue ? 'block' : 'none';
+
+  const bridge = document.getElementById('de-bridge-wrap');
+  if (bridge) bridge.style.display = (canContinue && !isOP && s.dischargeSubtype === 'asa') ? 'block' : 'none';
+  const admin = document.getElementById('de-admin-staff-wrap');
+  if (admin) admin.style.display = (canContinue && s.dischargeSubtype === 'admin') ? 'block' : 'none';
+}
+
+function deFocusRevealed(id) {
+  const active = document.activeElement;
+  if (!active || active.tagName !== 'BUTTON') return;
+  const el = document.getElementById(id);
+  if (!el || el.disabled || el.offsetParent === null) return;
+  setTimeout(() => { try { el.focus({preventScroll:true}); } catch (_) { el.focus(); } }, 0);
+}
+
+function deClearFirstRequiredHighlight() {
+  document.querySelectorAll('.de-first-required').forEach(el => el.classList.remove('de-first-required'));
+}
+
+function deUpdateWorkflowStatus(errors) {
+  const classification = document.getElementById('de-current-classification');
+  const summary = document.getElementById('de-required-summary');
+  if (classification) classification.textContent = deWorkflowClassificationLabel();
+  if (!summary) return;
+  const count = errors.length;
+  if (count === 0 && deWorkflowCanContinue()) {
+    summary.textContent = 'Ready to generate';
+    summary.style.color = 'var(--success-text, var(--text))';
+  } else if (count > 0) {
+    summary.textContent = `${count} required ${count === 1 ? 'item' : 'items'} remaining`;
+    summary.style.color = 'var(--warning-text)';
+  } else {
+    summary.textContent = 'Complete the client details and choose an outcome.';
+    summary.style.color = 'var(--text-secondary)';
+  }
+}
+
+
+function deNormalizeDischargeConditionalState() {
+  const s = deState;
+  const isOP = s.unit === 'Community OP';
+  const isUnsuccessful = s.dischargeType === 'unsuccessful';
+  const isASA = isUnsuccessful && s.dischargeSubtype === 'asa';
+  const isAdmin = isUnsuccessful && s.dischargeSubtype === 'admin';
+
+  if (!isASA) {
+    s.bridgeContacted = '';
+    s.bridgeNotContactedReason = '';
+    s.staffInvolved = '';
+    s.staffNone = false;
+  }
+  if (!isAdmin) {
+    s.adminDirectorApproved = '';
+    s.adminDirectorNoReason = '';
+  }
+  if (!isUnsuccessful) {
+    s.unsuccessfulReason = '';
+    s.otherStaffInvolved = '';
+    s.phoneCallMade = '';
+  }
+  if (s.dischargeType !== 'neutral') {
+    s.neutralReason = '';
+    s.neutralSupervisor = '';
+  }
+
+  if (s.bridgeContacted !== 'no') s.bridgeNotContactedReason = '';
+  if (s.resourceSheetProvided !== 'no') s.resourceSheetReason = '';
+  if (s.medsReceived !== 'no') s.medsNotReceivedReason = '';
+  if (s.onProbation !== 'yes') s.poNotified = '';
+  if (s.detox2wmOffered !== 'no') s.detox2wmReason = '';
+  if (s.outpatientOffered !== 'no') s.outpatientNoReason = '';
+
+  if (isOP) {
+    s.destination = '';
+    s.destinationUnknown = false;
+    s.resourceSheetProvided = '';
+    s.resourceSheetReason = '';
+    s.propertyReceived = '';
+    s.phoneReceived = '';
+    s.woodhavenPropertyCollected = '';
+    s.medsReceived = '';
+    s.medsNotReceivedReason = '';
+    s.paperworkSigned = '';
+    s.phoneCallMade = '';
+    s.outpatientOffered = '';
+    s.outpatientNoReason = '';
+    s.roomVacated = '';
+    s.clientsOnUnit = '';
+    s.roomCleanedSearched = '';
+    if (isASA) {
+      s.bridgeContacted = '';
+      s.bridgeNotContactedReason = '';
+      s.staffInvolved = '';
+      s.staffNone = false;
+      s.otherStaffInvolved = '';
+    }
+  }
+
+  const isResUnsuccessful = RES_UNITS.includes(s.unit) && isUnsuccessful;
+  if (!isResUnsuccessful) {
+    s.detox2wmOffered = '';
+    s.detox2wmReason = '';
+  }
+}
+
 function deComputeErrors() {
+  deNormalizeDischargeConditionalState();
   const s = deState;
   const isOP = (s.unit === 'Community OP');
   const isResUnit = RES_UNITS.includes(s.unit) && s.dischargeType === 'unsuccessful';
@@ -11449,6 +11628,7 @@ function deComputeErrors() {
   if (s.dischargeSubtype === 'admin' && !s.otherStaffInvolved) errors.push({ label: 'Staff involved in intervention', id: 'de-admin-staff-wrap', critical: true });
   if (!isOP && !s.destination && !s.destinationUnknown) errors.push({ label: 'Where client is going', id: 'de-destination-wrap' });
   if (!isOP && !s.resourceSheetProvided) errors.push({ label: 'Resource sheet provided', id: 'de-resource-sheet-wrap' });
+  if (!isOP && s.resourceSheetProvided === 'no' && !s.resourceSheetReason) errors.push({ label: 'Reason resource sheet was not provided', id: 'de-rs-reason-wrap' });
   if (!s.onProbation) errors.push({ label: 'On probation status', id: 'de-prob-yes' });
   if (s.onProbation === 'yes' && !s.poNotified) errors.push({ label: 'Probation officer notified', id: 'de-po-wrap' });
   if (isResUnit && !s.detox2wmOffered) errors.push({ label: '2WM Ambulatory Detox offered', id: 'de-2wm-yes' });
@@ -11482,7 +11662,11 @@ function deUpdateGenerateBarState(dirty, ready) {
   } else if (readyFirstTime) {
     generateHint.textContent = "All required fields are filled in — click Generate to create the email.";
   } else {
-    generateHint.textContent = "Fill in the fields, then click Generate. The email won't update automatically as you type.";
+    const { errors } = deComputeErrors();
+    const count = errors.length;
+    generateHint.textContent = count
+      ? `${count} required ${count === 1 ? 'item' : 'items'} remaining. Complete the highlighted workflow, then generate.`
+      : "Choose the discharge outcome to continue.";
   }
 
   staleBanner.style.display = needsRegenerate ? 'block' : 'none';
@@ -11508,12 +11692,15 @@ function deRenderOutput() {
   // text no longer reflects the current form until Generate is clicked again.
   deState._dirty = true;
   const hasContent = !!(s.clientName || s.dischargeDate || s.dischargeType || s.unit);
+  deUpdateWorkflowVisibility();
   const { errors } = deComputeErrors();
+  deUpdateWorkflowStatus(errors);
   const ready = hasContent && errors.length === 0;
   deUpdateGenerateBarState(deState._dirty, ready);
 }
 
 function deGenerate() {
+  deNormalizeDischargeConditionalState();
   const s = deState;
   const out = document.getElementById('de-out-text');
   const subjectOut = document.getElementById('de-out-subject-text');
@@ -11529,7 +11716,16 @@ function deGenerate() {
       `<li${e.critical ? ' style="font-weight:700;color:#c0392b;"' : ''}><button class="error-jump" onclick="deJumpToField('${e.id}')">${e.critical ? '⚠ ' : ''}${e.label}</button></li>`
     ).join('');
     errorPanel.style.display = 'block';
-    errorPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    deClearFirstRequiredHighlight();
+    const firstError = errors[0];
+    const firstEl = firstError ? document.getElementById(firstError.id) : null;
+    if (firstEl) {
+      firstEl.classList.add('de-first-required');
+      firstEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(() => firstEl.classList.remove('de-first-required'), 2200);
+    } else {
+      errorPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
     return;
   }
 
@@ -15020,7 +15216,8 @@ function autosaveApply(snap) {
     if (calendarWrap) calendarWrap.style.display = 'block';
     const calendarYes = document.getElementById('de-calendar-yes');
     if (calendarYes) {
-      calendarYes.setAttribute('aria-disabled', 'false');
+      calendarYes.disabled = false;
+      calendarYes.removeAttribute('aria-disabled');
       calendarYes.style.opacity = '';
       calendarYes.style.cursor = '';
       calendarYes.classList.add('active');
@@ -15044,6 +15241,7 @@ function autosaveApply(snap) {
     if (calendarWrap) calendarWrap.style.display = 'block';
     const calendarYes = document.getElementById('de-calendar-yes');
     if (calendarYes) {
+      calendarYes.disabled = true;
       calendarYes.setAttribute('aria-disabled', 'true');
       calendarYes.style.opacity = '.45';
       calendarYes.style.cursor = 'not-allowed';
@@ -15076,6 +15274,47 @@ function autosaveApply(snap) {
   // and reconciles ITP goal/quote/objective fields now that renderITPGoals()
   // has rebuilt the relevant cards. ──
   autosaveApplyDom(snap.dom);
+
+  // Reconcile Discharge Email conditional DOM after the generic restore.
+  // State is the source of truth: fields that no longer apply must not reappear
+  // visually just because an older autosave captured their DOM values.
+  if (typeof deNormalizeDischargeConditionalState === 'function') {
+    deNormalizeDischargeConditionalState();
+
+    const clearDeValue = (id, shouldClear) => {
+      const el = document.getElementById(id);
+      if (el && shouldClear) el.value = '';
+    };
+    clearDeValue('de-bridge-reason', deState.bridgeContacted !== 'no');
+    clearDeValue('de-rs-reason', deState.resourceSheetProvided !== 'no');
+    clearDeValue('de-meds-reason', deState.medsReceived !== 'no');
+    clearDeValue('de-2wm-reason', deState.detox2wmOffered !== 'no');
+    clearDeValue('de-op-reason', deState.outpatientOffered !== 'no');
+    clearDeValue('de-admin-director-no-reason', deState.adminDirectorApproved !== 'no');
+
+    const conditionalWrapStates = [
+      ['de-bridge-reason-wrap', deState.bridgeContacted === 'no'],
+      ['de-rs-reason-wrap', deState.resourceSheetProvided === 'no'],
+      ['de-meds-reason-wrap', deState.medsReceived === 'no'],
+      ['de-2wm-reason-wrap', deState.detox2wmOffered === 'no'],
+      ['de-op-reason-wrap', deState.outpatientOffered === 'no'],
+      ['de-po-wrap', deState.onProbation === 'yes'],
+      ['de-admin-director-no-reason-wrap', deState.adminDirectorApproved === 'no']
+    ];
+    conditionalWrapStates.forEach(([id, visible]) => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = visible ? 'block' : 'none';
+    });
+
+    if (deState.unit === 'Community OP') {
+      ['de-destination','de-rs-reason','de-meds-reason','de-room','de-census','de-staff-name','de-staff-other','de-op-reason'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
+    }
+
+    if (typeof deRenderOutput === 'function') deRenderOutput();
+  }
 
   // ── Regenerate output where it's safe to do so silently ──
   // ASAM, the Individual Note, and the Nursing Note render purely from state
