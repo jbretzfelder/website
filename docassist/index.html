@@ -4666,7 +4666,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
               <a href="https://woodhavenohio.sharepoint.com/:x:/r/_layouts/15/Doc.aspx?sourcedoc=%7BAB20E2CB-864C-49CA-9635-44EAE4FBECC4%7D&amp;file=2026%20Discharge%20Transition%20Calendar.xlsx&amp;action=default&amp;mobileredirect=true" target="_blank" rel="noopener noreferrer" onclick="deMarkTransitionCalendarOpened()" style="font-size:11px;font-weight:600;">Open Transition Calendar to Verify ↗</a>
             </div>
             <div style="display:flex;gap:6px;flex-wrap:wrap;">
-              <button class="ds-pill" onclick="deSetTransitionCalendar('yes')" id="de-calendar-yes" aria-disabled="true" style="opacity:.45;cursor:not-allowed;">Verified — Client Is Listed</button>
+              <button class="ds-pill" onclick="deSetTransitionCalendar('yes')" id="de-calendar-yes" disabled aria-disabled="true" style="opacity:.45;cursor:not-allowed;">Verified — Client Is Listed</button>
               <button class="ds-pill" onclick="deSetTransitionCalendar('no')" id="de-calendar-no">Client Is Not Listed</button>
             </div>
             <div id="de-calendar-open-hint" style="font-size:10px;color:var(--text-secondary);line-height:1.45;margin-top:7px;">Open the Transition Calendar above before the verification button becomes available.</div>
@@ -11103,6 +11103,7 @@ function deSetDischargeType(val) {
   });
   const calendarYes = document.getElementById('de-calendar-yes');
   if (calendarYes) {
+    calendarYes.disabled = true;
     calendarYes.setAttribute('aria-disabled', 'true');
     calendarYes.style.opacity = '.45';
     calendarYes.style.cursor = 'not-allowed';
@@ -11124,6 +11125,44 @@ function deSetDischargeType(val) {
   if (newVal !== 'unsuccessful') {
     document.getElementById('de-bridge-wrap').style.display = 'none';
     document.getElementById('de-admin-staff-wrap').style.display = 'none';
+
+    // Clear Unsuccessful-only information when that outcome is no longer selected
+    // so hidden values cannot appear in a later generated email.
+    deState.bridgeContacted = '';
+    deState.bridgeNotContactedReason = '';
+    deState.staffInvolved = '';
+    deState.staffNone = false;
+    deState.otherStaffInvolved = '';
+    deState.phoneCallMade = '';
+    deState.detox2wmOffered = '';
+    deState.detox2wmReason = '';
+
+    ['yes','no'].forEach(v => {
+      const bridgeBtn = document.getElementById('de-bridge-' + v);
+      if (bridgeBtn) bridgeBtn.classList.remove('active');
+      const callBtn = document.getElementById('de-call-' + v);
+      if (callBtn) callBtn.classList.remove('active');
+    });
+    ['yes','no','notinwm'].forEach(v => {
+      const wmBtn = document.getElementById('de-2wm-' + v);
+      if (wmBtn) wmBtn.classList.remove('active');
+    });
+    const bridgeReason = document.getElementById('de-bridge-reason');
+    if (bridgeReason) bridgeReason.value = '';
+    const bridgeReasonWrap = document.getElementById('de-bridge-reason-wrap');
+    if (bridgeReasonWrap) bridgeReasonWrap.style.display = 'none';
+    const staffName = document.getElementById('de-staff-name');
+    if (staffName) staffName.value = '';
+    const staffNone = document.getElementById('de-staff-none');
+    if (staffNone) staffNone.checked = false;
+    ['de-staff-other','de-admin-staff-other'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+    const wmReason = document.getElementById('de-2wm-reason');
+    if (wmReason) wmReason.value = '';
+    const wmReasonWrap = document.getElementById('de-2wm-reason-wrap');
+    if (wmReasonWrap) wmReasonWrap.style.display = 'none';
   }
   deUpdate2wmVisibility();
   deRenderOutput();
@@ -11133,7 +11172,8 @@ function deMarkTransitionCalendarOpened() {
   deState.transitionCalendarOpened = true;
   const calendarYes = document.getElementById('de-calendar-yes');
   if (calendarYes) {
-    calendarYes.setAttribute('aria-disabled', 'false');
+    calendarYes.disabled = false;
+    calendarYes.removeAttribute('aria-disabled');
     calendarYes.style.opacity = '';
     calendarYes.style.cursor = '';
   }
@@ -11179,6 +11219,7 @@ function deSetTransitionCalendar(val) {
     const calendarYes = document.getElementById('de-calendar-yes');
     if (calendarYes) {
       calendarYes.classList.remove('active');
+      calendarYes.disabled = true;
       calendarYes.setAttribute('aria-disabled', 'true');
       calendarYes.style.opacity = '.45';
       calendarYes.style.cursor = 'not-allowed';
@@ -11197,17 +11238,45 @@ function deSetTransitionCalendar(val) {
 }
 
 function deSetSubtype(val) {
-  const newVal = (deState.dischargeSubtype === val) ? '' : val;
+  const previousVal = deState.dischargeSubtype;
+  const newVal = (previousVal === val) ? '' : val;
   deState.dischargeSubtype = newVal;
   ['asa','admin'].forEach(v => {
     document.getElementById('de-sub-' + v).classList.toggle('active', v === newVal);
   });
-  const isAsaOrAdmin = newVal === 'asa' || newVal === 'admin';
-  if (!isAsaOrAdmin) {
+
+  // ASA and Admin Discharge use some shared state/inputs. Clear those values
+  // whenever the circumstance changes so information entered for one cannot
+  // carry into the other while hidden or under a different label.
+  if (previousVal !== newVal) {
     deState.unsuccessfulReason = '';
+    deState.bridgeContacted = '';
+    deState.bridgeNotContactedReason = '';
+    deState.staffInvolved = '';
+    deState.staffNone = false;
+    deState.otherStaffInvolved = '';
+
     const reasonInput = document.getElementById('de-unsuccessful-reason');
     if (reasonInput) reasonInput.value = '';
+    ['yes','no'].forEach(v => {
+      const bridgeBtn = document.getElementById('de-bridge-' + v);
+      if (bridgeBtn) bridgeBtn.classList.remove('active');
+    });
+    const bridgeReason = document.getElementById('de-bridge-reason');
+    if (bridgeReason) bridgeReason.value = '';
+    const bridgeReasonWrap = document.getElementById('de-bridge-reason-wrap');
+    if (bridgeReasonWrap) bridgeReasonWrap.style.display = 'none';
+    const staffName = document.getElementById('de-staff-name');
+    if (staffName) staffName.value = '';
+    const staffNone = document.getElementById('de-staff-none');
+    if (staffNone) staffNone.checked = false;
+    ['de-staff-other','de-admin-staff-other'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
   }
+
+  const isAsaOrAdmin = newVal === 'asa' || newVal === 'admin';
   const reasonLabel = document.getElementById('de-unsuccessful-reason-label');
   const reasonInput = document.getElementById('de-unsuccessful-reason');
   if (newVal === 'asa') {
@@ -11486,14 +11555,16 @@ function deGenerate() {
     }
   }
 
-  if (s.staffInvolved) {
-    lines.push('');
-    lines.push(`Clinical Staff Member (Owns Remarkable Documentation): ${s.staffInvolved}`);
-  } else if (s.staffNone) {
-    lines.push('');
-    lines.push(`Clinical Staff Member (Owns Remarkable Documentation): None available.`);
+  if (s.dischargeSubtype === 'asa' || s.dischargeSubtype === 'admin') {
+    if (s.staffInvolved) {
+      lines.push('');
+      lines.push(`Clinical Staff Member (Owns Remarkable Documentation): ${s.staffInvolved}`);
+    } else if (s.staffNone) {
+      lines.push('');
+      lines.push(`Clinical Staff Member (Owns Remarkable Documentation): None available.`);
+    }
+    if (s.otherStaffInvolved) lines.push(`Other Staff Involved in Intervention: ${s.otherStaffInvolved}`);
   }
-  if (s.otherStaffInvolved) lines.push(`Other Staff Involved in Intervention: ${s.otherStaffInvolved}`);
 
   if (s.unit !== 'Community OP') {
     lines.push('');
