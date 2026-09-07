@@ -4653,7 +4653,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
             <div style="font-size:11px;color:var(--text-secondary);line-height:1.5;margin-bottom:9px;"><strong>Use the discharge outcome based on how treatment ended.</strong></div>
             <div style="display:flex;gap:6px;flex-wrap:wrap;">
               <button class="ds-pill" onclick="deSetDischargeType('successful')" id="de-dt-successful">Successful — Completed Treatment</button>
-              <button class="ds-pill" onclick="deSetDischargeType('unsuccessful')" id="de-dt-unsuccessful">Unsuccessful — ASA / Administrative Discharge</button>
+              <button class="ds-pill" onclick="deSetDischargeType('unsuccessful')" id="de-dt-unsuccessful">Unsuccessful — ASA / Admin Discharge</button>
               <button class="ds-pill" onclick="deSetDischargeType('neutral')" id="de-dt-neutral">Neutral — Rare Exception</button>
             </div>
             <div style="font-size:10px;color:var(--text-secondary);line-height:1.45;margin-top:8px;"><strong>Successful</strong> means the client successfully completed treatment. <strong>Unsuccessful</strong> means the client left ASA or was administratively discharged. <strong>Neutral</strong> should be used only in rare circumstances and requires supervisor approval.</div>
@@ -4696,11 +4696,11 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 
         <div id="de-neutral-reason-wrap" style="display:none;margin-bottom:10px;">
           <div style="padding:9px 11px;border:1px solid var(--border);border-radius:7px;background:var(--output-bg);margin-bottom:8px;font-size:10px;line-height:1.45;color:var(--text);"><strong>Neutral requires supervisor approval.</strong> Do not continue unless a supervisor reviewed this specific discharge and approved Neutral.</div>
-          <label class="form-label">Supervisor Who Approved Neutral<span class="req-star">*</span></label>
-          <input class="form-input" id="de-neutral-supervisor" type="text" placeholder="Enter the supervisor's name" oninput="deState.neutralSupervisor=this.value;deRenderOutput()" style="margin-bottom:8px;" />
           <label class="form-label">Reason for Rare Neutral Classification<span class="req-star">*</span></label>
           <div style="font-size:10px;color:var(--text-secondary);line-height:1.45;margin-bottom:5px;">Neutral is a rare exception and requires supervisor approval. Do not use Neutral as a middle option between Successful and Unsuccessful.</div>
-          <textarea class="form-textarea" id="de-neutral-reason" rows="2" placeholder="Describe the rare circumstance supporting the Neutral classification…" oninput="deState.neutralReason=this.value;deRenderOutput()" style="min-height:55px;"></textarea>
+          <textarea class="form-textarea" id="de-neutral-reason" rows="2" placeholder="Describe the rare circumstance supporting the Neutral classification…" oninput="deState.neutralReason=this.value;deRenderOutput()" style="min-height:55px;margin-bottom:8px;"></textarea>
+          <label class="form-label">Supervisor Who Approved Neutral<span class="req-star">*</span></label>
+          <input class="form-input" id="de-neutral-supervisor" type="text" placeholder="Enter the supervisor's name" oninput="deState.neutralSupervisor=this.value;deRenderOutput()" />
         </div>
 
 
@@ -11541,8 +11541,8 @@ function deGenerate() {
 
   if (s.dischargeType === 'neutral') {
     lines.push('');
-    if (s.neutralSupervisor) lines.push(`Neutral Approved By: ${s.neutralSupervisor}`);
     if (s.neutralReason) lines.push(`Reason for Neutral Classification: ${s.neutralReason}`);
+    if (s.neutralSupervisor) lines.push(`Neutral Approved By: ${s.neutralSupervisor}`);
   }
 
   if (!isOP && s.dischargeSubtype === 'asa' && s.bridgeContacted) {
