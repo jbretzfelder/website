@@ -4701,8 +4701,8 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <div style="width:420px;min-width:340px;display:flex;flex-direction:column;gap:0;overflow-y:auto;padding-right:6px;">
 
       <div class="de-workflow-status" id="de-workflow-status">
-        <div class="de-workflow-status-main" id="de-current-classification">No discharge outcome selected</div>
-        <div class="de-workflow-status-sub" id="de-required-summary">Complete the client details and choose an outcome.</div>
+        <div class="de-workflow-status-main" id="de-current-classification">Choose what is ending</div>
+        <div class="de-workflow-status-sub" id="de-required-summary">Complete the client details and choose what is ending.</div>
       </div>
 
       <!-- Client & Discharge -->
@@ -4738,7 +4738,40 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
           </select>
         </div>
 
-        <div style="margin-bottom:10px;">
+        <div id="de-eventtype-section" style="margin-bottom:10px;display:none;">
+          <label class="form-label">What is ending?<span class="req-star">*</span></label>
+          <div id="de-eventtype-wrap" style="border:1px solid var(--border);border-radius:8px;padding:12px 14px;background:var(--output-bg);">
+            <div style="font-size:11px;color:var(--text-secondary);line-height:1.5;margin-bottom:9px;"><strong>Choose what this notification is for before selecting a discharge outcome.</strong></div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;">
+              <button class="ds-pill" onclick="deSetEventType('clinical')" id="de-et-clinical">Clinical Services Ending</button>
+              <button class="ds-pill" onclick="deSetEventType('housing')" id="de-et-housing">Housing Only</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="de-housing-notice" style="display:none;margin-bottom:10px;padding:11px 13px;border:2px solid #2d6a4f;border-radius:8px;background:#edf7f1;color:#1a4d35;font-size:12px;line-height:1.55;">
+          <strong>HOUSING DISCHARGE ONLY</strong><br>
+          This does <strong>not</strong> discharge the client from clinical services. The client remains active in PHP/IOP and should continue attending scheduled treatment unless the clinical team separately completes a clinical discharge.
+        </div>
+
+        <div id="de-housing-reason-wrap" style="display:none;margin-bottom:10px;">
+          <label class="form-label">Reason for Housing Discharge<span class="req-star">*</span></label>
+          <textarea class="form-textarea" id="de-housing-reason" rows="2" placeholder="Briefly describe the housing issue resulting in discharge from housing…" oninput="deState.housingReason=this.value;deRenderOutput()" style="min-height:55px;margin-bottom:10px;"></textarea>
+
+          <label class="form-label">Staff Involved in Discharge<span class="req-star">*</span></label>
+          <input class="form-input" id="de-housing-staff" type="text" placeholder="Names of staff involved" oninput="deState.housingStaffInvolved=this.value;deRenderOutput()" style="margin-bottom:10px;">
+
+          <div id="de-housing-clinical-informed-wrap">
+            <label class="form-label">Was the Client Informed They Can Continue Clinical Services?<span class="req-star">*</span></label>
+            <div style="font-size:11px;color:var(--text-secondary);line-height:1.5;margin-bottom:7px;">Confirm the client was told that discharge from housing does not end PHP/IOP treatment and that they should continue attending scheduled groups, individual sessions, and other clinical services.</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;">
+              <button class="ds-pill" onclick="deSetYN('housingClinicalInformed','yes','de-housing-informed')" id="de-housing-informed-yes">Yes — Client Informed</button>
+              <button class="ds-pill" onclick="deSetYN('housingClinicalInformed','no','de-housing-informed')" id="de-housing-informed-no">No — Not Informed</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="de-clinical-outcome-wrap" style="display:none;margin-bottom:10px;">
           <label class="form-label">Transition Outcome<span class="req-star">*</span></label>
           <div id="de-dischargetype-wrap" style="border:1px solid var(--border);border-radius:8px;padding:12px 14px;background:var(--output-bg);">
             <div style="font-size:11px;color:var(--text-secondary);line-height:1.5;margin-bottom:9px;"><strong>Use the discharge outcome based on how treatment ended.</strong></div>
@@ -4793,10 +4826,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
           <label class="form-label">Supervisor Who Approved Neutral<span class="req-star">*</span></label>
           <input class="form-input" id="de-neutral-supervisor" type="text" placeholder="Enter the supervisor's name" oninput="deState.neutralSupervisor=this.value;deRenderOutput()" />
         </div>
-
-
-
-      </div>
+        </div><!-- /clinical outcome workflow -->
 
       <!-- Staff Involvement -->
       <div id="de-bridge-wrap" data-de-progressive="true" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
@@ -10949,7 +10979,7 @@ function dsReset() {
 // ═══════════════════════════════════════════════════
 
 let deState = {
-  clientName: '', dischargeDate: '', departureTime: '', unit: '', dischargeType: '', dischargeSubtype: '',
+  clientName: '', dischargeDate: '', departureTime: '', unit: '', eventType: '', housingReason: '', housingStaffInvolved: '', housingClinicalInformed: '', dischargeType: '', dischargeSubtype: '',
   outcomeCompleted1: '', outcomeContinuedTreatment: '', outcomeExternalBarrier: '',
   unsuccessfulReason: '', adminDirectorApproved: '', adminDirectorNoReason: '', neutralReason: '', neutralSupervisor: '', transitionCalendar: '', transitionCalendarOpened: false, transitionCalendarNoReason: '', plannedCalendarConfirmed: '', 
   bridgeContacted: '', bridgeNotContactedReason: '', staffInvolved: '', staffNone: false, otherStaffInvolved: '',
@@ -10963,10 +10993,11 @@ let deState = {
   additionalInfo: ''
 };
 
-const DE_YN_FIELDS = ['bridgeContacted','resourceSheetProvided','medsReceived',
+const DE_YN_FIELDS = ['bridgeContacted','resourceSheetProvided','medsReceived','housingClinicalInformed',
   'woodhavenPropertyCollected','paperworkSigned','phoneCallMade','onProbation','poNotified','outpatientOffered','roomCleanedSearched'];
 
 const RES_UNITS = ['5th Floor','6th Floor','8th Floor'];
+const PHP_UNITS = ["Men's PHP","Women's PHP"];
 
 const DE_OP_HIDDEN_FIELDS = ['destination','destinationUnknown','resourceSheetProvided','resourceSheetReason',
   'propertyReceived','phoneReceived','woodhavenPropertyCollected','medsReceived','medsNotReceivedReason',
@@ -10989,8 +11020,29 @@ function deUpdate2wmVisibility() {
 }
 
 function deSetUnit(val) {
+  const wasPHP = PHP_UNITS.includes(deState.unit);
   deState.unit = val;
   const isOP = (val === 'Community OP');
+  const isPHP = PHP_UNITS.includes(val);
+
+  const eventTypeSection = document.getElementById('de-eventtype-section');
+  if (eventTypeSection) eventTypeSection.style.display = isPHP ? 'block' : 'none';
+
+  if (isPHP && !wasPHP) {
+    deState.eventType = '';
+    ['clinical','housing'].forEach(v => {
+      const el = document.getElementById('de-et-' + v);
+      if (el) el.classList.remove('active');
+    });
+    const clinicalWrap = document.getElementById('de-clinical-outcome-wrap');
+    const housingNotice = document.getElementById('de-housing-notice');
+    const housingReasonWrap = document.getElementById('de-housing-reason-wrap');
+    if (clinicalWrap) clinicalWrap.style.display = 'none';
+    if (housingNotice) housingNotice.style.display = 'none';
+    if (housingReasonWrap) housingReasonWrap.style.display = 'none';
+  } else if (!isPHP && deState.eventType !== 'clinical') {
+    deSetEventType('clinical');
+  }
 
   document.getElementById('de-destination-wrap').style.display = isOP ? 'none' : 'block';
   document.getElementById('de-resource-sheet-wrap').style.display = isOP ? 'none' : 'block';
@@ -11176,6 +11228,54 @@ function deSetYNA(field, val, prefix) {
   deRenderOutput();
 }
 
+
+function deSetEventType(val) {
+  if (val === 'housing' && !PHP_UNITS.includes(deState.unit)) val = 'clinical';
+  const newVal = (deState.eventType === val) ? '' : val;
+  deState.eventType = newVal;
+  ['clinical','housing'].forEach(v => {
+    const el = document.getElementById('de-et-' + v);
+    if (el) el.classList.toggle('active', v === newVal);
+  });
+
+  const clinicalWrap = document.getElementById('de-clinical-outcome-wrap');
+  const housingNotice = document.getElementById('de-housing-notice');
+  const housingReasonWrap = document.getElementById('de-housing-reason-wrap');
+  if (clinicalWrap) clinicalWrap.style.display = newVal === 'clinical' ? 'block' : 'none';
+  if (housingNotice) housingNotice.style.display = newVal === 'housing' ? 'block' : 'none';
+  if (housingReasonWrap) housingReasonWrap.style.display = newVal === 'housing' ? 'block' : 'none';
+
+  if (newVal !== 'clinical') {
+    deState.dischargeType = '';
+    deState.dischargeSubtype = '';
+    deState.unsuccessfulReason = '';
+    deState.neutralReason = '';
+    deState.neutralSupervisor = '';
+    deState.transitionCalendar = '';
+    ['successful','unsuccessful','neutral'].forEach(v => {
+      const el = document.getElementById('de-dt-' + v);
+      if (el) el.classList.remove('active');
+    });
+    ['asa','admin'].forEach(v => {
+      const el = document.getElementById('de-sub-' + v);
+      if (el) el.classList.remove('active');
+    });
+    ['de-subtype-wrap','de-unsuccessful-reason-wrap','de-neutral-reason-wrap','de-transition-calendar-wrap','de-transition-calendar-reason-wrap','de-bridge-wrap','de-admin-staff-wrap'].forEach(id => {
+      const el = document.getElementById(id); if (el) el.style.display = 'none';
+    });
+  }
+  if (newVal !== 'housing') {
+    deState.housingReason = '';
+    deState.housingStaffInvolved = '';
+    deState.housingClinicalInformed = '';
+    const hr = document.getElementById('de-housing-reason');
+    if (hr) hr.value = '';
+    const hs = document.getElementById('de-housing-staff');
+    if (hs) hs.value = '';
+    ['yes','no'].forEach(v => { const el = document.getElementById('de-housing-informed-' + v); if (el) el.classList.remove('active'); });
+  }
+  deRenderOutput();
+}
 
 function deSetDischargeType(val) {
   const requestingSuccessful = val === 'successful' && deState.dischargeType !== 'successful';
@@ -11538,6 +11638,8 @@ function deUpdateBridgeAlert() {
 
 function deWorkflowClassificationLabel() {
   const s = deState;
+  if (s.eventType === 'housing') return 'Housing Discharge Only — Clinical Services Continue';
+  if (!s.eventType) return 'Choose what is ending';
   const calendarWrap = document.getElementById('de-transition-calendar-wrap');
   const successfulPending = !s.dischargeType && calendarWrap && calendarWrap.style.display !== 'none';
   if (successfulPending) return 'Successful — Calendar verification required';
@@ -11553,6 +11655,8 @@ function deWorkflowClassificationLabel() {
 
 function deWorkflowCanContinue() {
   const s = deState;
+  if (s.eventType === 'housing') return !!s.housingReason;
+  if (s.eventType !== 'clinical') return false;
   return s.dischargeType === 'successful' || s.dischargeType === 'neutral' ||
     (s.dischargeType === 'unsuccessful' && (s.dischargeSubtype === 'asa' || s.dischargeSubtype === 'admin'));
 }
@@ -11567,12 +11671,17 @@ function deUpdateWorkflowVisibility() {
   const probation = document.getElementById('de-probation-referrals-card');
   const room = document.getElementById('de-room-census-card');
   const additional = document.getElementById('de-additional-card');
+  const isHousing = s.eventType === 'housing';
 
   if (departure) departure.style.display = canContinue ? 'block' : 'none';
   if (property) property.style.display = (canContinue && !isOP) ? 'block' : 'none';
   if (probation) probation.style.display = canContinue ? 'block' : 'none';
   if (room) room.style.display = (canContinue && !isOP) ? 'block' : 'none';
   if (additional) additional.style.display = canContinue ? 'block' : 'none';
+  const rs = document.getElementById('de-resource-sheet-wrap');
+  if (rs) rs.style.display = (canContinue && !isOP) ? 'block' : 'none';
+  const outpatient = document.getElementById('de-outpatient-wrap');
+  if (outpatient && isHousing) outpatient.style.display = 'none';
 
   const bridge = document.getElementById('de-bridge-wrap');
   if (bridge) bridge.style.display = (canContinue && !isOP && s.dischargeSubtype === 'asa') ? 'block' : 'none';
@@ -11605,7 +11714,7 @@ function deUpdateWorkflowStatus(errors) {
     summary.textContent = `${count} required ${count === 1 ? 'item' : 'items'} remaining`;
     summary.style.color = 'var(--warning-text)';
   } else {
-    summary.textContent = 'Complete the client details and choose an outcome.';
+    summary.textContent = 'Complete the client details and choose what is ending.';
     summary.style.color = 'var(--text-secondary)';
   }
 }
@@ -11688,7 +11797,9 @@ function deComputeErrors() {
   if (!s.clientName) errors.push({ label: 'Client full name', id: 'de-client-name' });
   if (!s.dischargeDate) errors.push({ label: 'Date of discharge', id: 'de-discharge-date' });
   if (!s.unit) errors.push({ label: 'Unit', id: 'de-unit' });
-  if (!s.dischargeType) errors.push({ label: 'Transition outcome', id: 'de-dischargetype-wrap' });
+  if (!s.eventType) errors.push({ label: 'What is ending', id: 'de-eventtype-wrap', critical: true });
+  if (s.eventType === 'housing' && !s.housingReason) errors.push({ label: 'Reason for housing discharge', id: 'de-housing-reason-wrap', critical: true });
+  if (s.eventType === 'clinical' && !s.dischargeType) errors.push({ label: 'Transition outcome', id: 'de-dischargetype-wrap' });
   if (s.dischargeType === 'successful' && s.transitionCalendar !== 'yes') errors.push({ label: 'Verified Transition Calendar listing', id: 'de-transition-calendar-wrap', critical: true });
   if (s.dischargeType === 'unsuccessful' && !s.dischargeSubtype) errors.push({ label: 'ASA or Administrative Discharge', id: 'de-subtype-wrap', critical: true });
   if (s.dischargeSubtype === 'asa' && !s.unsuccessfulReason) errors.push({ label: 'Reason for ASA', id: 'de-unsuccessful-reason-wrap' });
@@ -11697,6 +11808,16 @@ function deComputeErrors() {
   if (s.dischargeSubtype === 'admin' && s.adminDirectorApproved === 'no' && !s.adminDirectorNoReason) errors.push({ label: 'Reason approval was not obtained', id: 'de-admin-director-no-reason-wrap', critical: true });
   if (s.dischargeType === 'neutral' && !s.neutralSupervisor) errors.push({ label: 'Supervisor who approved Neutral', id: 'de-neutral-reason-wrap', critical: true });
   if (s.dischargeType === 'neutral' && !s.neutralReason) errors.push({ label: 'Reason for Neutral classification', id: 'de-neutral-reason-wrap', critical: true });
+  if (s.eventType === 'housing') {
+    if (!s.housingStaffInvolved) errors.push({ label: 'Staff involved in housing discharge', id: 'de-housing-staff', critical: true });
+    if (!s.housingClinicalInformed) errors.push({ label: 'Client informed clinical services continue', id: 'de-housing-clinical-informed-wrap', critical: true });
+    if (!isOP && !s.destination && !s.destinationUnknown) errors.push({ label: 'Where client is going', id: 'de-destination-wrap' });
+    if (!isOP && !s.resourceSheetProvided) errors.push({ label: 'Resource sheet provided', id: 'de-resource-sheet-wrap' });
+    if (!isOP && s.resourceSheetProvided === 'no' && !s.resourceSheetReason) errors.push({ label: 'Reason resource sheet was not provided', id: 'de-rs-reason-wrap' });
+    if (!s.onProbation) errors.push({ label: 'On probation status', id: 'de-prob-yes' });
+    if (s.onProbation === 'yes' && !s.poNotified) errors.push({ label: 'Probation officer notified', id: 'de-po-wrap' });
+    return { errors, isOP, isResUnit, bridgeStatus };
+  }
   if (bridgeStatus.contactedMissing) errors.push({ label: 'Bridge contact', id: 'de-bridge-required-wrap', critical: true });
   if (bridgeStatus.reasonMissing) errors.push({ label: "Bridge — reason not contacted", id: 'de-bridge-reason-wrap', critical: true });
   if (bridgeStatus.bridgeRequired && !s.staffInvolved && !s.staffNone) errors.push({ label: 'Clinical staff member (or mark none available)', id: 'de-staff-required-wrap', critical: true });
@@ -11766,7 +11887,7 @@ function deRenderOutput() {
   // Mark output stale — any field change after a generate means the visible
   // text no longer reflects the current form until Generate is clicked again.
   deState._dirty = true;
-  const hasContent = !!(s.clientName || s.dischargeDate || s.dischargeType || s.unit);
+  const hasContent = !!(s.clientName || s.dischargeDate || s.eventType || s.dischargeType || s.unit);
   deUpdateWorkflowVisibility();
   const { errors } = deComputeErrors();
   deUpdateWorkflowStatus(errors);
@@ -11809,6 +11930,46 @@ function deGenerate() {
   const C = s.clientName || '[Client Name]';
   const dateStr = deFmtDate(s.dischargeDate) || '[Date of Discharge]';
   const unitStr = s.unit || '[Unit]';
+
+  if (s.eventType === 'housing') {
+    subjectOut.textContent = `HOUSING DISCHARGE ONLY - ${unitStr} - ${C} - ${dateStr}`;
+    const lines = [];
+    lines.push(`Client: ${C}`);
+    lines.push(`Effective Date: ${dateStr}`);
+    if (s.departureTime) lines.push(`Time Leaving Housing: ${deFmtTime(s.departureTime)}`);
+    lines.push(`Unit: ${unitStr}`);
+    lines.push('Housing Status: Discharged from Woodhaven Housing');
+    lines.push('Clinical Status: REMAINS ACTIVE IN CLINICAL SERVICES');
+    lines.push('');
+    lines.push('IMPORTANT: This is a housing discharge only. This is NOT an Administrative Discharge or discharge from clinical treatment. The client should continue attending scheduled PHP/IOP groups, individual sessions, and other clinical services unless the clinical team separately communicates a clinical discharge.');
+    lines.push('');
+    lines.push(`Reason for Housing Discharge: ${s.housingReason}`);
+    lines.push(`Staff Involved in Discharge: ${s.housingStaffInvolved}`);
+    lines.push(`Client Informed Clinical Services Continue: ${s.housingClinicalInformed === 'yes' ? 'Yes' : 'No'}`);
+    if (s.unit !== 'Community OP') lines.push(`Destination: ${s.destinationUnknown ? 'Unknown' : (s.destination || '[Destination]')}`);
+    if (s.resourceSheetProvided) {
+      lines.push(`Resource Sheet Provided: ${s.resourceSheetProvided === 'yes' ? 'Yes' : 'No'}`);
+      if (s.resourceSheetProvided === 'no' && s.resourceSheetReason) lines.push(`Reason Resource Sheet Was Not Provided: ${s.resourceSheetReason}`);
+    }
+    if (s.forwardingNone) lines.push('Forwarding Address and/or Phone Number: None left');
+    else if (s.forwardingInfo) lines.push(`Forwarding Address and/or Phone Number: ${s.forwardingInfo}`);
+    if (s.propertyReceived) lines.push(`Client Received Property: ${s.propertyReceived === 'yes' ? 'Yes' : s.propertyReceived === 'no' ? 'No' : 'N/A'}`);
+    if (s.woodhavenPropertyCollected) lines.push(`Woodhaven Property Collected: ${s.woodhavenPropertyCollected === 'yes' ? 'Yes' : 'No'}`);
+    if (s.onProbation) {
+      lines.push(`Client on Probation: ${s.onProbation === 'yes' ? 'Yes' : s.onProbation === 'no' ? 'No' : 'Unknown'}`);
+      if (s.onProbation === 'yes' && s.poNotified) lines.push(`Probation Officer Notified: ${s.poNotified === 'yes' ? 'Yes' : 'No'}`);
+    }
+    if (s.roomVacated) lines.push(`Room Vacated: ${s.roomVacated}${s.roomCleanedSearched ? ` (Cleaned and Searched: ${s.roomCleanedSearched === 'yes' ? 'Yes' : 'No'})` : ''}`);
+    else if (s.roomCleanedSearched) lines.push(deYN('Room Cleaned and Searched', s.roomCleanedSearched));
+    if (s.clientsOnUnit !== '' && s.clientsOnUnit !== undefined && s.clientsOnUnit !== null) lines.push(`Clients Remaining on Unit: ${s.clientsOnUnit}`);
+    if (s.additionalInfo) { lines.push(''); lines.push('Additional Information:'); lines.push(s.additionalInfo); }
+    out.textContent = lines.join('\n');
+    deState._generated = true;
+    deState._dirty = false;
+    deUpdateGenerateBarState(false, true);
+    return;
+  }
+
   const typeLabel = DE_TYPE_LABELS[s.dischargeType] || '[Type of Discharge]';
   const subjectSubtypeLabel = DE_SUBJECT_SUBTYPE_LABELS[s.dischargeSubtype] || '[Discharge Circumstance]';
 
@@ -11951,7 +12112,7 @@ function deJumpToField(id) {
 
 function deReset() {
   deState = {
-    clientName: '', dischargeDate: '', departureTime: '', unit: '', dischargeType: '', dischargeSubtype: '',
+    clientName: '', dischargeDate: '', departureTime: '', unit: '', eventType: '', housingReason: '', housingStaffInvolved: '', housingClinicalInformed: '', dischargeType: '', dischargeSubtype: '',
     outcomeCompleted1: '', outcomeContinuedTreatment: '', outcomeExternalBarrier: '',
     unsuccessfulReason: '', adminDirectorApproved: '', adminDirectorNoReason: '', neutralReason: '', neutralSupervisor: '', transitionCalendar: '', transitionCalendarOpened: false, transitionCalendarNoReason: '', plannedCalendarConfirmed: '',
     bridgeContacted: '', bridgeNotContactedReason: '', staffInvolved: '', staffNone: false, otherStaffInvolved: '',
@@ -11964,7 +12125,7 @@ function deReset() {
     roomVacated: '', clientsOnUnit: '', roomCleanedSearched: '',
     additionalInfo: ''
   };
-  ['de-client-name','de-discharge-date','de-departure-time','de-unsuccessful-reason','de-neutral-supervisor','de-neutral-reason','de-bridge-reason',
+  ['de-client-name','de-discharge-date','de-departure-time','de-housing-reason','de-housing-staff','de-unsuccessful-reason','de-neutral-supervisor','de-neutral-reason','de-bridge-reason',
    'de-staff-name','de-staff-other','de-admin-staff-other','de-destination','de-meds-reason','de-rs-reason','de-room','de-census','de-forwarding','de-additional',
    'de-2wm-reason','de-op-reason'].forEach(id => {
     const el = document.getElementById(id);
@@ -11975,6 +12136,10 @@ function deReset() {
   const staffNameInput = document.getElementById('de-staff-name');
   if (staffNameInput) staffNameInput.disabled = false;
   document.getElementById('de-unit').value = '';
+  ['clinical','housing'].forEach(v => { const el = document.getElementById('de-et-' + v); if (el) el.classList.remove('active'); });
+  const clinicalOutcomeWrap = document.getElementById('de-clinical-outcome-wrap'); if (clinicalOutcomeWrap) clinicalOutcomeWrap.style.display = 'none';
+  const housingNotice = document.getElementById('de-housing-notice'); if (housingNotice) housingNotice.style.display = 'none';
+  const housingReasonWrap = document.getElementById('de-housing-reason-wrap'); if (housingReasonWrap) housingReasonWrap.style.display = 'none';
   document.getElementById('de-subtype-wrap').style.display = 'none';
   document.getElementById('de-unsuccessful-reason-wrap').style.display = 'none';
   document.getElementById('de-destination-wrap').style.display = 'block';
@@ -11990,7 +12155,7 @@ function deReset() {
   document.getElementById('de-destination-unknown').checked = false;
   ['successful','unsuccessful','neutral'].forEach(v => { const el = document.getElementById('de-dt-' + v); if (el) el.classList.remove('active'); });
   ['asa','admin'].forEach(v => document.getElementById('de-sub-'+v).classList.remove('active'));
-  ['de-bridge','de-rs','de-wp','de-pw','de-call','de-po','de-clean'].forEach(prefix => {
+  ['de-bridge','de-rs','de-wp','de-pw','de-call','de-po','de-clean','de-housing-informed'].forEach(prefix => {
     ['yes','no'].forEach(v => { const el = document.getElementById(prefix + '-' + v); if (el) el.classList.remove('active'); });
   });
   ['de-prob','de-op'].forEach(prefix => {
@@ -14530,7 +14695,7 @@ const TUT_TOOL_STEPS = [
   // ── DISCHARGE EMAIL ───────────────────────────────────────────────────────
   { view:'discharge-email', sel:'#view-discharge-email .tool-nav', section:'Discharge Email', navigate:'discharge-email',
     title:'Discharge Email',
-    body:'Every discharge needs one of these sent to discharge@woodhavenohio.com. Select the outcome based on how treatment ended: Successful for completed treatment, Unsuccessful for ASA or Administrative Discharge, and Neutral only for rare supervisor-approved exceptions.' },
+    body:'Use this tool for both clinical discharge notifications and housing-only discharge notifications. Start by identifying what is ending. A housing discharge does not end clinical services; clinical discharge outcomes are selected only when treatment itself is ending.' },
 
   { view:'discharge-email', sel:null, section:'Discharge Email', navigate:'discharge-email',
     title:'Required fields',
@@ -14538,7 +14703,7 @@ const TUT_TOOL_STEPS = [
 
   { view:'discharge-email', sel:'#de-dischargetype-wrap', section:'Discharge Email', navigate:'discharge-email',
     title:'Transition outcome',
-    body:'Successful means the client successfully completed treatment. Unsuccessful means the client left Against Staff Advice (ASA) or was administratively discharged. Neutral is reserved for rare circumstances and requires supervisor approval.' },
+    body:'If Clinical Services Ending is selected, classify the clinical transition outcome here. Housing Only follows a separate workflow and does not use Successful, Unsuccessful, or Administrative Discharge terminology.' },
 
   { view:'discharge-email', sel:'#de-bridge-wrap', section:'Discharge Email', navigate:'discharge-email',
     title:'The Bridge contact',
@@ -15256,9 +15421,11 @@ function autosaveApply(snap) {
   const savedDe = snap.deState;
   Object.assign(deState, savedDe);
   if (savedDe.unit) deSetUnit(savedDe.unit);
+  if (savedDe.eventType) { deState.eventType = ''; deSetEventType(savedDe.eventType); }
   if (savedDe.dischargeType) { deState.dischargeType = ''; deSetDischargeType(savedDe.dischargeType); }
   if (savedDe.dischargeType === 'unsuccessful' && (savedDe.dischargeSubtype === 'asa' || savedDe.dischargeSubtype === 'admin')) { deState.dischargeSubtype = ''; deSetSubtype(savedDe.dischargeSubtype); }
   if (savedDe.dischargeSubtype === 'admin' && savedDe.adminDirectorApproved) { deState.adminDirectorApproved = ''; deSetAdminDirectorApproval(savedDe.adminDirectorApproved); }
+  if (savedDe.housingClinicalInformed) { deState.housingClinicalInformed = ''; deSetYN('housingClinicalInformed', savedDe.housingClinicalInformed, 'de-housing-informed'); }
   if (savedDe.bridgeContacted) { deState.bridgeContacted = ''; deSetYN('bridgeContacted', savedDe.bridgeContacted, 'de-bridge'); }
   if (savedDe.resourceSheetProvided) { deState.resourceSheetProvided = ''; deSetYN('resourceSheetProvided', savedDe.resourceSheetProvided, 'de-rs'); }
   if (savedDe.medsReceived) { deState.medsReceived = ''; deSetYNA('medsReceived', savedDe.medsReceived, 'de-meds'); }
