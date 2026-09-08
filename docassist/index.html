@@ -4744,14 +4744,14 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
             <div style="font-size:11px;color:var(--text-secondary);line-height:1.5;margin-bottom:9px;"><strong>Choose what this notification is for before selecting a discharge outcome.</strong></div>
             <div style="display:flex;gap:6px;flex-wrap:wrap;">
               <button class="ds-pill" onclick="deSetEventType('clinical')" id="de-et-clinical">Clinical Services Ending</button>
-              <button class="ds-pill" onclick="deSetEventType('housing')" id="de-et-housing">Housing Only — Continuing In-Person Clinical Services</button>
+              <button class="ds-pill" onclick="deSetEventType('housing')" id="de-et-housing">Housing Only — Continuing Clinical Services</button>
             </div>
           </div>
         </div>
 
         <div id="de-housing-notice" style="display:none;margin-bottom:10px;padding:11px 13px;border:2px solid #2d6a4f;border-radius:8px;background:#edf7f1;color:#1a4d35;font-size:12px;line-height:1.55;">
           <strong>HOUSING DISCHARGE ONLY — CLINICAL SERVICES CONTINUE</strong><br>
-          Use this option only when the client is being discharged from Woodhaven housing for housing/rule-related reasons, <strong>or</strong> is voluntarily leaving Woodhaven housing, and intends to continue attending Woodhaven clinical services <strong>in person</strong>.<br><br>
+          Use this option only when the client is being discharged from Woodhaven housing for housing/rule-related reasons, <strong>or</strong> is voluntarily leaving Woodhaven housing, and remains active in Woodhaven clinical services.<br><br>
           <strong>Do not use this option if the client is also leaving clinical treatment.</strong> If treatment is ending, complete the appropriate clinical discharge instead.
         </div>
 
@@ -4762,9 +4762,20 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
           <label class="form-label">Staff Involved in Discharge<span class="req-star">*</span></label>
           <input class="form-input" id="de-housing-staff" type="text" placeholder="Names of staff involved" oninput="deState.housingStaffInvolved=this.value;deRenderOutput()" style="margin-bottom:10px;">
 
+          <div id="de-housing-plan-wrap" style="margin-bottom:12px;">
+            <label class="form-label">What Is the Client's Plan for Continuing Woodhaven Clinical Services?<span class="req-star">*</span></label>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:7px;">
+              <button class="ds-pill" onclick="deSetHousingPlan('php')" id="de-housing-plan-php">Continue PHP at Dayton</button>
+              <button class="ds-pill" onclick="deSetHousingPlan('op')" id="de-housing-plan-op">Community OP</button>
+              <button class="ds-pill" onclick="deSetHousingPlan('notcontinuing')" id="de-housing-plan-notcontinuing">Not Continuing</button>
+              <button class="ds-pill" onclick="deSetHousingPlan('unknown')" id="de-housing-plan-unknown">Unknown</button>
+            </div>
+            <div id="de-housing-plan-help" style="font-size:11px;color:var(--text-secondary);line-height:1.5;"></div>
+          </div>
+
           <div id="de-housing-clinical-informed-wrap">
-            <label class="form-label">Was the Client Informed They Remain Active in Clinical Services and Should Continue Attending In Person?<span class="req-star">*</span></label>
-            <div style="font-size:11px;color:var(--text-secondary);line-height:1.5;margin-bottom:7px;">Confirm the client was told that leaving or being discharged from housing does not end PHP/IOP treatment and that they are expected to continue attending scheduled groups, individual sessions, and other clinical services in person.</div>
+            <label class="form-label">Was the Client Informed They Remain Active in Clinical Services and Should Continue Attending?<span class="req-star">*</span></label>
+            <div style="font-size:11px;color:var(--text-secondary);line-height:1.5;margin-bottom:7px;">Confirm the client was told that leaving or being discharged from housing does not end their Woodhaven clinical services and that they are expected to continue participating in scheduled treatment.</div>
             <div style="display:flex;gap:6px;flex-wrap:wrap;">
               <button class="ds-pill" onclick="deSetYN('housingClinicalInformed','yes','de-housing-informed')" id="de-housing-informed-yes">Yes — Client Informed</button>
               <button class="ds-pill" onclick="deSetYN('housingClinicalInformed','no','de-housing-informed')" id="de-housing-informed-no">No — Not Informed</button>
@@ -10980,7 +10991,7 @@ function dsReset() {
 // ═══════════════════════════════════════════════════
 
 let deState = {
-  clientName: '', dischargeDate: '', departureTime: '', unit: '', eventType: '', housingReason: '', housingStaffInvolved: '', housingClinicalInformed: '', dischargeType: '', dischargeSubtype: '',
+  clientName: '', dischargeDate: '', departureTime: '', unit: '', eventType: '', housingReason: '', housingStaffInvolved: '', housingClinicalPlan: '', housingClinicalInformed: '', dischargeType: '', dischargeSubtype: '',
   outcomeCompleted1: '', outcomeContinuedTreatment: '', outcomeExternalBarrier: '',
   unsuccessfulReason: '', adminDirectorApproved: '', adminDirectorNoReason: '', neutralReason: '', neutralSupervisor: '', transitionCalendar: '', transitionCalendarOpened: false, transitionCalendarNoReason: '', plannedCalendarConfirmed: '', 
   bridgeContacted: '', bridgeNotContactedReason: '', staffInvolved: '', staffNone: false, otherStaffInvolved: '',
@@ -11230,6 +11241,26 @@ function deSetYNA(field, val, prefix) {
 }
 
 
+function deSetHousingPlan(val) {
+  const newVal = deState.housingClinicalPlan === val ? '' : val;
+  deState.housingClinicalPlan = newVal;
+  ['php','op','notcontinuing','unknown'].forEach(v => {
+    const el = document.getElementById('de-housing-plan-' + v);
+    if (el) el.classList.toggle('active', v === newVal);
+  });
+  const help = document.getElementById('de-housing-plan-help');
+  if (help) {
+    const messages = {
+      php: '<strong>PHP is not yet complete.</strong> The client is leaving or being discharged from housing but plans to continue attending PHP in person at the Dayton facility.',
+      op: 'The client plans to continue Woodhaven clinical services with the Community OP counseling team.',
+      notcontinuing: 'The client states they do not plan to continue Woodhaven clinical services.',
+      unknown: 'The client\'s plan for continuing Woodhaven clinical services is not currently known.'
+    };
+    help.innerHTML = newVal ? messages[newVal] : '';
+  }
+  deRenderOutput();
+}
+
 function deSetEventType(val) {
   if (val === 'housing' && !PHP_UNITS.includes(deState.unit)) val = 'clinical';
   const newVal = (deState.eventType === val) ? '' : val;
@@ -11268,11 +11299,14 @@ function deSetEventType(val) {
   if (newVal !== 'housing') {
     deState.housingReason = '';
     deState.housingStaffInvolved = '';
+    deState.housingClinicalPlan = '';
     deState.housingClinicalInformed = '';
     const hr = document.getElementById('de-housing-reason');
     if (hr) hr.value = '';
     const hs = document.getElementById('de-housing-staff');
     if (hs) hs.value = '';
+    ['php','op','notcontinuing','unknown'].forEach(v => { const el = document.getElementById('de-housing-plan-' + v); if (el) el.classList.remove('active'); });
+    const hpHelp = document.getElementById('de-housing-plan-help'); if (hpHelp) hpHelp.innerHTML = '';
     ['yes','no'].forEach(v => { const el = document.getElementById('de-housing-informed-' + v); if (el) el.classList.remove('active'); });
   }
   deRenderOutput();
@@ -11639,7 +11673,7 @@ function deUpdateBridgeAlert() {
 
 function deWorkflowClassificationLabel() {
   const s = deState;
-  if (s.eventType === 'housing') return 'Housing Discharge Only — Continuing In-Person Clinical Services';
+  if (s.eventType === 'housing') return 'Housing Discharge Only — Continuing Clinical Services';
   if (!s.eventType) return 'Choose what is ending';
   const calendarWrap = document.getElementById('de-transition-calendar-wrap');
   const successfulPending = !s.dischargeType && calendarWrap && calendarWrap.style.display !== 'none';
@@ -11811,7 +11845,8 @@ function deComputeErrors() {
   if (s.dischargeType === 'neutral' && !s.neutralReason) errors.push({ label: 'Reason for Neutral classification', id: 'de-neutral-reason-wrap', critical: true });
   if (s.eventType === 'housing') {
     if (!s.housingStaffInvolved) errors.push({ label: 'Staff involved in housing discharge', id: 'de-housing-staff', critical: true });
-    if (!s.housingClinicalInformed) errors.push({ label: 'Client informed they remain active and should continue attending in person', id: 'de-housing-clinical-informed-wrap', critical: true });
+    if (!s.housingClinicalPlan) errors.push({ label: 'Client plan for continuing Woodhaven clinical services', id: 'de-housing-plan-wrap', critical: true });
+    if (!s.housingClinicalInformed) errors.push({ label: 'Client informed they remain active and should continue attending', id: 'de-housing-clinical-informed-wrap', critical: true });
     if (!isOP && !s.destination && !s.destinationUnknown) errors.push({ label: 'Where client is going', id: 'de-destination-wrap' });
     if (!isOP && !s.resourceSheetProvided) errors.push({ label: 'Resource sheet provided', id: 'de-resource-sheet-wrap' });
     if (!isOP && s.resourceSheetProvided === 'no' && !s.resourceSheetReason) errors.push({ label: 'Reason resource sheet was not provided', id: 'de-rs-reason-wrap' });
@@ -11939,14 +11974,28 @@ function deGenerate() {
     lines.push(`Effective Date: ${dateStr}`);
     if (s.departureTime) lines.push(`Time Leaving Housing: ${deFmtTime(s.departureTime)}`);
     lines.push(`Unit: ${unitStr}`);
-    lines.push('Housing Status: Discharged from Woodhaven Housing');
-    lines.push('Clinical Status: REMAINS ACTIVE IN CLINICAL SERVICES');
     lines.push('');
-    lines.push('IMPORTANT: This is a housing discharge only. This is NOT an Administrative Discharge or discharge from clinical treatment. The client remains active in clinical services and is expected to continue attending scheduled PHP/IOP groups, individual sessions, and other clinical services in person unless the clinical team separately communicates a clinical discharge.');
+    lines.push('HOUSING STATUS');
+    lines.push('Discharged from Woodhaven Housing');
     lines.push('');
-    lines.push(`Reason for Housing Discharge: ${s.housingReason}`);
+    lines.push('CLINICAL STATUS');
+    lines.push('Remains active in Woodhaven clinical services unless separately discharged by the clinical team.');
+    lines.push('');
+    const planText = {
+      php: 'PHP is not yet complete. Client plans to continue attending PHP in person at the Dayton facility.',
+      op: 'Client plans to continue Woodhaven clinical services with the Community OP counseling team.',
+      notcontinuing: 'Client states they do not plan to continue Woodhaven clinical services.',
+      unknown: 'Client plan for continuing Woodhaven clinical services is currently unknown.'
+    };
+    lines.push('PLAN FOR CONTINUED CLINICAL SERVICES');
+    lines.push(planText[s.housingClinicalPlan] || '[Plan not selected]');
+    lines.push('');
+    lines.push('HOUSING DISCHARGE DETAILS');
+    lines.push(`Reason for Leaving / Discharge from Housing: ${s.housingReason}`);
     lines.push(`Staff Involved in Discharge: ${s.housingStaffInvolved}`);
-    lines.push(`Client Informed They Remain Active and Should Continue In Person: ${s.housingClinicalInformed === 'yes' ? 'Yes' : 'No'}`);
+    lines.push(`Client Informed They Remain Active and Should Continue Services: ${s.housingClinicalInformed === 'yes' ? 'Yes' : 'No'}`);
+    lines.push('');
+    lines.push('LOGISTICS');
     if (s.unit !== 'Community OP') lines.push(`Destination: ${s.destinationUnknown ? 'Unknown' : (s.destination || '[Destination]')}`);
     if (s.resourceSheetProvided) {
       lines.push(`Resource Sheet Provided: ${s.resourceSheetProvided === 'yes' ? 'Yes' : 'No'}`);
@@ -12113,7 +12162,7 @@ function deJumpToField(id) {
 
 function deReset() {
   deState = {
-    clientName: '', dischargeDate: '', departureTime: '', unit: '', eventType: '', housingReason: '', housingStaffInvolved: '', housingClinicalInformed: '', dischargeType: '', dischargeSubtype: '',
+    clientName: '', dischargeDate: '', departureTime: '', unit: '', eventType: '', housingReason: '', housingStaffInvolved: '', housingClinicalPlan: '', housingClinicalInformed: '', dischargeType: '', dischargeSubtype: '',
     outcomeCompleted1: '', outcomeContinuedTreatment: '', outcomeExternalBarrier: '',
     unsuccessfulReason: '', adminDirectorApproved: '', adminDirectorNoReason: '', neutralReason: '', neutralSupervisor: '', transitionCalendar: '', transitionCalendarOpened: false, transitionCalendarNoReason: '', plannedCalendarConfirmed: '',
     bridgeContacted: '', bridgeNotContactedReason: '', staffInvolved: '', staffNone: false, otherStaffInvolved: '',
@@ -12141,6 +12190,8 @@ function deReset() {
   const clinicalOutcomeWrap = document.getElementById('de-clinical-outcome-wrap'); if (clinicalOutcomeWrap) clinicalOutcomeWrap.style.display = 'none';
   const housingNotice = document.getElementById('de-housing-notice'); if (housingNotice) housingNotice.style.display = 'none';
   const housingReasonWrap = document.getElementById('de-housing-reason-wrap'); if (housingReasonWrap) housingReasonWrap.style.display = 'none';
+  ['php','op','notcontinuing','unknown'].forEach(v => { const el = document.getElementById('de-housing-plan-' + v); if (el) el.classList.remove('active'); });
+  const housingPlanHelp = document.getElementById('de-housing-plan-help'); if (housingPlanHelp) housingPlanHelp.innerHTML = '';
   document.getElementById('de-subtype-wrap').style.display = 'none';
   document.getElementById('de-unsuccessful-reason-wrap').style.display = 'none';
   document.getElementById('de-destination-wrap').style.display = 'block';
@@ -15426,6 +15477,7 @@ function autosaveApply(snap) {
   if (savedDe.dischargeType) { deState.dischargeType = ''; deSetDischargeType(savedDe.dischargeType); }
   if (savedDe.dischargeType === 'unsuccessful' && (savedDe.dischargeSubtype === 'asa' || savedDe.dischargeSubtype === 'admin')) { deState.dischargeSubtype = ''; deSetSubtype(savedDe.dischargeSubtype); }
   if (savedDe.dischargeSubtype === 'admin' && savedDe.adminDirectorApproved) { deState.adminDirectorApproved = ''; deSetAdminDirectorApproval(savedDe.adminDirectorApproved); }
+  if (savedDe.housingClinicalPlan) { deState.housingClinicalPlan = ''; deSetHousingPlan(savedDe.housingClinicalPlan); }
   if (savedDe.housingClinicalInformed) { deState.housingClinicalInformed = ''; deSetYN('housingClinicalInformed', savedDe.housingClinicalInformed, 'de-housing-informed'); }
   if (savedDe.bridgeContacted) { deState.bridgeContacted = ''; deSetYN('bridgeContacted', savedDe.bridgeContacted, 'de-bridge'); }
   if (savedDe.resourceSheetProvided) { deState.resourceSheetProvided = ''; deSetYN('resourceSheetProvided', savedDe.resourceSheetProvided, 'de-rs'); }
