@@ -4270,6 +4270,19 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 .gn-out-client-box,
 .gn-sent-prefix,
 .gn-sent-input { font-size: 12px; }
+
+/* Discharge Email compact-layout safeguards:
+   preserve readable label sizing while avoiding avoidable wrapping in the narrow form pane. */
+#view-discharge-email .form-label {
+  letter-spacing: 0.03em;
+  line-height: 1.35;
+}
+#view-discharge-email .req-star {
+  margin-left: 2px;
+}
+#view-discharge-email .de-room-census-grid > div {
+  min-width: 0;
+}
 </style>
 
 <div id="view-group" class="tool-view">
@@ -4388,7 +4401,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   <div style="display:flex;gap:16px;flex:1;min-height:0;padding:16px 16px 0 16px;">
 
     <!-- LEFT PANEL: INPUTS -->
-    <div style="width:420px;min-width:340px;display:flex;flex-direction:column;gap:0;overflow-y:auto;padding-right:6px;">
+    <div style="width:450px;min-width:360px;display:flex;flex-direction:column;gap:0;overflow-y:auto;padding-right:6px;">
 
       <!-- Discharge Context -->
       <div id="ds-context-section" style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
@@ -4988,7 +5001,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       <div id="de-room-census-card" data-de-progressive="true" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
         <div class="de-step-title"><span class="de-step-num">6</span>Room &amp; Census</div>
 
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+        <div class="de-room-census-grid" style="display:grid;grid-template-columns:minmax(0,.78fr) minmax(0,1.22fr);gap:10px;margin-bottom:10px;">
           <div>
             <label class="form-label">Room Vacated</label>
             <input class="form-input" id="de-room" type="text" placeholder="Room #" oninput="deState.roomVacated=this.value;deRenderOutput()">
