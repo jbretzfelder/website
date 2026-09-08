@@ -502,6 +502,56 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 }
 .ds-pill:hover { border-color: var(--accent); color: var(--accent); }
 .ds-pill.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+.de-choice-stack {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+.de-choice-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.de-choice-card {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  font-family: 'Public Sans', sans-serif;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color .15s, box-shadow .15s, background .15s;
+}
+.de-choice-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 1px 4px rgba(0,0,0,.06);
+}
+.de-choice-card.active {
+  border-color: var(--accent);
+  background: rgba(45,106,79,.08);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+.de-choice-title {
+  display: block;
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.35;
+}
+.de-choice-desc {
+  display: block;
+  margin-top: 3px;
+  font-size: 10.5px;
+  line-height: 1.4;
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+.de-choice-card.active .de-choice-desc { color: var(--text-secondary); }
+@media (max-width: 760px) {
+  .de-choice-grid { grid-template-columns: 1fr; }
+}
 .ds-output-block {
   background: var(--output-bg);
   border: 1px solid var(--border);
@@ -4739,20 +4789,29 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
 
         <div id="de-eventtype-section" style="margin-bottom:10px;display:none;">
-          <label class="form-label">What is ending?<span class="req-star">*</span></label>
+          <label class="form-label">What Is Happening with the Client?<span class="req-star">*</span></label>
           <div id="de-eventtype-wrap" style="border:1px solid var(--border);border-radius:8px;padding:12px 14px;background:var(--output-bg);">
-            <div style="font-size:11px;color:var(--text-secondary);line-height:1.5;margin-bottom:9px;"><strong>Choose what this notification is for before selecting a discharge outcome.</strong></div>
-            <div style="display:flex;gap:6px;flex-wrap:wrap;">
-              <button class="ds-pill" onclick="deSetEventType('clinical')" id="de-et-clinical">Clinical Services Ending</button>
-              <button class="ds-pill" onclick="deSetEventType('housing')" id="de-et-housing">Housing Only — Continuing Clinical Services</button>
+            <div style="font-size:11px;color:var(--text-secondary);line-height:1.5;margin-bottom:9px;"><strong>Choose whether the client is continuing treatment with Woodhaven or leaving Woodhaven treatment.</strong></div>
+            <div class="de-choice-stack">
+              <button class="de-choice-card" onclick="deSetEventType('housing')" id="de-et-housing">
+                <span class="de-choice-title">Housing Ending — Continuing Treatment with Woodhaven</span>
+                <span class="de-choice-desc">The client is leaving Woodhaven housing but will still receive treatment from Woodhaven.</span>
+              </button>
+              <button class="de-choice-card" onclick="deSetEventType('clinical')" id="de-et-clinical">
+                <span class="de-choice-title">Leaving Woodhaven Treatment</span>
+                <span class="de-choice-desc">The client will no longer be receiving treatment from Woodhaven.</span>
+              </button>
             </div>
           </div>
         </div>
 
         <div id="de-housing-notice" style="display:none;margin-bottom:10px;padding:11px 13px;border:2px solid #2d6a4f;border-radius:8px;background:#edf7f1;color:#1a4d35;font-size:12px;line-height:1.55;">
-          <strong>HOUSING DISCHARGE ONLY — CLINICAL SERVICES CONTINUE</strong><br>
-          Use this option only when the client is being discharged from Woodhaven housing for housing/rule-related reasons, <strong>or</strong> is voluntarily leaving Woodhaven housing, and remains active in Woodhaven clinical services.<br><br>
-          <strong>Do not use this option if the client is also leaving clinical treatment.</strong> If treatment is ending, complete the appropriate clinical discharge instead.
+          <strong>HOUSING ENDING — CONTINUING TREATMENT WITH WOODHAVEN</strong><br>
+          Use this option when the client is leaving Woodhaven housing but will continue receiving treatment from Woodhaven. This includes:<br>
+          &bull; Housing is requiring the client to leave for breaking housing rules, but the client has <strong>not finished PHP</strong> and can continue attending PHP.<br>
+          &bull; The client chooses to leave housing before finishing PHP and plans to continue attending PHP.<br>
+          &bull; The client finishes PHP and will continue treatment with <strong>Woodhaven Community OP</strong>.<br><br>
+          <strong>Do not use this option if the client is leaving Woodhaven treatment entirely.</strong>
         </div>
 
         <div id="de-housing-reason-wrap" style="display:none;margin-bottom:10px;">
@@ -4764,11 +4823,23 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 
           <div id="de-housing-plan-wrap" style="margin-bottom:12px;">
             <label class="form-label">What Is the Client's Plan for Continuing Woodhaven Clinical Services?<span class="req-star">*</span></label>
-            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:7px;">
-              <button class="ds-pill" onclick="deSetHousingPlan('php')" id="de-housing-plan-php">Continue PHP at Dayton</button>
-              <button class="ds-pill" onclick="deSetHousingPlan('op')" id="de-housing-plan-op">Community OP</button>
-              <button class="ds-pill" onclick="deSetHousingPlan('notcontinuing')" id="de-housing-plan-notcontinuing">Not Continuing</button>
-              <button class="ds-pill" onclick="deSetHousingPlan('unknown')" id="de-housing-plan-unknown">Unknown</button>
+            <div class="de-choice-grid" style="margin-bottom:7px;">
+              <button class="de-choice-card" onclick="deSetHousingPlan('php')" id="de-housing-plan-php">
+                <span class="de-choice-title">Continue PHP at Dayton</span>
+                <span class="de-choice-desc">PHP is not finished; client plans to keep attending PHP in person at Dayton.</span>
+              </button>
+              <button class="de-choice-card" onclick="deSetHousingPlan('op')" id="de-housing-plan-op">
+                <span class="de-choice-title">Community OP</span>
+                <span class="de-choice-desc">Client is finishing PHP and continuing treatment with Woodhaven Community OP.</span>
+              </button>
+              <button class="de-choice-card" onclick="deSetHousingPlan('notcontinuing')" id="de-housing-plan-notcontinuing">
+                <span class="de-choice-title">Not Continuing</span>
+                <span class="de-choice-desc">Client states they do not plan to continue treatment with Woodhaven.</span>
+              </button>
+              <button class="de-choice-card" onclick="deSetHousingPlan('unknown')" id="de-housing-plan-unknown">
+                <span class="de-choice-title">Unknown</span>
+                <span class="de-choice-desc">The client's plan for continued Woodhaven treatment is not yet known.</span>
+              </button>
             </div>
             <div id="de-housing-plan-help" style="font-size:11px;color:var(--text-secondary);line-height:1.5;"></div>
           </div>
@@ -4787,10 +4858,19 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
           <label class="form-label">Transition Outcome<span class="req-star">*</span></label>
           <div id="de-dischargetype-wrap" style="border:1px solid var(--border);border-radius:8px;padding:12px 14px;background:var(--output-bg);">
             <div style="font-size:11px;color:var(--text-secondary);line-height:1.5;margin-bottom:9px;"><strong>Use the discharge outcome based on how treatment ended.</strong></div>
-            <div style="display:flex;gap:6px;flex-wrap:wrap;">
-              <button class="ds-pill" onclick="deSetDischargeType('successful')" id="de-dt-successful">Successful — Completed Treatment</button>
-              <button class="ds-pill" onclick="deSetDischargeType('unsuccessful')" id="de-dt-unsuccessful">Unsuccessful — ASA / Admin Discharge</button>
-              <button class="ds-pill" onclick="deSetDischargeType('neutral')" id="de-dt-neutral">Neutral — Rare Exception</button>
+            <div class="de-choice-stack">
+              <button class="de-choice-card" onclick="deSetDischargeType('successful')" id="de-dt-successful">
+                <span class="de-choice-title">Successful — Completed Treatment</span>
+                <span class="de-choice-desc">The client completed treatment and the planned transition requirements are met.</span>
+              </button>
+              <button class="de-choice-card" onclick="deSetDischargeType('unsuccessful')" id="de-dt-unsuccessful">
+                <span class="de-choice-title">Unsuccessful — ASA / Administrative Discharge</span>
+                <span class="de-choice-desc">Treatment ended before completion because the client left ASA or Woodhaven ended treatment.</span>
+              </button>
+              <button class="de-choice-card" onclick="deSetDischargeType('neutral')" id="de-dt-neutral">
+                <span class="de-choice-title">Neutral — Rare Exception</span>
+                <span class="de-choice-desc">Use only for a supervisor-approved circumstance that does not fit Successful or Unsuccessful.</span>
+              </button>
             </div>
             
           </div>
@@ -4814,9 +4894,15 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 
           <div id="de-subtype-wrap" style="display:none;margin-top:10px;margin-left:12px;padding-left:10px;border-left:2px solid var(--border);">
             <div style="font-size:11px;color:var(--text-secondary);margin-bottom:6px;font-weight:600;">Who ended treatment?<span class="req-star">*</span></div>
-            <div style="display:flex;gap:6px;flex-wrap:wrap;">
-              <button class="ds-pill ds-subpill" onclick="deSetSubtype('asa')" id="de-sub-asa">ASA — Client Ends Treatment</button>
-              <button class="ds-pill ds-subpill" onclick="deSetSubtype('admin')" id="de-sub-admin">Admin Discharge — Facility Ends Treatment</button>
+            <div class="de-choice-stack">
+              <button class="de-choice-card" onclick="deSetSubtype('asa')" id="de-sub-asa">
+                <span class="de-choice-title">ASA — Client Ends Treatment</span>
+                <span class="de-choice-desc">The client chooses to leave treatment before completion.</span>
+              </button>
+              <button class="de-choice-card" onclick="deSetSubtype('admin')" id="de-sub-admin">
+                <span class="de-choice-title">Administrative Discharge — Woodhaven Ends Treatment</span>
+                <span class="de-choice-desc">Woodhaven ends treatment because of safety, significant rule violations, or similar concerns.</span>
+              </button>
             </div>
             <div style="margin-top:8px;padding:9px 11px;border:1px solid var(--border);border-radius:7px;background:var(--output-bg);font-size:12px;line-height:1.5;color:var(--text);">
               <div style="margin-bottom:5px;"><strong>ASA:</strong> The client chooses to leave against staff advice and is not on the Transition Calendar.</div>
@@ -7247,7 +7333,7 @@ function navigateTo(view) {
   }, 260);
   if (view === 'itp') renderAsamRef();
   if (view === 'discharge') dsInit();
-  if (view === 'discharge-email') { deRenderOutput(); }
+  if (view === 'discharge-email') { deEnsureDefaultDate(); deRenderOutput(); }
   if (view === 'home') setTimeout(updateHomeScrollHint, 30);
 }
 
@@ -10991,7 +11077,7 @@ function dsReset() {
 // ═══════════════════════════════════════════════════
 
 let deState = {
-  clientName: '', dischargeDate: '', departureTime: '', unit: '', eventType: '', housingReason: '', housingStaffInvolved: '', housingClinicalPlan: '', housingClinicalInformed: '', dischargeType: '', dischargeSubtype: '',
+  clientName: '', dischargeDate: deTodayLocal(), departureTime: '', unit: '', eventType: '', housingReason: '', housingStaffInvolved: '', housingClinicalPlan: '', housingClinicalInformed: '', dischargeType: '', dischargeSubtype: '',
   outcomeCompleted1: '', outcomeContinuedTreatment: '', outcomeExternalBarrier: '',
   unsuccessfulReason: '', adminDirectorApproved: '', adminDirectorNoReason: '', neutralReason: '', neutralSupervisor: '', transitionCalendar: '', transitionCalendarOpened: false, transitionCalendarNoReason: '', plannedCalendarConfirmed: '', 
   bridgeContacted: '', bridgeNotContactedReason: '', staffInvolved: '', staffNone: false, otherStaffInvolved: '',
@@ -11015,6 +11101,21 @@ const DE_OP_HIDDEN_FIELDS = ['destination','destinationUnknown','resourceSheetPr
   'propertyReceived','phoneReceived','woodhavenPropertyCollected','medsReceived','medsNotReceivedReason',
   'paperworkSigned','phoneCallMade','outpatientOffered','outpatientNoReason','roomVacated','clientsOnUnit','roomCleanedSearched',
   'bridgeContacted','bridgeNotContactedReason','staffInvolved','staffNone'];
+
+function deTodayLocal() {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+function deEnsureDefaultDate() {
+  if (!deState.dischargeDate) deState.dischargeDate = deTodayLocal();
+  const input = document.getElementById('de-discharge-date');
+  if (input) input.value = deState.dischargeDate;
+}
+
 
 function deUpdate2wmVisibility() {
   const isResUnit = RES_UNITS.includes(deState.unit) && deState.dischargeType === 'unsuccessful';
@@ -11673,8 +11774,8 @@ function deUpdateBridgeAlert() {
 
 function deWorkflowClassificationLabel() {
   const s = deState;
-  if (s.eventType === 'housing') return 'Housing Discharge Only — Continuing Clinical Services';
-  if (!s.eventType) return 'Choose what is ending';
+  if (s.eventType === 'housing') return 'Housing Ending — Continuing Treatment with Woodhaven';
+  if (!s.eventType) return 'Choose what is happening with the client';
   const calendarWrap = document.getElementById('de-transition-calendar-wrap');
   const successfulPending = !s.dischargeType && calendarWrap && calendarWrap.style.display !== 'none';
   if (successfulPending) return 'Successful — Calendar verification required';
@@ -11832,7 +11933,7 @@ function deComputeErrors() {
   if (!s.clientName) errors.push({ label: 'Client full name', id: 'de-client-name' });
   if (!s.dischargeDate) errors.push({ label: 'Date of discharge', id: 'de-discharge-date' });
   if (!s.unit) errors.push({ label: 'Unit', id: 'de-unit' });
-  if (!s.eventType) errors.push({ label: 'What is ending', id: 'de-eventtype-wrap', critical: true });
+  if (!s.eventType) errors.push({ label: 'What is happening with the client', id: 'de-eventtype-wrap', critical: true });
   if (s.eventType === 'housing' && !s.housingReason) errors.push({ label: 'Reason for leaving / discharge from housing', id: 'de-housing-reason-wrap', critical: true });
   if (s.eventType === 'clinical' && !s.dischargeType) errors.push({ label: 'Transition outcome', id: 'de-dischargetype-wrap' });
   if (s.dischargeType === 'successful' && s.transitionCalendar !== 'yes') errors.push({ label: 'Verified Transition Calendar listing', id: 'de-transition-calendar-wrap', critical: true });
@@ -11970,6 +12071,7 @@ function deGenerate() {
   if (s.eventType === 'housing') {
     subjectOut.textContent = `HOUSING DISCHARGE ONLY - ${unitStr} - ${C} - ${dateStr}`;
     const lines = [];
+    lines.push('DISCHARGE DETAILS');
     lines.push(`Client: ${C}`);
     lines.push(`Effective Date: ${dateStr}`);
     if (s.departureTime) lines.push(`Time Leaving Housing: ${deFmtTime(s.departureTime)}`);
@@ -12031,107 +12133,96 @@ function deGenerate() {
   }
 
   const lines = [];
-  lines.push(`Client: ${C}`);
-  lines.push(`Date of Discharge: ${dateStr}`);
-  if (s.departureTime) lines.push(`Time of Departure: ${deFmtTime(s.departureTime)}`);
-  lines.push(`Unit: ${unitStr}`);
-  lines.push(`Transition Outcome: ${typeLine}`);
+  const addSection = (title, sectionLines) => {
+    const clean = sectionLines.filter(Boolean);
+    if (!clean.length) return;
+    if (lines.length) lines.push('');
+    lines.push(title);
+    clean.forEach(line => lines.push(line));
+  };
 
-  if (s.dischargeType === 'successful') {
-    lines.push('Transition Calendar (Verified): Yes');
-  }
+  const dischargeDetails = [
+    `Client: ${C}`,
+    `Date of Discharge: ${dateStr}`,
+    s.departureTime ? `Time of Departure: ${deFmtTime(s.departureTime)}` : null,
+    `Unit: ${unitStr}`,
+    `Transition Outcome: ${typeLine}`,
+    s.dischargeType === 'successful' ? 'Transition Calendar (Verified): Yes' : null
+  ];
+  addSection('DISCHARGE DETAILS', dischargeDetails);
 
+  const circumstanceLines = [];
   if ((s.dischargeSubtype === 'asa' || s.dischargeSubtype === 'admin') && s.unsuccessfulReason) {
-    lines.push('');
     const reasonLabel = s.dischargeSubtype === 'asa' ? 'Reason for ASA' : 'Reason for Admin Discharge';
-    lines.push(`${reasonLabel}: ${s.unsuccessfulReason}`);
+    circumstanceLines.push(`${reasonLabel}: ${s.unsuccessfulReason}`);
   }
   if (s.dischargeSubtype === 'admin' && s.adminDirectorApproved) {
-    lines.push(`Clinical Director Approved: ${s.adminDirectorApproved === 'yes' ? 'Yes' : 'No'}`);
-    if (s.adminDirectorApproved === 'no' && s.adminDirectorNoReason) lines.push(`Reason Approval Was Not Obtained: ${s.adminDirectorNoReason}`);
+    circumstanceLines.push(`Clinical Director Approved: ${s.adminDirectorApproved === 'yes' ? 'Yes' : 'No'}`);
+    if (s.adminDirectorApproved === 'no' && s.adminDirectorNoReason) circumstanceLines.push(`Reason Approval Was Not Obtained: ${s.adminDirectorNoReason}`);
   }
-
   if (s.dischargeType === 'neutral') {
-    lines.push('');
-    if (s.neutralReason) lines.push(`Reason for Neutral Classification: ${s.neutralReason}`);
-    if (s.neutralSupervisor) lines.push(`Neutral Approved By: ${s.neutralSupervisor}`);
+    if (s.neutralReason) circumstanceLines.push(`Reason for Neutral Classification: ${s.neutralReason}`);
+    if (s.neutralSupervisor) circumstanceLines.push(`Neutral Approved By: ${s.neutralSupervisor}`);
   }
-
   if (!isOP && s.dischargeSubtype === 'asa' && s.bridgeContacted) {
-    lines.push('');
     if (s.bridgeContacted === 'yes') {
-      lines.push('The Bridge Contacted: Yes');
+      circumstanceLines.push('The Bridge Contacted: Yes');
     } else {
-      lines.push('The Bridge Contacted: No');
-      if (s.bridgeNotContactedReason) lines.push(`Reason / Other Attempts to Intervene: ${s.bridgeNotContactedReason}`);
+      circumstanceLines.push('The Bridge Contacted: No');
+      if (s.bridgeNotContactedReason) circumstanceLines.push(`Reason / Other Attempts to Intervene: ${s.bridgeNotContactedReason}`);
     }
   }
-
   if (s.dischargeSubtype === 'admin' || (s.dischargeSubtype === 'asa' && !isOP)) {
-    if (s.staffInvolved) {
-      lines.push('');
-      lines.push(`Clinical Staff Member (Owns Remarkable Documentation): ${s.staffInvolved}`);
-    } else if (s.staffNone) {
-      lines.push('');
-      lines.push(`Clinical Staff Member (Owns Remarkable Documentation): None available.`);
-    }
-    if (s.otherStaffInvolved) lines.push(`Other Staff Involved in Intervention: ${s.otherStaffInvolved}`);
+    if (s.staffInvolved) circumstanceLines.push(`Clinical Staff Member (Owns Remarkable Documentation): ${s.staffInvolved}`);
+    else if (s.staffNone) circumstanceLines.push('Clinical Staff Member (Owns Remarkable Documentation): None available.');
+    if (s.otherStaffInvolved) circumstanceLines.push(`Other Staff Involved in Intervention: ${s.otherStaffInvolved}`);
   }
+  addSection('DISCHARGE CIRCUMSTANCES', circumstanceLines);
 
+  const followupLines = [];
   if (s.unit !== 'Community OP') {
-    lines.push('');
-    lines.push(`Destination: ${s.destinationUnknown ? 'Unknown' : (s.destination || '[Destination]')}`);
+    followupLines.push(`Destination: ${s.destinationUnknown ? 'Unknown' : (s.destination || '[Destination]')}`);
   }
-
   if (!isOP && s.resourceSheetProvided) {
-    lines.push(deYN('Resource Sheet Provided', s.resourceSheetProvided));
-    if (s.resourceSheetProvided === 'no' && s.resourceSheetReason) lines.push(`Reason: ${s.resourceSheetReason}`);
+    followupLines.push(deYN('Resource Sheet Provided', s.resourceSheetProvided));
+    if (s.resourceSheetProvided === 'no' && s.resourceSheetReason) followupLines.push(`Reason: ${s.resourceSheetReason}`);
   }
-
   if (!isOP && s.medsReceived) {
-    if (s.medsReceived === 'yes') {
-      lines.push('Medications Received: Yes');
-    } else if (s.medsReceived === 'na') {
-      lines.push('Medications Received: N/A');
-    } else {
-      lines.push('Medications Received: No');
-      if (s.medsNotReceivedReason) lines.push(`Reason: ${s.medsNotReceivedReason}`);
+    if (s.medsReceived === 'yes') followupLines.push('Medications Received: Yes');
+    else if (s.medsReceived === 'na') followupLines.push('Medications Received: N/A');
+    else {
+      followupLines.push('Medications Received: No');
+      if (s.medsNotReceivedReason) followupLines.push(`Reason: ${s.medsNotReceivedReason}`);
     }
   }
-
-  if (s.forwardingNone) {
-    lines.push('Forwarding Address and/or Phone Number: None left');
-  } else if (s.forwardingInfo) {
-    lines.push(`Forwarding Address and/or Phone Number: ${s.forwardingInfo}`);
+  if (s.forwardingNone) followupLines.push('Forwarding Address and/or Phone Number: None left');
+  else if (s.forwardingInfo) followupLines.push(`Forwarding Address and/or Phone Number: ${s.forwardingInfo}`);
+  if (!isOP && s.outpatientOffered) {
+    followupLines.push(deYN('Offered Connection to Woodhaven Outpatient Services', s.outpatientOffered));
+    if (s.outpatientOffered === 'no' && s.outpatientNoReason) followupLines.push(`Reason: ${s.outpatientNoReason}`);
   }
+  addSection('DESTINATION & FOLLOW-UP', followupLines);
 
-  const logisticsLines = !isOP ? [
-    deYN('Property Received', s.propertyReceived),
-    deYN('Phone Received', s.phoneReceived),
-    deYN('Woodhaven Property Collected', s.woodhavenPropertyCollected),
-    deYN('Discharge Paperwork Signed', s.paperworkSigned),
-    (s.dischargeType === 'unsuccessful' ? deYN('Phone Call Made', s.phoneCallMade) : null)
-  ].filter(Boolean) : [];
-  if (logisticsLines.length) { lines.push(''); logisticsLines.forEach(l => lines.push(l)); }
-
+  const logisticsLines = [];
+  if (!isOP) {
+    [
+      deYN('Property Received', s.propertyReceived),
+      deYN('Phone Received', s.phoneReceived),
+      deYN('Woodhaven Property Collected', s.woodhavenPropertyCollected),
+      deYN('Discharge Paperwork Signed', s.paperworkSigned),
+      (s.dischargeType === 'unsuccessful' ? deYN('Phone Call Made', s.phoneCallMade) : null)
+    ].filter(Boolean).forEach(line => logisticsLines.push(line));
+  }
   if (s.onProbation) {
-    lines.push('');
-    lines.push(deYN('On Probation', s.onProbation));
-    if (s.onProbation === 'yes') {
-      lines.push(deYN('Probation Officer Notified', s.poNotified) || 'Probation Officer Notified: [Not yet answered]');
-    }
+    logisticsLines.push(deYN('On Probation', s.onProbation));
+    if (s.onProbation === 'yes') logisticsLines.push(deYN('Probation Officer Notified', s.poNotified) || 'Probation Officer Notified: [Not yet answered]');
   }
-
   if (RES_UNITS.includes(s.unit) && s.dischargeType === 'unsuccessful' && s.detox2wmOffered) {
     const wmDisplay = s.detox2wmOffered === 'yes' ? 'Yes' : s.detox2wmOffered === 'no' ? 'No' : 'Client Not in WM';
-    lines.push(`Offered 2WM Ambulatory Detox Services: ${wmDisplay}`);
-    if (s.detox2wmOffered === 'no' && s.detox2wmReason) lines.push(`Reason: ${s.detox2wmReason}`);
+    logisticsLines.push(`Offered 2WM Ambulatory Detox Services: ${wmDisplay}`);
+    if (s.detox2wmOffered === 'no' && s.detox2wmReason) logisticsLines.push(`Reason: ${s.detox2wmReason}`);
   }
-
-  if (!isOP && s.outpatientOffered) {
-    lines.push(deYN('Offered Connection to Woodhaven Outpatient Services', s.outpatientOffered));
-    if (s.outpatientOffered === 'no' && s.outpatientNoReason) lines.push(`Reason: ${s.outpatientNoReason}`);
-  }
+  addSection('PROPERTY & LOGISTICS', logisticsLines);
 
   const roomLines = [];
   if (!isOP) {
@@ -12139,13 +12230,9 @@ function deGenerate() {
     else if (s.roomCleanedSearched) roomLines.push(deYN('Room Cleaned and Searched', s.roomCleanedSearched));
     if (s.clientsOnUnit !== '' && s.clientsOnUnit !== undefined && s.clientsOnUnit !== null) roomLines.push(`Clients Remaining on Unit: ${s.clientsOnUnit}`);
   }
-  if (roomLines.length) { lines.push(''); roomLines.forEach(l => lines.push(l)); }
+  addSection('ROOM / UNIT', roomLines);
 
-  if (s.additionalInfo) {
-    lines.push('');
-    lines.push('Additional Information:');
-    lines.push(s.additionalInfo);
-  }
+  if (s.additionalInfo) addSection('ADDITIONAL INFORMATION', [s.additionalInfo]);
 
   out.textContent = lines.join('\n');
 
@@ -12162,7 +12249,7 @@ function deJumpToField(id) {
 
 function deReset() {
   deState = {
-    clientName: '', dischargeDate: '', departureTime: '', unit: '', eventType: '', housingReason: '', housingStaffInvolved: '', housingClinicalPlan: '', housingClinicalInformed: '', dischargeType: '', dischargeSubtype: '',
+    clientName: '', dischargeDate: deTodayLocal(), departureTime: '', unit: '', eventType: '', housingReason: '', housingStaffInvolved: '', housingClinicalPlan: '', housingClinicalInformed: '', dischargeType: '', dischargeSubtype: '',
     outcomeCompleted1: '', outcomeContinuedTreatment: '', outcomeExternalBarrier: '',
     unsuccessfulReason: '', adminDirectorApproved: '', adminDirectorNoReason: '', neutralReason: '', neutralSupervisor: '', transitionCalendar: '', transitionCalendarOpened: false, transitionCalendarNoReason: '', plannedCalendarConfirmed: '',
     bridgeContacted: '', bridgeNotContactedReason: '', staffInvolved: '', staffNone: false, otherStaffInvolved: '',
@@ -12181,6 +12268,8 @@ function deReset() {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
+  const dischargeDateInput = document.getElementById('de-discharge-date');
+  if (dischargeDateInput) dischargeDateInput.value = deState.dischargeDate;
   const staffNoneCb = document.getElementById('de-staff-none');
   if (staffNoneCb) staffNoneCb.checked = false;
   const staffNameInput = document.getElementById('de-staff-name');
@@ -14755,7 +14844,7 @@ const TUT_TOOL_STEPS = [
 
   { view:'discharge-email', sel:'#de-dischargetype-wrap', section:'Discharge Email', navigate:'discharge-email',
     title:'Transition outcome',
-    body:'If Clinical Services Ending is selected, classify the clinical transition outcome here. Housing Only follows a separate workflow and does not use Successful, Unsuccessful, or Administrative Discharge terminology.' },
+    body:'If Leaving Woodhaven Treatment is selected, classify the clinical transition outcome here. Housing Ending — Continuing Treatment with Woodhaven follows a separate workflow and does not use Successful, Unsuccessful, or Administrative Discharge terminology.' },
 
   { view:'discharge-email', sel:'#de-bridge-wrap', section:'Discharge Email', navigate:'discharge-email',
     title:'The Bridge contact',
