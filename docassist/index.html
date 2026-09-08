@@ -4744,26 +4744,27 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
             <div style="font-size:11px;color:var(--text-secondary);line-height:1.5;margin-bottom:9px;"><strong>Choose what this notification is for before selecting a discharge outcome.</strong></div>
             <div style="display:flex;gap:6px;flex-wrap:wrap;">
               <button class="ds-pill" onclick="deSetEventType('clinical')" id="de-et-clinical">Clinical Services Ending</button>
-              <button class="ds-pill" onclick="deSetEventType('housing')" id="de-et-housing">Housing Only</button>
+              <button class="ds-pill" onclick="deSetEventType('housing')" id="de-et-housing">Housing Only — Continuing In-Person Clinical Services</button>
             </div>
           </div>
         </div>
 
         <div id="de-housing-notice" style="display:none;margin-bottom:10px;padding:11px 13px;border:2px solid #2d6a4f;border-radius:8px;background:#edf7f1;color:#1a4d35;font-size:12px;line-height:1.55;">
-          <strong>HOUSING DISCHARGE ONLY</strong><br>
-          This does <strong>not</strong> discharge the client from clinical services. The client remains active in PHP/IOP and should continue attending scheduled treatment unless the clinical team separately completes a clinical discharge.
+          <strong>HOUSING DISCHARGE ONLY — CLINICAL SERVICES CONTINUE</strong><br>
+          Use this option only when the client is being discharged from Woodhaven housing for housing/rule-related reasons, <strong>or</strong> is voluntarily leaving Woodhaven housing, and intends to continue attending Woodhaven clinical services <strong>in person</strong>.<br><br>
+          <strong>Do not use this option if the client is also leaving clinical treatment.</strong> If treatment is ending, complete the appropriate clinical discharge instead.
         </div>
 
         <div id="de-housing-reason-wrap" style="display:none;margin-bottom:10px;">
-          <label class="form-label">Reason for Housing Discharge<span class="req-star">*</span></label>
-          <textarea class="form-textarea" id="de-housing-reason" rows="2" placeholder="Briefly describe the housing issue resulting in discharge from housing…" oninput="deState.housingReason=this.value;deRenderOutput()" style="min-height:55px;margin-bottom:10px;"></textarea>
+          <label class="form-label">Reason for Leaving / Discharge from Housing<span class="req-star">*</span></label>
+          <textarea class="form-textarea" id="de-housing-reason" rows="2" placeholder="Briefly describe the housing/rule-related discharge or the client's decision to leave housing…" oninput="deState.housingReason=this.value;deRenderOutput()" style="min-height:55px;margin-bottom:10px;"></textarea>
 
           <label class="form-label">Staff Involved in Discharge<span class="req-star">*</span></label>
           <input class="form-input" id="de-housing-staff" type="text" placeholder="Names of staff involved" oninput="deState.housingStaffInvolved=this.value;deRenderOutput()" style="margin-bottom:10px;">
 
           <div id="de-housing-clinical-informed-wrap">
-            <label class="form-label">Was the Client Informed They Can Continue Clinical Services?<span class="req-star">*</span></label>
-            <div style="font-size:11px;color:var(--text-secondary);line-height:1.5;margin-bottom:7px;">Confirm the client was told that discharge from housing does not end PHP/IOP treatment and that they should continue attending scheduled groups, individual sessions, and other clinical services.</div>
+            <label class="form-label">Was the Client Informed They Remain Active in Clinical Services and Should Continue Attending In Person?<span class="req-star">*</span></label>
+            <div style="font-size:11px;color:var(--text-secondary);line-height:1.5;margin-bottom:7px;">Confirm the client was told that leaving or being discharged from housing does not end PHP/IOP treatment and that they are expected to continue attending scheduled groups, individual sessions, and other clinical services in person.</div>
             <div style="display:flex;gap:6px;flex-wrap:wrap;">
               <button class="ds-pill" onclick="deSetYN('housingClinicalInformed','yes','de-housing-informed')" id="de-housing-informed-yes">Yes — Client Informed</button>
               <button class="ds-pill" onclick="deSetYN('housingClinicalInformed','no','de-housing-informed')" id="de-housing-informed-no">No — Not Informed</button>
@@ -11638,7 +11639,7 @@ function deUpdateBridgeAlert() {
 
 function deWorkflowClassificationLabel() {
   const s = deState;
-  if (s.eventType === 'housing') return 'Housing Discharge Only — Clinical Services Continue';
+  if (s.eventType === 'housing') return 'Housing Discharge Only — Continuing In-Person Clinical Services';
   if (!s.eventType) return 'Choose what is ending';
   const calendarWrap = document.getElementById('de-transition-calendar-wrap');
   const successfulPending = !s.dischargeType && calendarWrap && calendarWrap.style.display !== 'none';
@@ -11798,7 +11799,7 @@ function deComputeErrors() {
   if (!s.dischargeDate) errors.push({ label: 'Date of discharge', id: 'de-discharge-date' });
   if (!s.unit) errors.push({ label: 'Unit', id: 'de-unit' });
   if (!s.eventType) errors.push({ label: 'What is ending', id: 'de-eventtype-wrap', critical: true });
-  if (s.eventType === 'housing' && !s.housingReason) errors.push({ label: 'Reason for housing discharge', id: 'de-housing-reason-wrap', critical: true });
+  if (s.eventType === 'housing' && !s.housingReason) errors.push({ label: 'Reason for leaving / discharge from housing', id: 'de-housing-reason-wrap', critical: true });
   if (s.eventType === 'clinical' && !s.dischargeType) errors.push({ label: 'Transition outcome', id: 'de-dischargetype-wrap' });
   if (s.dischargeType === 'successful' && s.transitionCalendar !== 'yes') errors.push({ label: 'Verified Transition Calendar listing', id: 'de-transition-calendar-wrap', critical: true });
   if (s.dischargeType === 'unsuccessful' && !s.dischargeSubtype) errors.push({ label: 'ASA or Administrative Discharge', id: 'de-subtype-wrap', critical: true });
@@ -11810,7 +11811,7 @@ function deComputeErrors() {
   if (s.dischargeType === 'neutral' && !s.neutralReason) errors.push({ label: 'Reason for Neutral classification', id: 'de-neutral-reason-wrap', critical: true });
   if (s.eventType === 'housing') {
     if (!s.housingStaffInvolved) errors.push({ label: 'Staff involved in housing discharge', id: 'de-housing-staff', critical: true });
-    if (!s.housingClinicalInformed) errors.push({ label: 'Client informed clinical services continue', id: 'de-housing-clinical-informed-wrap', critical: true });
+    if (!s.housingClinicalInformed) errors.push({ label: 'Client informed they remain active and should continue attending in person', id: 'de-housing-clinical-informed-wrap', critical: true });
     if (!isOP && !s.destination && !s.destinationUnknown) errors.push({ label: 'Where client is going', id: 'de-destination-wrap' });
     if (!isOP && !s.resourceSheetProvided) errors.push({ label: 'Resource sheet provided', id: 'de-resource-sheet-wrap' });
     if (!isOP && s.resourceSheetProvided === 'no' && !s.resourceSheetReason) errors.push({ label: 'Reason resource sheet was not provided', id: 'de-rs-reason-wrap' });
@@ -11941,11 +11942,11 @@ function deGenerate() {
     lines.push('Housing Status: Discharged from Woodhaven Housing');
     lines.push('Clinical Status: REMAINS ACTIVE IN CLINICAL SERVICES');
     lines.push('');
-    lines.push('IMPORTANT: This is a housing discharge only. This is NOT an Administrative Discharge or discharge from clinical treatment. The client should continue attending scheduled PHP/IOP groups, individual sessions, and other clinical services unless the clinical team separately communicates a clinical discharge.');
+    lines.push('IMPORTANT: This is a housing discharge only. This is NOT an Administrative Discharge or discharge from clinical treatment. The client remains active in clinical services and is expected to continue attending scheduled PHP/IOP groups, individual sessions, and other clinical services in person unless the clinical team separately communicates a clinical discharge.');
     lines.push('');
     lines.push(`Reason for Housing Discharge: ${s.housingReason}`);
     lines.push(`Staff Involved in Discharge: ${s.housingStaffInvolved}`);
-    lines.push(`Client Informed Clinical Services Continue: ${s.housingClinicalInformed === 'yes' ? 'Yes' : 'No'}`);
+    lines.push(`Client Informed They Remain Active and Should Continue In Person: ${s.housingClinicalInformed === 'yes' ? 'Yes' : 'No'}`);
     if (s.unit !== 'Community OP') lines.push(`Destination: ${s.destinationUnknown ? 'Unknown' : (s.destination || '[Destination]')}`);
     if (s.resourceSheetProvided) {
       lines.push(`Resource Sheet Provided: ${s.resourceSheetProvided === 'yes' ? 'Yes' : 'No'}`);
