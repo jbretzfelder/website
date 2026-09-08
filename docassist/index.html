@@ -2357,6 +2357,35 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   .de-first-required{outline:2px solid var(--warning-border);outline-offset:2px}
   #de-required-summary{font-size:10px;font-weight:700;line-height:1.35;margin-top:2px}
 </style>
+
+<style id="docassist-typography-preview">
+/* Restrained readability pass: preserve current layout and font families. */
+.toolbar-label,
+.doc-section-title,
+.sn-section-title,
+.gn-section-label,
+.pc-result-label,
+.asam-ref-item-label,
+.tj-field-label,
+.tj-output-label,
+.criteria-tag { font-size: 10px; }
+
+.form-label { font-size: 11px; }
+
+.dim-desc,
+.risk-desc,
+.risk-block-subtitle,
+.itp-block-subtitle,
+.criteria-block-subtitle { font-size: 11.5px; }
+
+.de-workflow-status-sub,
+#de-required-summary { font-size: 11px; }
+
+/* Keep controls compact; only a half-step increase in entered/readable text. */
+.form-select, .form-input, .form-textarea,
+.sn-input, .sn-select, .sn-textarea,
+.gn-input, .gn-textarea { font-size: 12.5px; }
+</style>
 </head>
 <body>
 
@@ -4677,7 +4706,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 
           <div id="de-transition-calendar-wrap" style="display:none;margin-top:10px;padding:10px 12px;border:1px solid var(--border);border-radius:7px;background:var(--output-bg);">
             <label class="form-label">Successful Requires Transition Calendar Verification<span class="req-star">*</span></label>
-            <div style="font-size:10px;color:var(--text-secondary);line-height:1.45;margin-bottom:8px;"><strong>A client cannot be classified as Successful unless they are listed on the Transition Calendar.</strong> Open the calendar and verify the client is listed before confirming.</div>
+            <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;margin-bottom:8px;"><strong>A client cannot be classified as Successful unless they are listed on the Transition Calendar.</strong> Open the calendar and verify the client is listed before confirming.</div>
             <div style="margin-bottom:8px;">
               <a href="https://woodhavenohio.sharepoint.com/:x:/r/_layouts/15/Doc.aspx?sourcedoc=%7BAB20E2CB-864C-49CA-9635-44EAE4FBECC4%7D&amp;file=2026%20Discharge%20Transition%20Calendar.xlsx&amp;action=default&amp;mobileredirect=true" target="_blank" rel="noopener noreferrer" onclick="deMarkTransitionCalendarOpened()" style="font-size:11px;font-weight:600;">Open Transition Calendar to Verify ↗</a>
             </div>
@@ -4685,20 +4714,20 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
               <button class="ds-pill" onclick="deSetTransitionCalendar('yes')" id="de-calendar-yes" disabled aria-disabled="true" style="opacity:.45;cursor:not-allowed;">Verified — Client Is Listed</button>
               <button class="ds-pill" onclick="deSetTransitionCalendar('no')" id="de-calendar-no">Client Is Not Listed</button>
             </div>
-            <div id="de-calendar-open-hint" style="font-size:10px;color:var(--text-secondary);line-height:1.45;margin-top:7px;">Open the Transition Calendar above before the verification button becomes available.</div>
+            <div id="de-calendar-open-hint" style="font-size:12px;color:var(--text-secondary);line-height:1.5;margin-top:7px;">Open the Transition Calendar above before the verification button becomes available.</div>
           </div>
 
           <div id="de-transition-calendar-reason-wrap" style="display:none;margin-top:8px;padding:9px 11px;border:2px solid #c0392b;border-radius:7px;background:#fdecea;color:#7a1f1f;">
-            <div style="font-size:10px;line-height:1.45;"><strong>Successful is not available.</strong> The client must be listed on the Transition Calendar before this discharge can be classified as Successful. Select the appropriate discharge outcome, or have the transition added to the calendar before completing the email.</div>
+            <div style="font-size:12px;line-height:1.5;"><strong>Successful is not available.</strong> The client must be listed on the Transition Calendar before this discharge can be classified as Successful. Select the appropriate discharge outcome, or have the transition added to the calendar before completing the email.</div>
           </div>
 
           <div id="de-subtype-wrap" style="display:none;margin-top:10px;margin-left:12px;padding-left:10px;border-left:2px solid var(--border);">
-            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:6px;">Who ended treatment?<span class="req-star">*</span></div>
+            <div style="font-size:11px;color:var(--text-secondary);margin-bottom:6px;font-weight:600;">Who ended treatment?<span class="req-star">*</span></div>
             <div style="display:flex;gap:6px;flex-wrap:wrap;">
               <button class="ds-pill ds-subpill" onclick="deSetSubtype('asa')" id="de-sub-asa">ASA — Client Ends Treatment</button>
               <button class="ds-pill ds-subpill" onclick="deSetSubtype('admin')" id="de-sub-admin">Admin Discharge — Facility Ends Treatment</button>
             </div>
-            <div style="margin-top:8px;padding:9px 11px;border:1px solid var(--border);border-radius:7px;background:var(--output-bg);font-size:10px;line-height:1.5;color:var(--text);">
+            <div style="margin-top:8px;padding:9px 11px;border:1px solid var(--border);border-radius:7px;background:var(--output-bg);font-size:12px;line-height:1.5;color:var(--text);">
               <div style="margin-bottom:5px;"><strong>ASA:</strong> The client chooses to leave against staff advice and is not on the Transition Calendar.</div>
               <div><strong>Administrative Discharge:</strong> Woodhaven discharges the client due to violence, significant rule violations, or similar concerns. Administrative discharges require Clinical Director approval unless an immediate discharge is necessary because of an unsafe situation.</div>
             </div>
@@ -4711,9 +4740,9 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
 
         <div id="de-neutral-reason-wrap" style="display:none;margin-bottom:10px;">
-          <div style="padding:10px 12px;border:1px solid var(--warning-border);border-left:4px solid var(--warning-border);border-radius:7px;background:var(--warning-bg);margin-bottom:10px;font-size:10px;line-height:1.45;color:var(--warning-text);"><strong>Neutral requires supervisor approval.</strong> Do not continue unless a supervisor reviewed this specific discharge and approved Neutral.</div>
+          <div style="padding:10px 12px;border:1px solid var(--warning-border);border-left:4px solid var(--warning-border);border-radius:7px;background:var(--warning-bg);margin-bottom:10px;font-size:12px;line-height:1.5;color:var(--warning-text);"><strong>Neutral requires supervisor approval.</strong> Do not continue unless a supervisor reviewed this specific discharge and approved Neutral.</div>
           <label class="form-label">Reason for Rare Neutral Classification<span class="req-star">*</span></label>
-          <div style="font-size:10px;color:var(--text-secondary);line-height:1.45;margin-bottom:5px;">Neutral is a rare exception and requires supervisor approval. Do not use Neutral as a middle option between Successful and Unsuccessful.</div>
+          <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;margin-bottom:5px;">Neutral is a rare exception and requires supervisor approval. Do not use Neutral as a middle option between Successful and Unsuccessful.</div>
           <textarea class="form-textarea" id="de-neutral-reason" rows="2" placeholder="Describe the rare circumstance supporting the Neutral classification…" oninput="deState.neutralReason=this.value;deRenderOutput()" style="min-height:55px;margin-bottom:8px;"></textarea>
           <label class="form-label">Supervisor Who Approved Neutral<span class="req-star">*</span></label>
           <input class="form-input" id="de-neutral-supervisor" type="text" placeholder="Enter the supervisor's name" oninput="deState.neutralSupervisor=this.value;deRenderOutput()" />
@@ -4766,7 +4795,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
             <button class="ds-pill" onclick="deSetAdminDirectorApproval('yes')" id="de-admin-director-yes">Approved by Clinical Director</button>
             <button class="ds-pill" onclick="deSetAdminDirectorApproval('no')" id="de-admin-director-no">Approval Not Obtained</button>
           </div>
-          <div id="de-admin-director-no-warning" style="display:none;background:var(--warning-bg);border:1px solid var(--warning-border);border-radius:6px;padding:8px 10px;font-size:10px;line-height:1.45;color:var(--warning-text);font-weight:600;">No should only be used when immediate discharge was necessary because of an unsafe situation. Clinical Director must be notified.</div>
+          <div id="de-admin-director-no-warning" style="display:none;background:var(--warning-bg);border:1px solid var(--warning-border);border-radius:6px;padding:8px 10px;font-size:12px;line-height:1.5;color:var(--warning-text);font-weight:600;">No should only be used when immediate discharge was necessary because of an unsafe situation. Clinical Director must be notified.</div>
           <div id="de-admin-director-no-reason-wrap" style="display:none;margin-top:8px;">
             <label class="form-label">Reason Approval Was Not Obtained<span class="req-star">*</span></label>
             <textarea class="form-textarea" id="de-admin-director-no-reason" rows="2" placeholder="Explain why Clinical Director approval was not obtained" oninput="deState.adminDirectorNoReason=this.value;deRenderOutput()"></textarea>
