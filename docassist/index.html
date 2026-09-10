@@ -7331,7 +7331,11 @@ function navigateTo(view) {
   navigateTo._cleanupTimer = setTimeout(() => {
     target.classList.remove('view-transitioning', 'view-transition-in');
   }, 260);
-  if (view === 'itp') renderAsamRef();
+  if (view === 'itp') {
+    renderAsamRef();
+    const itpSections = document.getElementById('itpSections');
+    if (itpSections && !itpSections.children.length) renderITPGoals();
+  }
   if (view === 'discharge') dsInit();
   if (view === 'discharge-email') { deEnsureDefaultDate(); deRenderOutput(); }
   if (view === 'home') setTimeout(updateHomeScrollHint, 30);
