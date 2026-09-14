@@ -239,6 +239,9 @@
           <button onclick="setCanProvide(true)">Yes - Woodhaven can provide the recommended care</button>
           <button onclick="setCanProvide(false)">No - Woodhaven cannot appropriately provide the recommended care</button>
         </div>
+        <div class="actions">
+          <button class="secondary" onclick="renderStart()">Back</button>
+        </div>
       `;
     }
 
@@ -267,7 +270,8 @@
           </ul>
         </div>
         <div class="actions">
-          <button class="secondary" onclick="renderStart()">Start Over</button>
+          <button class="secondary" onclick="renderCanProvide()">Back</button>
+          <button class="secondary" onclick="resetGuide()">Start Over</button>
         </div>
       `;
     }
@@ -281,6 +285,9 @@
         <div class="choices">
           <button onclick="setAccepts(true)">Yes - Client accepts the Woodhaven plan</button>
           <button onclick="setAccepts(false)">No - Client chooses another provider or another course of treatment</button>
+        </div>
+        <div class="actions">
+          <button class="secondary" onclick="renderCanProvide()">Back</button>
         </div>
       `;
     }
@@ -300,6 +307,9 @@
           <button onclick="setCompletedLOC(true)">Yes - Current level of care was completed</button>
           <button onclick="setCompletedLOC(false)">No - Current level of care was not completed</button>
         </div>
+        <div class="actions">
+          <button class="secondary" onclick="renderAcceptsWoodhaven()">Back</button>
+        </div>
       `;
     }
 
@@ -317,6 +327,9 @@
         <div class="choices">
           <button onclick="setContinued(true)">Yes - Continued treatment is clinically recommended</button>
           <button onclick="setContinued(false)">No - No additional clinical treatment is recommended</button>
+        </div>
+        <div class="actions">
+          <button class="secondary" onclick="renderCompletedLOC()">Back</button>
         </div>
       `;
     }
@@ -379,9 +392,18 @@
         </div>
 
         <div class="actions">
-          <button class="secondary" onclick="renderStart()">Start Over</button>
+          <button class="secondary" onclick="renderContinuedTreatment()">Back</button>
+          <button class="secondary" onclick="resetGuide()">Start Over</button>
         </div>
       `;
+    }
+
+    function resetGuide() {
+      state.canProvide = null;
+      state.acceptsWoodhaven = null;
+      state.completedCurrentLOC = null;
+      state.continuedTreatmentRecommended = null;
+      renderStart();
     }
 
     renderStart();
