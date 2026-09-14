@@ -257,17 +257,24 @@
     function renderOutsideReferral() {
       app.innerHTML = `
         ${progress(2)}
-        <div class="step-label">Action</div>
-        <h2>Identify an appropriate outside provider.</h2>
+        <div class="step-label">Outcome</div>
+        <h2>TRANSITION TO AN OUTSIDE PROVIDER</h2>
+        <p class="help">Woodhaven cannot appropriately provide the recommended care. Move forward with an outside transition.</p>
         <div class="result">
-          <h3>This is what you do</h3>
-          <ul>
-            <li>Document the clinically recommended next level of care.</li>
-            <li>Document why Woodhaven cannot appropriately provide that care.</li>
-            <li>Identify an appropriate outside provider.</li>
-            <li>Assist with continuity and transition of care.</li>
-            <li>Do not treat the outside referral as a client failure when Woodhaven cannot provide the recommended service.</li>
-          </ul>
+          <h3>Do these steps in order</h3>
+          <ol>
+            <li><strong>Tell the supervisor.</strong> Give the planned departure date.</li>
+            <li><strong>Document the recommended next level of care</strong> and why Woodhaven cannot provide it.</li>
+            <li><strong>Identify an appropriate outside provider</strong> and assist with continuity of care.</li>
+            <li><strong>Make sure UM is aware</strong> of the planned transition.</li>
+            <li><strong>Coordinate with Admissions to ensure the client can receive their property at the time of their transition.</strong> before departure.</li>
+            <li><strong>Complete the discharge process.</strong> This outside transition is not a client failure when Woodhaven cannot provide the recommended care.</li>
+            <li><strong>Provide a certificate if needed.</strong> It may show the level(s) of care completed and Woodhaven's recommended next level of care.</li>
+          </ol>
+        </div>
+        <div class="sober-box">
+          <strong>Sober Living Reminder:</strong><br>
+          Sober living is separate from clinical treatment. Woodhaven Sober Living is the first option presented and referred to, but a client may choose another residence. Housing choice alone does not determine treatment completion or ASA status.
         </div>
         <div class="actions">
           <button class="secondary" onclick="renderCanProvide()">Back</button>
@@ -281,10 +288,10 @@
         ${progress(2)}
         <div class="step-label">Step 2</div>
         <h2>Does the client accept the recommended Woodhaven clinical plan?</h2>
-        <p class="help">Woodhaven is the default continuation plan when we can appropriately provide the recommended care. The client still retains the right to choose another provider.</p>
+        <p class="help">Woodhaven is the default continuation plan when we can appropriately provide the recommended care. The client still has the right to choose another provider.</p>
         <div class="choices">
           <button onclick="setAccepts(true)">Yes - Client accepts the Woodhaven plan</button>
-          <button onclick="setAccepts(false)">No - Client chooses another provider or another course of treatment</button>
+          <button onclick="setAccepts(false)">No - Client plans to leave Woodhaven or use another provider</button>
         </div>
         <div class="actions">
           <button class="secondary" onclick="renderCanProvide()">Back</button>
@@ -302,7 +309,7 @@
         ${progress(3)}
         <div class="step-label">Step 3</div>
         <h2>Did the client successfully complete the current level of care?</h2>
-        <p class="help">Completion of a specific level of care is not the same as completion of the full recommended course of treatment.</p>
+        <p class="help">Completing one level of care does not automatically mean the client has completed the full recommended course of treatment.</p>
         <div class="choices">
           <button onclick="setCompletedLOC(true)">Yes - Current level of care was completed</button>
           <button onclick="setCompletedLOC(false)">No - Current level of care was not completed</button>
@@ -323,10 +330,10 @@
         ${progress(4)}
         <div class="step-label">Step 4</div>
         <h2>Is additional clinical treatment recommended?</h2>
-        <p class="help">Base this on the client's current clinical needs, not on probation requirements, length of stay, or whether the client wants to be "done."</p>
+        <p class="help">Answer based on the client's current clinical needs.</p>
         <div class="choices">
           <button onclick="setContinued(true)">Yes - Continued treatment is clinically recommended</button>
-          <button onclick="setContinued(false)">No - No additional clinical treatment is recommended</button>
+          <button onclick="setContinued(false)">No - Treatment is clinically complete</button>
         </div>
         <div class="actions">
           <button class="secondary" onclick="renderCompletedLOC()">Back</button>
@@ -339,56 +346,85 @@
       renderResult();
     }
 
-    function renderResult() {
-      let items = [];
-      let title = 'Recommended Action';
-
-      if (state.completedCurrentLOC) {
-        items.push('Document and, when appropriate, certify successful completion of the current level of care.');
-      } else {
-        items.push('Do not document the current level of care as successfully completed.');
-      }
-
+    function certificateLine() {
+      if (!state.completedCurrentLOC) return '';
       if (state.continuedTreatmentRecommended) {
-        items.push('Document the clinically recommended next level of care.');
-        items.push('Do not represent the client as "done with treatment" or as having completed the full recommended course of treatment.');
-      } else {
-        items.push('Follow Woodhaven\'s successful-completion process for the overall course of treatment.');
+        return `<li><strong>Certificate if needed:</strong> Provide documentation showing the level(s) of care successfully completed and the next level of care Woodhaven recommends. The certificate does <strong>not</strong> state that the client is done with treatment.</li>`;
       }
+      return `<li><strong>Certificate if needed:</strong> Provide the appropriate completion documentation.</li>`;
+    }
 
-      if (state.canProvide && state.acceptsWoodhaven) {
-        items.push('Continue the client through the recommended Woodhaven continuum of care.');
-      }
+    function renderResult() {
+      let status = '';
+      let intro = '';
+      let steps = '';
 
-      if (state.canProvide && !state.acceptsWoodhaven) {
-        items.push('Respect the client\'s choice to use another provider or another course of treatment.');
-        items.push('Assist with an appropriate transition and continuity of care.');
-        items.push('Document Woodhaven\'s clinical recommendation and the client\'s decision separately.');
-        if (state.continuedTreatmentRecommended) {
-          items.push('Choosing another provider does not make the full Woodhaven treatment course successfully completed.');
-        }
+      if (state.canProvide && state.acceptsWoodhaven && state.continuedTreatmentRecommended) {
+        status = 'CONTINUE AT WOODHAVEN';
+        intro = 'The client needs more treatment, Woodhaven can provide it, and the client accepts the plan.';
+        steps = `
+          <li><strong>Continue the client</strong> into the recommended Woodhaven level of care.</li>
+          <li><strong>Document the next level of care</strong> and the clinical reason for the recommendation.</li>
+          ${state.completedCurrentLOC
+            ? '<li><strong>Document completion of the current level of care.</strong> Remember: completion of this level does not mean treatment is complete.</li>'
+            : '<li><strong>Do not document the current level of care as successfully completed.</strong></li>'}
+          ${certificateLine()}
+        `;
+      } else if (state.canProvide && !state.acceptsWoodhaven && state.continuedTreatmentRecommended) {
+        status = 'TRANSITION OUT OF WOODHAVEN - UNSUCCESSFUL / ASA';
+        intro = 'Woodhaven can provide the recommended continued treatment, but the client has chosen to leave Woodhaven programming before completing the full recommended course of treatment.';
+        steps = `
+          <li><strong>Tell the supervisor immediately.</strong> Give the date the client plans to leave.</li>
+          <li><strong>Document Woodhaven's clinical recommendation</strong> and document that the client chose another provider or another course of treatment.</li>
+          <li><strong>Assist with the transition</strong> and continuity of care to the client's chosen provider when applicable.</li>
+          <li><strong>Make sure UM is aware</strong> of the planned departure date.</li>
+          <li><strong>Coordinate with Admissions to ensure the client can receive their property at the time of their transition.</strong> before departure.</li>
+          <li><strong>Send the discharge email as Unsuccessful - Against Staff Advice (ASA).</strong></li>
+          ${state.completedCurrentLOC
+            ? '<li><strong>Document the current level of care as completed.</strong> This does not mean the full course of treatment was completed.</li>'
+            : '<li><strong>Do not document the current level of care as successfully completed.</strong></li>'}
+          ${certificateLine()}
+        `;
+      } else if (!state.continuedTreatmentRecommended && state.completedCurrentLOC) {
+        status = 'SUCCESSFUL COMPLETION';
+        intro = 'The client completed the current level of care and no additional clinical treatment is recommended.';
+        steps = `
+          <li><strong>Document successful completion</strong> of the current level of care and the overall recommended course of treatment.</li>
+          <li><strong>Complete the normal successful discharge process.</strong></li>
+          <li><strong>Provide completion documentation or certificate</strong> when needed.</li>
+        `;
+      } else if (!state.continuedTreatmentRecommended && !state.completedCurrentLOC) {
+        status = 'SUPERVISOR REVIEW REQUIRED';
+        intro = 'The client did not complete the current level of care, but no additional treatment is being recommended. This combination needs review before the discharge is finalized.';
+        steps = `
+          <li><strong>Stop and review the case with the supervisor.</strong></li>
+          <li><strong>Do not independently label the discharge successful.</strong></li>
+          <li><strong>Confirm the clinical recommendation and discharge status</strong> before sending the discharge email or issuing completion documentation.</li>
+        `;
       }
 
       app.innerHTML = `
         ${progress(5)}
-        <div class="step-label">Final</div>
-        <h2>${title}</h2>
+        <div class="step-label">Your Outcome</div>
+        <h2>${status}</h2>
+        <p class="help">${intro}</p>
         <div class="result">
-          <h3>This is what you do</h3>
-          <ul>${items.map(item => `<li>${item}</li>`).join('')}</ul>
+          <h3>Do these steps in order</h3>
+          <ol>${steps}</ol>
         </div>
 
         ${state.completedCurrentLOC && state.continuedTreatmentRecommended ? `
           <div class="warning">
-            <strong>Suggested documentation language:</strong><br>
-            Successfully completed: <em>[current ASAM level]</em><br>
-            Clinical recommendation: Continue treatment at <em>[recommended ASAM level]</em>
+            <strong>Certificate wording:</strong><br>
+            Completed: <em>[ASAM level(s) completed]</em><br>
+            Recommended next: <em>[recommended ASAM level]</em><br><br>
+            This documents what the client completed without stating that the client is done with treatment.
           </div>
         ` : ''}
 
         <div class="sober-box">
           <strong>Sober Living Reminder:</strong><br>
-          Woodhaven Sober Living is the first option presented and referred to when sober living is indicated. A client may choose another residence. Housing choice alone does not determine treatment completion or ASA status.
+          Sober living is separate from clinical treatment. Woodhaven Sober Living is the first option presented and referred to. A client may choose another residence. <strong>Housing choice alone does not determine successful completion or ASA status.</strong>
         </div>
 
         <div class="actions">
