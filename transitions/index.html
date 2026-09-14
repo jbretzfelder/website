@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Woodhaven Transition Guide</title>
+  <style>
+    :root {
+      --bg: #f5f7fa;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #667085;
+      --border: #d0d5dd;
+      --primary: #1f4f78;
+      --primary-dark: #163a59;
+      --soft: #eef4f8;
+      --warning: #fff8e6;
+      --warning-border: #e6c96b;
+      --success: #eef8f1;
+      --success-border: #8ec79b;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .wrap {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 24px 16px 48px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 22px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 2rem;
+      color: var(--primary-dark);
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.98rem;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+      box-shadow: 0 3px 12px rgba(16, 24, 40, 0.06);
+    }
+
+    .progress {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .progress span {
+      height: 7px;
+      flex: 1;
+      background: #e4e7ec;
+      border-radius: 999px;
+    }
+
+    .progress span.active { background: var(--primary); }
+
+    .step-label {
+      color: var(--primary);
+      font-weight: 700;
+      margin-bottom: 6px;
+      font-size: 0.92rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    h2 {
+      margin: 0 0 10px;
+      font-size: 1.45rem;
+    }
+
+    .help {
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
+    .choices {
+      display: grid;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    button {
+      width: 100%;
+      border: 1px solid var(--primary);
+      background: #fff;
+      color: var(--primary-dark);
+      padding: 14px 16px;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 700;
+      text-align: left;
+      cursor: pointer;
+      transition: 0.15s ease;
+    }
+
+    button:hover, button:focus {
+      background: var(--soft);
+      outline: none;
+    }
+
+    .secondary {
+      border-color: var(--border);
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .result {
+      border: 1px solid var(--success-border);
+      background: var(--success);
+      border-radius: 12px;
+      padding: 18px;
+      margin-top: 18px;
+    }
+
+    .result h3 { margin-top: 0; }
+
+    .warning {
+      border: 1px solid var(--warning-border);
+      background: var(--warning);
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 18px;
+    }
+
+    ul { padding-left: 22px; }
+    li + li { margin-top: 6px; }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    .actions button {
+      width: auto;
+      min-width: 140px;
+      text-align: center;
+    }
+
+    .footer-note {
+      margin-top: 18px;
+      font-size: 0.9rem;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .sober-box {
+      margin-top: 18px;
+      border: 1px solid var(--border);
+      background: #fafafa;
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .sober-box strong { color: var(--primary-dark); }
+
+    @media (max-width: 600px) {
+      .card { padding: 18px; }
+      h1 { font-size: 1.7rem; }
+      h2 { font-size: 1.25rem; }
+      .actions { flex-direction: column; }
+      .actions button { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Woodhaven Transition Guide</h1>
+      <p class="subtitle">A simple guide for level-of-care transitions, referrals, completion, and client choice.</p>
+    </header>
+
+    <main class="card" id="app"></main>
+
+    <p class="footer-note">Use this guide as a staff reference. Individual clinical circumstances should be reviewed with a supervisor or treatment team when the standard pathway does not fit.</p>
+  </div>
+
+  <script>
+    const app = document.getElementById('app');
+
+    const state = {
+      canProvide: null,
+      acceptsWoodhaven: null,
+      completedCurrentLOC: null,
+      continuedTreatmentRecommended: null
+    };
+
+    const totalSteps = 5;
+
+    function progress(step) {
+      return `<div class="progress">${Array.from({ length: totalSteps }, (_, i) => `<span class="${i < step ? 'active' : ''}"></span>`).join('')}</div>`;
+    }
+
+    function renderStart() {
+      app.innerHTML = `
+        ${progress(0)}
+        <div class="step-label">Start</div>
+        <h2>What does the client clinically need next?</h2>
+        <p class="help">Determine the appropriate next level of care based on the client's current clinical needs. External requirements, client preference, or length of stay do not replace the clinical recommendation.</p>
+        <div class="choices">
+          <button onclick="renderCanProvide()">A next level of care has been clinically identified</button>
+        </div>
+        <div class="sober-box">
+          <strong>Sober living is separate from clinical treatment.</strong><br>
+          When sober living is indicated, Woodhaven Sober Living should be the first option presented and referred to. Clients may choose another residence. Housing choice alone does not determine treatment completion or ASA status.
+        </div>
+      `;
+    }
+
+    function renderCanProvide() {
+      app.innerHTML = `
+        ${progress(1)}
+        <div class="step-label">Step 1</div>
+        <h2>Can Woodhaven appropriately provide the recommended next level of care?</h2>
+        <p class="help">Consider clinical fit, capacity, insurance, and whether Woodhaven can meet the client's needs.</p>
+        <div class="choices">
+          <button onclick="setCanProvide(true)">Yes - Woodhaven can provide the recommended care</button>
+          <button onclick="setCanProvide(false)">No - Woodhaven cannot appropriately provide the recommended care</button>
+        </div>
+      `;
+    }
+
+    function setCanProvide(value) {
+      state.canProvide = value;
+      if (!value) {
+        renderOutsideReferral();
+      } else {
+        renderAcceptsWoodhaven();
+      }
+    }
+
+    function renderOutsideReferral() {
+      app.innerHTML = `
+        ${progress(2)}
+        <div class="step-label">Action</div>
+        <h2>Identify an appropriate outside provider.</h2>
+        <div class="result">
+          <h3>This is what you do</h3>
+          <ul>
+            <li>Document the clinically recommended next level of care.</li>
+            <li>Document why Woodhaven cannot appropriately provide that care.</li>
+            <li>Identify an appropriate outside provider.</li>
+            <li>Assist with continuity and transition of care.</li>
+            <li>Do not treat the outside referral as a client failure when Woodhaven cannot provide the recommended service.</li>
+          </ul>
+        </div>
+        <div class="actions">
+          <button class="secondary" onclick="renderStart()">Start Over</button>
+        </div>
+      `;
+    }
+
+    function renderAcceptsWoodhaven() {
+      app.innerHTML = `
+        ${progress(2)}
+        <div class="step-label">Step 2</div>
+        <h2>Does the client accept the recommended Woodhaven clinical plan?</h2>
+        <p class="help">Woodhaven is the default continuation plan when we can appropriately provide the recommended care. The client still retains the right to choose another provider.</p>
+        <div class="choices">
+          <button onclick="setAccepts(true)">Yes - Client accepts the Woodhaven plan</button>
+          <button onclick="setAccepts(false)">No - Client chooses another provider or another course of treatment</button>
+        </div>
+      `;
+    }
+
+    function setAccepts(value) {
+      state.acceptsWoodhaven = value;
+      renderCompletedLOC();
+    }
+
+    function renderCompletedLOC() {
+      app.innerHTML = `
+        ${progress(3)}
+        <div class="step-label">Step 3</div>
+        <h2>Did the client successfully complete the current level of care?</h2>
+        <p class="help">Completion of a specific level of care is not the same as completion of the full recommended course of treatment.</p>
+        <div class="choices">
+          <button onclick="setCompletedLOC(true)">Yes - Current level of care was completed</button>
+          <button onclick="setCompletedLOC(false)">No - Current level of care was not completed</button>
+        </div>
+      `;
+    }
+
+    function setCompletedLOC(value) {
+      state.completedCurrentLOC = value;
+      renderContinuedTreatment();
+    }
+
+    function renderContinuedTreatment() {
+      app.innerHTML = `
+        ${progress(4)}
+        <div class="step-label">Step 4</div>
+        <h2>Is additional clinical treatment recommended?</h2>
+        <p class="help">Base this on the client's current clinical needs, not on probation requirements, length of stay, or whether the client wants to be "done."</p>
+        <div class="choices">
+          <button onclick="setContinued(true)">Yes - Continued treatment is clinically recommended</button>
+          <button onclick="setContinued(false)">No - No additional clinical treatment is recommended</button>
+        </div>
+      `;
+    }
+
+    function setContinued(value) {
+      state.continuedTreatmentRecommended = value;
+      renderResult();
+    }
+
+    function renderResult() {
+      let items = [];
+      let title = 'Recommended Action';
+
+      if (state.completedCurrentLOC) {
+        items.push('Document and, when appropriate, certify successful completion of the current level of care.');
+      } else {
+        items.push('Do not document the current level of care as successfully completed.');
+      }
+
+      if (state.continuedTreatmentRecommended) {
+        items.push('Document the clinically recommended next level of care.');
+        items.push('Do not represent the client as "done with treatment" or as having completed the full recommended course of treatment.');
+      } else {
+        items.push('Follow Woodhaven\'s successful-completion process for the overall course of treatment.');
+      }
+
+      if (state.canProvide && state.acceptsWoodhaven) {
+        items.push('Continue the client through the recommended Woodhaven continuum of care.');
+      }
+
+      if (state.canProvide && !state.acceptsWoodhaven) {
+        items.push('Respect the client\'s choice to use another provider or another course of treatment.');
+        items.push('Assist with an appropriate transition and continuity of care.');
+        items.push('Document Woodhaven\'s clinical recommendation and the client\'s decision separately.');
+        if (state.continuedTreatmentRecommended) {
+          items.push('Choosing another provider does not make the full Woodhaven treatment course successfully completed.');
+        }
+      }
+
+      app.innerHTML = `
+        ${progress(5)}
+        <div class="step-label">Final</div>
+        <h2>${title}</h2>
+        <div class="result">
+          <h3>This is what you do</h3>
+          <ul>${items.map(item => `<li>${item}</li>`).join('')}</ul>
+        </div>
+
+        ${state.completedCurrentLOC && state.continuedTreatmentRecommended ? `
+          <div class="warning">
+            <strong>Suggested documentation language:</strong><br>
+            Successfully completed: <em>[current ASAM level]</em><br>
+            Clinical recommendation: Continue treatment at <em>[recommended ASAM level]</em>
+          </div>
+        ` : ''}
+
+        <div class="sober-box">
+          <strong>Sober Living Reminder:</strong><br>
+          Woodhaven Sober Living is the first option presented and referred to when sober living is indicated. A client may choose another residence. Housing choice alone does not determine treatment completion or ASA status.
+        </div>
+
+        <div class="actions">
+          <button class="secondary" onclick="renderStart()">Start Over</button>
+        </div>
+      `;
+    }
+
+    renderStart();
+  </script>
+</body>
+</html>
