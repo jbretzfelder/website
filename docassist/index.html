@@ -4485,6 +4485,12 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
           <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
             <button class="ds-pill" onclick="dsSetDischargeType('successful')" id="ds-dt-successful">Successful</button>
             <button class="ds-pill" onclick="dsSetDischargeType('unsuccessful')" id="ds-dt-unsuccessful">Unsuccessful</button>
+            <button class="ds-pill" onclick="dsSetDischargeType('neutral')" id="ds-dt-neutral">Neutral</button>
+          </div>
+          <div id="ds-neutral-reason-wrap" style="display:none;margin:0 0 8px 12px;padding-left:10px;border-left:2px solid var(--border);">
+            <label class="form-label">Reason Treatment Could Not Be Continued<span class="req-star">*</span></label>
+            <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;margin-bottom:5px;">Complete this sentence: <strong>Treatment could not be continued because…</strong></div>
+            <textarea class="form-textarea" id="ds-neutral-reason" rows="2" placeholder="Enter the rest of the sentence after ‘because’…" oninput="dsState.neutralReason=this.value;dsRenderOutput()" style="min-height:55px;"></textarea>
           </div>
           <div id="ds-subtype-wrap" style="display:none;margin-left:12px;padding-left:10px;border-left:2px solid var(--border);">
             <div style="font-size:10px;color:var(--text-secondary);margin-bottom:5px;">Reason</div>
@@ -10404,6 +10410,7 @@ let dsState = {
   lastContactDate: '',
   dischargeType: '',
   dischargeSubtype: '',
+  neutralReason: '',
   admissionLoc: '',
   daysTx: '',
   phases: [],
@@ -10492,11 +10499,13 @@ function dsInit() {
 function dsSetDischargeType(val) {
   dsState.dischargeType = val;
   dsState.dischargeSubtype = '';
-  ['successful','unsuccessful'].forEach(v => {
+  ['successful','unsuccessful','neutral'].forEach(v => {
     document.getElementById('ds-dt-' + v).classList.toggle('active', v === val);
   });
   const subtypeWrap = document.getElementById('ds-subtype-wrap');
   subtypeWrap.style.display = val === 'unsuccessful' ? 'block' : 'none';
+  const neutralReasonWrap = document.getElementById('ds-neutral-reason-wrap');
+  if (neutralReasonWrap) neutralReasonWrap.style.display = val === 'neutral' ? 'block' : 'none';
   ['admin','asa'].forEach(v => document.getElementById('ds-sub-' + v).classList.remove('active'));
   dsUpdateCOCVisibility();
   dsRenderOutput();
@@ -10668,6 +10677,20 @@ function dsBuildProgressSummary() {
       if (lastDate) text += ` on ${lastDate}`;
       text += '.';
     }
+  } else if (dt === 'neutral') {
+    text = `${C} entered ${DS_LOC_LABELS[firstPhase.loc] || firstPhase.loc} unit on ${dsFmtDate(firstPhase.entryDate)}`;
+    if (phases.length > 1) {
+      for (let i = 1; i < phases.length; i++) {
+        const p = phases[i];
+        text += ` and after completing the requirements of that unit, transitioned to ${DS_LOC_LABELS[p.loc] || p.loc} unit on ${dsFmtDate(p.entryDate)}`;
+      }
+    }
+    text += '. ';
+    text += `${C} was a NEUTRAL discharge`;
+    if (lastDate) text += ` on ${lastDate}`;
+    text += '.';
+    const reason = dsState.neutralReason ? dsState.neutralReason.trim() : '';
+    if (reason) text += ` Treatment could not be continued because ${reason.charAt(0).toLowerCase() + reason.slice(1)}${reason.endsWith('.') ? '' : '.'}`;
   }
   return text;
 }
@@ -10727,6 +10750,12 @@ function dsBuildClientResponse() {
       if (lastPhase) text += ` from ${DS_LOC_SHORT[lastPhase.loc] || lastPhase.loc}`;
       text += '.';
     }
+  } else if (dt === 'neutral') {
+    text += `${C} was a NEUTRAL discharge`;
+    if (lastDate) text += ` on ${lastDate}`;
+    text += '.';
+    const reason = dsState.neutralReason ? dsState.neutralReason.trim() : '';
+    if (reason) text += ` Treatment could not be continued because ${reason.charAt(0).toLowerCase() + reason.slice(1)}${reason.endsWith('.') ? '' : '.'}`;
   }
 
   return text.trim();
@@ -11019,6 +11048,7 @@ function dsReset() {
     lastContactDate: '',
     dischargeType: '',
     dischargeSubtype: '',
+    neutralReason: '',
     admissionLoc: '',
     daysTx: '',
     phases: [],
@@ -11040,7 +11070,7 @@ function dsReset() {
 
   // Clear input fields
   ['ds-client-name','ds-admission-date','ds-last-contact-date','ds-days-tx','ds-status-last-contact',
-   'ds-elig-comments','ds-clinical-obs','ds-transition-to','ds-aftercare-notes','ds-rs-reason'].forEach(id => {
+   'ds-elig-comments','ds-clinical-obs','ds-transition-to','ds-aftercare-notes','ds-rs-reason','ds-neutral-reason'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
@@ -11049,9 +11079,10 @@ function dsReset() {
   document.getElementById('ds-admission-loc').value = '';
   document.getElementById('ds-stepdown-loc').value = '';
 
-  ['successful','unsuccessful'].forEach(v => document.getElementById('ds-dt-'+v).classList.remove('active'));
+  ['successful','unsuccessful','neutral'].forEach(v => document.getElementById('ds-dt-'+v).classList.remove('active'));
   ['admin','asa'].forEach(v => document.getElementById('ds-sub-'+v).classList.remove('active'));
   document.getElementById('ds-subtype-wrap').style.display = 'none';
+  document.getElementById('ds-neutral-reason-wrap').style.display = 'none';
   ['eligible','ineligible'].forEach(v => document.getElementById('ds-elig-'+v).classList.remove('active'));
   ['significant','moderate','marginal','minimal'].forEach(v => document.getElementById('ds-sl-'+v).classList.remove('active'));
 
