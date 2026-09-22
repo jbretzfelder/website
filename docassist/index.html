@@ -1049,6 +1049,36 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   padding: 12px;
   margin-top: 14px;
 }
+
+.asam-individualization-notice {
+  display: none;
+  margin: 8px 0 10px;
+  padding: 7px 10px;
+  background: #fff8e6;
+  border-left: 3px solid #b7791f;
+  border-radius: 4px;
+  color: var(--text);
+  font-size: 11px;
+  line-height: 1.4;
+}
+.asam-individualization-notice strong { font-weight: 700; color: #7a5200; }
+.individualization-hint {
+  margin: 2px 0 9px;
+  font-family: 'Public Sans', sans-serif;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+.individualization-hint strong {
+  display: block;
+  margin-bottom: 2px;
+  font-family: 'Public Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 650;
+  line-height: 1.35;
+  color: var(--text);
+}
+
 .continued-section-title {
   font-size: 9px;
   font-weight: 700;
@@ -2709,6 +2739,10 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       <button class="dim-tab" data-dim="6" onclick="showDim(6,this)">Dim 6</button>
     </div>
 
+    <div class="asam-individualization-notice" id="asamIndividualizationNotice">
+      <strong>This tool only works when each update is specific to the client.</strong> Copying/pasting or documenting only what is going well may not show why treatment is still needed and can contribute to a payer denial. Include what the client still struggles with, what still needs treatment or support, and specific examples from this review period.
+    </div>
+
     <div class="dim-content" id="dim-content">
 
       <!-- ── DIM 1 ── -->
@@ -2720,7 +2754,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
 
         <div class="form-group" id="grp-dim1-severity">
-          <label class="form-label">Withdrawal Severity<span class="req-star dim1-req" style="display:none">*</span></label>
+          <label class="form-label">How severe is the client’s withdrawal risk right now?<span class="req-star dim1-req" style="display:none">*</span></label>
           <div class="severity-pills" id="dim1-sev-pills" data-challenge-id="chal-dim1-sev" data-challenge-values="none">
             <button class="severity-pill" onclick="setSeverity('dim1','severity','none',this)">None / N/A</button>
             <button class="severity-pill" onclick="setSeverity('dim1','severity','mild',this)">Mild</button>
@@ -2731,12 +2765,12 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
 
         <div class="form-group" id="grp-dim1-substances">
-          <label class="form-label">Primary Substance(s)<span class="req-star dim1-req" style="display:none">*</span></label>
+          <label class="form-label">What substance(s) is the client using?<span class="req-star dim1-req" style="display:none">*</span></label>
           <input class="form-input" placeholder="e.g. alcohol, opioids, benzodiazepines" oninput="state.dim1.substances=this.value;clearGrpError('grp-dim1-substances')">
         </div>
 
         <div class="form-group" id="grp-dim1-lastuse">
-          <label class="form-label">Last Use<span class="req-star dim1-req" style="display:none">*</span></label>
+          <label class="form-label">When did the client last use?<span class="req-star dim1-req" style="display:none">*</span></label>
           <input class="form-input" placeholder="e.g. 48 hours prior to admission" oninput="state.dim1.lastUse=this.value;clearGrpError('grp-dim1-lastuse')">
         </div>
 
@@ -2757,7 +2791,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
 
         <div class="form-group" id="grp-dim1-complicated">
-          <label class="form-label">History of Complicated Withdrawal<span class="req-star dim1-req" style="display:none">*</span></label>
+          <label class="form-label">Has the client had serious withdrawal problems in the past?<span class="req-star dim1-req" style="display:none">*</span></label>
           <select class="form-select" onchange="state.dim1.complicatedHistory=this.value;clearGrpError('grp-dim1-complicated')">
             <option value="">— Select —</option>
             <option value="none">No significant history</option>
@@ -2769,7 +2803,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
 
         <div class="form-group" id="grp-dim1-notes">
-          <label class="form-label">Additional Clinical Observations</label>
+          <label class="form-label">What else is important to know about the client right now?</label>
           <textarea class="form-textarea" placeholder="Any other relevant withdrawal or intoxication details…" oninput="state.dim1.notes=this.value"></textarea>
         </div>
 
@@ -2786,9 +2820,9 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
             </select>
           </div>
           <div class="form-group" id="grp-dim1-cs-progress">
-            <label class="form-label">Response to Treatment / Progress<span class="req-star">*</span></label>
-            <div class="sentence-hint">✎ Write in complete sentences — pasted verbatim into output</div>
-            <textarea class="form-textarea" placeholder="e.g. Client has responded well to Librium taper protocol with CIWA scores declining from 18 at admission to 4 as of today. Tremor and diaphoresis have resolved; mild anxiety persists." oninput="state.dim1.csProgress=this.value;clearGrpError('grp-dim1-cs-progress')"></textarea>
+            <label class="form-label">What is happening with the client right now?<span class="req-star">*</span></label>
+            <div class="individualization-hint"><strong>Answer this specific question:</strong> What withdrawal symptoms, risks, or monitoring needs are still present? You can mention improvement, but do not stop there — explain what still needs treatment, monitoring, medication, or staff support.</div>
+            <textarea class="form-textarea" placeholder="e.g. Withdrawal symptoms have decreased, but the client continues to report anxiety and sleep disruption and still requires monitoring for symptom recurrence." oninput="state.dim1.csProgress=this.value;clearGrpError('grp-dim1-cs-progress')"></textarea>
           </div>
         </div>
 
@@ -2812,7 +2846,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
 
         <div class="form-group" id="grp-dim2-severity">
-          <label class="form-label">Biomedical Severity<span class="req-star dim2-req" style="display:none">*</span></label>
+          <label class="form-label">How serious are the client’s medical needs right now?<span class="req-star dim2-req" style="display:none">*</span></label>
           <div class="severity-pills" id="dim2-sev-pills" data-challenge-id="chal-dim2-sev" data-challenge-values="none">
             <button class="severity-pill" onclick="setSeverity('dim2','severity','none',this)">None</button>
             <button class="severity-pill" onclick="setSeverity('dim2','severity','low',this)">Low</button>
@@ -2823,23 +2857,25 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
 
         <div class="form-group" id="grp-dim2-conditions">
-          <label class="form-label">Active Medical Conditions / Diagnoses<span class="req-star dim2-req" style="display:none">*</span></label>
+          <label class="form-label">What medical conditions or health problems does the client have?<span class="req-star dim2-req" style="display:none">*</span></label>
+          <div class="individualization-hint"><strong>Answer this specific question:</strong> What diagnosed or active medical problems does this client have right now? List the conditions that matter to treatment.</div>
           <textarea class="form-textarea" placeholder="e.g. Hepatitis C, COPD, hypertension, diabetes, chronic pain, TBI, HIV…" oninput="state.dim2.conditions=this.value;clearGrpError('grp-dim2-conditions')"></textarea>
         </div>
 
         <div class="form-group" id="grp-dim2-impact">
-          <label class="form-label">How Conditions Complicate Treatment<span class="req-star dim2-req" style="display:none">*</span></label>
+          <label class="form-label">How are the client’s medical problems affecting treatment or recovery right now?<span class="req-star dim2-req" style="display:none">*</span></label>
+          <div class="individualization-hint"><strong>Answer this specific question:</strong> What does the medical problem cause the client to need, struggle with, or require from staff during treatment?</div>
           <div class="sentence-hint">✎ Write in complete sentences — pasted verbatim into output</div>
           <textarea class="form-textarea" placeholder="e.g. Client's unmanaged hypertension and COPD require daily monitoring and increase the risk of medical complication during early sobriety, necessitating a level of care with 24-hour nursing oversight." oninput="state.dim2.impact=this.value;clearGrpError('grp-dim2-impact')"></textarea>
         </div>
 
         <div class="form-group" id="grp-dim2-medications">
-          <label class="form-label">Medications Requiring Clinical Management</label>
+          <label class="form-label">What medications need monitoring or clinical management?</label>
           <input class="form-input" placeholder="e.g. MAT induction, insulin management, cardiac medications…" oninput="state.dim2.medications=this.value">
         </div>
 
         <div class="form-group" id="grp-dim2-notes">
-          <label class="form-label">Additional Clinical Observations</label>
+          <label class="form-label">What else is important to know about the client right now?</label>
           <textarea class="form-textarea" placeholder="Other relevant biomedical details…" oninput="state.dim2.notes=this.value"></textarea>
         </div>
 
@@ -2855,9 +2891,9 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
             </select>
           </div>
           <div class="form-group" id="grp-dim2-cs-progress">
-            <label class="form-label">Progress / Response to Treatment<span class="req-star">*</span></label>
-            <div class="sentence-hint">✎ Write in complete sentences — pasted verbatim into output</div>
-            <textarea class="form-textarea" placeholder="e.g. Client's blood pressure has stabilized with medication compliance; daily vitals monitoring continues. COPD has not required acute intervention during this episode of care." oninput="state.dim2.csProgress=this.value;clearGrpError('grp-dim2-cs-progress')"></textarea>
+            <label class="form-label">What is happening with the client medically right now?<span class="req-star">*</span></label>
+            <div class="individualization-hint"><strong>Answer this specific question:</strong> What medical problem, symptom, limitation, follow-up need, or monitoring still affects treatment? You can mention improvement, but explain what is not fully resolved or still needs attention.</div>
+            <textarea class="form-textarea" placeholder="e.g. Blood pressure has improved with medication, but the client still requires daily monitoring and continued support with medication adherence." oninput="state.dim2.csProgress=this.value;clearGrpError('grp-dim2-cs-progress')"></textarea>
           </div>
         </div>
 
@@ -2881,7 +2917,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
 
         <div class="form-group" id="grp-dim3-severity">
-          <label class="form-label">Psychiatric / Cognitive Severity<span class="req-star dim3-req" style="display:none">*</span></label>
+          <label class="form-label">How serious are the client’s mental health or cognitive needs right now?<span class="req-star dim3-req" style="display:none">*</span></label>
           <div class="severity-pills" id="dim3-sev-pills" data-challenge-id="chal-dim3-sev" data-challenge-values="none">
             <button class="severity-pill" onclick="setSeverity('dim3','severity','none',this)">None / Stable</button>
             <button class="severity-pill" onclick="setSeverity('dim3','severity','mild',this)">Mild</button>
@@ -2906,7 +2942,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
 
         <div class="form-group" id="grp-dim3-symptoms">
-          <label class="form-label">Active Symptoms</label>
+          <label class="form-label">What mental health or cognitive symptoms is the client having right now?</label>
           <div id="dim3-symptoms" class="checkbox-group"></div>
           <div class="consult-alert" id="dim3-symptom-consult-alert" style="margin-top:8px;">
             <div class="consult-alert-title">⚠ Supervisor Consultation Required</div>
@@ -2915,13 +2951,14 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
 
         <div class="form-group" id="grp-dim3-impact">
-          <label class="form-label">How Symptoms Impair Treatment Engagement or Safety<span class="req-star dim3-req" style="display:none">*</span></label>
+          <label class="form-label">How are the client’s mental health or cognitive symptoms affecting treatment or safety right now?<span class="req-star dim3-req" style="display:none">*</span></label>
+          <div class="individualization-hint"><strong>Answer this specific question:</strong> What is the client having difficulty doing because of these symptoms? Consider participation, focus, behavior, relationships, following recommendations, completing treatment work, or safety.</div>
           <div class="sentence-hint">✎ Write in complete sentences — pasted verbatim into output</div>
           <textarea class="form-textarea" placeholder="e.g. Client's active depressive symptoms and passive suicidal ideation significantly impair her capacity to engage in structured programming and require daily clinical monitoring that cannot be provided at a lower level of care." oninput="state.dim3.impact=this.value;clearGrpError('grp-dim3-impact')"></textarea>
         </div>
 
         <div class="form-group" id="grp-dim3-notes">
-          <label class="form-label">Additional Clinical Observations</label>
+          <label class="form-label">What else is important to know about the client right now?</label>
           <textarea class="form-textarea" placeholder="Other relevant psychiatric or cognitive observations…" oninput="state.dim3.notes=this.value"></textarea>
         </div>
 
@@ -2937,8 +2974,8 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
             </select>
           </div>
           <div class="form-group" id="grp-dim3-cs-goals">
-            <label class="form-label">Remaining Psychiatric Treatment Goals<span class="req-star">*</span></label>
-            <div class="sentence-hint">✎ Write in complete sentences — pasted verbatim into output</div>
+            <label class="form-label">What is happening with the client emotionally or behaviorally right now?<span class="req-star">*</span></label>
+            <div class="individualization-hint"><strong>Answer this specific question:</strong> What mental health symptom, behavior, safety concern, or functional problem is the client still struggling with? If there has been progress, explain what remains and how it still affects treatment or daily functioning.</div>
             <textarea class="form-textarea" placeholder="e.g. Client continues to experience passive suicidal ideation requiring daily safety assessments. Mood stabilization has not yet been achieved, and a step-down to outpatient services at this time would present significant clinical risk." oninput="state.dim3.csGoals=this.value;clearGrpError('grp-dim3-cs-goals')"></textarea>
           </div>
         </div>
@@ -2963,7 +3000,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
 
         <div class="form-group" id="grp-dim4-stage">
-          <label class="form-label">Stage of Change<span class="req-star dim4-req" style="display:none">*</span></label>
+          <label class="form-label">How ready is the client to make changes related to substance use?<span class="req-star dim4-req" style="display:none">*</span></label>
           <select class="form-select" onchange="state.dim4.stage=this.value;clearGrpError('grp-dim4-stage');toggleChallenge('chal-dim4-stage', this.value==='action')">
             <option value="">— Select —</option>
             <option value="precontemplation">Precontemplation — Does not acknowledge a substance use problem</option>
@@ -2975,7 +3012,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
 
         <div class="form-group" id="grp-dim4-insight">
-          <label class="form-label">Insight into Substance Use Disorder<span class="req-star dim4-req" style="display:none">*</span></label>
+          <label class="form-label">How well does the client understand their substance use problem?<span class="req-star dim4-req" style="display:none">*</span></label>
           <div class="severity-pills" id="dim4-insight-pills" data-challenge-id="chal-dim4-insight" data-challenge-values="good">
             <button class="severity-pill" onclick="setSeverity('dim4','insight','poor',this)">Poor</button>
             <button class="severity-pill" onclick="setSeverity('dim4','insight','fair',this)">Fair</button>
@@ -2985,7 +3022,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
 
         <div class="form-group" id="grp-dim4-engagement">
-          <label class="form-label">Treatment Engagement<span class="req-star dim4-req" style="display:none">*</span></label>
+          <label class="form-label">How engaged is the client in treatment right now?<span class="req-star dim4-req" style="display:none">*</span></label>
           <select class="form-select" onchange="state.dim4.engagement=this.value;clearGrpError('grp-dim4-engagement');toggleChallenge('chal-dim4-engagement', this.value==='motivated')">
             <option value="">— Select —</option>
             <option value="resistant">Resistant — Opposed to treatment participation</option>
@@ -2997,13 +3034,15 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
 
         <div class="form-group" id="grp-dim4-barriers">
-          <label class="form-label">Engagement Barriers / Resistance Factors<span class="req-star">*</span></label>
+          <label class="form-label">What is getting in the way of the client fully participating in treatment?<span class="req-star">*</span></label>
+          <div class="individualization-hint"><strong>Answer this specific question:</strong> What is this client doing, saying, believing, or experiencing that makes it harder to fully participate in treatment?</div>
           <div class="sentence-hint">✎ Write in complete sentences — pasted verbatim into output</div>
           <textarea class="form-textarea" placeholder="e.g. Client demonstrates significant ambivalence regarding the need for treatment, minimizing the severity of his substance use and attributing current circumstances to external factors rather than his addiction." oninput="state.dim4.barriers=this.value;clearGrpError('grp-dim4-barriers')"></textarea>
         </div>
 
         <div class="form-group" id="grp-dim4-rationale">
-          <label class="form-label">Why This LOC Is Necessary for Engagement<span class="req-star">*</span></label>
+          <label class="form-label">Why does the client need this level of care to stay engaged and make progress?<span class="req-star">*</span></label>
+          <div class="individualization-hint"><strong>Answer this specific question:</strong> What support, structure, supervision, or frequency of contact does this client need here that a lower level of care would not provide?</div>
           <div class="sentence-hint">✎ Write in complete sentences — pasted verbatim into output</div>
           <textarea class="form-textarea" placeholder="e.g. The degree of resistance and minimization present requires the containment and daily clinical contact of a residential setting to build the therapeutic alliance necessary for meaningful engagement." oninput="state.dim4.locRationale=this.value;clearGrpError('grp-dim4-rationale')"></textarea>
         </div>
@@ -3020,9 +3059,9 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
             </select>
           </div>
           <div class="form-group" id="grp-dim4-cs-goals">
-            <label class="form-label">Remaining Readiness / Engagement Goals<span class="req-star">*</span></label>
-            <div class="sentence-hint">✎ Write in complete sentences — pasted verbatim into output</div>
-            <textarea class="form-textarea" placeholder="e.g. Client has not yet demonstrated sufficient internalization of recovery goals to sustain engagement without the daily structure of this level of care. Continued motivational interviewing and goal-setting work is required prior to step-down." oninput="state.dim4.csGoals=this.value;clearGrpError('grp-dim4-cs-goals')"></textarea>
+            <label class="form-label">What is the client doing that shows their current readiness and engagement?<span class="req-star">*</span></label>
+            <div class="individualization-hint"><strong>Answer this specific question:</strong> What is the client still struggling with related to motivation, insight, participation, or follow-through? You can mention progress, but explain what the client still does not understand, accept, follow through with, or do independently.</div>
+            <textarea class="form-textarea" placeholder="e.g. Client is attending groups more consistently but continues to minimize the impact of substance use and needs frequent prompting to connect treatment goals to personal consequences." oninput="state.dim4.csGoals=this.value;clearGrpError('grp-dim4-cs-goals')"></textarea>
           </div>
         </div>
 
@@ -3046,7 +3085,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
 
         <div class="form-group" id="grp-dim5-risk">
-          <label class="form-label">Assessed Relapse Risk<span class="req-star dim5-req" style="display:none">*</span></label>
+          <label class="form-label">How high is the client’s risk of returning to use right now?<span class="req-star dim5-req" style="display:none">*</span></label>
           <div class="severity-pills" id="dim5-risk-pills" data-challenge-id="chal-dim5-risk" data-challenge-values="low">
             <button class="severity-pill" onclick="setSeverity('dim5','risk','low',this)">Low</button>
             <button class="severity-pill" onclick="setSeverity('dim5','risk','moderate',this)">Moderate</button>
@@ -3057,7 +3096,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
 
         <div class="form-group" id="grp-dim5-priortx">
-          <label class="form-label">Prior Treatment Episodes<span class="req-star dim5-req" style="display:none">*</span></label>
+          <label class="form-label">What is the client’s treatment history?<span class="req-star dim5-req" style="display:none">*</span></label>
           <select class="form-select" onchange="state.dim5.priorTx=this.value;clearGrpError('grp-dim5-priortx')">
             <option value="">— Select —</option>
             <option value="none">No prior treatment history</option>
@@ -3068,12 +3107,12 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
 
         <div class="form-group" id="grp-dim5-triggers">
-          <label class="form-label">Identified Relapse Triggers</label>
+          <label class="form-label">What situations, feelings, people, or events increase the client’s risk of use?</label>
           <div id="dim5-triggers" class="checkbox-group"></div>
         </div>
 
         <div class="form-group" id="grp-dim5-coping">
-          <label class="form-label">Current Coping Skill Development<span class="req-star dim5-req" style="display:none">*</span></label>
+          <label class="form-label">How well can the client manage cravings and triggers without using?<span class="req-star dim5-req" style="display:none">*</span></label>
           <div class="severity-pills" id="dim5-coping-pills" data-challenge-id="chal-dim5-coping" data-challenge-values="adequate">
             <button class="severity-pill" onclick="setSeverity('dim5','coping','poor',this)">Poor / Absent</button>
             <button class="severity-pill" onclick="setSeverity('dim5','coping','developing',this)">Developing</button>
@@ -3083,7 +3122,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
 
         <div class="form-group" id="grp-dim5-notes">
-          <label class="form-label">Additional Relapse Risk Factors</label>
+          <label class="form-label">What else increases the client’s risk of returning to use?</label>
           <textarea class="form-textarea" placeholder="Overdose history, pattern of use escalation, harm reduction concerns, craving severity…" oninput="state.dim5.notes=this.value"></textarea>
         </div>
 
@@ -3099,9 +3138,9 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
             </select>
           </div>
           <div class="form-group" id="grp-dim5-cs-progress">
-            <label class="form-label">Relapse Prevention Progress / Remaining Goals<span class="req-star">*</span></label>
-            <div class="sentence-hint">✎ Write in complete sentences — pasted verbatim into output</div>
-            <textarea class="form-textarea" placeholder="e.g. Client has begun identifying primary relapse triggers but has not yet developed or practiced the coping strategies needed to manage them independently. Step-down is not appropriate until these skills are consolidated." oninput="state.dim5.csProgress=this.value;clearGrpError('grp-dim5-cs-progress')"></textarea>
+            <label class="form-label">What puts the client at risk of returning to use right now?<span class="req-star">*</span></label>
+            <div class="individualization-hint"><strong>Answer this specific question:</strong> What does the client still struggle with that could lead to return to use? If coping skills or insight have improved, explain what the client still cannot manage safely or consistently without treatment support.</div>
+            <textarea class="form-textarea" placeholder="e.g. Client can identify several triggers but still cannot consistently use coping skills when cravings increase and continues to need staff prompting to manage urges without returning to use." oninput="state.dim5.csProgress=this.value;clearGrpError('grp-dim5-cs-progress')"></textarea>
           </div>
         </div>
 
@@ -3125,7 +3164,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
 
         <div class="form-group" id="grp-dim6-envrisk">
-          <label class="form-label">Environmental Risk Level<span class="req-star dim6-req" style="display:none">*</span></label>
+          <label class="form-label">How risky is the client’s current living/recovery environment?<span class="req-star dim6-req" style="display:none">*</span></label>
           <div class="severity-pills" id="dim6-risk-pills" data-challenge-id="chal-dim6-envrisk" data-challenge-values="supportive">
             <button class="severity-pill" onclick="setSeverity('dim6','envRisk','supportive',this)">Supportive</button>
             <button class="severity-pill" onclick="setSeverity('dim6','envRisk','neutral',this)">Neutral</button>
@@ -3136,7 +3175,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
 
         <div class="form-group" id="grp-dim6-living">
-          <label class="form-label">Current Living Situation<span class="req-star dim6-req" style="display:none">*</span></label>
+          <label class="form-label">Where is the client living, and how stable is it?<span class="req-star dim6-req" style="display:none">*</span></label>
           <select class="form-select" onchange="state.dim6.living=this.value;clearGrpError('grp-dim6-living');toggleChallenge('chal-dim6-living', ['stable','recovery_housing'].includes(this.value))">
             <option value="">— Select —</option>
             <option value="stable">Stable housing (family home or independent)</option>
@@ -3150,7 +3189,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
 
         <div class="form-group" id="grp-dim6-support">
-          <label class="form-label">Recovery Support System<span class="req-star dim6-req" style="display:none">*</span></label>
+          <label class="form-label">Who supports the client’s recovery, and how strong is that support?<span class="req-star dim6-req" style="display:none">*</span></label>
           <select class="form-select" onchange="state.dim6.support=this.value;clearGrpError('grp-dim6-support');toggleChallenge('chal-dim6-support', this.value==='strong')">
             <option value="">— Select —</option>
             <option value="strong">Strong — Family/friends actively supportive of recovery</option>
@@ -3163,12 +3202,12 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
 
         <div class="form-group" id="grp-dim6-risks">
-          <label class="form-label">Environmental Risk Factors</label>
+          <label class="form-label">What parts of the client’s environment could make recovery harder?</label>
           <div id="dim6-risks" class="checkbox-group"></div>
         </div>
 
         <div class="form-group" id="grp-dim6-notes">
-          <label class="form-label">Additional Environmental Observations</label>
+          <label class="form-label">What else about the client’s environment is important right now?</label>
           <textarea class="form-textarea" placeholder="Other contextual factors affecting the client's recovery environment…" oninput="state.dim6.notes=this.value"></textarea>
         </div>
 
@@ -3184,9 +3223,9 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
             </select>
           </div>
           <div class="form-group" id="grp-dim6-cs-progress">
-            <label class="form-label">Discharge / Step-Down Planning Progress<span class="req-star">*</span></label>
-            <div class="sentence-hint">✎ Write in complete sentences — pasted verbatim into output</div>
-            <textarea class="form-textarea" placeholder="e.g. Client is being assessed for sober living placement; two options have been identified and are pending availability. Discharge to the current home environment remains clinically contraindicated due to the presence of active substance users in the household." oninput="state.dim6.csProgress=this.value;clearGrpError('grp-dim6-cs-progress')"></textarea>
+            <label class="form-label">What is happening in the client's recovery environment right now?<span class="req-star">*</span></label>
+            <div class="individualization-hint"><strong>Answer this specific question:</strong> What problem or unresolved barrier in the client's recovery environment still makes recovery or safe step-down harder? You can mention discharge-planning progress, but explain what is not yet secured or still needs to be addressed.</div>
+            <textarea class="form-textarea" placeholder="e.g. Two sober-living options have been identified, but placement is not yet secured and the current home still includes active substance use, leaving the client without a safe discharge setting." oninput="state.dim6.csProgress=this.value;clearGrpError('grp-dim6-cs-progress')"></textarea>
           </div>
         </div>
 
@@ -3244,7 +3283,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
             <div class="proofread-icon">⚠</div>
             <div class="proofread-text">
               <strong>Proofread before submitting to Remarkable.</strong>
-              Review all generated text for clinical accuracy, correct client name usage, and completeness before copying into your documentation system.
+              Review all generated text for clinical accuracy, correct client name usage, completeness, and client-specific detail before copying into your documentation system. For continued stays, confirm each dimension says what is happening with this client during this review period and is not copied from a prior update.
             </div>
             <button class="proofread-dismiss" onclick="document.getElementById('proofreadBanner').style.display='none'" title="Dismiss">✕</button>
           </div>
@@ -3371,7 +3410,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 </div><!-- /main-layout -->
 
 <div class="generate-bar" id="generateBar">
-  <span class="generate-bar-hint">Fields left blank will be omitted from the generated narrative.</span>
+  <span class="generate-bar-hint" id="asamGenerateHint">Fields left blank will be omitted from the generated narrative.</span>
   <button class="btn btn-primary" onclick="generate()">Generate</button>
 </div>
 </div><!-- /view-asam -->
@@ -6454,9 +6493,15 @@ function setAdmissionType(type) {
   const showDC = type === 'discharge';
   const dateLabel = document.getElementById('docDateLabel');
   const dateReq = document.getElementById('docDateReq');
+  const individualizationNotice = document.getElementById('asamIndividualizationNotice');
+  const asamGenerateHint = document.getElementById('asamGenerateHint');
   if (dateLabel) dateLabel.textContent = showDC ? 'Discharge Date' : 'Date';
   if (dateReq) dateReq.style.display = showDC ? 'inline' : 'none';
   if (dateGroup) dateGroup.classList.toggle('discharge-date-active', showDC);
+  if (individualizationNotice) individualizationNotice.style.display = showCS ? 'block' : 'none';
+  if (asamGenerateHint) asamGenerateHint.textContent = showCS
+    ? 'Quick check: Is each dimension specific to this client, clear about what changed or stayed the same, and supported by examples from this review period?'
+    : 'Fields left blank will be omitted from the generated narrative.';
 
   [1,2,3,4,5,6].forEach(i => {
     const csEl = document.getElementById(`dim${i}-cs`);
@@ -7002,54 +7047,54 @@ function clearPillError(el) {
 // Primary driver required fields per dimension (LOC-independent within that dim)
 const DIM_REQUIRED = {
   1: [
-    { get: () => state.dim1.severity,          grp: 'grp-dim1-severity',    label: 'Dim 1 — Withdrawal Severity' },
-    { get: () => state.dim1.substances,         grp: 'grp-dim1-substances',  label: 'Dim 1 — Primary Substance(s)' },
-    { get: () => state.dim1.lastUse,            grp: 'grp-dim1-lastuse',     label: 'Dim 1 — Last Use' },
-    { get: () => state.dim1.complicatedHistory, grp: 'grp-dim1-complicated', label: 'Dim 1 — History of Complicated Withdrawal' },
+    { get: () => state.dim1.severity,          grp: 'grp-dim1-severity',    label: 'Dim 1 — How severe is the client’s withdrawal risk right now?' },
+    { get: () => state.dim1.substances,         grp: 'grp-dim1-substances',  label: 'Dim 1 — What substance(s) is the client using?' },
+    { get: () => state.dim1.lastUse,            grp: 'grp-dim1-lastuse',     label: 'Dim 1 — When did the client last use?' },
+    { get: () => state.dim1.complicatedHistory, grp: 'grp-dim1-complicated', label: 'Dim 1 — Has the client had serious withdrawal problems in the past?' },
   ],
   2: [
-    { get: () => state.dim2.severity,   grp: 'grp-dim2-severity',   label: 'Dim 2 — Biomedical Severity' },
+    { get: () => state.dim2.severity,   grp: 'grp-dim2-severity',   label: 'Dim 2 — How serious are the client’s medical needs right now?' },
     { get: () => state.dim2.conditions, grp: 'grp-dim2-conditions', label: 'Dim 2 — Active Medical Conditions' },
-    { get: () => state.dim2.impact,     grp: 'grp-dim2-impact',     label: 'Dim 2 — How Conditions Complicate Treatment' },
+    { get: () => state.dim2.impact,     grp: 'grp-dim2-impact',     label: 'Dim 2 — How are the client’s medical problems affecting treatment or recovery right now?' },
   ],
   3: [
-    { get: () => state.dim3.severity,                           grp: 'grp-dim3-severity',  label: 'Dim 3 — Psychiatric / Cognitive Severity' },
+    { get: () => state.dim3.severity,                           grp: 'grp-dim3-severity',  label: 'Dim 3 — How serious are the client’s mental health or cognitive needs right now?' },
     { get: () => state.dim3.noDx ? 'exempt' : state.dim3.diagnoses, grp: 'grp-dim3-diagnoses', label: 'Dim 3 — Psychiatric Diagnoses (or check "No psychiatric diagnoses")' },
-    { get: () => state.dim3.impact,                             grp: 'grp-dim3-impact',    label: 'Dim 3 — How Symptoms Impair Treatment Engagement or Safety' },
+    { get: () => state.dim3.impact,                             grp: 'grp-dim3-impact',    label: 'Dim 3 — How are the client’s mental health or cognitive symptoms affecting treatment or safety right now?' },
   ],
   4: [
-    { get: () => state.dim4.stage,       grp: 'grp-dim4-stage',      label: 'Dim 4 — Stage of Change' },
-    { get: () => state.dim4.insight,     grp: 'grp-dim4-insight',    label: 'Dim 4 — Insight into Substance Use Disorder' },
-    { get: () => state.dim4.engagement,  grp: 'grp-dim4-engagement', label: 'Dim 4 — Treatment Engagement' },
-    { get: () => state.dim4.barriers,    grp: 'grp-dim4-barriers',   label: 'Dim 4 — Engagement Barriers / Resistance Factors' },
-    { get: () => state.dim4.locRationale,grp: 'grp-dim4-rationale',  label: 'Dim 4 — Why This LOC Is Necessary for Engagement' },
+    { get: () => state.dim4.stage,       grp: 'grp-dim4-stage',      label: 'Dim 4 — How ready is the client to make changes related to substance use?' },
+    { get: () => state.dim4.insight,     grp: 'grp-dim4-insight',    label: 'Dim 4 — How well does the client understand their substance use problem?' },
+    { get: () => state.dim4.engagement,  grp: 'grp-dim4-engagement', label: 'Dim 4 — How engaged is the client in treatment right now?' },
+    { get: () => state.dim4.barriers,    grp: 'grp-dim4-barriers',   label: 'Dim 4 — What is getting in the way of the client fully participating in treatment?' },
+    { get: () => state.dim4.locRationale,grp: 'grp-dim4-rationale',  label: 'Dim 4 — Why does the client need this level of care to stay engaged and make progress?' },
   ],
   5: [
-    { get: () => state.dim5.risk,    grp: 'grp-dim5-risk',    label: 'Dim 5 — Assessed Relapse Risk' },
-    { get: () => state.dim5.priorTx, grp: 'grp-dim5-priortx', label: 'Dim 5 — Prior Treatment Episodes' },
-    { get: () => state.dim5.coping,  grp: 'grp-dim5-coping',  label: 'Dim 5 — Current Coping Skill Development' },
+    { get: () => state.dim5.risk,    grp: 'grp-dim5-risk',    label: 'Dim 5 — How high is the client’s risk of returning to use right now?' },
+    { get: () => state.dim5.priorTx, grp: 'grp-dim5-priortx', label: 'Dim 5 — What is the client’s treatment history?' },
+    { get: () => state.dim5.coping,  grp: 'grp-dim5-coping',  label: 'Dim 5 — How well can the client manage cravings and triggers without using?' },
   ],
   6: [
-    { get: () => state.dim6.envRisk, grp: 'grp-dim6-envrisk', label: 'Dim 6 — Environmental Risk Level' },
-    { get: () => state.dim6.living,  grp: 'grp-dim6-living',  label: 'Dim 6 — Current Living Situation' },
-    { get: () => state.dim6.support, grp: 'grp-dim6-support', label: 'Dim 6 — Recovery Support System' },
+    { get: () => state.dim6.envRisk, grp: 'grp-dim6-envrisk', label: 'Dim 6 — How risky is the client’s current living/recovery environment?' },
+    { get: () => state.dim6.living,  grp: 'grp-dim6-living',  label: 'Dim 6 — Where is the client living, and how stable is it?' },
+    { get: () => state.dim6.support, grp: 'grp-dim6-support', label: 'Dim 6 — Who supports the client’s recovery, and how strong is that support?' },
   ],
 };
 
 // All continued stay fields across all dims
 const CS_REQUIRED = [
   { get: () => state.dim1.csStatus,   grp: 'grp-dim1-cs-status',   dim: 1, label: 'Dim 1 — Current Withdrawal Status' },
-  { get: () => state.dim1.csProgress, grp: 'grp-dim1-cs-progress', dim: 1, label: 'Dim 1 — Response to Treatment / Progress' },
+  { get: () => state.dim1.csProgress, grp: 'grp-dim1-cs-progress', dim: 1, label: 'Dim 1 — What is happening with the client right now?' },
   { get: () => state.dim2.csStatus,   grp: 'grp-dim2-cs-status',   dim: 2, label: 'Dim 2 — Current Medical Status' },
-  { get: () => state.dim2.csProgress, grp: 'grp-dim2-cs-progress', dim: 2, label: 'Dim 2 — Progress / Response to Treatment' },
+  { get: () => state.dim2.csProgress, grp: 'grp-dim2-cs-progress', dim: 2, label: 'Dim 2 — What is happening with the client medically right now?' },
   { get: () => state.dim3.csStatus,   grp: 'grp-dim3-cs-status',   dim: 3, label: 'Dim 3 — Current Psychiatric Status' },
-  { get: () => state.dim3.csGoals,    grp: 'grp-dim3-cs-goals',    dim: 3, label: 'Dim 3 — Remaining Psychiatric Treatment Goals' },
+  { get: () => state.dim3.csGoals,    grp: 'grp-dim3-cs-goals',    dim: 3, label: 'Dim 3 — What is happening emotionally or behaviorally right now?' },
   { get: () => state.dim4.csStatus,   grp: 'grp-dim4-cs-status',   dim: 4, label: 'Dim 4 — Current Engagement Status' },
-  { get: () => state.dim4.csGoals,    grp: 'grp-dim4-cs-goals',    dim: 4, label: 'Dim 4 — Remaining Readiness / Engagement Goals' },
+  { get: () => state.dim4.csGoals,    grp: 'grp-dim4-cs-goals',    dim: 4, label: "Dim 4 — What shows the client\'s current readiness and engagement?" },
   { get: () => state.dim5.csStatus,   grp: 'grp-dim5-cs-status',   dim: 5, label: 'Dim 5 — Current Relapse Risk Status' },
-  { get: () => state.dim5.csProgress, grp: 'grp-dim5-cs-progress', dim: 5, label: 'Dim 5 — Relapse Prevention Progress / Remaining Goals' },
+  { get: () => state.dim5.csProgress, grp: 'grp-dim5-cs-progress', dim: 5, label: 'Dim 5 — What puts the client at risk of returning to use right now?' },
   { get: () => state.dim6.csStatus,   grp: 'grp-dim6-cs-status',   dim: 6, label: 'Dim 6 — Current Environmental Status' },
-  { get: () => state.dim6.csProgress, grp: 'grp-dim6-cs-progress', dim: 6, label: 'Dim 6 — Discharge / Step-Down Planning Progress' },
+  { get: () => state.dim6.csProgress, grp: 'grp-dim6-cs-progress', dim: 6, label: "Dim 6 — What is happening in the client\'s recovery environment right now?" },
  ];
 
 const DC_REQUIRED = [
@@ -7062,6 +7107,47 @@ const DC_REQUIRED = [
   { get: () => state.dim6.dcStatus, grp: 'grp-dim6-dc-status', dim: 6, label: 'Dim 6 — Recovery Environment at Discharge' },
   { get: () => state.dischargePrognosis, grp: 'grp-discharge-prognosis', dim: 6, label: 'Dim 6 — Overall Prognosis at Discharge' },
 ];
+
+function individualizationWarning(value) {
+  const text = (value || '').trim().replace(/\s+/g, ' ');
+  if (!text) return ''; // Required-field validation handles blank responses.
+
+  const words = text.match(/[A-Za-z0-9’'-]+/g) || [];
+  if (words.length <= 3) {
+    return 'add a complete client-specific statement with an example, observation, symptom, behavior, change, or treatment response';
+  }
+
+  const normalized = text.toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, ' ').trim();
+  const bareResponses = [
+    'same', 'no change', 'unchanged', 'stable', 'doing well', 'doing better',
+    'improving', 'improved', 'progressing', 'making progress', 'continues to struggle',
+    'still struggling', 'no concerns', 'none', 'n a', 'na'
+  ];
+  if (bareResponses.includes(normalized)) {
+    return 'add specific evidence about this client and what still needs treatment or support';
+  }
+
+  // These checks are prompts, not clinical judgments. They catch common documentation
+  // patterns that can describe progress without explaining the remaining treatment need.
+  const positiveOnlyPattern = /\b(improv(?:e|ed|ing|ement)|progress(?:ed|ing)?|doing (?:well|better)|stable|stabilized|engag(?:e|ed|ing)|participat(?:e|ed|ing)|attend(?:s|ed|ing)?|complet(?:e|ed|ing)|successful(?:ly)?|good insight|increased insight|better insight|using coping|utiliz(?:e|ed|ing) coping|met (?:the )?goal|goals? met|resolved)\b/i;
+  const remainingNeedPattern = /\b(but|however|although|yet|still|continues? to|remain(?:s|ing)?|ongoing|unresolved|not yet|needs?|requires?|struggl(?:e|es|ing)|difficulty|unable|cannot|can't|risk|barrier|concern|symptom|impair|limit|deficit|craving|trigger|monitor|support|prompt|supervision|structure|unsafe|instability|resistance|minimiz|avoid|poor|inconsistent|lack|without)\b/i;
+  if (positiveOnlyPattern.test(text) && !remainingNeedPattern.test(text)) {
+    return 'this mostly describes progress; add what the client still struggles with, cannot yet do independently, or still needs treatment/support for';
+  }
+
+  const resolvedOnlyPattern = /\b(no (?:current )?(?:concerns?|issues?|problems?|barriers?|symptoms?|needs?)|all goals? (?:are )?met|fully resolved|ready for discharge|ready to discharge|no longer needs? (?:treatment|support)|nothing to report)\b/i;
+  if (resolvedOnlyPattern.test(text) && !/\b(but|however|although|yet|still|remain|ongoing|unresolved|risk|barrier|concern|needs?|requires?)\b/i.test(text)) {
+    return 'this reads as resolved or having no current need; explain any remaining problem in this dimension, or make sure the selected status accurately reflects that this is not a continued-stay driver';
+  }
+
+  const genericNeedPattern = /^(?:the )?client (?:continues? to )?(?:benefit|benefits|need|needs|require|requires) (?:from )?(?:continued )?(?:treatment|support|structure|care|services)(?: at this level of care)?[.!]?$/i;
+  const genericWorkPattern = /^(?:the )?client (?:will |continues? to |needs? to )?(?:continue )?(?:work|working) on [a-z0-9 ,/'’-]+[.!]?$/i;
+  if (genericNeedPattern.test(text) || genericWorkPattern.test(text)) {
+    return 'do not only state that treatment is needed; explain the specific symptom, risk, barrier, skill deficit, or behavior that makes it necessary';
+  }
+
+  return '';
+}
 
 function validate() {
   const errors = [];
@@ -7090,17 +7176,115 @@ function validate() {
 
     // Dim 4 barriers + rationale are always required (even when dim 4 isn't primary)
     if (!cfg.primary.includes(4)) {
-      check({ get: () => state.dim4.barriers,     grp: 'grp-dim4-barriers',  label: 'Dim 4 — Engagement Barriers / Resistance Factors' }, 4);
-      check({ get: () => state.dim4.locRationale, grp: 'grp-dim4-rationale', label: 'Dim 4 — Why This LOC Is Necessary for Engagement' }, 4);
+      check({ get: () => state.dim4.barriers,     grp: 'grp-dim4-barriers',  label: 'Dim 4 — What is getting in the way of the client fully participating in treatment?' }, 4);
+      check({ get: () => state.dim4.locRationale, grp: 'grp-dim4-rationale', label: 'Dim 4 — Why does the client need this level of care to stay engaged and make progress?' }, 4);
     }
 
     // Continued stay — all CS fields required
     if (type === 'continued') {
       CS_REQUIRED.forEach(item => check(item, item.dim));
+
     }
   }
 
   return errors;
+}
+
+// Continued-stay individualization checks are coaching warnings, not validation failures.
+// Required fields remain blocking; these warnings can always be overridden by the clinician.
+function getIndividualizationWarnings() {
+  if (state.admissionType !== 'continued') return [];
+  const warnings = [];
+  // Coaching checks are intentionally limited to Dimensions 3-6.
+  // Dimensions 1-2 are clinically/medically driven and are not evaluated for individualization here.
+  CS_REQUIRED.filter(item => item.dim >= 3 && /cs-(progress|goals)$/.test(item.grp)).forEach(item => {
+    const value = item.get();
+    const warning = value ? individualizationWarning(value) : '';
+    if (warning) warnings.push({ dim: item.dim, grp: item.grp, label: item.label, message: warning });
+  });
+  return warnings;
+}
+
+function closeIndividualizationWarning() {
+  const modal = document.getElementById('individualizationWarningModal');
+  if (modal) modal.remove();
+}
+
+function showIndividualizationWarnings(warnings) {
+  closeIndividualizationWarning();
+  const overlay = document.createElement('div');
+  overlay.id = 'individualizationWarningModal';
+  overlay.setAttribute('role', 'dialog');
+  overlay.setAttribute('aria-modal', 'true');
+  overlay.setAttribute('aria-labelledby', 'individualizationWarningTitle');
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:10000;background:rgba(20,25,31,.46);display:flex;align-items:center;justify-content:center;padding:18px;';
+
+  const card = document.createElement('div');
+  card.style.cssText = 'width:min(620px,100%);max-height:min(78vh,720px);overflow:auto;background:var(--surface,#fff);border:1px solid var(--border,#d7dce2);border-radius:10px;box-shadow:0 18px 55px rgba(0,0,0,.24);padding:18px;';
+
+  const title = document.createElement('div');
+  title.id = 'individualizationWarningTitle';
+  title.style.cssText = 'font-size:17px;font-weight:700;color:var(--text);margin-bottom:6px;';
+  title.textContent = 'A few answers may need more individualization';
+  card.appendChild(title);
+
+  const intro = document.createElement('div');
+  intro.style.cssText = 'font-size:12px;line-height:1.55;color:var(--text-secondary);margin-bottom:12px;';
+  intro.textContent = 'DocAssist noticed wording that may be too brief, generic, focused only on progress, or unclear about what still needs treatment. Review these if needed. This is a reminder only — you can still generate the ASAM.';
+  card.appendChild(intro);
+
+  const list = document.createElement('div');
+  list.style.cssText = 'display:flex;flex-direction:column;gap:8px;margin-bottom:16px;';
+  warnings.forEach(w => {
+    const item = document.createElement('button');
+    item.type = 'button';
+    item.style.cssText = 'text-align:left;width:100%;padding:10px 11px;border:1px solid #e3c56a;border-radius:7px;background:#fff9e8;color:var(--text);font:inherit;cursor:pointer;';
+    item.innerHTML = `<strong style="display:block;font-size:12px;margin-bottom:3px;">Dimension ${w.dim}</strong><span style="font-size:11px;line-height:1.45;color:var(--text-secondary);">${w.message.charAt(0).toUpperCase() + w.message.slice(1)}.</span>`;
+    item.addEventListener('click', () => {
+      closeIndividualizationWarning();
+      const tab = document.querySelector(`.dim-tab[data-dim="${w.dim}"]`);
+      showDim(w.dim, tab);
+      const field = document.getElementById(w.grp);
+      if (field) {
+        field.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        const input = field.querySelector('textarea, input');
+        if (input) setTimeout(() => input.focus(), 350);
+      }
+    });
+    list.appendChild(item);
+  });
+  card.appendChild(list);
+
+  const actions = document.createElement('div');
+  actions.style.cssText = 'display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;';
+  const improve = document.createElement('button');
+  improve.type = 'button';
+  improve.className = 'btn btn-ghost';
+  improve.textContent = 'Go Back and Improve';
+  improve.addEventListener('click', () => {
+    const firstWarning = warnings[0];
+    closeIndividualizationWarning();
+    if (!firstWarning) return;
+    const tab = document.querySelector(`.dim-tab[data-dim="${firstWarning.dim}"]`);
+    showDim(firstWarning.dim, tab);
+    const field = document.getElementById(firstWarning.grp);
+    if (field) {
+      field.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const input = field.querySelector('textarea, input');
+      if (input) setTimeout(() => input.focus(), 350);
+    }
+  });
+  const anyway = document.createElement('button');
+  anyway.type = 'button';
+  anyway.className = 'btn btn-primary';
+  anyway.textContent = 'Generate Anyway';
+  anyway.addEventListener('click', () => { closeIndividualizationWarning(); renderGeneratedOutput(); });
+  actions.appendChild(improve);
+  actions.appendChild(anyway);
+  card.appendChild(actions);
+  overlay.appendChild(card);
+  document.body.appendChild(overlay);
+  improve.focus();
 }
 
 // Show/hide req-star markers dynamically when LOC changes
@@ -7140,6 +7324,13 @@ function generate() {
   }
 
   document.getElementById('errorPanel').style.display = 'none';
+
+  const individualizationWarnings = getIndividualizationWarnings();
+  if (individualizationWarnings.length > 0) {
+    showIndividualizationWarnings(individualizationWarnings);
+    return;
+  }
+
   renderGeneratedOutput();
 }
 
