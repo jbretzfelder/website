@@ -2808,21 +2808,32 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
 
         <div class="continued-section" id="dim1-cs" style="display:none">
-          <div class="continued-section-title">Continued Stay — Dimension 1</div>
+          <div class="continued-section-title">3.7WM Continued Stay — Dimension 1: Withdrawal</div>
+          <div class="individualization-hint" style="margin-bottom:10px"><strong>This section is only about the client's current withdrawal and the medical need for continued 3.7WM.</strong> Document what is still happening today. Use direct observations, current symptoms, scores when relevant, medication needs, monitoring needs, and the client's response to treatment. Do not document only that the client is still in withdrawal.</div>
           <div class="form-group" id="grp-dim1-cs-status">
-            <label class="form-label">Current Withdrawal Status<span class="req-star">*</span></label>
+            <label class="form-label">What is the client's current withdrawal status?<span class="req-star">*</span></label>
             <select class="form-select" onchange="state.dim1.csStatus=this.value;clearGrpError('grp-dim1-cs-status')">
               <option value="">— Select —</option>
-              <option value="ongoing">Withdrawal ongoing, not yet stabilized</option>
-              <option value="stabilizing">Stabilizing but requiring continued monitoring</option>
-              <option value="resolved_risk">Withdrawal resolved; medical risk profile remains</option>
-              <option value="resolved">Resolved; no longer a primary continued stay driver</option>
+              <option value="ongoing">Significant withdrawal symptoms remain</option>
+              <option value="stabilizing">Symptoms are improving but remain clinically significant</option>
+              <option value="fluctuating">Symptoms are fluctuating, recurring, or not consistently controlled</option>
+              <option value="resolved">Withdrawal symptoms have resolved</option>
             </select>
           </div>
           <div class="form-group" id="grp-dim1-cs-progress">
-            <label class="form-label">What is happening with the client right now?<span class="req-star">*</span></label>
-            <div class="individualization-hint"><strong>Answer this specific question:</strong> What withdrawal symptoms, risks, or monitoring needs are still present? You can mention improvement, but do not stop there — explain what still needs treatment, monitoring, medication, or staff support.</div>
-            <textarea class="form-textarea" placeholder="e.g. Withdrawal symptoms have decreased, but the client continues to report anxiety and sleep disruption and still requires monitoring for symptom recurrence." oninput="state.dim1.csProgress=this.value;clearGrpError('grp-dim1-cs-progress')"></textarea>
+            <label class="form-label">What withdrawal symptoms are still present today?<span class="req-star">*</span></label>
+            <div class="individualization-hint"><strong>Be specific about what is still happening.</strong> Describe the symptoms you are seeing or assessing, how often they occur, how severe they are, and what has improved versus what remains unresolved. Include CIWA-Ar/COWS or other objective information when it helps explain the current presentation.</div>
+            <textarea class="form-textarea" placeholder="Describe the specific withdrawal symptoms that remain and what you are observing today." oninput="state.dim1.csProgress=this.value;clearGrpError('grp-dim1-cs-progress')"></textarea>
+          </div>
+          <div class="form-group" id="grp-dim1-cs-need">
+            <label class="form-label">What medical management or monitoring does this client still require because of withdrawal?<span class="req-star">*</span></label>
+            <div class="individualization-hint"><strong>Explain what nursing or medical staff still have to do because withdrawal is ongoing.</strong> Include medications, PRNs, reassessments, vital-sign monitoring, increased observation, physician involvement, or other medical interventions when applicable.</div>
+            <textarea class="form-textarea" placeholder="Describe the specific medical management or monitoring that remains necessary because of withdrawal." oninput="state.dim1.csNeed=this.value;clearGrpError('grp-dim1-cs-need')"></textarea>
+          </div>
+          <div class="form-group" id="grp-dim1-cs-stepdown">
+            <label class="form-label">Why is the client not yet ready to transition out of 3.7WM?<span class="req-star">*</span></label>
+            <div class="individualization-hint"><strong>Answer the question directly.</strong> Based on the current withdrawal presentation, explain what would make a transition out of 3.7WM unsafe or premature today.</div>
+            <textarea class="form-textarea" placeholder="Explain the specific unresolved withdrawal or medical-management need that makes step-down premature." oninput="state.dim1.csStepdown=this.value"></textarea>
           </div>
         </div>
 
@@ -2880,20 +2891,26 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
 
         <div class="continued-section" id="dim2-cs" style="display:none">
-          <div class="continued-section-title">Continued Stay — Dimension 2</div>
+          <div class="continued-section-title">3.7WM Continued Stay — Dimension 2: Biomedical Conditions</div>
+          <div class="individualization-hint" style="margin-bottom:10px"><strong>For 3.7WM, do not document general medical history unless it is relevant to the current withdrawal episode.</strong> Explain whether ongoing withdrawal is causing, worsening, complicating, or requiring continued monitoring of the client's physical health.</div>
           <div class="form-group" id="grp-dim2-cs-status">
-            <label class="form-label">Current Medical Status<span class="req-star">*</span></label>
+            <label class="form-label">How is ongoing withdrawal affecting the client's physical or medical condition?<span class="req-star">*</span></label>
             <select class="form-select" onchange="state.dim2.csStatus=this.value;clearGrpError('grp-dim2-cs-status')">
               <option value="">— Select —</option>
-              <option value="unresolved">Conditions unresolved; ongoing monitoring required</option>
-              <option value="improving">Improving but requiring continued clinical oversight</option>
-              <option value="stable">Medically stable; not a primary continued stay driver</option>
+              <option value="significant">Withdrawal is causing or significantly worsening a biomedical concern</option>
+              <option value="moderate">Withdrawal is contributing to a biomedical concern that still requires monitoring or treatment</option>
+              <option value="minimal">Withdrawal is not currently causing a significant biomedical concern in this dimension</option>
             </select>
           </div>
           <div class="form-group" id="grp-dim2-cs-progress">
-            <label class="form-label">What is happening with the client medically right now?<span class="req-star">*</span></label>
-            <div class="individualization-hint"><strong>Answer this specific question:</strong> What medical problem, symptom, limitation, follow-up need, or monitoring still affects treatment? You can mention improvement, but explain what is not fully resolved or still needs attention.</div>
-            <textarea class="form-textarea" placeholder="e.g. Blood pressure has improved with medication, but the client still requires daily monitoring and continued support with medication adherence." oninput="state.dim2.csProgress=this.value;clearGrpError('grp-dim2-cs-progress')"></textarea>
+            <label class="form-label">What physical or medical problem is still present because of, or complicated by, withdrawal?<span class="req-star">*</span></label>
+            <div class="individualization-hint"><strong>Describe the actual problem.</strong> Consider hydration, nutrition, sleep, blood pressure, heart rate, gastrointestinal symptoms, pain, weakness, coordination, medication effects, or other physical concerns only when they are connected to the current withdrawal episode.</div>
+            <textarea class="form-textarea" placeholder="Describe the specific withdrawal-related physical or medical concern that remains." oninput="state.dim2.csProgress=this.value;clearGrpError('grp-dim2-cs-progress')"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">What medical monitoring or intervention is still required because of this withdrawal-related concern?<span class="req-star">*</span></label>
+            <div class="individualization-hint"><strong>Explain what staff still need to monitor, treat, reassess, or manage.</strong> If there is no withdrawal-related biomedical concern, state that clearly rather than forcing a connection.</div>
+            <textarea class="form-textarea" placeholder="Describe the ongoing medical monitoring or intervention, or state why withdrawal is not currently creating a biomedical need." oninput="state.dim2.csNeed=this.value"></textarea>
           </div>
         </div>
 
@@ -2963,20 +2980,21 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
 
         <div class="continued-section" id="dim3-cs" style="display:none">
-          <div class="continued-section-title">Continued Stay — Dimension 3</div>
+          <div class="continued-section-title">3.7WM Continued Stay — Dimension 3: Emotional / Behavioral / Cognitive Effects of Withdrawal</div>
+          <div class="individualization-hint" style="margin-bottom:10px"><strong>Do not use this section to document unrelated psychiatric symptoms.</strong> Explain whether the client's ongoing withdrawal is affecting mood, anxiety, emotional regulation, cognition, sleep, behavior, or safety, and describe the specific effect you are seeing.</div>
           <div class="form-group" id="grp-dim3-cs-status">
-            <label class="form-label">Current Psychiatric Status<span class="req-star">*</span></label>
+            <label class="form-label">How is ongoing withdrawal affecting the client's mental or emotional functioning?<span class="req-star">*</span></label>
             <select class="form-select" onchange="state.dim3.csStatus=this.value;clearGrpError('grp-dim3-cs-status')">
               <option value="">— Select —</option>
-              <option value="unstable">Symptoms remain clinically significant and unstable</option>
-              <option value="stabilizing">Stabilizing; continued clinical support required</option>
-              <option value="improved_not_ready">Improvement noted; not yet ready for step-down</option>
+              <option value="significant">Withdrawal is significantly affecting emotional or cognitive functioning</option>
+              <option value="moderate">Withdrawal is contributing to emotional or cognitive symptoms</option>
+              <option value="none">Withdrawal is not currently affecting this dimension</option>
             </select>
           </div>
           <div class="form-group" id="grp-dim3-cs-goals">
-            <label class="form-label">What is happening with the client emotionally or behaviorally right now?<span class="req-star">*</span></label>
-            <div class="individualization-hint"><strong>Answer this specific question:</strong> What mental health symptom, behavior, safety concern, or functional problem is the client still struggling with? If there has been progress, explain what remains and how it still affects treatment or daily functioning.</div>
-            <textarea class="form-textarea" placeholder="e.g. Client continues to experience passive suicidal ideation requiring daily safety assessments. Mood stabilization has not yet been achieved, and a step-down to outpatient services at this time would present significant clinical risk." oninput="state.dim3.csGoals=this.value;clearGrpError('grp-dim3-cs-goals')"></textarea>
+            <label class="form-label">What mental, emotional, behavioral, or cognitive changes are you seeing that are related to withdrawal?<span class="req-star">*</span></label>
+            <div class="individualization-hint"><strong>Make the connection explicit.</strong> Explain what withdrawal is doing to this client right now, such as increasing anxiety or irritability, disrupting sleep, impairing concentration, causing agitation, affecting emotional regulation, or contributing to other observable changes. If the symptoms are not related to withdrawal, say so.</div>
+            <textarea class="form-textarea" placeholder="Describe the specific mental, emotional, behavioral, or cognitive effect of ongoing withdrawal." oninput="state.dim3.csGoals=this.value;clearGrpError('grp-dim3-cs-goals')"></textarea>
           </div>
         </div>
 
@@ -3048,20 +3066,21 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
 
         <div class="continued-section" id="dim4-cs" style="display:none">
-          <div class="continued-section-title">Continued Stay — Dimension 4</div>
+          <div class="continued-section-title">3.7WM Continued Stay — Dimension 4: Treatment Participation During Withdrawal</div>
+          <div class="individualization-hint" style="margin-bottom:10px"><strong>For this continued stay, do not justify 3.7WM simply by saying the client is unmotivated.</strong> Explain whether ongoing withdrawal is interfering with the client's ability to participate meaningfully in treatment and, if it is, exactly how.</div>
           <div class="form-group" id="grp-dim4-cs-status">
-            <label class="form-label">Current Engagement Status<span class="req-star">*</span></label>
+            <label class="form-label">Is ongoing withdrawal affecting the client's ability to participate in treatment?<span class="req-star">*</span></label>
             <select class="form-select" onchange="state.dim4.csStatus=this.value;clearGrpError('grp-dim4-cs-status')">
               <option value="">— Select —</option>
-              <option value="unchanged">Largely unchanged from admission; intensive intervention required</option>
-              <option value="improving">Improving but not sufficient for step-down</option>
-              <option value="inconsistent">Inconsistent; continued motivational structure required</option>
+              <option value="significant">Yes - withdrawal is significantly limiting participation</option>
+              <option value="moderate">Yes - withdrawal is interfering with participation to some degree</option>
+              <option value="none">No - withdrawal is not currently limiting participation</option>
             </select>
           </div>
           <div class="form-group" id="grp-dim4-cs-goals">
-            <label class="form-label">What is the client doing that shows their current readiness and engagement?<span class="req-star">*</span></label>
-            <div class="individualization-hint"><strong>Answer this specific question:</strong> What is the client still struggling with related to motivation, insight, participation, or follow-through? You can mention progress, but explain what the client still does not understand, accept, follow through with, or do independently.</div>
-            <textarea class="form-textarea" placeholder="e.g. Client is attending groups more consistently but continues to minimize the impact of substance use and needs frequent prompting to connect treatment goals to personal consequences." oninput="state.dim4.csGoals=this.value;clearGrpError('grp-dim4-cs-goals')"></textarea>
+            <label class="form-label">What is the client unable or less able to do in treatment because of ongoing withdrawal?<span class="req-star">*</span></label>
+            <div class="individualization-hint"><strong>Describe the functional effect.</strong> Consider concentration, ability to stay awake, tolerance of groups, ability to communicate, ability to process information, emotional regulation, completing assignments, or other treatment participation. Do not attribute poor engagement to withdrawal unless the clinical evidence supports that connection.</div>
+            <textarea class="form-textarea" placeholder="Describe exactly how withdrawal is affecting the client's ability to participate, think, communicate, or complete treatment work." oninput="state.dim4.csGoals=this.value;clearGrpError('grp-dim4-cs-goals')"></textarea>
           </div>
         </div>
 
@@ -3127,20 +3146,21 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
 
         <div class="continued-section" id="dim5-cs" style="display:none">
-          <div class="continued-section-title">Continued Stay — Dimension 5</div>
+          <div class="continued-section-title">3.7WM Continued Stay — Dimension 5: Recovery Work During Withdrawal</div>
+          <div class="individualization-hint" style="margin-bottom:10px"><strong>Do not use this section as a generic relapse-risk statement.</strong> Explain how the client's ongoing withdrawal is affecting their ability to work on relapse prevention, coping skills, triggers, cravings, or other recovery tasks right now.</div>
           <div class="form-group" id="grp-dim5-cs-status">
-            <label class="form-label">Current Relapse Risk Status<span class="req-star">*</span></label>
+            <label class="form-label">Is ongoing withdrawal affecting the client's ability to work on relapse prevention?<span class="req-star">*</span></label>
             <select class="form-select" onchange="state.dim5.csStatus=this.value;clearGrpError('grp-dim5-cs-status')">
               <option value="">— Select —</option>
-              <option value="unresolved">Risk remains high; would be substantially elevated by step-down</option>
-              <option value="improving">Risk decreasing; coping skills still insufficient for step-down</option>
-              <option value="setback">Relapse or near-relapse occurred during current episode of care</option>
+              <option value="significant">Yes - withdrawal is significantly limiting recovery work</option>
+              <option value="moderate">Yes - withdrawal is interfering with recovery work to some degree</option>
+              <option value="none">No - withdrawal is not currently limiting recovery work</option>
             </select>
           </div>
           <div class="form-group" id="grp-dim5-cs-progress">
-            <label class="form-label">What puts the client at risk of returning to use right now?<span class="req-star">*</span></label>
-            <div class="individualization-hint"><strong>Answer this specific question:</strong> What does the client still struggle with that could lead to return to use? If coping skills or insight have improved, explain what the client still cannot manage safely or consistently without treatment support.</div>
-            <textarea class="form-textarea" placeholder="e.g. Client can identify several triggers but still cannot consistently use coping skills when cravings increase and continues to need staff prompting to manage urges without returning to use." oninput="state.dim5.csProgress=this.value;clearGrpError('grp-dim5-cs-progress')"></textarea>
+            <label class="form-label">How is ongoing withdrawal affecting the client's ability to work on recovery and relapse prevention?<span class="req-star">*</span></label>
+            <div class="individualization-hint"><strong>Explain what the client can and cannot work on because of the current withdrawal presentation.</strong> Consider physical discomfort, cravings, sleep disruption, anxiety, impaired concentration, emotional instability, or other withdrawal-related barriers. If withdrawal is not affecting recovery work, say so.</div>
+            <textarea class="form-textarea" placeholder="Describe the specific recovery or relapse-prevention work that withdrawal is interfering with, if any." oninput="state.dim5.csProgress=this.value;clearGrpError('grp-dim5-cs-progress')"></textarea>
           </div>
         </div>
 
@@ -3212,20 +3232,21 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
 
         <div class="continued-section" id="dim6-cs" style="display:none">
-          <div class="continued-section-title">Continued Stay — Dimension 6</div>
+          <div class="continued-section-title">3.7WM Continued Stay — Dimension 6: Readiness for Safe Transition During Withdrawal</div>
+          <div class="individualization-hint" style="margin-bottom:10px"><strong>For 3.7WM, the key question is whether the client is medically and functionally ready to leave withdrawal management.</strong> Environmental problems alone do not justify continued 3.7WM. Explain whether ongoing withdrawal is limiting the client's ability to prepare for or safely transition to the next level of care.</div>
           <div class="form-group" id="grp-dim6-cs-status">
-            <label class="form-label">Current Environmental Status<span class="req-star">*</span></label>
+            <label class="form-label">Is ongoing withdrawal affecting the client's ability to prepare for a safe transition?<span class="req-star">*</span></label>
             <select class="form-select" onchange="state.dim6.csStatus=this.value;clearGrpError('grp-dim6-cs-status')">
               <option value="">— Select —</option>
-              <option value="unchanged">Environmental risks remain; safe discharge plan not yet established</option>
-              <option value="partial">Discharge planning in progress; transition not yet secured</option>
-              <option value="improved">Environment improved; client not yet ready for transition</option>
+              <option value="significant">Yes - withdrawal is significantly limiting safe transition planning</option>
+              <option value="moderate">Yes - withdrawal is interfering with transition planning to some degree</option>
+              <option value="none">No - withdrawal is not currently limiting transition planning</option>
             </select>
           </div>
           <div class="form-group" id="grp-dim6-cs-progress">
-            <label class="form-label">What is happening in the client's recovery environment right now?<span class="req-star">*</span></label>
-            <div class="individualization-hint"><strong>Answer this specific question:</strong> What problem or unresolved barrier in the client's recovery environment still makes recovery or safe step-down harder? You can mention discharge-planning progress, but explain what is not yet secured or still needs to be addressed.</div>
-            <textarea class="form-textarea" placeholder="e.g. Two sober-living options have been identified, but placement is not yet secured and the current home still includes active substance use, leaving the client without a safe discharge setting." oninput="state.dim6.csProgress=this.value;clearGrpError('grp-dim6-cs-progress')"></textarea>
+            <label class="form-label">How is ongoing withdrawal affecting the client's ability to prepare for the next level of care?<span class="req-star">*</span></label>
+            <div class="individualization-hint"><strong>Describe the specific withdrawal-related barrier.</strong> Consider whether the client is too physically uncomfortable, cognitively impaired, emotionally unstable, fatigued, medically monitored, or otherwise unable to participate meaningfully in discharge planning or transition preparation. If withdrawal is not affecting this process, say so.</div>
+            <textarea class="form-textarea" placeholder="Describe exactly how current withdrawal is affecting the client's ability to prepare for safe transition." oninput="state.dim6.csProgress=this.value;clearGrpError('grp-dim6-cs-progress')"></textarea>
           </div>
         </div>
 
@@ -5280,7 +5301,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         <span class="nn-jump-link" onclick="nnJumpTo('nn-sec-psych')">Psych</span>
         <span class="nn-jump-link" onclick="nnJumpTo('nn-sec-sleep')">Sleep</span>
         <span class="nn-jump-link" onclick="nnJumpTo('nn-sec-cravings')">Cravings</span>
-        <span class="nn-jump-link" onclick="nnJumpTo('nn-sec-continued')">Continued Need</span>
+        <span class="nn-jump-link" id="nn-continued-jump" onclick="nnJumpTo('nn-sec-continued')">3.7WM Continued Stay</span>
       </div>
 
       <div class="nn-section-card" id="nn-sec-details">
@@ -5294,6 +5315,13 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
             <label class="sn-label">Date</label>
             <input class="sn-input" type="date" id="nn-date" oninput="nnState.date=this.value">
           </div>
+        </div>
+        <div>
+          <label class="sn-label">Documentation Purpose</label>
+          <select class="sn-select" id="nn-purpose" onchange="nnState.documentationPurpose=this.value;nnUpdateNursingPurpose()">
+            <option value="routine">Routine Nursing Note</option>
+            <option value="wm-continued">3.7WM Continued Stay Request</option>
+          </select>
         </div>
         <div>
           <label class="sn-label">Withdrawal Type</label>
@@ -5439,12 +5467,16 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         <textarea class="sn-textarea" id="nn-cravings-detail" style="min-height:55px" placeholder="e.g. Client verbalizes concern regarding ability to remain abstinent if discharged at this time." oninput="nnState.cravingsDetail=this.value"></textarea>
       </div>
 
-      <!-- SECTION 7: CONTINUED NEED -->
-      <div class="continued-section" id="nn-sec-continued" style="display:block;scroll-margin-top:46px">
-        <div class="continued-section-title">Continued Need for 3.7-WM</div>
-        <div class="sentence-hint" style="margin-bottom:6px">✎ Answers: why can't the client safely step down today? — pasted verbatim</div>
-        <textarea class="sn-textarea" id="nn-continued-need" style="min-height:70px" placeholder="e.g. Client continues to experience active withdrawal symptoms requiring medication management and nursing monitoring. Has not yet achieved medical stability for transition to a lower level of care." oninput="nnState.continuedNeed=this.value"></textarea>
-        <button type="button" class="sn-add-obj-btn" id="nn-closer-btn" style="margin-top:8px" onclick="nnInsertCloser()">+ Insert suggested closing statement</button>
+      <!-- SECTION 7: 3.7WM CONTINUED STAY -->
+      <div class="continued-section" id="nn-sec-continued" style="display:none;scroll-margin-top:46px">
+        <div class="continued-section-title">3.7WM Continued Stay Request</div>
+        <div class="individualization-hint" style="margin-bottom:10px"><strong>Use this section when you believe this client may need 3.7WM beyond Day 7.</strong> Document what you are actually seeing and doing. The goal is to make the unresolved medical withdrawal need clear, not to make the documentation sound more severe than the client is.</div>
+        <div class="form-group"><label class="sn-label">What withdrawal symptoms are still present right now?</label><div class="sentence-hint" style="margin-bottom:6px">Describe what has not resolved, how often it is happening, and how much it is affecting the client.</div><textarea class="sn-textarea" id="nn-continued-symptoms" style="min-height:65px" placeholder="Describe the withdrawal symptoms that are still present and what you are observing." oninput="nnState.continuedSymptoms=this.value"></textarea></div>
+        <div class="form-group"><label class="sn-label">What are you personally noticing about this client's physical condition?</label><div class="sentence-hint" style="margin-bottom:6px">Focus on what you can see or observe. Do not only enter a withdrawal score or repeat what the client reports.</div><textarea class="sn-textarea" id="nn-continued-observations" style="min-height:65px" placeholder="e.g. Visible tremors, diaphoresis, pacing, vomiting, poor oral intake, unsteady gait, confusion, difficulty remaining awake, or other observable findings." oninput="nnState.continuedObservations=this.value"></textarea></div>
+        <div class="form-group"><label class="sn-label">What are you having to do for this client because of these symptoms?</label><div class="sentence-hint" style="margin-bottom:6px">Include medications, PRNs, monitoring, reassessment, medical evaluation, increased observation, or other nursing interventions.</div><textarea class="sn-textarea" id="nn-continued-interventions" style="min-height:65px" placeholder="Describe the nursing or medical interventions this client continues to require." oninput="nnState.continuedInterventions=this.value"></textarea></div>
+        <div class="form-group"><label class="sn-label">How is the client responding to treatment and nursing interventions?</label><div class="sentence-hint" style="margin-bottom:6px">Explain whether symptoms are resolving, improving only temporarily, staying the same, or worsening.</div><textarea class="sn-textarea" id="nn-continued-response" style="min-height:65px" placeholder="Describe the client's response to medication and other interventions." oninput="nnState.continuedResponse=this.value"></textarea></div>
+        <div class="form-group"><label class="sn-label">What is still not resolved?</label><div class="sentence-hint" style="margin-bottom:6px">Be specific about the problem that still requires continued nursing or medical attention.</div><textarea class="sn-textarea" id="nn-continued-unresolved" style="min-height:65px" placeholder="Do not simply say 'client continues to have withdrawal symptoms.' Identify the unresolved problem." oninput="nnState.continuedUnresolved=this.value"></textarea></div>
+        <div class="form-group"><label class="sn-label">Why do you believe this client may still need medical withdrawal management after Day 7?</label><div class="sentence-hint" style="margin-bottom:6px">Based on what you are observing, what specific symptoms, medical concerns, or monitoring needs make continued 3.7WM necessary right now?</div><textarea class="sn-textarea" id="nn-continued-need" style="min-height:75px" placeholder="Explain the specific unresolved problem that makes the client not ready to transition out of 3.7WM" oninput="nnState.continuedNeed=this.value"></textarea><button type="button" class="sn-add-obj-btn" id="nn-closer-btn" style="margin-top:8px" onclick="nnInsertCloser()">+ Insert suggested closing statement</button></div>
       </div>
 
     </div><!-- /session-inputs -->
@@ -6351,8 +6383,8 @@ function copyCriteria(btn) {
 // ═══════════════════════════════════════════════════
 const state = {
   loc: '', admissionType: 'initial', clientName: '', date: '', dischargePrognosis: '',
-  dim1: { severity:'', substances:'', lastUse:'', ciwa:'', cows:'', symptoms:[], complicatedHistory:'', notes:'', csStatus:'', csProgress:'', dcStatus:'' },
-  dim2: { severity:'', conditions:'', impact:'', medications:'', notes:'', csStatus:'', csProgress:'', dcStatus:'' },
+  dim1: { severity:'', substances:'', lastUse:'', ciwa:'', cows:'', symptoms:[], complicatedHistory:'', notes:'', csStatus:'', csProgress:'', csNeed:'', csStepdown:'', dcStatus:'' },
+  dim2: { severity:'', conditions:'', impact:'', medications:'', notes:'', csStatus:'', csProgress:'', csNeed:'', dcStatus:'' },
   dim3: { severity:'', diagnoses:'', noDx:false, symptoms:[], impact:'', notes:'', csStatus:'', csGoals:'', dcStatus:'' },
   dim4: { stage:'', insight:'', engagement:'', barriers:'', locRationale:'', csStatus:'', csGoals:'', dcStatus:'' },
   dim5: { risk:'', priorTx:'', triggers:[], coping:'', notes:'', csStatus:'', csProgress:'', dcStatus:'' },
@@ -6672,13 +6704,15 @@ function genDim1() {
 
   if (type === 'continued') {
     const sm = {
-      ongoing: `${C()}'s withdrawal remains active and has not yet fully resolved. Continued 24-hour medical monitoring is clinically necessary to ensure safety.`,
-      stabilizing: `${C()}'s withdrawal is stabilizing; however, continued medical monitoring is required to manage potential re-emergence of symptoms and ensure a safe transition.`,
-      resolved_risk: `Acute withdrawal has resolved; however, the medical risk profile associated with ${C()}'s withdrawal history continues to support the need for the current level of care.`,
-      resolved: `Withdrawal has been successfully managed and is no longer a primary driver for continued stay at this level.`,
+      ongoing: `${C()} continues to have significant active withdrawal symptoms that require ongoing medical withdrawal management.`,
+      stabilizing: `${C()}'s withdrawal symptoms are improving but remain clinically significant and continue to require medical monitoring and management.`,
+      fluctuating: `${C()}'s withdrawal symptoms are fluctuating, recurring, or not consistently controlled, requiring continued medical withdrawal management.`,
+      resolved: `No current withdrawal symptoms are reported in this continued-stay assessment; continued 3.7WM should not be justified by Dimension 1 unless another withdrawal-related medical need is documented.`,
     };
     if (d.csStatus && sm[d.csStatus]) p.push(sm[d.csStatus]);
     if (d.csProgress) p.push(d.csProgress);
+    if (d.csNeed) p.push(`Ongoing withdrawal-related medical management or monitoring: ${d.csNeed}`);
+    if (d.csStepdown) p.push(`Transition remains premature because: ${d.csStepdown}`);
   }
 
   if (type === 'discharge') {
@@ -6722,12 +6756,13 @@ function genDim2() {
 
   if (type === 'continued') {
     const sm = {
-      unresolved: `${C()}'s biomedical conditions remain active and require ongoing monitoring and management consistent with the current level of care.`,
-      improving: `${C()}'s medical status is improving with treatment; however, continued clinical oversight is required before a safe step-down can be initiated.`,
-      stable: `${C()}'s biomedical conditions are currently stable and are not functioning as a primary driver for continued stay at this level.`,
+      significant: `Ongoing withdrawal is causing or significantly worsening a biomedical concern for ${C()}, requiring continued monitoring or treatment within 3.7WM.`,
+      moderate: `Ongoing withdrawal is contributing to a biomedical concern for ${C()} that still requires monitoring or treatment.`,
+      minimal: `Ongoing withdrawal is not currently causing a significant biomedical concern in Dimension 2; this dimension does not independently support continued 3.7WM.`,
     };
     if (d.csStatus && sm[d.csStatus]) p.push(sm[d.csStatus]);
     if (d.csProgress) p.push(d.csProgress);
+    if (d.csNeed) p.push(`Withdrawal-related medical monitoring or intervention: ${d.csNeed}`);
   }
 
   if (type === 'discharge') {
@@ -6794,12 +6829,12 @@ function genDim3() {
 
   if (type === 'continued') {
     const sm = {
-      unstable: `${C()}'s psychiatric symptoms remain clinically significant and have not stabilized to a degree that would support a safe transition to a less intensive level of care.`,
-      stabilizing: `${C()}'s psychiatric status is showing improvement with treatment; however, continued clinical structure and support are required as stability is not yet adequately established.`,
-      improved_not_ready: `Symptom improvement has been noted during the current episode of care; however, ${C()} has not yet developed the coping capacity and behavioral stability necessary to safely engage in treatment at a reduced level of intensity.`,
+      significant: `Ongoing withdrawal is significantly affecting ${C()}'s emotional or cognitive functioning.`,
+      moderate: `Ongoing withdrawal is contributing to emotional or cognitive symptoms for ${C()}.`,
+      none: `Ongoing withdrawal is not currently affecting ${C()}'s mental or emotional functioning in Dimension 3; this dimension does not independently support continued 3.7WM.`,
     };
     if (d.csStatus && sm[d.csStatus]) p.push(sm[d.csStatus]);
-    if (d.csGoals) p.push(`Remaining psychiatric treatment goals include: ${d.csGoals}`);
+    if (d.csGoals) p.push(`Withdrawal-related mental, emotional, behavioral, or cognitive effects: ${d.csGoals}`);
   }
 
   if (type === 'discharge') {
@@ -6858,12 +6893,12 @@ function genDim4() {
 
   if (type === 'continued') {
     const sm = {
-      unchanged: `${C()}'s readiness to change and overall treatment engagement remain largely consistent with the clinical presentation at admission. Intensive motivational intervention continues to be necessary.`,
-      improving: `${C()}'s engagement and readiness to change are showing positive development; however, the degree of progress is not yet sufficient to sustain recovery gains in a less intensive level of care.`,
-      inconsistent: `${C()}'s treatment engagement has been inconsistent throughout the current episode of care, reflecting ongoing ambivalence that requires continued intensive clinical structure and motivational support.`,
+      significant: `Ongoing withdrawal is significantly limiting ${C()}'s ability to participate meaningfully in treatment.`,
+      moderate: `Ongoing withdrawal is interfering with ${C()}'s treatment participation to some degree.`,
+      none: `Ongoing withdrawal is not currently limiting ${C()}'s treatment participation in Dimension 4; this dimension does not independently support continued 3.7WM.`,
     };
     if (d.csStatus && sm[d.csStatus]) p.push(sm[d.csStatus]);
-    if (d.csGoals) p.push(d.csGoals);
+    if (d.csGoals) p.push(`Withdrawal-related treatment participation: ${d.csGoals}`);
   }
 
   if (type === 'discharge') {
@@ -6913,12 +6948,12 @@ function genDim5() {
 
   if (type === 'continued') {
     const sm = {
-      unresolved: `${C()}'s relapse risk remains clinically significant and would be substantially elevated by a reduction in the current intensity of services.`,
-      improving: `${C()}'s relapse prevention skills are developing; however, the degree of consolidation is not yet sufficient to support sustained recovery at a less intensive level of care.`,
-      setback: `${C()} experienced a relapse or near-relapse incident during the current episode of care, underscoring the continued need for intensive clinical structure and targeted relapse prevention intervention.`,
+      significant: `Ongoing withdrawal is significantly limiting ${C()}'s ability to participate in relapse-prevention and recovery work.`,
+      moderate: `Ongoing withdrawal is interfering with ${C()}'s ability to participate in relapse-prevention and recovery work to some degree.`,
+      none: `Ongoing withdrawal is not currently limiting ${C()}'s recovery work in Dimension 5; this dimension does not independently support continued 3.7WM.`,
     };
     if (d.csStatus && sm[d.csStatus]) p.push(sm[d.csStatus]);
-    if (d.csProgress) p.push(d.csProgress);
+    if (d.csProgress) p.push(`Withdrawal-related recovery barriers: ${d.csProgress}`);
   }
 
   if (type === 'discharge') {
@@ -6977,12 +7012,12 @@ function genDim6() {
 
   if (type === 'continued') {
     const sm = {
-      unchanged: `${C()}'s recovery environment has not materially improved since admission. Environmental risk factors remain present, and a safe, supported step-down plan has not yet been established.`,
-      partial: `Discharge and step-down planning is actively in progress. While some environmental progress has been made, the transition to a less intensive level of care has not yet been clinically secured.`,
-      improved: `Environmental conditions have shown meaningful improvement; however, ${C()} has not yet developed the recovery skills and community supports necessary to sustain treatment gains without the current level of clinical structure.`,
+      significant: `Ongoing withdrawal is significantly limiting ${C()}'s ability to prepare for or safely transition to the next level of care.`,
+      moderate: `Ongoing withdrawal is interfering with ${C()}'s ability to prepare for or safely transition to the next level of care to some degree.`,
+      none: `Ongoing withdrawal is not currently limiting ${C()}'s transition planning in Dimension 6; this dimension does not independently support continued 3.7WM.`,
     };
     if (d.csStatus && sm[d.csStatus]) p.push(sm[d.csStatus]);
-    if (d.csProgress) p.push(d.csProgress);
+    if (d.csProgress) p.push(`Withdrawal-related transition barrier: ${d.csProgress}`);
   }
 
   if (type === 'discharge') {
@@ -7083,18 +7118,21 @@ const DIM_REQUIRED = {
 
 // All continued stay fields across all dims
 const CS_REQUIRED = [
-  { get: () => state.dim1.csStatus,   grp: 'grp-dim1-cs-status',   dim: 1, label: 'Dim 1 — Current Withdrawal Status' },
-  { get: () => state.dim1.csProgress, grp: 'grp-dim1-cs-progress', dim: 1, label: 'Dim 1 — What is happening with the client right now?' },
-  { get: () => state.dim2.csStatus,   grp: 'grp-dim2-cs-status',   dim: 2, label: 'Dim 2 — Current Medical Status' },
-  { get: () => state.dim2.csProgress, grp: 'grp-dim2-cs-progress', dim: 2, label: 'Dim 2 — What is happening with the client medically right now?' },
-  { get: () => state.dim3.csStatus,   grp: 'grp-dim3-cs-status',   dim: 3, label: 'Dim 3 — Current Psychiatric Status' },
-  { get: () => state.dim3.csGoals,    grp: 'grp-dim3-cs-goals',    dim: 3, label: 'Dim 3 — What is happening emotionally or behaviorally right now?' },
-  { get: () => state.dim4.csStatus,   grp: 'grp-dim4-cs-status',   dim: 4, label: 'Dim 4 — Current Engagement Status' },
-  { get: () => state.dim4.csGoals,    grp: 'grp-dim4-cs-goals',    dim: 4, label: "Dim 4 — What shows the client\'s current readiness and engagement?" },
-  { get: () => state.dim5.csStatus,   grp: 'grp-dim5-cs-status',   dim: 5, label: 'Dim 5 — Current Relapse Risk Status' },
-  { get: () => state.dim5.csProgress, grp: 'grp-dim5-cs-progress', dim: 5, label: 'Dim 5 — What puts the client at risk of returning to use right now?' },
-  { get: () => state.dim6.csStatus,   grp: 'grp-dim6-cs-status',   dim: 6, label: 'Dim 6 — Current Environmental Status' },
-  { get: () => state.dim6.csProgress, grp: 'grp-dim6-cs-progress', dim: 6, label: "Dim 6 — What is happening in the client\'s recovery environment right now?" },
+  { get: () => state.dim1.csStatus,   grp: 'grp-dim1-cs-status',   dim: 1, label: 'Dim 1 — Current withdrawal status' },
+  { get: () => state.dim1.csProgress, grp: 'grp-dim1-cs-progress', dim: 1, label: 'Dim 1 — What withdrawal symptoms are still present?' },
+  { get: () => state.dim1.csNeed,     grp: 'grp-dim1-cs-need',     dim: 1, label: 'Dim 1 — Withdrawal-related medical management or monitoring' },
+  { get: () => state.dim1.csStepdown, grp: 'grp-dim1-cs-stepdown', dim: 1, label: 'Dim 1 — Why transition out of 3.7WM is not yet appropriate' },
+  { get: () => state.dim2.csStatus,   grp: 'grp-dim2-cs-status',   dim: 2, label: 'Dim 2 — How withdrawal is affecting biomedical status' },
+  { get: () => state.dim2.csProgress, grp: 'grp-dim2-cs-progress', dim: 2, label: 'Dim 2 — Withdrawal-related biomedical concern' },
+  { get: () => state.dim2.csNeed,     grp: 'grp-dim2-cs-need',     dim: 2, label: 'Dim 2 — Withdrawal-related medical monitoring or intervention' },
+  { get: () => state.dim3.csStatus,   grp: 'grp-dim3-cs-status',   dim: 3, label: 'Dim 3 — How withdrawal is affecting mental/emotional functioning' },
+  { get: () => state.dim3.csGoals,    grp: 'grp-dim3-cs-goals',    dim: 3, label: 'Dim 3 — Withdrawal-related mental/emotional effects' },
+  { get: () => state.dim4.csStatus,   grp: 'grp-dim4-cs-status',   dim: 4, label: 'Dim 4 — How withdrawal is affecting treatment participation' },
+  { get: () => state.dim4.csGoals,    grp: 'grp-dim4-cs-goals',    dim: 4, label: 'Dim 4 — Withdrawal-related treatment participation' },
+  { get: () => state.dim5.csStatus,   grp: 'grp-dim5-cs-status',   dim: 5, label: 'Dim 5 — How withdrawal is affecting recovery work' },
+  { get: () => state.dim5.csProgress, grp: 'grp-dim5-cs-progress', dim: 5, label: 'Dim 5 — Withdrawal-related recovery barriers' },
+  { get: () => state.dim6.csStatus,   grp: 'grp-dim6-cs-status',   dim: 6, label: 'Dim 6 — How withdrawal is affecting safe transition' },
+  { get: () => state.dim6.csProgress, grp: 'grp-dim6-cs-progress', dim: 6, label: 'Dim 6 — Withdrawal-related transition barrier' },
  ];
 
 const DC_REQUIRED = [
@@ -12599,8 +12637,8 @@ function doReset() {
   // Reset state dims
   Object.assign(state, {
     clientName:'', date: document.getElementById('docDate').value, dischargePrognosis:'',
-    dim1:{ severity:'', substances:'', lastUse:'', ciwa:'', cows:'', symptoms:[], complicatedHistory:'', notes:'', csStatus:'', csProgress:'', dcStatus:'' },
-    dim2:{ severity:'', conditions:'', impact:'', medications:'', notes:'', csStatus:'', csProgress:'', dcStatus:'' },
+    dim1:{ severity:'', substances:'', lastUse:'', ciwa:'', cows:'', symptoms:[], complicatedHistory:'', notes:'', csStatus:'', csProgress:'', csNeed:'', csStepdown:'', dcStatus:'' },
+    dim2:{ severity:'', conditions:'', impact:'', medications:'', notes:'', csStatus:'', csProgress:'', csNeed:'', dcStatus:'' },
     dim3:{ severity:'', diagnoses:'', noDx:false, symptoms:[], impact:'', notes:'', csStatus:'', csGoals:'', dcStatus:'' },
     dim4:{ stage:'', insight:'', engagement:'', barriers:'', locRationale:'', csStatus:'', csGoals:'', dcStatus:'' },
     dim5:{ risk:'', priorTx:'', triggers:[], coping:'', notes:'', csStatus:'', csProgress:'', dcStatus:'' },
@@ -12712,9 +12750,11 @@ function fillSampleClient() {
   document.querySelectorAll('#dim-1 .form-input').forEach(el => { if (el.placeholder.includes('48 hours')) el.value = '14 days prior to admission'; });
   state.dim1.complicatedHistory = 'none';
   document.querySelector('#dim-1 .form-select').value = 'none';
-  state.dim1.csStatus = 'resolved';
-  document.querySelector('#grp-dim1-cs-status select').value = 'resolved';
-  state.dim1.csProgress = 'Marcus successfully completed medically monitored withdrawal management prior to admission. No withdrawal symptoms have been present during the current episode of care.';
+  state.dim1.csStatus = 'ongoing';
+  document.querySelector('#grp-dim1-cs-status select').value = 'ongoing';
+  state.dim1.csProgress = 'Marcus continues to demonstrate tremors, diaphoresis, anxiety, and intermittent nausea. Symptoms have improved from admission but remain present and require ongoing assessment.';
+  state.dim1.csNeed = 'Nursing continues scheduled and PRN medication management with repeat withdrawal assessments and monitoring of vital signs. Symptoms improve after medication but recur between interventions.';
+  state.dim1.csStepdown = 'The client continues to have active withdrawal symptoms requiring medical monitoring and intervention that have not yet stabilized enough for transition out of 3.7WM.';
   document.querySelector('#grp-dim1-cs-progress textarea').value = state.dim1.csProgress;
 
   // ── DIM 2 ──
@@ -12726,9 +12766,10 @@ function fillSampleClient() {
   document.querySelector('#dim-2 .form-textarea').value = state.dim2.conditions;
   state.dim2.impact = 'Hypertension is medically stable and does not significantly impair treatment participation. Daily medication compliance is monitored by nursing staff.';
   document.querySelector('#grp-dim2-impact textarea').value = state.dim2.impact;
-  state.dim2.csStatus = 'stable';
-  document.querySelector('#grp-dim2-cs-status select').value = 'stable';
-  state.dim2.csProgress = 'Blood pressure readings have remained within normal limits throughout the current episode of care. Marcus is compliant with prescribed medications.';
+  state.dim2.csStatus = 'moderate';
+  document.querySelector('#grp-dim2-cs-status select').value = 'moderate';
+  state.dim2.csProgress = 'Ongoing withdrawal is contributing to poor oral intake, intermittent nausea, and sleep disruption, requiring continued monitoring of hydration and physical status.';
+  state.dim2.csNeed = 'Nursing continues to monitor intake, hydration, vital signs, and response to withdrawal medications.';
   document.querySelector('#grp-dim2-cs-progress textarea').value = state.dim2.csProgress;
 
   // ── DIM 3 ──
@@ -12743,9 +12784,9 @@ function fillSampleClient() {
   state.dim3.diagnoses = document.getElementById('dim3-dx-input').value;
   state.dim3.impact = 'Marcus\'s depressive symptoms — including persistent low mood, anhedonia, and sleep disturbance — significantly impair his capacity to engage consistently in treatment programming and apply recovery skills without daily clinical structure. His anxiety amplifies reactivity to interpersonal stressors, which have historically precipitated substance use.';
   document.querySelector('#grp-dim3-impact textarea').value = state.dim3.impact;
-  state.dim3.csStatus = 'stabilizing';
-  document.querySelector('#grp-dim3-cs-status select').value = 'stabilizing';
-  state.dim3.csGoals = 'Marcus continues to work toward mood stabilization and affect regulation. Passive suicidal ideation was reported in week two and required clinical intervention. He has not yet demonstrated the capacity to manage these symptoms without daily clinical support, and step-down is not appropriate at this time.';
+  state.dim3.csStatus = 'moderate';
+  document.querySelector('#grp-dim3-cs-status select').value = 'moderate';
+  state.dim3.csGoals = 'Ongoing withdrawal is contributing to increased anxiety, irritability, poor sleep, and difficulty concentrating. These symptoms are interfering with Marcus\'s ability to regulate emotions and remain focused during treatment activities.';
   document.querySelector('#grp-dim3-cs-goals textarea').value = state.dim3.csGoals;
   const dim3Sx = ['Depressed mood / anhedonia','Anxiety / panic','Passive suicidal ideation'];
   state.dim3.symptoms = [];
@@ -12769,9 +12810,9 @@ function fillSampleClient() {
   document.querySelector('#grp-dim4-barriers textarea').value = state.dim4.barriers;
   state.dim4.locRationale = 'The degree of ambivalence and inconsistent engagement present requires the daily motivational intervention and structured accountability available only within a residential treatment environment. A less intensive setting would not provide sufficient structure to sustain treatment participation at Marcus\'s current readiness level.';
   document.querySelector('#grp-dim4-rationale textarea').value = state.dim4.locRationale;
-  document.querySelector('#grp-dim4-cs-status select').value = 'inconsistent';
-  state.dim4.csStatus = 'inconsistent';
-  state.dim4.csGoals = 'Marcus has demonstrated some progress in acknowledging the connection between his substance use and life consequences. However, engagement remains inconsistent and his readiness to sustain recovery without external structure is not yet established. Continued motivational interviewing is necessary prior to step-down.';
+  document.querySelector('#grp-dim4-cs-status select').value = 'moderate';
+  state.dim4.csStatus = 'moderate';
+  state.dim4.csGoals = 'Ongoing withdrawal-related fatigue, anxiety, and difficulty concentrating are limiting Marcus\'s ability to remain engaged in groups and process treatment material for sustained periods.';
   document.querySelector('#grp-dim4-cs-goals textarea').value = state.dim4.csGoals;
 
   // ── DIM 5 ──
@@ -12789,9 +12830,9 @@ function fillSampleClient() {
   toggleChallenge('chal-dim5-coping', false);
   state.dim5.notes = 'Marcus has a history of two prior treatment episodes followed by relapse within 90 days. His primary relapse pattern involves return to alcohol use during periods of occupational stress, followed by escalation to cocaine. High craving intensity was reported during weeks one and two of treatment.';
   document.querySelector('#dim-5 .form-textarea').value = state.dim5.notes;
-  document.querySelector('#grp-dim5-cs-status select').value = 'improving';
-  state.dim5.csStatus = 'improving';
-  state.dim5.csProgress = 'Marcus has begun to identify primary relapse triggers including occupational stress, social isolation, and interpersonal conflict. He has practiced two coping strategies in session but has not yet demonstrated consistent independent application. Step-down is not clinically appropriate at this time.';
+  document.querySelector('#grp-dim5-cs-status select').value = 'moderate';
+  state.dim5.csStatus = 'moderate';
+  state.dim5.csProgress = 'Ongoing withdrawal-related discomfort, poor sleep, and anxiety are limiting Marcus\'s ability to focus on relapse-prevention work and practice coping strategies consistently.';
   document.querySelector('#grp-dim5-cs-progress textarea').value = state.dim5.csProgress;
   const dim5Triggers = ['Stress / life stressors','Emotional dysregulation','Interpersonal conflict'];
   state.dim5.triggers = [];
@@ -12814,9 +12855,9 @@ function fillSampleClient() {
   toggleChallenge('chal-dim6-support', false);
   state.dim6.notes = 'Marcus lives with his partner, who does not use substances but has expressed skepticism toward treatment. His primary social network includes several active substance users. He reports limited connection to recovery community resources in his area.';
   document.querySelector('#dim-6 .form-textarea').value = state.dim6.notes;
-  document.querySelector('#grp-dim6-cs-status select').value = 'partial';
-  state.dim6.csStatus = 'partial';
-  state.dim6.csProgress = 'Marcus and his clinician have begun identifying aftercare resources including a local IOP program and AA meeting options. His partner has agreed to participate in a family session this week. Discharge planning is in progress; a clinically appropriate step-down plan has not yet been established.';
+  document.querySelector('#grp-dim6-cs-status select').value = 'moderate';
+  state.dim6.csStatus = 'moderate';
+  state.dim6.csProgress = 'Ongoing withdrawal-related fatigue, anxiety, and impaired concentration are limiting Marcus\'s ability to participate fully in transition planning and prepare for the next level of care.';
   document.querySelector('#grp-dim6-cs-progress textarea').value = state.dim6.csProgress;
 
   // ── ITP ──
@@ -13630,6 +13671,7 @@ function snClear() {
 const nnState = {
   clientName:'', date: new Date().toISOString().split('T')[0],
   wdType:'',
+  documentationPurpose:'routine',
   symptoms:[], symptomDetail:'',
   ciwa:'', cows:'', cssa:'', awas:'', bp:'', pulse:'',
   mse: { appearance:[], behavior:[], loc:[], orientation:[], speech:[], mood:[], affect:[], thoughtContent:[], perception:[], memory:[], attention:[], insight:[], judgment:[], impulseControl:[] },
@@ -13639,6 +13681,7 @@ const nnState = {
   sleepHydrationNutrition:'',
   cravings: null, cravingsDetail:'',
   continuedNeed:'',
+  continuedSymptoms:'', continuedObservations:'', continuedInterventions:'', continuedResponse:'', continuedUnresolved:'',
 };
 
 const NN_SYMPTOMS = ['Anxiety','Tremors','Sweating','Nausea/vomiting','Diarrhea','Body aches','Restlessness','Insomnia','Chills/gooseflesh','Cravings','Headache','Hallucinations'];
@@ -13940,7 +13983,7 @@ function nnSectionsStatus() {
     { label: 'Psych', started: nnState.psychSymptoms.length > 0 },
     { label: 'Sleep', started: nnState.sleepHydrationNutrition.trim() !== '' },
     { label: 'Cravings', started: (nnState.cravings !== null && nnState.cravings !== undefined) || nnState.cravingsDetail.trim() !== '' },
-    { label: 'Continued Need', started: nnState.continuedNeed.trim() !== '' },
+    { label: '3.7WM Continued Stay', started: nnState.documentationPurpose === 'wm-continued' && (nnState.continuedNeed.trim() !== '' || nnState.continuedSymptoms.trim() !== '' || nnState.continuedObservations.trim() !== '' || nnState.continuedInterventions.trim() !== '' || nnState.continuedResponse.trim() !== '' || nnState.continuedUnresolved.trim() !== '') },
   ];
 }
 
@@ -13950,6 +13993,15 @@ function nnUpdateProgress() {
   const statuses = nnSectionsStatus();
   const startedCount = statuses.filter(s => s.started).length;
   el.textContent = `${startedCount} of ${statuses.length} sections started`;
+}
+
+function nnUpdateNursingPurpose() {
+  const isWM = nnState.documentationPurpose === 'wm-continued';
+  const sec = document.getElementById('nn-sec-continued');
+  const jump = document.getElementById('nn-continued-jump');
+  if (sec) sec.style.display = isWM ? 'block' : 'none';
+  if (jump) jump.style.display = isWM ? '' : 'none';
+  nnUpdateProgress();
 }
 
 function nnUpdateCloserButton() {
@@ -14093,8 +14145,15 @@ function nnFormatNote() {
   if (nnState.cravings !== null && nnState.cravings !== undefined) lines.push(`Client reports cravings rated ${nnState.cravings}/10.`);
   if (nnState.cravingsDetail) lines.push(nnState.cravingsDetail);
 
-  // Continued need
-  if (nnState.continuedNeed) lines.push(nnState.continuedNeed);
+  // 3.7WM continued stay request
+  if (nnState.documentationPurpose === 'wm-continued') {
+    if (nnState.continuedSymptoms) lines.push(`Withdrawal symptoms still present: ${nnState.continuedSymptoms}`);
+    if (nnState.continuedObservations) lines.push(`Objective physical observations: ${nnState.continuedObservations}`);
+    if (nnState.continuedInterventions) lines.push(`Ongoing nursing/medical interventions: ${nnState.continuedInterventions}`);
+    if (nnState.continuedResponse) lines.push(`Response to interventions: ${nnState.continuedResponse}`);
+    if (nnState.continuedUnresolved) lines.push(`Unresolved concern: ${nnState.continuedUnresolved}`);
+    if (nnState.continuedNeed) lines.push(`Continued 3.7WM need: ${nnState.continuedNeed}`);
+  }
 
   return lines.filter(Boolean).join('\n\n');
 }
@@ -14123,6 +14182,7 @@ function nnClear() {
   nnState.clientName = '';
   nnState.date = new Date().toISOString().split('T')[0];
   nnState.wdType = '';
+  nnState.documentationPurpose = 'routine';
   nnState.symptomDetail = '';
   nnState.ciwa = '';
   nnState.cows = '';
@@ -14136,6 +14196,7 @@ function nnClear() {
   nnState.cravings = null;
   nnState.cravingsDetail = '';
   nnState.continuedNeed = '';
+  nnState.continuedSymptoms = ''; nnState.continuedObservations = ''; nnState.continuedInterventions = ''; nnState.continuedResponse = ''; nnState.continuedUnresolved = '';
 
   // Arrays are cleared in place (not reassigned) so existing chip closures stay wired to the right object
   nnState.symptoms.length = 0;
@@ -14146,14 +14207,16 @@ function nnClear() {
   Object.keys(nnState.physical).forEach(k => { nnState.physical[k].length = 0; });
   Object.keys(nnState.medResponse).forEach(k => { nnState.medResponse[k].length = 0; });
 
-  ['nn-client','nn-symptom-detail','nn-ciwa','nn-cows','nn-cssa','nn-awas','nn-bp','nn-pulse','nn-med-detail','nn-si-detail','nn-sleep','nn-cravings-detail','nn-continued-need'].forEach(id => {
+  ['nn-client','nn-symptom-detail','nn-continued-symptoms','nn-continued-observations','nn-continued-interventions','nn-continued-response','nn-continued-unresolved','nn-ciwa','nn-cows','nn-cssa','nn-awas','nn-bp','nn-pulse','nn-med-detail','nn-si-detail','nn-sleep','nn-cravings-detail','nn-continued-need'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
   document.getElementById('nn-date').value = nnState.date;
   document.getElementById('nn-wd-type').value = '';
+  document.getElementById('nn-purpose').value = 'routine';
   document.getElementById('nn-cravings-select').value = '';
   nnUpdateCloserButton();
+  nnUpdateNursingPurpose();
   document.getElementById('nn-si-detail-wrap').style.display = 'none';
   document.querySelectorAll('#view-nn input[type="checkbox"]').forEach(cb => { cb.checked = false; });
   document.querySelectorAll('#view-nn .nn-accordion select').forEach(sel => { sel.value = ''; });
@@ -14166,6 +14229,8 @@ function nnClear() {
   document.getElementById('nnNoteOutput').textContent = '';
   nnUpdateProgress();
 }
+
+nnUpdateNursingPurpose();
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ASA NOTE
@@ -15091,11 +15156,15 @@ const TUT_TOOL_STEPS = [
   // ── NURSING NOTE ──────────────────────────────────────────────────────────
   { view:'nn', sel:'#view-nn .tool-nav', section:'Nursing Note', navigate:'nn',
     title:'Nursing Note',
-    body:'The Nursing Note tool formats shift assessment documentation for nursing staff — built together with the nursing coordinator. It covers withdrawal symptoms, objective findings, medications, and continued need for 3.7-WM level of care.' },
+    body:'The Nursing Note tool formats shift assessment documentation for nursing staff — built together with the nursing coordinator. It covers withdrawal symptoms, objective findings, medications, and, when selected, a focused 3.7-WM Continued Stay Request.' },
 
   { view:'nn', sel:'.nn-jump-nav', section:'Nursing Note', navigate:'nn',
     title:'Jump navigation',
     body:'This note has more sections than most — Details, Symptoms, Findings, Meds, Stability, Psych, Sleep, Cravings, and Continued Need. Use these links to jump straight to a section instead of scrolling through the whole form.' },
+
+  { view:'nn', sel:'#nn-purpose', section:'Nursing Note', navigate:'nn',
+    title:'Documentation purpose',
+    body:'Use Routine Nursing Note for the normal shift assessment. Select 3.7WM Continued Stay Request when you believe the client may need medical withdrawal management beyond Day 7. That selection opens focused questions about what remains unresolved and why continued 3.7WM is needed.' },
 
   { view:'nn', sel:'#nn-wd-type', section:'Nursing Note', navigate:'nn',
     title:'Withdrawal type',
@@ -15677,6 +15746,8 @@ function autosaveApply(snap) {
   autosaveSetGroupField('grp-dim1-notes', state.dim1.notes);
   autosaveSetGroupField('grp-dim1-cs-status', state.dim1.csStatus);
   autosaveSetGroupField('grp-dim1-cs-progress', state.dim1.csProgress);
+  autosaveSetGroupField('grp-dim1-cs-need', state.dim1.csNeed);
+  autosaveSetGroupField('grp-dim1-cs-stepdown', state.dim1.csStepdown);
   autosaveSetGroupField('grp-dim1-dc-status', state.dim1.dcStatus);
   autosaveSetGroupField('grp-dim2-conditions', state.dim2.conditions);
   autosaveSetGroupField('grp-dim2-impact', state.dim2.impact);
@@ -15684,6 +15755,7 @@ function autosaveApply(snap) {
   autosaveSetGroupField('grp-dim2-notes', state.dim2.notes);
   autosaveSetGroupField('grp-dim2-cs-status', state.dim2.csStatus);
   autosaveSetGroupField('grp-dim2-cs-progress', state.dim2.csProgress);
+  autosaveSetGroupField('grp-dim2-cs-need', state.dim2.csNeed);
   autosaveSetGroupField('grp-dim2-dc-status', state.dim2.dcStatus);
   if (!state.dim3.noDx) {
     const dxInput = document.getElementById('dim3-dx-input');
