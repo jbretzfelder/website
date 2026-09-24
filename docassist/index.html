@@ -1079,6 +1079,13 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   color: var(--text);
 }
 
+/* 3.7WM continued stay uses Nursing Note as the sole Dimension 2 source */
+.wm-continued-dim2 #grp-dim2-severity,
+.wm-continued-dim2 #grp-dim2-conditions,
+.wm-continued-dim2 #grp-dim2-impact,
+.wm-continued-dim2 #grp-dim2-medications,
+.wm-continued-dim2 #grp-dim2-notes { display:none !important; }
+
 .continued-section-title {
   font-size: 9px;
   font-weight: 700;
@@ -2891,27 +2898,10 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
 
         <div class="continued-section" id="dim2-cs" style="display:none">
-          <div class="continued-section-title">3.7WM Continued Stay — Dimension 2: Biomedical Conditions</div>
-          <div class="individualization-hint" style="margin-bottom:10px"><strong>For 3.7WM, do not document general medical history unless it is relevant to the current withdrawal episode.</strong> Explain whether ongoing withdrawal is causing, worsening, complicating, or requiring continued monitoring of the client's physical health.</div>
-          <div class="form-group" id="grp-dim2-cs-status">
-            <label class="form-label">How is ongoing withdrawal affecting the client's physical or medical condition?<span class="req-star">*</span></label>
-            <select class="form-select" onchange="state.dim2.csStatus=this.value;clearGrpError('grp-dim2-cs-status')">
-              <option value="">— Select —</option>
-              <option value="significant">Withdrawal is causing or significantly worsening a biomedical concern</option>
-              <option value="moderate">Withdrawal is contributing to a biomedical concern that still requires monitoring or treatment</option>
-              <option value="minimal">Withdrawal is not currently causing a significant biomedical concern in this dimension</option>
-            </select>
-          </div>
-          <div class="form-group" id="grp-dim2-cs-progress">
-            <label class="form-label">What physical or medical problem is still present because of, or complicated by, withdrawal?<span class="req-star">*</span></label>
-            <div class="individualization-hint"><strong>Describe the actual problem.</strong> Consider hydration, nutrition, sleep, blood pressure, heart rate, gastrointestinal symptoms, pain, weakness, coordination, medication effects, or other physical concerns only when they are connected to the current withdrawal episode.</div>
-            <textarea class="form-textarea" placeholder="Describe the specific withdrawal-related physical or medical concern that remains." oninput="state.dim2.csProgress=this.value;clearGrpError('grp-dim2-cs-progress')"></textarea>
-          </div>
-          <div class="form-group">
-            <label class="form-label">What medical monitoring or intervention is still required because of this withdrawal-related concern?<span class="req-star">*</span></label>
-            <div class="individualization-hint"><strong>Explain what staff still need to monitor, treat, reassess, or manage.</strong> If there is no withdrawal-related biomedical concern, state that clearly rather than forcing a connection.</div>
-            <textarea class="form-textarea" placeholder="Describe the ongoing medical monitoring or intervention, or state why withdrawal is not currently creating a biomedical need." oninput="state.dim2.csNeed=this.value"></textarea>
-          </div>
+          <div class="continued-section-title">3.7WM Continued Stay — Dimension 2: Nursing Documentation</div>
+          <div class="individualization-hint" style="margin-bottom:10px"><strong>This dimension is completed from the Nursing Note.</strong> Do not enter separate biomedical information here. The nursing assessment is the source documentation for Dimension 2 and is pulled into this section automatically. Complete the Nursing Note first, then review the information below for accuracy.</div>
+          <div id="dim2-nursing-pull" style="background:var(--output-bg);border:1px solid var(--border);border-radius:6px;padding:12px 14px;font-size:12px;line-height:1.6;color:var(--text-secondary);white-space:pre-wrap;min-height:90px">Complete the Nursing Note to populate Dimension 2.</div>
+          <div style="font-size:10px;color:var(--text-secondary);margin-top:7px">Pulled from Nursing Note. This content should reflect physical presentation, withdrawal symptoms, objective findings, medication/intervention needs, response, and unresolved medical concerns.</div>
         </div>
 
         <div class="discharge-section" id="dim2-dc" style="display:none">
@@ -3081,6 +3071,10 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
             <label class="form-label">What is the client unable or less able to do in treatment because of ongoing withdrawal?<span class="req-star">*</span></label>
             <div class="individualization-hint"><strong>Describe the functional effect.</strong> Consider concentration, ability to stay awake, tolerance of groups, ability to communicate, ability to process information, emotional regulation, completing assignments, or other treatment participation. Do not attribute poor engagement to withdrawal unless the clinical evidence supports that connection.</div>
             <textarea class="form-textarea" placeholder="Describe exactly how withdrawal is affecting the client's ability to participate, think, communicate, or complete treatment work." oninput="state.dim4.csGoals=this.value;clearGrpError('grp-dim4-cs-goals')"></textarea>
+          </div>
+          <div class="form-group" id="grp-dim4-cs-evidence">
+            <label class="form-label">What are you observing that demonstrates this effect on treatment participation?<span class="req-star">*</span></label>
+            <textarea class="form-textarea" placeholder="Describe the client's behavior, participation, attention, functioning, or treatment response that supports the withdrawal-related effect you documented above." oninput="state.dim4.csEvidence=this.value;clearGrpError('grp-dim4-cs-evidence')"></textarea>
           </div>
         </div>
 
@@ -5470,6 +5464,13 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       <!-- SECTION 7: 3.7WM CONTINUED STAY -->
       <div class="continued-section" id="nn-sec-continued" style="display:none;scroll-margin-top:46px">
         <div class="continued-section-title">3.7WM Continued Stay Request</div>
+        <div class="form-group" style="margin-bottom:10px">
+          <label class="sn-label">Documentation Purpose</label>
+          <select class="sn-select" id="nn-purpose-continued" onchange="nnState.documentationPurpose=this.value;nnUpdateNursingPurpose()">
+            <option value="wm-continued">3.7WM Continued Stay Request</option>
+            <option value="routine">Routine Nursing Note</option>
+          </select>
+        </div>
         <div class="individualization-hint" style="margin-bottom:10px"><strong>Use this section when you believe this client may need 3.7WM beyond Day 7.</strong> Document what you are actually seeing and doing. The goal is to make the unresolved medical withdrawal need clear, not to make the documentation sound more severe than the client is.</div>
         <div class="form-group"><label class="sn-label">What withdrawal symptoms are still present right now?</label><div class="sentence-hint" style="margin-bottom:6px">Describe what has not resolved, how often it is happening, and how much it is affecting the client.</div><textarea class="sn-textarea" id="nn-continued-symptoms" style="min-height:65px" placeholder="Describe the withdrawal symptoms that are still present and what you are observing." oninput="nnState.continuedSymptoms=this.value"></textarea></div>
         <div class="form-group"><label class="sn-label">What are you personally noticing about this client's physical condition?</label><div class="sentence-hint" style="margin-bottom:6px">Focus on what you can see or observe. Do not only enter a withdrawal score or repeat what the client reports.</div><textarea class="sn-textarea" id="nn-continued-observations" style="min-height:65px" placeholder="e.g. Visible tremors, diaphoresis, pacing, vomiting, poor oral intake, unsteady gait, confusion, difficulty remaining awake, or other observable findings." oninput="nnState.continuedObservations=this.value"></textarea></div>
@@ -6385,10 +6386,10 @@ const state = {
   loc: '', admissionType: 'initial', clientName: '', date: '', dischargePrognosis: '',
   dim1: { severity:'', substances:'', lastUse:'', ciwa:'', cows:'', symptoms:[], complicatedHistory:'', notes:'', csStatus:'', csProgress:'', csNeed:'', csStepdown:'', dcStatus:'' },
   dim2: { severity:'', conditions:'', impact:'', medications:'', notes:'', csStatus:'', csProgress:'', csNeed:'', dcStatus:'' },
-  dim3: { severity:'', diagnoses:'', noDx:false, symptoms:[], impact:'', notes:'', csStatus:'', csGoals:'', dcStatus:'' },
-  dim4: { stage:'', insight:'', engagement:'', barriers:'', locRationale:'', csStatus:'', csGoals:'', dcStatus:'' },
-  dim5: { risk:'', priorTx:'', triggers:[], coping:'', notes:'', csStatus:'', csProgress:'', dcStatus:'' },
-  dim6: { envRisk:'', living:'', support:'', risks:[], notes:'', csStatus:'', csProgress:'', dcStatus:'' },
+  dim3: { severity:'', diagnoses:'', noDx:false, symptoms:[], impact:'', notes:'', csStatus:'', csGoals:'', csRemaining:'', dcStatus:'' },
+  dim4: { stage:'', insight:'', engagement:'', barriers:'', locRationale:'', csStatus:'', csGoals:'', csEvidence:'', dcStatus:'' },
+  dim5: { risk:'', priorTx:'', triggers:[], coping:'', notes:'', csStatus:'', csProgress:'', csEvidence:'', dcStatus:'' },
+  dim6: { envRisk:'', living:'', support:'', risks:[], notes:'', csStatus:'', csProgress:'', csBarrier:'', dcStatus:'' },
 };
 
 // ═══════════════════════════════════════════════════
@@ -6559,6 +6560,7 @@ function setAdmissionType(type) {
   // Suppress challenge messages and consult alerts in discharge mode
   const dimContent = document.getElementById('dim-content');
   if (dimContent) dimContent.classList.toggle('discharge-mode', showDC);
+  updateLocFields();
 }
 
 function setDischargePrognosis(value, el) {
@@ -6575,6 +6577,7 @@ function showDim(num, el) {
   panel.classList.add('active');
   el.classList.add('active');
   fadeInPane(panel);
+  if (num === 2 && typeof nnUpdateDim2Pull === 'function') nnUpdateDim2Pull();
 }
 
 document.getElementById('locSelect').addEventListener('change', function() {
@@ -6613,6 +6616,8 @@ function updateDimBadges() {
 
 function updateLocFields() {
   const loc = state.loc;
+  const dimContent = document.getElementById('dim-content');
+  if (dimContent) dimContent.classList.toggle('wm-continued-dim2', loc === '3.7WM' && state.admissionType === 'continued');
   // CIWA/COWS scores and active withdrawal symptom checkboxes are only
   // relevant at 3.7WM. At all other LOCs these fields are hidden.
   const wmOnly = loc === '3.7WM' && state.admissionType !== 'discharge';
@@ -6725,6 +6730,7 @@ function genDim1() {
 }
 
 function genDim2() {
+  if (state.loc === '3.7WM' && state.admissionType === 'continued') return nnBuildDimension2Narrative();
   if (state.admissionType === 'discharge') { const m={stable:'biomedical status was stable',followup:'biomedical status was stable with follow-up needed',ongoing:'ongoing biomedical concerns remained'}; return state.dim2.dcStatus ? `At discharge on ${fmtDate(state.date)}, ${m[state.dim2.dcStatus]}.` : null; }
   const d = state.dim2, loc = state.loc, type = state.admissionType;
   const hasContent = d.severity || d.conditions || d.impact || d.medications || d.notes || d.csStatus || d.csProgress;
@@ -7122,18 +7128,19 @@ const CS_REQUIRED = [
   { get: () => state.dim1.csProgress, grp: 'grp-dim1-cs-progress', dim: 1, label: 'Dim 1 — What withdrawal symptoms are still present?' },
   { get: () => state.dim1.csNeed,     grp: 'grp-dim1-cs-need',     dim: 1, label: 'Dim 1 — Withdrawal-related medical management or monitoring' },
   { get: () => state.dim1.csStepdown, grp: 'grp-dim1-cs-stepdown', dim: 1, label: 'Dim 1 — Why transition out of 3.7WM is not yet appropriate' },
-  { get: () => state.dim2.csStatus,   grp: 'grp-dim2-cs-status',   dim: 2, label: 'Dim 2 — How withdrawal is affecting biomedical status' },
-  { get: () => state.dim2.csProgress, grp: 'grp-dim2-cs-progress', dim: 2, label: 'Dim 2 — Withdrawal-related biomedical concern' },
-  { get: () => state.dim2.csNeed,     grp: 'grp-dim2-cs-need',     dim: 2, label: 'Dim 2 — Withdrawal-related medical monitoring or intervention' },
-  { get: () => state.dim3.csStatus,   grp: 'grp-dim3-cs-status',   dim: 3, label: 'Dim 3 — How withdrawal is affecting mental/emotional functioning' },
+  { get: () => state.dim3.csStatus,   grp: 'grp-dim3-cs-status',   dim: 3, label: 'Dim 3 — Withdrawal effect on mental/emotional functioning' },
   { get: () => state.dim3.csGoals,    grp: 'grp-dim3-cs-goals',    dim: 3, label: 'Dim 3 — Withdrawal-related mental/emotional effects' },
-  { get: () => state.dim4.csStatus,   grp: 'grp-dim4-cs-status',   dim: 4, label: 'Dim 4 — How withdrawal is affecting treatment participation' },
+  { get: () => state.dim3.csRemaining,grp: 'grp-dim3-cs-remaining',dim: 3, label: 'Dim 3 — Observed evidence of withdrawal-related effect' },
+  { get: () => state.dim4.csStatus,   grp: 'grp-dim4-cs-status',   dim: 4, label: 'Dim 4 — Withdrawal effect on treatment participation' },
   { get: () => state.dim4.csGoals,    grp: 'grp-dim4-cs-goals',    dim: 4, label: 'Dim 4 — Withdrawal-related treatment participation' },
-  { get: () => state.dim5.csStatus,   grp: 'grp-dim5-cs-status',   dim: 5, label: 'Dim 5 — How withdrawal is affecting recovery work' },
+  { get: () => state.dim4.csEvidence, grp: 'grp-dim4-cs-evidence', dim: 4, label: 'Dim 4 — Observed evidence of treatment effect' },
+  { get: () => state.dim5.csStatus,   grp: 'grp-dim5-cs-status',   dim: 5, label: 'Dim 5 — Withdrawal effect on recovery work' },
   { get: () => state.dim5.csProgress, grp: 'grp-dim5-cs-progress', dim: 5, label: 'Dim 5 — Withdrawal-related recovery barriers' },
-  { get: () => state.dim6.csStatus,   grp: 'grp-dim6-cs-status',   dim: 6, label: 'Dim 6 — How withdrawal is affecting safe transition' },
+  { get: () => state.dim5.csEvidence, grp: 'grp-dim5-cs-evidence', dim: 5, label: 'Dim 5 — Observed evidence of recovery effect' },
+  { get: () => state.dim6.csStatus,   grp: 'grp-dim6-cs-status',   dim: 6, label: 'Dim 6 — Withdrawal effect on safe transition' },
   { get: () => state.dim6.csProgress, grp: 'grp-dim6-cs-progress', dim: 6, label: 'Dim 6 — Withdrawal-related transition barrier' },
- ];
+  { get: () => state.dim6.csBarrier,  grp: 'grp-dim6-cs-barrier',  dim: 6, label: 'Dim 6 — What must change before transition' },
+];
 
 const DC_REQUIRED = [
   { get: () => state.date, grp: 'grp-asam-date', dim: 1, label: 'Discharge Date' },
@@ -7218,10 +7225,25 @@ function validate() {
       check({ get: () => state.dim4.locRationale, grp: 'grp-dim4-rationale', label: 'Dim 4 — Why does the client need this level of care to stay engaged and make progress?' }, 4);
     }
 
-    // Continued stay — all CS fields required
+    // Continued stay. For 3.7WM, Dimension 2 comes directly from the Nursing Note.
     if (type === 'continued') {
-      CS_REQUIRED.forEach(item => check(item, item.dim));
+      const csFields = (state.loc === '3.7WM')
+        ? CS_REQUIRED.filter(item => item.dim !== 2)
+        : CS_REQUIRED;
+      csFields.forEach(item => check(item, item.dim));
 
+      if (state.loc === '3.7WM') {
+        const nursingPurpose = nnState && nnState.documentationPurpose === 'wm-continued';
+        if (!nursingPurpose) {
+          errors.push({ dim: 2, grp: 'nn-sec-continued', label: 'Dim 2 — Complete the Nursing Note using “3.7WM Continued Stay Request” first' });
+          const el = document.getElementById('nn-sec-continued');
+          if (el) el.classList.add('field-error');
+        } else if (!nnBuildDimension2Narrative().trim()) {
+          errors.push({ dim: 2, grp: 'nn-sec-continued', label: 'Dim 2 — Complete the Nursing Note using “3.7WM Continued Stay Request” first' });
+          const el = document.getElementById('nn-sec-continued');
+          if (el) el.classList.add('field-error');
+        }
+      }
     }
   }
 
@@ -13996,12 +14018,25 @@ function nnUpdateProgress() {
 }
 
 function nnUpdateNursingPurpose() {
-  const isWM = nnState.documentationPurpose === 'wm-continued';
-  const sec = document.getElementById('nn-sec-continued');
-  const jump = document.getElementById('nn-continued-jump');
-  if (sec) sec.style.display = isWM ? 'block' : 'none';
-  if (jump) jump.style.display = isWM ? '' : 'none';
+  const wm = nnState.documentationPurpose === 'wm-continued';
+  const nnView = document.getElementById('view-nn');
+  if (nnView) nnView.classList.toggle('wm-continued-mode', wm);
+  const routineIds = ['nn-sec-details','nn-sec-symptoms','nn-sec-objective','nn-sec-meds','nn-sec-stability','nn-sec-psych','nn-sec-sleep','nn-sec-cravings'];
+  routineIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = wm ? 'none' : '';
+  });
+  const jump = document.querySelector('#view-nn .nn-jump-nav');
+  if (jump) jump.style.display = wm ? 'none' : '';
+  const cont = document.getElementById('nn-sec-continued');
+  if (cont) cont.style.display = wm ? '' : 'none';
+  const mainPurpose = document.getElementById('nn-purpose');
+  if (mainPurpose) mainPurpose.value = nnState.documentationPurpose;
+  const contPurpose = document.getElementById('nn-purpose-continued');
+  if (contPurpose) contPurpose.value = nnState.documentationPurpose;
+  nnUpdateCloserButton();
   nnUpdateProgress();
+  if (typeof nnUpdateDim2Pull === 'function') nnUpdateDim2Pull();
 }
 
 function nnUpdateCloserButton() {
@@ -14099,7 +14134,48 @@ function nnBuildPhysicalNarrative() {
   return clauses.join(' ');
 }
 
+function nnBuildDimension2Narrative() {
+  const parts = [];
+  const Cn = nnState.clientName || 'Client';
+  if (nnState.continuedSymptoms) parts.push(`${Cn} continues to demonstrate withdrawal symptoms: ${nnState.continuedSymptoms}`);
+  if (nnState.continuedObservations) parts.push(`Objective nursing observations: ${nnState.continuedObservations}`);
+  const objective = [];
+  if (nnState.bp) objective.push(`BP ${nnState.bp}`);
+  if (nnState.pulse) objective.push(`pulse ${nnState.pulse}`);
+  if (nnState.ciwa) objective.push(`CIWA-Ar ${nnState.ciwa}`);
+  if (nnState.cows) objective.push(`COWS ${nnState.cows}`);
+  if (nnState.cssa) objective.push(`CSSA ${nnState.cssa}`);
+  if (nnState.awas) objective.push(`AWAS ${nnState.awas}`);
+  if (objective.length) parts.push(`Objective assessment findings: ${objective.join(', ')}.`);
+  if (nnState.meds.length) parts.push(`Withdrawal-related medications/interventions: ${nnJoinList(nnState.meds)}.`);
+  if (nnState.medResponse && Object.values(nnState.medResponse).flat().length) parts.push(Object.values(nnState.medResponse).flat().join(' '));
+  if (nnState.continuedInterventions) parts.push(`Nursing interventions and monitoring: ${nnState.continuedInterventions}`);
+  if (nnState.continuedResponse) parts.push(`Response to treatment and nursing interventions: ${nnState.continuedResponse}`);
+  if (nnState.continuedUnresolved) parts.push(`Unresolved medical concern: ${nnState.continuedUnresolved}`);
+  if (nnState.continuedNeed) parts.push(`Continued 3.7WM need: ${nnState.continuedNeed}`);
+  return parts.filter(Boolean).join(' ');
+}
+
+function nnUpdateDim2Pull() {
+  const el = document.getElementById('dim2-nursing-pull');
+  if (!el) return;
+  const narrative = nnBuildDimension2Narrative();
+  el.textContent = narrative || 'Complete the Nursing Note to populate Dimension 2.';
+}
+
+document.addEventListener('input', function(e) {
+  if (nnState.documentationPurpose === 'wm-continued' && e.target && e.target.closest && e.target.closest('#nn-sec-continued')) {
+    nnUpdateDim2Pull();
+  }
+});
+document.addEventListener('change', function(e) {
+  if (nnState.documentationPurpose === 'wm-continued' && e.target && e.target.closest && e.target.closest('#view-nn')) {
+    nnUpdateDim2Pull();
+  }
+});
+
 function nnFormatNote() {
+  if (nnState.documentationPurpose === 'wm-continued') return nnBuildDimension2Narrative();
   const wdLabels = { alcohol:'alcohol', opioid:'opioid', benzo:'benzodiazepine', stimulant:'stimulant', poly:'polysubstance' };
   const lines = [];
 
@@ -15765,6 +15841,7 @@ function autosaveApply(snap) {
   autosaveSetGroupField('grp-dim3-notes', state.dim3.notes);
   autosaveSetGroupField('grp-dim3-cs-status', state.dim3.csStatus);
   autosaveSetGroupField('grp-dim3-cs-goals', state.dim3.csGoals);
+  autosaveSetGroupField('grp-dim3-cs-remaining', state.dim3.csRemaining);
   autosaveSetGroupField('grp-dim3-dc-status', state.dim3.dcStatus);
   checkDim3ConsultFlag();
   autosaveSetGroupField('grp-dim4-stage', state.dim4.stage);
@@ -15773,17 +15850,20 @@ function autosaveApply(snap) {
   autosaveSetGroupField('grp-dim4-rationale', state.dim4.locRationale);
   autosaveSetGroupField('grp-dim4-cs-status', state.dim4.csStatus);
   autosaveSetGroupField('grp-dim4-cs-goals', state.dim4.csGoals);
+  autosaveSetGroupField('grp-dim4-cs-evidence', state.dim4.csEvidence);
   autosaveSetGroupField('grp-dim4-dc-status', state.dim4.dcStatus);
   autosaveSetGroupField('grp-dim5-priortx', state.dim5.priorTx);
   autosaveSetGroupField('grp-dim5-notes', state.dim5.notes);
   autosaveSetGroupField('grp-dim5-cs-status', state.dim5.csStatus);
   autosaveSetGroupField('grp-dim5-cs-progress', state.dim5.csProgress);
+  autosaveSetGroupField('grp-dim5-cs-evidence', state.dim5.csEvidence);
   autosaveSetGroupField('grp-dim5-dc-status', state.dim5.dcStatus);
   autosaveSetGroupField('grp-dim6-living', state.dim6.living);
   autosaveSetGroupField('grp-dim6-support', state.dim6.support);
   autosaveSetGroupField('grp-dim6-notes', state.dim6.notes);
   autosaveSetGroupField('grp-dim6-cs-status', state.dim6.csStatus);
   autosaveSetGroupField('grp-dim6-cs-progress', state.dim6.csProgress);
+  autosaveSetGroupField('grp-dim6-cs-barrier', state.dim6.csBarrier);
   autosaveSetGroupField('grp-dim6-dc-status', state.dim6.dcStatus);
   document.querySelectorAll('#discharge-prognosis-pills .severity-pill').forEach(p => p.classList.remove('selected'));
   if (state.dischargePrognosis) {
