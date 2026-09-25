@@ -2976,7 +2976,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
               <option value="moderate">Withdrawal is contributing to emotional or cognitive symptoms</option>
               <option value="none">Withdrawal is not currently affecting this dimension</option>
             </select>
-            <div class="challenge-msg" id="chal-dim3-cs-status">Document what you are actually observing. Withdrawal does not have to affect every dimension to support continued 3.7WM. If you are unsure whether an effect is withdrawal-related, consult nursing or your supervisor.</div>
+            <div class="challenge-msg" id="chal-dim3-cs-status">⚠ A "No" response may weaken the continued-stay rationale for this dimension and could contribute to a denial if other documentation does not establish ongoing need. If you are unsure how withdrawal is affecting this area, collaborate with your supervisor and nursing staff before finalizing your response.</div>
           </div>
           <div class="form-group" id="grp-dim3-cs-goals">
             <label class="form-label">What mental, emotional, behavioral, or cognitive changes are you seeing that are related to withdrawal?<span class="req-star">*</span></label>
@@ -3082,7 +3082,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
               <option value="moderate">Yes - withdrawal is interfering with participation to some degree</option>
               <option value="none">No - withdrawal is not currently limiting participation</option>
             </select>
-            <div class="challenge-msg" id="chal-dim4-cs-status">Document what you are actually observing. If withdrawal is not limiting treatment participation, select “No.” Continued 3.7WM should be supported by the current withdrawal-related needs documented elsewhere. Consult nursing or your supervisor if the connection is unclear.</div>
+            <div class="challenge-msg" id="chal-dim4-cs-status">⚠ A "No" response may weaken the continued-stay rationale for this dimension and could contribute to a denial if other documentation does not establish ongoing need. If you are unsure how withdrawal is affecting participation, collaborate with your supervisor and nursing staff before finalizing your response.</div>
           </div>
           <div class="form-group" id="grp-dim4-cs-goals">
             <label class="form-label">What is the client unable or less able to do in treatment because of ongoing withdrawal?<span class="req-star">*</span></label>
@@ -3186,7 +3186,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
               <option value="moderate">Yes - withdrawal is interfering with recovery work to some degree</option>
               <option value="none">No - withdrawal is not currently limiting recovery work</option>
             </select>
-            <div class="challenge-msg" id="chal-dim5-cs-status">Document what you are actually observing. If withdrawal is not affecting recovery work, select “No.” Do not attribute unrelated difficulties to withdrawal. Consult nursing or your supervisor if the connection is unclear.</div>
+            <div class="challenge-msg" id="chal-dim5-cs-status">⚠ A "No" response may weaken the continued-stay rationale for this dimension and could contribute to a denial if other documentation does not establish ongoing need. If you are unsure how withdrawal is affecting recovery work, collaborate with your supervisor and nursing staff before finalizing your response.</div>
           </div>
           <div class="form-group" id="grp-dim5-cs-progress">
             <label class="form-label">How is ongoing withdrawal affecting the client's ability to work on recovery and relapse prevention?<span class="req-star">*</span></label>
@@ -3292,7 +3292,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
               <option value="moderate">Yes - withdrawal is interfering with transition planning to some degree</option>
               <option value="none">No - withdrawal is not currently limiting transition planning</option>
             </select>
-            <div class="challenge-msg" id="chal-dim6-cs-status">Document what you are actually observing. If withdrawal is not creating a transition barrier in this dimension, select “No.” Explain any actual withdrawal-related need in the relevant fields; consult nursing or your supervisor if unsure.</div>
+            <div class="challenge-msg" id="chal-dim6-cs-status">⚠ A "No" response may weaken the continued-stay rationale for this dimension and could contribute to a denial if other documentation does not establish ongoing need. If you are unsure how withdrawal is affecting safe transition, collaborate with your supervisor and nursing staff before finalizing your response.</div>
           </div>
           <div class="form-group" id="grp-dim6-cs-progress">
             <label class="form-label">How is ongoing withdrawal affecting the client's ability to prepare for the next level of care?<span class="req-star">*</span></label>
@@ -5370,7 +5370,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         <span class="nn-jump-link" onclick="nnJumpTo('nn-sec-psych')">Psych</span>
         <span class="nn-jump-link" onclick="nnJumpTo('nn-sec-sleep')">Sleep</span>
         <span class="nn-jump-link" onclick="nnJumpTo('nn-sec-cravings')">Cravings</span>
-        <span class="nn-jump-link" id="nn-continued-jump" onclick="nnJumpTo('nn-sec-continued')">3.7WM Continued Stay</span>
+        <span class="nn-jump-link" id="nn-routine-need-jump" onclick="nnJumpTo('nn-sec-routine-need')">Continued Need</span>
       </div>
 
       <div class="nn-section-card" id="nn-sec-details">
@@ -5394,7 +5394,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </div>
         <div>
           <label class="sn-label">Withdrawal Type</label>
-          <select class="sn-select" id="nn-wd-type" onchange="nnState.wdType=this.value">
+          <select class="sn-select" id="nn-wd-type" onchange="nnState.wdType=this.value;nnUpdateRoutineCloserButton()">
             <option value="">— Select —</option>
             <option value="alcohol">Alcohol</option>
             <option value="opioid">Opioid</option>
@@ -5534,6 +5534,14 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         </select>
         <div class="sentence-hint" style="margin-bottom:6px">✎ Write in complete sentences — pasted verbatim</div>
         <textarea class="sn-textarea" id="nn-cravings-detail" style="min-height:55px" placeholder="e.g. Client verbalizes concern regarding ability to remain abstinent if discharged at this time." oninput="nnState.cravingsDetail=this.value"></textarea>
+      </div>
+
+      <!-- Routine nursing note: continued need (separate from the 3.7WM continued-stay request). -->
+      <div class="continued-section" id="nn-sec-routine-need" style="display:block;scroll-margin-top:46px">
+        <div class="continued-section-title">Continued Need for 3.7-WM</div>
+        <div class="sentence-hint" style="margin-bottom:6px">✎ Answers: why can't the client safely step down today? — pasted verbatim</div>
+        <textarea class="sn-textarea" id="nn-routine-continued-need" style="min-height:70px" placeholder="e.g. Client continues to experience active withdrawal symptoms requiring medication management and nursing monitoring. Has not yet achieved medical stability for transition to a lower level of care." oninput="nnState.routineContinuedNeed=this.value"></textarea>
+        <button type="button" class="sn-add-obj-btn" id="nn-routine-closer-btn" style="margin-top:8px" onclick="nnInsertRoutineCloser()">+ Insert suggested closing statement</button>
       </div>
 
       <!-- SECTION 7: 3.7WM CONTINUED STAY -->
@@ -7200,13 +7208,16 @@ const CS_REQUIRED_37WM = [
   { get: () => state.dim1.csStepdown, grp: 'grp-dim1-cs-stepdown', dim: 1, label: 'Dim 1 — Why transition out of 3.7WM is not yet appropriate' },
   { get: () => state.dim3.csStatus,   grp: 'grp-dim3-cs-status',   dim: 3, label: 'Dim 3 — Withdrawal effect on mental/emotional functioning' },
   { get: () => state.dim3.csGoals,    grp: 'grp-dim3-cs-goals',    dim: 3, label: 'Dim 3 — Withdrawal-related mental/emotional effects' },
+  { get: () => state.dim3.csRemaining,grp: 'grp-dim3-cs-remaining',dim: 3, label: 'Dim 3 — Observed evidence of withdrawal-related effect' },
   { get: () => state.dim4.csStatus,   grp: 'grp-dim4-cs-status',   dim: 4, label: 'Dim 4 — Withdrawal effect on treatment participation' },
   { get: () => state.dim4.csGoals,    grp: 'grp-dim4-cs-goals',    dim: 4, label: 'Dim 4 — Withdrawal-related treatment participation' },
   { get: () => state.dim4.csEvidence, grp: 'grp-dim4-cs-evidence', dim: 4, label: 'Dim 4 — Observed evidence of treatment effect' },
   { get: () => state.dim5.csStatus,   grp: 'grp-dim5-cs-status',   dim: 5, label: 'Dim 5 — Withdrawal effect on recovery work' },
   { get: () => state.dim5.csProgress, grp: 'grp-dim5-cs-progress', dim: 5, label: 'Dim 5 — Withdrawal-related recovery barriers' },
+  { get: () => state.dim5.csEvidence, grp: 'grp-dim5-cs-evidence', dim: 5, label: 'Dim 5 — Observed evidence of recovery effect' },
   { get: () => state.dim6.csStatus,   grp: 'grp-dim6-cs-status',   dim: 6, label: 'Dim 6 — Withdrawal effect on safe transition' },
   { get: () => state.dim6.csProgress, grp: 'grp-dim6-cs-progress', dim: 6, label: 'Dim 6 — Withdrawal-related transition barrier' },
+  { get: () => state.dim6.csBarrier,  grp: 'grp-dim6-cs-barrier',  dim: 6, label: 'Dim 6 — What must change before transition' },
 ];
 
 const CS_REQUIRED_GENERIC = [
@@ -13783,6 +13794,7 @@ const nnState = {
   medicalStability:[], psychSymptoms:[], siDetail:'',
   sleepHydrationNutrition:'',
   cravings: null, cravingsDetail:'',
+  routineContinuedNeed:'',
   continuedNeed:'',
   continuedSymptoms:'', continuedObservations:'', continuedInterventions:'', continuedResponse:'', continuedUnresolved:'',
 };
@@ -14061,6 +14073,31 @@ function nnExpandPopulated(containerId) {
   });
 }
 
+const NN_CLOSERS = {
+  alcohol: 'Client continues to experience active alcohol withdrawal symptoms requiring medication management, nursing assessment, and monitoring. Client has not yet achieved medical stability for transition to a lower level of care.',
+  opioid: 'Client continues to experience opioid withdrawal symptoms, elevated cravings, and requires ongoing medication management and nursing monitoring. Continued 3.7-WM services remain medically necessary.',
+  benzo: 'Withdrawal symptoms continue despite scheduled taper protocol. Nursing monitoring remains necessary due to risk of seizure activity and complications associated with benzodiazepine withdrawal. Continued 3.7-WM level of care remains medically necessary.',
+  stimulant: 'Client remains at elevated risk for relapse due to ongoing cravings and emotional instability. Client is not yet stable for transition to a lower level of care.',
+  poly: 'Client continues to experience withdrawal-related symptoms requiring medication management and nursing monitoring. Client has not yet achieved sufficient stability for safe transition to a lower level of care.'
+};
+
+function nnUpdateRoutineCloserButton() {
+  const btn = document.getElementById('nn-routine-closer-btn');
+  if (!btn) return;
+  const labels = { alcohol:'alcohol', opioid:'opioid', benzo:'benzodiazepine', stimulant:'stimulant', poly:'polysubstance' };
+  btn.textContent = nnState.wdType
+    ? `+ Insert suggested closing statement (${labels[nnState.wdType]})`
+    : '+ Insert suggested closing statement';
+}
+
+function nnInsertRoutineCloser() {
+  const template = NN_CLOSERS[nnState.wdType] || NN_CLOSERS.poly;
+  const textarea = document.getElementById('nn-routine-continued-need');
+  const existing = textarea.value.trim();
+  textarea.value = existing ? existing + '\n\n' + template : template;
+  nnState.routineContinuedNeed = textarea.value;
+}
+
 function nnJumpTo(sectionId) {
   const el = document.getElementById(sectionId);
   if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -14078,6 +14115,7 @@ function nnSectionsStatus() {
     { label: 'Psych', started: nnState.psychSymptoms.length > 0 },
     { label: 'Sleep', started: nnState.sleepHydrationNutrition.trim() !== '' },
     { label: 'Cravings', started: (nnState.cravings !== null && nnState.cravings !== undefined) || nnState.cravingsDetail.trim() !== '' },
+    { label: 'Continued Need', started: nnState.documentationPurpose === 'routine' && nnState.routineContinuedNeed.trim() !== '' },
     { label: '3.7WM Continued Stay', started: nnState.documentationPurpose === 'wm-continued' && (nnState.continuedNeed.trim() !== '' || nnState.continuedSymptoms.trim() !== '' || nnState.continuedObservations.trim() !== '' || nnState.continuedInterventions.trim() !== '' || nnState.continuedResponse.trim() !== '' || nnState.continuedUnresolved.trim() !== '') },
   ];
 }
@@ -14094,9 +14132,13 @@ function nnUpdateNursingPurpose() {
   const isWM = nnState.documentationPurpose === 'wm-continued';
   const sec = document.getElementById('nn-sec-continued');
   const jump = document.getElementById('nn-continued-jump');
+  const routineNeed = document.getElementById('nn-sec-routine-need');
+  const routineJump = document.getElementById('nn-routine-need-jump');
   const inputs = document.querySelector('#view-nn .session-inputs');
   if (sec) sec.style.display = isWM ? 'block' : 'none';
   if (jump) jump.style.display = isWM ? 'none' : '';
+  if (routineNeed) routineNeed.style.display = isWM ? 'none' : 'block';
+  if (routineJump) routineJump.style.display = isWM ? 'none' : '';
   if (inputs) inputs.classList.toggle('nn-wm-continued', isWM);
   nnUpdateProgress();
   if (typeof nnUpdateDim2Pull === 'function') nnUpdateDim2Pull();
@@ -14365,6 +14407,9 @@ function nnFormatNote() {
   if (nnState.cravings !== null && nnState.cravings !== undefined) lines.push(`Client reports cravings rated ${nnState.cravings}/10.`);
   if (nnState.cravingsDetail) lines.push(nnState.cravingsDetail);
 
+  // Routine nursing continued need: entered by nursing and pasted verbatim.
+  if (nnState.routineContinuedNeed) lines.push(nnState.routineContinuedNeed);
+
   return lines.filter(Boolean).join('\n\n');
 }
 
@@ -14426,6 +14471,7 @@ function nnClear() {
   nnState.sleepHydrationNutrition = '';
   nnState.cravings = null;
   nnState.cravingsDetail = '';
+  nnState.routineContinuedNeed = '';
   nnState.continuedNeed = '';
   nnState.continuedSymptoms = ''; nnState.continuedObservations = ''; nnState.continuedInterventions = ''; nnState.continuedResponse = ''; nnState.continuedUnresolved = '';
 
@@ -14438,7 +14484,7 @@ function nnClear() {
   Object.keys(nnState.physical).forEach(k => { nnState.physical[k].length = 0; });
   Object.keys(nnState.medResponse).forEach(k => { nnState.medResponse[k].length = 0; });
 
-  ['nn-client','nn-symptom-detail','nn-continued-symptoms','nn-continued-observations','nn-continued-interventions','nn-continued-response','nn-continued-unresolved','nn-ciwa','nn-cows','nn-cssa','nn-awas','nn-bp','nn-pulse','nn-med-detail','nn-si-detail','nn-sleep','nn-cravings-detail','nn-continued-need'].forEach(id => {
+  ['nn-client','nn-symptom-detail','nn-continued-symptoms','nn-continued-observations','nn-continued-interventions','nn-continued-response','nn-continued-unresolved','nn-ciwa','nn-cows','nn-cssa','nn-awas','nn-bp','nn-pulse','nn-med-detail','nn-si-detail','nn-sleep','nn-cravings-detail','nn-routine-continued-need','nn-continued-need'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
