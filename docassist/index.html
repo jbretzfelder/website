@@ -6692,11 +6692,12 @@ function updateLocFields() {
   };
   toggle('grp-dim1-scores', wmOnly && !continuedWM);
   toggle('grp-dim1-symptoms', wmOnly && !continuedWM);
-  toggle('grp-dim1-severity', !continuedWM);
-  toggle('grp-dim1-substances', !continuedWM);
-  toggle('grp-dim1-lastuse', !continuedWM);
-  toggle('grp-dim1-complicated', !continuedWM);
-  toggle('grp-dim1-notes', !continuedWM);
+  const showDim1Routine = state.admissionType !== 'discharge' && !continuedWM;
+  toggle('grp-dim1-severity', showDim1Routine);
+  toggle('grp-dim1-substances', showDim1Routine);
+  toggle('grp-dim1-lastuse', showDim1Routine);
+  toggle('grp-dim1-complicated', showDim1Routine);
+  toggle('grp-dim1-notes', showDim1Routine);
   updateContinuedStaySections();
 }
 
