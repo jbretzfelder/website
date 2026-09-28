@@ -1400,12 +1400,16 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 
 /* 3.7WM continued-stay nursing mode: show only the dedicated continued-stay box. */
 .session-inputs.nn-wm-continued > .nn-jump-nav,
-.session-inputs.nn-wm-continued > .nn-section-card {
+.session-inputs.nn-wm-continued > .nn-section-card,
+.session-inputs.nn-med-transition > .nn-jump-nav,
+.session-inputs.nn-med-transition > .nn-section-card {
   display: none;
 }
 /* Keep Shift Details visible so the client/date/documentation purpose remain available. */
 .session-inputs.nn-wm-continued > #nn-sec-details,
-.session-inputs.nn-wm-continued > #nn-sec-continued {
+.session-inputs.nn-wm-continued > #nn-sec-continued,
+.session-inputs.nn-med-transition > #nn-sec-details,
+.session-inputs.nn-med-transition > #nn-sec-med-transition {
   display: block !important;
 }
 .session-preview {
@@ -5400,6 +5404,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
           <select class="sn-select" id="nn-purpose" onchange="nnState.documentationPurpose=this.value;nnUpdateNursingPurpose()">
             <option value="routine">Routine Nursing Note</option>
             <option value="wm-continued">3.7WM Continued Stay Request</option>
+            <option value="medical-transition">3.7 Medical Transition</option>
           </select>
         </div>
         <div>
@@ -5566,6 +5571,17 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         <div class="form-group"><label class="sn-label">Based on your assessment, why does this client still need 3.7WM?</label><div class="sentence-hint" style="margin-bottom:6px">Use your own clinical judgment: connect the current findings, interventions, response, and unresolved concerns to the need for continued medically monitored withdrawal management. Do not use a generic conclusion.</div><textarea class="sn-textarea" id="nn-continued-need" required aria-required="true" style="min-height:75px" placeholder="Explain the specific unresolved problem that makes the client not ready to transition out of 3.7WM" oninput="nnState.continuedNeed=this.value"></textarea></div>
       </div>
 
+      <!-- SECTION 8: 3.7 MEDICAL TRANSITION -->
+      <div class="continued-section" id="nn-sec-med-transition" style="display:none;scroll-margin-top:46px">
+        <div class="continued-section-title">3.7 Medical Transition</div>
+        <div class="individualization-hint" style="margin-bottom:10px"><strong>Use this section when withdrawal-management-level care is no longer the primary need, but the client still requires 24-hour medically monitored care for an active medical problem.</strong> Document the client's current findings and your nursing judgment. The goal is to show why transition directly to 3.5 would be medically inappropriate today without overstating the client's condition.</div>
+        <div class="form-group"><label class="sn-label">1. Why is 3.7-WM no longer needed?</label><div class="sentence-hint" style="margin-bottom:6px">What current findings show that withdrawal has stabilized enough that withdrawal-management services are no longer the primary reason for 24-hour medical care?</div><textarea class="sn-textarea" id="nn-med-transition-wm-stable" required aria-required="true" style="min-height:70px" placeholder="Describe the current withdrawal status and the findings that support transition out of withdrawal-management-focused care." oninput="nnState.medTransitionWmStable=this.value"></textarea></div>
+        <div class="form-group"><label class="sn-label">2. What medical problem still requires 3.7 care?</label><div class="sentence-hint" style="margin-bottom:6px">Identify the active medical condition, symptom, abnormal finding, or treatment issue that prevents safe transition to 3.5. Include the current evidence supporting the concern — for example vital-sign trends, persistent symptoms, hydration/nutrition problems, medication effects or changes, infection/wound concerns, labs or follow-up needs, or an acute/exacerbated chronic condition.</div><textarea class="sn-textarea" id="nn-med-transition-problem" required aria-required="true" style="min-height:80px" placeholder="Describe the active medical problem and the current objective or clinical findings that make it significant today." oninput="nnState.medTransitionProblem=this.value"></textarea></div>
+        <div class="form-group"><label class="sn-label">3. What monitoring or treatment does that problem require?</label><div class="sentence-hint" style="margin-bottom:6px">What specifically must nursing or medical staff continue to assess, monitor, or treat? Include the frequency or intensity when relevant, and what changes you are watching for that could require intervention, provider notification, treatment modification, or transfer for higher medical care.</div><textarea class="sn-textarea" id="nn-med-transition-monitoring" required aria-required="true" style="min-height:80px" placeholder="Describe the nursing reassessment, vital-sign or symptom monitoring, medication monitoring, treatment, labs/diagnostics, provider follow-up, or other active medical care required." oninput="nnState.medTransitionMonitoring=this.value"></textarea></div>
+        <div class="form-group"><label class="sn-label">4. Why would 3.5 be medically insufficient right now?</label><div class="sentence-hint" style="margin-bottom:6px">Use your clinical judgment: if the client transitioned to 3.5 today, what medically necessary monitoring, intervention, or response capability would not be available at the frequency or intensity currently needed, and what reasonably foreseeable medical deterioration or complication could result? Connect that risk to the client's current findings.</div><textarea class="sn-textarea" id="nn-med-transition-lower-loc" required aria-required="true" style="min-height:90px" placeholder="Explain why 24-hour medically monitored care remains necessary and why 3.5 cannot safely meet the client's current medical needs." oninput="nnState.medTransitionLowerLoc=this.value"></textarea></div>
+        <div class="form-group"><label class="sn-label">5. What needs to improve before transition to 3.5?</label><div class="sentence-hint" style="margin-bottom:6px">Identify observable medical improvement or a treatment milestone that would show 24-hour medically monitored care is no longer necessary — such as stable vital signs, adequately controlled symptoms, established medication response, reduced need for nursing reassessment, adequate intake/hydration, sufficiently resolved findings, or provider clearance.</div><textarea class="sn-textarea" id="nn-med-transition-criteria" required aria-required="true" style="min-height:80px" placeholder="Describe the measurable clinical change or milestone that would support safe transition to 3.5." oninput="nnState.medTransitionCriteria=this.value"></textarea></div>
+      </div>
+
     </div><!-- /session-inputs -->
 
     <!-- RIGHT: PREVIEW -->
@@ -5593,7 +5609,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   </div><!-- /session-tab-inner -->
 
   <div class="generate-bar">
-    <span class="generate-bar-hint"><span class="nn-progress-hint" id="nn-progress-hint">0 of 8 sections started</span> · 3.7WM continued-stay fields are required; other blank fields are omitted.</span>
+    <span class="generate-bar-hint"><span class="nn-progress-hint" id="nn-progress-hint">0 of 8 sections started</span> · <span id="nn-required-hint">3.7WM continued-stay fields are required; other blank fields are omitted.</span></span>
     <div style="display:flex;gap:8px;">
       <button class="btn btn-ghost" onclick="nnClear()">Clear</button>
       <button class="btn btn-primary" onclick="nnGenerate()">Generate</button>
@@ -13870,6 +13886,7 @@ const nnState = {
   routineContinuedNeed:'',
   continuedNeed:'',
   continuedSymptoms:'', continuedObservations:'', continuedInterventions:'', continuedResponse:'', continuedUnresolved:'',
+  medTransitionWmStable:'', medTransitionProblem:'', medTransitionMonitoring:'', medTransitionLowerLoc:'', medTransitionCriteria:'',
 };
 
 const NN_SYMPTOMS = ['Anxiety','Tremors','Sweating','Nausea/vomiting','Diarrhea','Body aches','Restlessness','Insomnia','Chills/gooseflesh','Cravings','Headache','Hallucinations'];
@@ -14190,6 +14207,7 @@ function nnSectionsStatus() {
     { label: 'Cravings', started: (nnState.cravings !== null && nnState.cravings !== undefined) || nnState.cravingsDetail.trim() !== '' },
     { label: 'Continued Need', started: nnState.documentationPurpose === 'routine' && nnState.routineContinuedNeed.trim() !== '' },
     { label: '3.7WM Continued Stay', started: nnState.documentationPurpose === 'wm-continued' && (nnState.continuedNeed.trim() !== '' || nnState.continuedSymptoms.trim() !== '' || nnState.continuedObservations.trim() !== '' || nnState.continuedInterventions.trim() !== '' || nnState.continuedResponse.trim() !== '' || nnState.continuedUnresolved.trim() !== '') },
+    { label: '3.7 Medical Transition', started: nnState.documentationPurpose === 'medical-transition' && (nnState.medTransitionWmStable.trim() !== '' || nnState.medTransitionProblem.trim() !== '' || nnState.medTransitionMonitoring.trim() !== '' || nnState.medTransitionLowerLoc.trim() !== '' || nnState.medTransitionCriteria.trim() !== '') },
   ];
 }
 
@@ -14203,16 +14221,31 @@ function nnUpdateProgress() {
 
 function nnUpdateNursingPurpose() {
   const isWM = nnState.documentationPurpose === 'wm-continued';
+  const isMedicalTransition = nnState.documentationPurpose === 'medical-transition';
+  const isFocused = isWM || isMedicalTransition;
   const sec = document.getElementById('nn-sec-continued');
+  const medTransitionSec = document.getElementById('nn-sec-med-transition');
   const jump = document.getElementById('nn-continued-jump');
   const routineNeed = document.getElementById('nn-sec-routine-need');
   const routineJump = document.getElementById('nn-routine-need-jump');
   const inputs = document.querySelector('#view-nn .session-inputs');
   if (sec) sec.style.display = isWM ? 'block' : 'none';
-  if (jump) jump.style.display = isWM ? 'none' : '';
-  if (routineNeed) routineNeed.style.display = isWM ? 'none' : 'block';
-  if (routineJump) routineJump.style.display = isWM ? 'none' : '';
-  if (inputs) inputs.classList.toggle('nn-wm-continued', isWM);
+  if (medTransitionSec) medTransitionSec.style.display = isMedicalTransition ? 'block' : 'none';
+  if (jump) jump.style.display = isFocused ? 'none' : '';
+  if (routineNeed) routineNeed.style.display = isFocused ? 'none' : 'block';
+  if (routineJump) routineJump.style.display = isFocused ? 'none' : '';
+  if (inputs) {
+    inputs.classList.toggle('nn-wm-continued', isWM);
+    inputs.classList.toggle('nn-med-transition', isMedicalTransition);
+  }
+  const requiredHint = document.getElementById('nn-required-hint');
+  if (requiredHint) {
+    requiredHint.textContent = isWM
+      ? 'All 3.7WM continued-stay fields are required.'
+      : isMedicalTransition
+        ? 'All five 3.7 Medical Transition fields are required.'
+        : 'Blank fields are omitted from the note.';
+  }
   nnUpdateProgress();
   if (typeof nnUpdateDim2Pull === 'function') nnUpdateDim2Pull();
 }
@@ -14433,8 +14466,19 @@ document.addEventListener('change', function(e) {
   }
 });
 
+function nnBuildMedicalTransitionNarrative() {
+  const parts = [];
+  if (nnState.medTransitionWmStable) parts.push(`Withdrawal-management transition: ${nnState.medTransitionWmStable}`);
+  if (nnState.medTransitionProblem) parts.push(`Active medical need: ${nnState.medTransitionProblem}`);
+  if (nnState.medTransitionMonitoring) parts.push(`Required medical/nursing monitoring and treatment: ${nnState.medTransitionMonitoring}`);
+  if (nnState.medTransitionLowerLoc) parts.push(`Why 3.5 is medically insufficient at this time: ${nnState.medTransitionLowerLoc}`);
+  if (nnState.medTransitionCriteria) parts.push(`Criteria for transition to 3.5: ${nnState.medTransitionCriteria}`);
+  return parts.filter(Boolean).join(' ');
+}
+
 function nnFormatNote() {
   if (nnState.documentationPurpose === 'wm-continued') return nnBuildDimension2Narrative();
+  if (nnState.documentationPurpose === 'medical-transition') return nnBuildMedicalTransitionNarrative();
   const wdLabels = { alcohol:'alcohol', opioid:'opioid', benzo:'benzodiazepine', stimulant:'stimulant', poly:'polysubstance' };
   const lines = [];
 
@@ -14508,6 +14552,26 @@ function nnGenerate() {
       return;
     }
   }
+  if (nnState.documentationPurpose === 'medical-transition') {
+    const required = [
+      ['wm-stable', 'Why 3.7-WM is no longer needed', 'medTransitionWmStable'],
+      ['problem', 'Active medical problem requiring 3.7 care', 'medTransitionProblem'],
+      ['monitoring', 'Required monitoring or treatment', 'medTransitionMonitoring'],
+      ['lower-loc', 'Why 3.5 is medically insufficient', 'medTransitionLowerLoc'],
+      ['criteria', 'Criteria for transition to 3.5', 'medTransitionCriteria']
+    ];
+    const missing = required.filter(([, , stateKey]) => !String(nnState[stateKey] || '').trim());
+    required.forEach(([id, , stateKey]) => {
+      const el = document.getElementById('nn-med-transition-' + id);
+      if (el) el.style.borderColor = missing.some(([, , key]) => key === stateKey) ? '#c0392b' : '';
+    });
+    if (missing.length) {
+      alert('Complete all five 3.7 Medical Transition fields before generating. Missing: ' + missing.map(([, label]) => label).join('; ') + '. Document the client\'s actual findings and your clinical judgment.');
+      const first = document.getElementById('nn-med-transition-' + missing[0][0]);
+      if (first) { first.scrollIntoView({ behavior: 'smooth', block: 'center' }); first.focus(); }
+      return;
+    }
+  }
   document.getElementById('nnPlaceholder').style.display = 'none';
   const wrap = document.getElementById('nnNoteWrap');
   wrap.style.display = 'flex';
@@ -14547,6 +14611,7 @@ function nnClear() {
   nnState.routineContinuedNeed = '';
   nnState.continuedNeed = '';
   nnState.continuedSymptoms = ''; nnState.continuedObservations = ''; nnState.continuedInterventions = ''; nnState.continuedResponse = ''; nnState.continuedUnresolved = '';
+  nnState.medTransitionWmStable = ''; nnState.medTransitionProblem = ''; nnState.medTransitionMonitoring = ''; nnState.medTransitionLowerLoc = ''; nnState.medTransitionCriteria = '';
 
   // Arrays are cleared in place (not reassigned) so existing chip closures stay wired to the right object
   nnState.symptoms.length = 0;
@@ -14557,7 +14622,7 @@ function nnClear() {
   Object.keys(nnState.physical).forEach(k => { nnState.physical[k].length = 0; });
   Object.keys(nnState.medResponse).forEach(k => { nnState.medResponse[k].length = 0; });
 
-  ['nn-client','nn-symptom-detail','nn-continued-symptoms','nn-continued-observations','nn-continued-interventions','nn-continued-response','nn-continued-unresolved','nn-ciwa','nn-cows','nn-cssa','nn-awas','nn-bp','nn-pulse','nn-med-detail','nn-si-detail','nn-sleep','nn-cravings-detail','nn-routine-continued-need','nn-continued-need'].forEach(id => {
+  ['nn-client','nn-symptom-detail','nn-continued-symptoms','nn-continued-observations','nn-continued-interventions','nn-continued-response','nn-continued-unresolved','nn-ciwa','nn-cows','nn-cssa','nn-awas','nn-bp','nn-pulse','nn-med-detail','nn-si-detail','nn-sleep','nn-cravings-detail','nn-routine-continued-need','nn-continued-need','nn-med-transition-wm-stable','nn-med-transition-problem','nn-med-transition-monitoring','nn-med-transition-lower-loc','nn-med-transition-criteria'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
