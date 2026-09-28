@@ -6710,6 +6710,17 @@ function updateLocFields() {
   toggle('grp-dim1-lastuse', showDim1Routine);
   toggle('grp-dim1-complicated', showDim1Routine);
   toggle('grp-dim1-notes', showDim1Routine);
+
+  // A 3.7WM continued-stay ASAM is a focused authorization update, not a
+  // repeat comprehensive ASAM. Hide the routine assessment fields in
+  // Dimensions 3-6 and show only the targeted continued-stay questions.
+  const focused37WMHide = [
+    'grp-dim3-severity','grp-dim3-diagnoses','grp-dim3-symptoms','grp-dim3-impact','grp-dim3-notes',
+    'grp-dim4-stage','grp-dim4-insight','grp-dim4-engagement','grp-dim4-barriers','grp-dim4-rationale',
+    'grp-dim5-risk','grp-dim5-priortx','grp-dim5-triggers','grp-dim5-coping','grp-dim5-notes',
+    'grp-dim6-envrisk','grp-dim6-living','grp-dim6-support','grp-dim6-risks','grp-dim6-notes',
+  ];
+  focused37WMHide.forEach(id => toggle(id, !continuedWM && state.admissionType !== 'discharge'));
   updateContinuedStaySections();
 }
 
@@ -6845,6 +6856,18 @@ function genDim2() {
 function genDim3() {
   if (state.admissionType === 'discharge') { const m={stable:'emotional and behavioral status was stable',improved_ongoing:'emotional and behavioral status had improved, with ongoing symptoms present',ongoing:'ongoing emotional or behavioral clinical concerns remained'}; return state.dim3.dcStatus ? `At discharge on ${fmtDate(state.date)}, ${m[state.dim3.dcStatus]}.` : null; }
   const d = state.dim3, loc = state.loc, type = state.admissionType;
+  if (type === 'continued' && loc === '3.7WM') {
+    if (!d.csStatus && !d.csGoals) return null;
+    const sm = {
+      significant: `Ongoing withdrawal is significantly affecting ${C()}'s emotional or cognitive functioning.`,
+      moderate: `Ongoing withdrawal is contributing to emotional or cognitive symptoms for ${C()}.`,
+      none: `Ongoing withdrawal is not currently affecting ${C()}'s mental or emotional functioning in Dimension 3; this dimension does not independently support continued 3.7WM.`,
+    };
+    const p = [];
+    if (d.csStatus && sm[d.csStatus]) p.push(sm[d.csStatus]);
+    if (d.csGoals) p.push(`Withdrawal-related mental, emotional, behavioral, or cognitive effects: ${d.csGoals}`);
+    return p.join(' ');
+  }
   const hasContent = d.severity || d.diagnoses || d.noDx || d.symptoms.length || d.impact || d.notes || d.csStatus || d.csGoals;
   if (!hasContent) return null;
 
@@ -6925,7 +6948,20 @@ function genDim3() {
 function genDim4() {
   if (state.admissionType === 'discharge') { return state.dim4.dcStatus ? `At discharge on ${fmtDate(state.date)}, readiness to change was assessed as ${state.dim4.dcStatus}.` : null; }
   const d = state.dim4, loc = state.loc, type = state.admissionType;
-  const hasContent = d.stage || d.insight || d.engagement || d.barriers || d.locRationale || d.csStatus || d.csGoals || (type === 'continued' && loc === '3.7WM' && d.csEvidence);
+  if (type === 'continued' && loc === '3.7WM') {
+    if (!d.csStatus && !d.csGoals && !d.csEvidence) return null;
+    const sm = {
+      significant: `Ongoing withdrawal is significantly limiting ${C()}'s ability to participate meaningfully in treatment.`,
+      moderate: `Ongoing withdrawal is interfering with ${C()}'s treatment participation to some degree.`,
+      none: `Ongoing withdrawal is not currently limiting ${C()}'s treatment participation in Dimension 4; this dimension does not independently support continued 3.7WM.`,
+    };
+    const p = [];
+    if (d.csStatus && sm[d.csStatus]) p.push(sm[d.csStatus]);
+    if (d.csGoals) p.push(`Withdrawal-related treatment participation: ${d.csGoals}`);
+    if (d.csEvidence) p.push(`Observed evidence of withdrawal-related effects on treatment participation: ${d.csEvidence}`);
+    return p.join(' ');
+  }
+  const hasContent = d.stage || d.insight || d.engagement || d.barriers || d.locRationale || d.csStatus || d.csGoals;
   if (!hasContent) return null;
 
   let p = [];
@@ -6999,6 +7035,18 @@ function genDim4() {
 function genDim5() {
   if (state.admissionType === 'discharge') { return state.dim5.dcStatus ? `At discharge on ${fmtDate(state.date)}, relapse/continued use risk was assessed as ${state.dim5.dcStatus}.` : null; }
   const d = state.dim5, loc = state.loc, type = state.admissionType;
+  if (type === 'continued' && loc === '3.7WM') {
+    if (!d.csStatus && !d.csProgress) return null;
+    const sm = {
+      significant: `Ongoing withdrawal is significantly limiting ${C()}'s ability to participate in relapse-prevention and recovery work.`,
+      moderate: `Ongoing withdrawal is interfering with ${C()}'s ability to participate in relapse-prevention and recovery work to some degree.`,
+      none: `Ongoing withdrawal is not currently limiting ${C()}'s recovery work in Dimension 5; this dimension does not independently support continued 3.7WM.`,
+    };
+    const p = [];
+    if (d.csStatus && sm[d.csStatus]) p.push(sm[d.csStatus]);
+    if (d.csProgress) p.push(`Withdrawal-related recovery barriers: ${d.csProgress}`);
+    return p.join(' ');
+  }
   const hasContent = d.risk || d.priorTx || d.triggers.length || d.coping || d.notes || d.csStatus || d.csProgress;
   if (!hasContent) return null;
 
@@ -7063,6 +7111,18 @@ function genDim5() {
 function genDim6() {
   if (state.admissionType === 'discharge') { const m={supportive:'supportive',mixed:'mixed with limited support',high_risk:'high risk/unstable'}; if(!state.dim6.dcStatus)return null; const prognosis=state.dischargePrognosis ? ` Overall prognosis at discharge was assessed as ${state.dischargePrognosis}.` : ''; return `At discharge on ${fmtDate(state.date)}, the recovery environment was assessed as ${m[state.dim6.dcStatus]}.${prognosis}`; }
   const d = state.dim6, loc = state.loc, type = state.admissionType;
+  if (type === 'continued' && loc === '3.7WM') {
+    if (!d.csStatus && !d.csProgress) return null;
+    const sm = {
+      significant: `Ongoing withdrawal is significantly limiting ${C()}'s ability to prepare for or safely transition to the next level of care.`,
+      moderate: `Ongoing withdrawal is interfering with ${C()}'s ability to prepare for or safely transition to the next level of care to some degree.`,
+      none: `Ongoing withdrawal is not currently limiting ${C()}'s transition planning in Dimension 6; this dimension does not independently support continued 3.7WM.`,
+    };
+    const p = [];
+    if (d.csStatus && sm[d.csStatus]) p.push(sm[d.csStatus]);
+    if (d.csProgress) p.push(`Withdrawal-related transition barrier: ${d.csProgress}`);
+    return p.join(' ');
+  }
   const hasContent = d.envRisk || d.living || d.support || d.risks.length || d.notes || d.csStatus || d.csProgress;
   if (!hasContent) return null;
 
@@ -7222,16 +7282,13 @@ const CS_REQUIRED_37WM = [
   { get: () => state.dim1.csStepdown, grp: 'grp-dim1-cs-stepdown', dim: 1, label: 'Dim 1 — Why transition out of 3.7WM is not yet appropriate' },
   { get: () => state.dim3.csStatus,   grp: 'grp-dim3-cs-status',   dim: 3, label: 'Dim 3 — Withdrawal effect on mental/emotional functioning' },
   { get: () => state.dim3.csGoals,    grp: 'grp-dim3-cs-goals',    dim: 3, label: 'Dim 3 — Withdrawal-related mental/emotional effects' },
-  { get: () => state.dim3.csRemaining,grp: 'grp-dim3-cs-remaining',dim: 3, label: 'Dim 3 — Observed evidence of withdrawal-related effect' },
   { get: () => state.dim4.csStatus,   grp: 'grp-dim4-cs-status',   dim: 4, label: 'Dim 4 — Withdrawal effect on treatment participation' },
   { get: () => state.dim4.csGoals,    grp: 'grp-dim4-cs-goals',    dim: 4, label: 'Dim 4 — Withdrawal-related treatment participation' },
   { get: () => state.dim4.csEvidence, grp: 'grp-dim4-cs-evidence', dim: 4, label: 'Dim 4 — Observed evidence of treatment effect' },
   { get: () => state.dim5.csStatus,   grp: 'grp-dim5-cs-status',   dim: 5, label: 'Dim 5 — Withdrawal effect on recovery work' },
   { get: () => state.dim5.csProgress, grp: 'grp-dim5-cs-progress', dim: 5, label: 'Dim 5 — Withdrawal-related recovery barriers' },
-  { get: () => state.dim5.csEvidence, grp: 'grp-dim5-cs-evidence', dim: 5, label: 'Dim 5 — Observed evidence of recovery effect' },
   { get: () => state.dim6.csStatus,   grp: 'grp-dim6-cs-status',   dim: 6, label: 'Dim 6 — Withdrawal effect on safe transition' },
   { get: () => state.dim6.csProgress, grp: 'grp-dim6-cs-progress', dim: 6, label: 'Dim 6 — Withdrawal-related transition barrier' },
-  { get: () => state.dim6.csBarrier,  grp: 'grp-dim6-cs-barrier',  dim: 6, label: 'Dim 6 — What must change before transition' },
 ];
 
 const CS_REQUIRED_GENERIC = [
@@ -7328,12 +7385,13 @@ function validate() {
     // 3.7WM continued stay Dimension 1 uses the focused continued-stay
     // section instead of repeating the initial withdrawal assessment.
     cfg.primary.forEach(dimNum => {
-      if (type === 'continued' && state.loc === '3.7WM' && dimNum === 1) return;
+      if (type === 'continued' && state.loc === '3.7WM') return;
       (DIM_REQUIRED[dimNum] || []).forEach(item => check(item, dimNum));
     });
 
-    // Dim 4 barriers + rationale are always required (even when dim 4 isn't primary)
-    if (!cfg.primary.includes(4)) {
+    // Dim 4 barriers + rationale are always required for comprehensive ASAMs,
+    // but not for the focused 3.7WM continued-stay authorization update.
+    if (!cfg.primary.includes(4) && !(type === 'continued' && state.loc === '3.7WM')) {
       check({ get: () => state.dim4.barriers,     grp: 'grp-dim4-barriers',  label: 'Dim 4 — What is getting in the way of the client fully participating in treatment?' }, 4);
       check({ get: () => state.dim4.locRationale, grp: 'grp-dim4-rationale', label: 'Dim 4 — Why does the client need this level of care to stay engaged and make progress?' }, 4);
     }
