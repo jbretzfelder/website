@@ -1206,6 +1206,83 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 .continued-mode .dim-desc,
 .discharge-mode .dim-desc { font-size: 12px; line-height: 1.5; }
 
+/* Nursing Note left-panel visual consistency: align with ASAM question hierarchy. */
+#view-nn .session-inputs {
+  background: var(--surface);
+}
+#view-nn .nn-jump-nav {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+#view-nn .nn-section-card,
+#view-nn .continued-section {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  margin: 0 0 18px;
+}
+#view-nn .nn-section-card > .sn-section-title,
+#view-nn .continued-section > .sn-section-title,
+#view-nn .nn-section-card > .nn-group-heading {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.35;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--text);
+  padding: 0 0 9px;
+  margin: 0 0 12px;
+  border-bottom: 1px solid var(--border);
+}
+#view-nn .nn-section-card > .sn-meta-row,
+#view-nn .nn-section-card > div:not(.sn-section-title):not(.sn-meta-row):not([id$="-chips"]):not([id$="-wrap"]):not(.sentence-hint),
+#view-nn .continued-section > .form-group {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 13px 14px;
+  margin-bottom: 12px;
+}
+#view-nn .nn-section-card > .sn-meta-row {
+  padding: 13px 14px;
+  margin-bottom: 12px;
+}
+#view-nn .sn-label {
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.4;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--text);
+  margin-bottom: 7px;
+}
+#view-nn .sn-input,
+#view-nn .sn-select,
+#view-nn .sn-textarea {
+  font-size: 13px;
+  padding: 9px 10px;
+  border-radius: 6px;
+}
+#view-nn .sn-textarea { min-height: 82px; }
+#view-nn .sentence-hint,
+#view-nn .individualization-hint {
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+#view-nn .nn-group-heading {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--text);
+}
+#view-nn .sn-chip {
+  font-size: 12px;
+  padding: 7px 11px;
+}
+
 /* ─── RIGHT PANEL ─────────────────────────── */
 .right-panel {
   display: flex;
@@ -2650,7 +2727,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;margin-bottom:24px">This will load a sample client (Marcus) across every tool for testing or training. It will reset anything currently entered, the same as clicking Reset. This cannot be undone.</div>
     <div style="display:flex;gap:10px;justify-content:flex-end">
       <button class="btn btn-ghost" onclick="hideModal('sampleClientModal')">Cancel</button>
-      <button class="btn" style="background:var(--accent);color:white" onclick="hideModal('sampleClientModal');doReset();fillSampleClient()">Load Sample Client</button>
+      <button class="btn" style="background:var(--accent);color:white" onclick="hideModal('sampleClientModal');loadSampleClient()">Load Sample Client</button>
     </div>
   </div>
 </div>
@@ -2949,11 +3026,26 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
           </div>
         </div>
           <div class="continued-variant" id="dim1-cs-37" style="display:none">
-          <div class="individualization-hint" style="margin-bottom:10px"><strong>Keep it simple.</strong> Describe what is happening with the client now. You do not need to decide which level of care fits.</div>
-          <div class="form-group" id="grp-dim1-cs-37">
-            <label class="form-label">What withdrawal symptoms or withdrawal-related concerns are still present? Does the client's medical condition make this harder to manage? If yes, how?<span class="req-star">*</span></label>
-            <div class="individualization-hint">Describe what you are seeing now. If the client's medical condition affects the withdrawal concern, briefly explain how.</div>
-            <textarea class="form-textarea" placeholder="What withdrawal concern is still present? Does the medical condition affect it? If yes, how?" oninput="state.dim1.cs37=this.value;clearGrpError('grp-dim1-cs-37')"></textarea>
+          <div class="individualization-hint" style="margin-bottom:10px"><strong>Answer these one at a time.</strong> DocAssist will combine your answers into one Dimension 1 continued-stay narrative. Nursing supplies the biomedical/medical-monitoring documentation for 3.7MM.</div>
+          <div class="form-group" id="grp-dim1-cs-37-current">
+            <label class="form-label">What withdrawal symptoms or withdrawal-related concerns are happening right now?<span class="req-star">*</span></label>
+            <div class="individualization-hint">Describe the current withdrawal concern and whether the client’s medical condition is making it harder to manage.</div>
+            <textarea class="form-textarea" placeholder="Enter specific information for this review period." oninput="state.dim1.cs35Current=this.value;clearGrpError('grp-dim1-cs-37-current')"></textarea>
+          </div>
+          <div class="form-group" id="grp-dim1-cs-37-example">
+            <label class="form-label">What have you or other staff seen or heard that shows this is still a concern?<span class="req-star">*</span></label>
+            <div class="individualization-hint">Give a recent observation, client report, score, symptom pattern, or other specific example.</div>
+            <textarea class="form-textarea" placeholder="Enter specific information for this review period." oninput="state.dim1.cs35Example=this.value;clearGrpError('grp-dim1-cs-37-example')"></textarea>
+          </div>
+          <div class="form-group" id="grp-dim1-cs-37-impact">
+            <label class="form-label">How is this affecting treatment or safety right now, and what are staff doing about it?<span class="req-star">*</span></label>
+            <div class="individualization-hint">Describe the effect on the client, the support or monitoring being provided, and how the client is responding.</div>
+            <textarea class="form-textarea" placeholder="Enter specific information for this review period." oninput="state.dim1.cs35Impact=this.value;clearGrpError('grp-dim1-cs-37-impact')"></textarea>
+          </div>
+          <div class="form-group" id="grp-dim1-cs-37-remaining">
+            <label class="form-label">What still needs to improve before the client can safely transition to 3.5?<span class="req-star">*</span></label>
+            <div class="individualization-hint">Describe the unresolved withdrawal-related need that still requires the current level of support.</div>
+            <textarea class="form-textarea" placeholder="Enter specific information for this review period." oninput="state.dim1.cs35Remaining=this.value;clearGrpError('grp-dim1-cs-37-remaining')"></textarea>
           </div>
           </div>
           <div class="continued-variant" id="dim1-cs-35" style="display:none">
@@ -3200,10 +3292,26 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
           </div>
         </div>
           <div class="continued-variant" id="dim3-cs-37" style="display:none">
-          <div class="form-group" id="grp-dim3-cs-37">
-            <label class="form-label">What mental health, behavior, or thinking problems are happening now? How are they affecting the client today? Does the client's medical condition make this harder to manage? If yes, how?<span class="req-star">*</span></label>
-            <div class="individualization-hint">Describe what the client is doing or experiencing and how it is affecting them. If the medical condition makes it harder to manage, briefly explain how.</div>
-            <textarea class="form-textarea" placeholder="What is happening and how is it affecting the client? Does the medical condition make it harder to manage?" oninput="state.dim3.cs37=this.value;clearGrpError('grp-dim3-cs-37')"></textarea>
+          <div class="individualization-hint" style="margin-bottom:10px"><strong>Answer these one at a time.</strong> DocAssist will combine your answers into one Dimension 3 continued-stay narrative. Nursing supplies the biomedical/medical-monitoring documentation for 3.7MM.</div>
+          <div class="form-group" id="grp-dim3-cs-37-current">
+            <label class="form-label">What emotional, behavioral, or thinking problems are happening right now?<span class="req-star">*</span></label>
+            <div class="individualization-hint">Describe the current concern and whether the client’s medical condition is making it harder to manage.</div>
+            <textarea class="form-textarea" placeholder="Enter specific information for this review period." oninput="state.dim3.cs35Current=this.value;clearGrpError('grp-dim3-cs-37-current')"></textarea>
+          </div>
+          <div class="form-group" id="grp-dim3-cs-37-example">
+            <label class="form-label">What have you or other staff seen or heard that shows this is still a concern?<span class="req-star">*</span></label>
+            <div class="individualization-hint">Give a recent example of the client’s mood, behavior, thinking, functioning, or safety concern.</div>
+            <textarea class="form-textarea" placeholder="Enter specific information for this review period." oninput="state.dim3.cs35Example=this.value;clearGrpError('grp-dim3-cs-37-example')"></textarea>
+          </div>
+          <div class="form-group" id="grp-dim3-cs-37-impact">
+            <label class="form-label">How is this affecting treatment or safety right now, and what are staff doing about it?<span class="req-star">*</span></label>
+            <div class="individualization-hint">Describe the effect on treatment or functioning, the intervention or support being provided, and how the client is responding.</div>
+            <textarea class="form-textarea" placeholder="Enter specific information for this review period." oninput="state.dim3.cs35Impact=this.value;clearGrpError('grp-dim3-cs-37-impact')"></textarea>
+          </div>
+          <div class="form-group" id="grp-dim3-cs-37-remaining">
+            <label class="form-label">What still needs to improve before the client can safely transition to 3.5?<span class="req-star">*</span></label>
+            <div class="individualization-hint">Describe the emotional, behavioral, cognitive, or safety need that remains unresolved.</div>
+            <textarea class="form-textarea" placeholder="Enter specific information for this review period." oninput="state.dim3.cs35Remaining=this.value;clearGrpError('grp-dim3-cs-37-remaining')"></textarea>
           </div>
           </div>
           <div class="continued-variant" id="dim3-cs-35" style="display:none">
@@ -3346,10 +3454,26 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
           </div>
         </div>
           <div class="continued-variant" id="dim4-cs-37" style="display:none">
-          <div class="form-group" id="grp-dim4-cs-37">
-            <label class="form-label">What is making it hard for the client to take part in treatment or follow recommendations right now? Does the client's medical condition make this harder? If yes, how?<span class="req-star">*</span></label>
-            <div class="individualization-hint">Describe what is getting in the way of treatment. If the medical condition adds to the problem, briefly explain how.</div>
-            <textarea class="form-textarea" placeholder="What is getting in the way of treatment? Does the medical condition make it harder? If yes, how?" oninput="state.dim4.cs37=this.value;clearGrpError('grp-dim4-cs-37')"></textarea>
+          <div class="individualization-hint" style="margin-bottom:10px"><strong>Answer these one at a time.</strong> DocAssist will combine your answers into one Dimension 4 continued-stay narrative. Nursing supplies the biomedical/medical-monitoring documentation for 3.7MM.</div>
+          <div class="form-group" id="grp-dim4-cs-37-current">
+            <label class="form-label">Where is the client still having difficulty participating in treatment or following recommendations?<span class="req-star">*</span></label>
+            <div class="individualization-hint">Describe the current engagement, readiness, insight, or follow-through problem. Include whether the medical condition is contributing.</div>
+            <textarea class="form-textarea" placeholder="Enter specific information for this review period." oninput="state.dim4.cs35Current=this.value;clearGrpError('grp-dim4-cs-37-current')"></textarea>
+          </div>
+          <div class="form-group" id="grp-dim4-cs-37-example">
+            <label class="form-label">What have you or other staff seen that shows this is still a concern?<span class="req-star">*</span></label>
+            <div class="individualization-hint">Give a recent example involving participation, follow-through, accepting feedback, completing treatment work, or needing staff direction.</div>
+            <textarea class="form-textarea" placeholder="Enter specific information for this review period." oninput="state.dim4.cs35Example=this.value;clearGrpError('grp-dim4-cs-37-example')"></textarea>
+          </div>
+          <div class="form-group" id="grp-dim4-cs-37-impact">
+            <label class="form-label">What are staff doing to address this, and how is the client responding?<span class="req-star">*</span></label>
+            <div class="individualization-hint">Describe the current intervention, prompting, structure, or support and the client’s response.</div>
+            <textarea class="form-textarea" placeholder="Enter specific information for this review period." oninput="state.dim4.cs35Impact=this.value;clearGrpError('grp-dim4-cs-37-impact')"></textarea>
+          </div>
+          <div class="form-group" id="grp-dim4-cs-37-remaining">
+            <label class="form-label">What still needs to improve before the client can safely transition to 3.5?<span class="req-star">*</span></label>
+            <div class="individualization-hint">Describe what the client still needs to demonstrate or manage with less intensive structure.</div>
+            <textarea class="form-textarea" placeholder="Enter specific information for this review period." oninput="state.dim4.cs35Remaining=this.value;clearGrpError('grp-dim4-cs-37-remaining')"></textarea>
           </div>
           </div>
           <div class="continued-variant" id="dim4-cs-35" style="display:none">
@@ -3482,10 +3606,26 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
           </div>
         </div>
           <div class="continued-variant" id="dim5-cs-37" style="display:none">
-          <div class="form-group" id="grp-dim5-cs-37">
-            <label class="form-label">What makes the client likely to use again right now? What could happen if the client uses again? Does the client's medical condition make that risk worse? If yes, how?<span class="req-star">*</span></label>
-            <div class="individualization-hint">Describe what is putting the client at risk of using and what could happen if they use. If the medical condition makes that risk worse, briefly explain how.</div>
-            <textarea class="form-textarea" placeholder="Why might the client use again? What could happen if they do? Does the medical condition make that risk worse?" oninput="state.dim5.cs37=this.value;clearGrpError('grp-dim5-cs-37')"></textarea>
+          <div class="individualization-hint" style="margin-bottom:10px"><strong>Answer these one at a time.</strong> DocAssist will combine your answers into one Dimension 5 continued-stay narrative. Nursing supplies the biomedical/medical-monitoring documentation for 3.7MM.</div>
+          <div class="form-group" id="grp-dim5-cs-37-current">
+            <label class="form-label">What is putting the client at risk of returning to substance use right now?<span class="req-star">*</span></label>
+            <div class="individualization-hint">Describe current cravings, triggers, urges, patterns, limited coping, or other return-to-use risks. Include whether the medical condition increases the concern.</div>
+            <textarea class="form-textarea" placeholder="Enter specific information for this review period." oninput="state.dim5.cs35Current=this.value;clearGrpError('grp-dim5-cs-37-current')"></textarea>
+          </div>
+          <div class="form-group" id="grp-dim5-cs-37-example">
+            <label class="form-label">What recent information shows this risk is still present?<span class="req-star">*</span></label>
+            <div class="individualization-hint">Give a recent client report, behavior, trigger, craving, near-use situation, or other specific evidence.</div>
+            <textarea class="form-textarea" placeholder="Enter specific information for this review period." oninput="state.dim5.cs35Example=this.value;clearGrpError('grp-dim5-cs-37-example')"></textarea>
+          </div>
+          <div class="form-group" id="grp-dim5-cs-37-impact">
+            <label class="form-label">How is treatment addressing this risk, and how is the client responding?<span class="req-star">*</span></label>
+            <div class="individualization-hint">Describe relapse-prevention work, coping practice, staff support, and the client’s current response or progress.</div>
+            <textarea class="form-textarea" placeholder="Enter specific information for this review period." oninput="state.dim5.cs35Impact=this.value;clearGrpError('grp-dim5-cs-37-impact')"></textarea>
+          </div>
+          <div class="form-group" id="grp-dim5-cs-37-remaining">
+            <label class="form-label">What still needs to improve before the client can safely transition to 3.5?<span class="req-star">*</span></label>
+            <div class="individualization-hint">Describe the coping, stability, planning, or risk reduction that is still needed before less intensive care is appropriate.</div>
+            <textarea class="form-textarea" placeholder="Enter specific information for this review period." oninput="state.dim5.cs35Remaining=this.value;clearGrpError('grp-dim5-cs-37-remaining')"></textarea>
           </div>
           </div>
           <div class="continued-variant" id="dim5-cs-35" style="display:none">
@@ -3624,10 +3764,26 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
           </div>
         </div>
           <div class="continued-variant" id="dim6-cs-37" style="display:none">
-          <div class="form-group" id="grp-dim6-cs-37">
-            <label class="form-label">What problems with housing, support, or discharge planning could make it unsafe for the client to leave this level of care right now? Does the client's medical condition make this harder? If yes, how?<span class="req-star">*</span></label>
-            <div class="individualization-hint">Describe what is not ready or safe yet. If the medical condition makes the discharge or support problem harder, briefly explain how.</div>
-            <textarea class="form-textarea" placeholder="What is not ready or safe yet? Does the medical condition make it harder? If yes, how?" oninput="state.dim6.cs37=this.value;clearGrpError('grp-dim6-cs-37')"></textarea>
+          <div class="individualization-hint" style="margin-bottom:10px"><strong>Answer these one at a time.</strong> DocAssist will combine your answers into one Dimension 6 continued-stay narrative. Nursing supplies the biomedical/medical-monitoring documentation for 3.7MM.</div>
+          <div class="form-group" id="grp-dim6-cs-37-current">
+            <label class="form-label">What housing, support, or discharge barriers are not ready or safe yet?<span class="req-star">*</span></label>
+            <div class="individualization-hint">Describe the current recovery-environment or transition concern. Include whether the medical condition makes a safe transition harder.</div>
+            <textarea class="form-textarea" placeholder="Enter specific information for this review period." oninput="state.dim6.cs35Current=this.value;clearGrpError('grp-dim6-cs-37-current')"></textarea>
+          </div>
+          <div class="form-group" id="grp-dim6-cs-37-example">
+            <label class="form-label">What is happening right now that shows this barrier is still present?<span class="req-star">*</span></label>
+            <div class="individualization-hint">Give a specific current example involving housing, supports, transportation, appointments, access to care, or another transition need.</div>
+            <textarea class="form-textarea" placeholder="Enter specific information for this review period." oninput="state.dim6.cs35Example=this.value;clearGrpError('grp-dim6-cs-37-example')"></textarea>
+          </div>
+          <div class="form-group" id="grp-dim6-cs-37-impact">
+            <label class="form-label">What are staff doing to address the barrier, and what progress has been made?<span class="req-star">*</span></label>
+            <div class="individualization-hint">Describe the discharge-planning work, coordination, support, and the client’s current response or progress.</div>
+            <textarea class="form-textarea" placeholder="Enter specific information for this review period." oninput="state.dim6.cs35Impact=this.value;clearGrpError('grp-dim6-cs-37-impact')"></textarea>
+          </div>
+          <div class="form-group" id="grp-dim6-cs-37-remaining">
+            <label class="form-label">What still needs to be in place before the client can safely transition to 3.5?<span class="req-star">*</span></label>
+            <div class="individualization-hint">Describe the remaining support, coordination, stability, or recovery-environment need.</div>
+            <textarea class="form-textarea" placeholder="Enter specific information for this review period." oninput="state.dim6.cs35Remaining=this.value;clearGrpError('grp-dim6-cs-37-remaining')"></textarea>
           </div>
           </div>
           <div class="continued-variant" id="dim6-cs-35" style="display:none">
@@ -5870,7 +6026,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
           <select class="sn-select" id="nn-purpose" onchange="nnState.documentationPurpose=this.value;nnUpdateNursingPurpose()">
             <option value="routine">Routine Nursing Note</option>
             <option value="wm-continued">3.7WM Continued Stay Request</option>
-            <option value="medical-transition">3.7 Medical Transition</option>
+            <option value="medical-transition">3.7WM to 3.7MM Transition</option>
           </select>
         </div>
         <div>
@@ -6038,7 +6194,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
       <!-- SECTION 8: 3.7 MEDICAL TRANSITION -->
       <div class="continued-section" id="nn-sec-med-transition" style="display:none;scroll-margin-top:46px">
         <div class="individualization-hint" style="margin-bottom:10px"><strong>Use this section when withdrawal-management-level care is no longer the primary need, but the client still requires 24-hour medically monitored care for an active medical problem.</strong> Document the client's current findings and your nursing judgment. The goal is to show why transition directly to 3.5 would be medically inappropriate today without overstating the client's condition.</div>
-        <div class="form-group"><label class="sn-label">1. Why is 3.7-WM no longer needed?</label><div class="sentence-hint" style="margin-bottom:6px">What current findings show that withdrawal has stabilized enough that withdrawal-management services are no longer the primary reason for 24-hour medical care?</div><textarea class="sn-textarea" id="nn-med-transition-wm-stable" required aria-required="true" style="min-height:70px" placeholder="Describe the current withdrawal status and the findings that support transition out of withdrawal-management-focused care." oninput="nnState.medTransitionWmStable=this.value"></textarea></div>
+        <div class="form-group"><label class="sn-label">1. Why is 3.7WM no longer needed?</label><div class="sentence-hint" style="margin-bottom:6px">What current findings show that withdrawal has stabilized enough that withdrawal-management services are no longer the primary reason for 24-hour medical care?</div><textarea class="sn-textarea" id="nn-med-transition-wm-stable" required aria-required="true" style="min-height:70px" placeholder="Describe the current withdrawal status and the findings that support transition out of withdrawal-management-focused care." oninput="nnState.medTransitionWmStable=this.value"></textarea></div>
         <div class="form-group"><label class="sn-label">2. What medical problem still requires 3.7 care?</label><div class="sentence-hint" style="margin-bottom:6px">Identify the active medical condition, symptom, abnormal finding, or treatment issue that prevents safe transition to 3.5. Include the current evidence supporting the concern — for example vital-sign trends, persistent symptoms, hydration/nutrition problems, medication effects or changes, infection/wound concerns, labs or follow-up needs, or an acute/exacerbated chronic condition.</div><textarea class="sn-textarea" id="nn-med-transition-problem" required aria-required="true" style="min-height:80px" placeholder="Describe the active medical problem and the current objective or clinical findings that make it significant today." oninput="nnState.medTransitionProblem=this.value"></textarea></div>
         <div class="form-group"><label class="sn-label">3. What monitoring or treatment does that problem require?</label><div class="sentence-hint" style="margin-bottom:6px">What specifically must nursing or medical staff continue to assess, monitor, or treat? Include the frequency or intensity when relevant, and what changes you are watching for that could require intervention, provider notification, treatment modification, or transfer for higher medical care.</div><textarea class="sn-textarea" id="nn-med-transition-monitoring" required aria-required="true" style="min-height:80px" placeholder="Describe the nursing reassessment, vital-sign or symptom monitoring, medication monitoring, treatment, labs/diagnostics, provider follow-up, or other active medical care required." oninput="nnState.medTransitionMonitoring=this.value"></textarea></div>
         <div class="form-group"><label class="sn-label">4. Why would 3.5 be medically insufficient right now?</label><div class="sentence-hint" style="margin-bottom:6px">Use your clinical judgment: if the client transitioned to 3.5 today, what medically necessary monitoring, intervention, or response capability would not be available at the frequency or intensity currently needed, and what reasonably foreseeable medical deterioration or complication could result? Connect that risk to the client's current findings.</div><textarea class="sn-textarea" id="nn-med-transition-lower-loc" required aria-required="true" style="min-height:90px" placeholder="Explain why 24-hour medically monitored care remains necessary and why 3.5 cannot safely meet the client's current medical needs." oninput="nnState.medTransitionLowerLoc=this.value"></textarea></div>
@@ -7113,36 +7269,6 @@ function setAdmissionType(type) {
 
 function setDischargePrognosis(value, el) {
   state.dischargePrognosis = value;
-  autosaveSetGroupField('grp-dim1-cs-35-status', state.dim1.csStatus);
-  autosaveSetGroupField('grp-dim1-cs-35-current', state.dim1.cs35Current);
-  autosaveSetGroupField('grp-dim1-cs-35-example', state.dim1.cs35Example);
-  autosaveSetGroupField('grp-dim1-cs-35-impact', state.dim1.cs35Impact);
-  autosaveSetGroupField('grp-dim1-cs-35-remaining', state.dim1.cs35Remaining);
-  autosaveSetGroupField('grp-dim2-cs-35-status', state.dim2.csStatus);
-  autosaveSetGroupField('grp-dim2-cs-35-current', state.dim2.cs35Current);
-  autosaveSetGroupField('grp-dim2-cs-35-example', state.dim2.cs35Example);
-  autosaveSetGroupField('grp-dim2-cs-35-impact', state.dim2.cs35Impact);
-  autosaveSetGroupField('grp-dim2-cs-35-remaining', state.dim2.cs35Remaining);
-  autosaveSetGroupField('grp-dim3-cs-35-status', state.dim3.csStatus);
-  autosaveSetGroupField('grp-dim3-cs-35-current', state.dim3.cs35Current);
-  autosaveSetGroupField('grp-dim3-cs-35-example', state.dim3.cs35Example);
-  autosaveSetGroupField('grp-dim3-cs-35-impact', state.dim3.cs35Impact);
-  autosaveSetGroupField('grp-dim3-cs-35-remaining', state.dim3.cs35Remaining);
-  autosaveSetGroupField('grp-dim4-cs-35-status', state.dim4.csStatus);
-  autosaveSetGroupField('grp-dim4-cs-35-current', state.dim4.cs35Current);
-  autosaveSetGroupField('grp-dim4-cs-35-example', state.dim4.cs35Example);
-  autosaveSetGroupField('grp-dim4-cs-35-impact', state.dim4.cs35Impact);
-  autosaveSetGroupField('grp-dim4-cs-35-remaining', state.dim4.cs35Remaining);
-  autosaveSetGroupField('grp-dim5-cs-35-status', state.dim5.csStatus);
-  autosaveSetGroupField('grp-dim5-cs-35-current', state.dim5.cs35Current);
-  autosaveSetGroupField('grp-dim5-cs-35-example', state.dim5.cs35Example);
-  autosaveSetGroupField('grp-dim5-cs-35-impact', state.dim5.cs35Impact);
-  autosaveSetGroupField('grp-dim5-cs-35-remaining', state.dim5.cs35Remaining);
-  autosaveSetGroupField('grp-dim6-cs-35-status', state.dim6.csStatus);
-  autosaveSetGroupField('grp-dim6-cs-35-current', state.dim6.cs35Current);
-  autosaveSetGroupField('grp-dim6-cs-35-example', state.dim6.cs35Example);
-  autosaveSetGroupField('grp-dim6-cs-35-impact', state.dim6.cs35Impact);
-  autosaveSetGroupField('grp-dim6-cs-35-remaining', state.dim6.cs35Remaining);
   document.querySelectorAll('#discharge-prognosis-pills .severity-pill').forEach(p => p.classList.remove('selected'));
   if (el) el.classList.add('selected');
   clearGrpError('grp-discharge-prognosis');
@@ -7404,10 +7530,12 @@ function genDim1() {
     const p = [];
     if (d.csStatus && statusMap[d.csStatus]) p.push(statusMap[d.csStatus]);
     [['Current presentation', d.cs35Current], ['Current evidence', d.cs35Example], ['Effect on treatment and current support', d.cs35Impact], ['Remaining need', d.cs35Remaining]].forEach(([label, value]) => { if (value && value.trim()) p.push(`${label}: ${value.trim()}`); });
-    return p.length ? p.join(' ') : null;
+    return p.length ? p.join('\n\n') : null;
   }
   if (type === 'continued' && loc === '3.7') {
-    return d.cs37 ? d.cs37.trim() : null;
+    const p = [];
+    [['Current presentation', d.cs35Current], ['Current evidence', d.cs35Example], ['Effect on treatment/safety and current support', d.cs35Impact], ['Remaining need before 3.5', d.cs35Remaining]].forEach(([label, value]) => { if (value && value.trim()) p.push(`${label}: ${value.trim()}`); });
+    return p.length ? p.join('\n\n') : null;
   }
 
   // 3.7WM continued stay Dimension 1 is a focused counselor section.
@@ -7425,7 +7553,7 @@ function genDim1() {
     if (d.csStatus && sm[d.csStatus]) p.push(sm[d.csStatus]);
     if (d.csProgress) p.push(d.csProgress);
     if (d.csStepdown) p.push(`Transition remains premature because: ${d.csStepdown}`);
-    return p.join(' ');
+    return p.join('\n\n');
   }
 
   if (type === 'continued') {
@@ -7525,7 +7653,7 @@ function genDim2() {
     const p = [];
     if (d.csStatus && statusMap[d.csStatus]) p.push(statusMap[d.csStatus]);
     [['Nursing/medical update', d.cs35Current], ['Current biomedical evidence', d.cs35Example], ['Effect on treatment/recovery', d.cs35Impact], ['Remaining biomedical support', d.cs35Remaining]].forEach(([label, value]) => { if (value && value.trim()) p.push(`${label}: ${value.trim()}`); });
-    return p.length ? p.join(' ') : null;
+    return p.length ? p.join('\n\n') : null;
   }
   // For continued stay at 3.7WM and 3.7, nursing supplies Dimension 2
   // separately in the EHR. Lower LOCs use the focused clinical field.
@@ -7555,7 +7683,7 @@ function genDim2() {
   if (d.impact) p.push(`Effect on treatment or recovery: ${d.impact.trim()}`);
   if (d.medications) p.push(`Medications, medical care, or follow-up relevant to treatment: ${d.medications.trim()}`);
   if (d.notes) p.push(`Additional biomedical information: ${d.notes.trim()}`);
-  return p.join(' ');
+  return p.join('\n\n');
 }
 
 function genDim3() {
@@ -7570,10 +7698,12 @@ function genDim3() {
     const p = [];
     if (d.csStatus && statusMap[d.csStatus]) p.push(statusMap[d.csStatus]);
     [['Current presentation', d.cs35Current], ['Recent example', d.cs35Example], ['Effect on functioning/treatment and current support', d.cs35Impact], ['Remaining need', d.cs35Remaining]].forEach(([label, value]) => { if (value && value.trim()) p.push(`${label}: ${value.trim()}`); });
-    return p.length ? p.join(' ') : null;
+    return p.length ? p.join('\n\n') : null;
   }
   if (type === 'continued' && loc === '3.7') {
-    return d.cs37 ? d.cs37.trim() : null;
+    const p = [];
+    [['Current presentation', d.cs35Current], ['Recent example', d.cs35Example], ['Effect on treatment/safety and current support', d.cs35Impact], ['Remaining need before 3.5', d.cs35Remaining]].forEach(([label, value]) => { if (value && value.trim()) p.push(`${label}: ${value.trim()}`); });
+    return p.length ? p.join('\n\n') : null;
   }
   if (type === 'continued' && loc === '3.7WM') {
     if (!d.csStatus && !d.csGoals) return null;
@@ -7585,7 +7715,7 @@ function genDim3() {
     const p = [];
     if (d.csStatus && sm[d.csStatus]) p.push(sm[d.csStatus]);
     if (d.csGoals) p.push(`Withdrawal-related mental, emotional, behavioral, or cognitive effects: ${d.csGoals}`);
-    return p.join(' ');
+    return p.join('\n\n');
   }
   const hasContent = d.severity || d.diagnoses || d.noDx || d.symptoms.length || d.impact || d.notes || d.csStatus || d.csGoals;
   if (!hasContent) return null;
@@ -7676,10 +7806,12 @@ function genDim4() {
     const p = [];
     if (d.csStatus && statusMap[d.csStatus]) p.push(statusMap[d.csStatus]);
     [['Current participation/readiness', d.cs35Current], ['Recent example', d.cs35Example], ['Current staff work and response', d.cs35Impact], ['Remaining need', d.cs35Remaining]].forEach(([label, value]) => { if (value && value.trim()) p.push(`${label}: ${value.trim()}`); });
-    return p.length ? p.join(' ') : null;
+    return p.length ? p.join('\n\n') : null;
   }
   if (type === 'continued' && loc === '3.7') {
-    return d.cs37 ? d.cs37.trim() : null;
+    const p = [];
+    [['Current participation/readiness', d.cs35Current], ['Recent example', d.cs35Example], ['Current staff work and response', d.cs35Impact], ['Remaining need before 3.5', d.cs35Remaining]].forEach(([label, value]) => { if (value && value.trim()) p.push(`${label}: ${value.trim()}`); });
+    return p.length ? p.join('\n\n') : null;
   }
   if (type === 'continued' && loc === '3.7WM') {
     if (!d.csStatus && !d.csGoals && !d.csEvidence) return null;
@@ -7692,7 +7824,7 @@ function genDim4() {
     if (d.csStatus && sm[d.csStatus]) p.push(sm[d.csStatus]);
     if (d.csGoals) p.push(`Withdrawal-related treatment participation: ${d.csGoals}`);
     if (d.csEvidence) p.push(`Observed evidence of withdrawal-related effects on treatment participation: ${d.csEvidence}`);
-    return p.join(' ');
+    return p.join('\n\n');
   }
   const hasContent = d.stage || d.insight || d.engagement || d.barriers || d.locRationale || d.csStatus || d.csGoals;
   if (!hasContent) return null;
@@ -7777,10 +7909,12 @@ function genDim5() {
     const p = [];
     if (d.csStatus && statusMap[d.csStatus]) p.push(statusMap[d.csStatus]);
     [['Current return-to-use risk', d.cs35Current], ['Recent evidence', d.cs35Example], ['Current skills and staff support', d.cs35Impact], ['Remaining need', d.cs35Remaining]].forEach(([label, value]) => { if (value && value.trim()) p.push(`${label}: ${value.trim()}`); });
-    return p.length ? p.join(' ') : null;
+    return p.length ? p.join('\n\n') : null;
   }
   if (type === 'continued' && loc === '3.7') {
-    return d.cs37 ? d.cs37.trim() : null;
+    const p = [];
+    [['Current return-to-use risk', d.cs35Current], ['Recent evidence', d.cs35Example], ['Current treatment response and support', d.cs35Impact], ['Remaining need before 3.5', d.cs35Remaining]].forEach(([label, value]) => { if (value && value.trim()) p.push(`${label}: ${value.trim()}`); });
+    return p.length ? p.join('\n\n') : null;
   }
   if (type === 'continued' && loc === '3.7WM') {
     if (!d.csStatus && !d.csProgress) return null;
@@ -7792,7 +7926,7 @@ function genDim5() {
     const p = [];
     if (d.csStatus && sm[d.csStatus]) p.push(sm[d.csStatus]);
     if (d.csProgress) p.push(`Withdrawal-related recovery barriers: ${d.csProgress}`);
-    return p.join(' ');
+    return p.join('\n\n');
   }
   const hasContent = d.risk || d.priorTx || d.triggers.length || d.coping || d.notes || d.csStatus || d.csProgress;
   if (!hasContent) return null;
@@ -7867,10 +8001,12 @@ function genDim6() {
     const p = [];
     if (d.csStatus && statusMap[d.csStatus]) p.push(statusMap[d.csStatus]);
     [['Current recovery-environment concern', d.cs35Current], ['Current real-world situation', d.cs35Example], ['Current discharge work and progress', d.cs35Impact], ['Remaining need', d.cs35Remaining]].forEach(([label, value]) => { if (value && value.trim()) p.push(`${label}: ${value.trim()}`); });
-    return p.length ? p.join(' ') : null;
+    return p.length ? p.join('\n\n') : null;
   }
   if (type === 'continued' && loc === '3.7') {
-    return d.cs37 ? d.cs37.trim() : null;
+    const p = [];
+    [['Current recovery-environment/transition concern', d.cs35Current], ['Current example', d.cs35Example], ['Current discharge work and progress', d.cs35Impact], ['Remaining need before 3.5', d.cs35Remaining]].forEach(([label, value]) => { if (value && value.trim()) p.push(`${label}: ${value.trim()}`); });
+    return p.length ? p.join('\n\n') : null;
   }
   if (type === 'continued' && loc === '3.7WM') {
     if (!d.csStatus && !d.csProgress) return null;
@@ -7882,7 +8018,7 @@ function genDim6() {
     const p = [];
     if (d.csStatus && sm[d.csStatus]) p.push(sm[d.csStatus]);
     if (d.csProgress) p.push(`Withdrawal-related transition barrier: ${d.csProgress}`);
-    return p.join(' ');
+    return p.join('\n\n');
   }
   const hasContent = d.envRisk || d.living || d.support || d.risks.length || d.notes || d.csStatus || d.csProgress;
   if (!hasContent) return null;
@@ -7979,14 +8115,9 @@ function genDetermination() {
   } else if (type === 'discharge') {
     return `${C_} has been discharged from ${cfg.full}. The dimensional status documented above reflects clinical findings at the time of discharge and is provided for continuity of care and clinical record purposes.`;
   } else {
-    const sdName = stepDown || 'a less intensive level of care';
-    if (state.loc === '3.7WM') {
-      return `Based on the current withdrawal presentation and unresolved needs documented above, ${C_} continues to require medically monitored withdrawal management at ${cfg.full}. The documented symptoms, response to treatment, and remaining monitoring or intervention needs support continued care at this level rather than transition to ${sdName} at this time. This determination must be reviewed against the current nursing assessment and the client's actual clinical status.`;
-    }
-    if (state.loc === '3.7') {
-      return `Based on the current dimensional needs documented above and their relationship to ${C_}'s ongoing medical needs, ${C_} continues to require medically monitored care at ${cfg.full}. The combined clinical and medical needs documented in this review support continued 3.7 care rather than transition to ${sdName} at this time. This determination must be reviewed against the client's current medical and clinical status.`;
-    }
-    return `${C_} continues to require the clinical intensity of ${cfg.full}. Step-down to ${sdName} is not clinically appropriate at this time, as ${C_} has not yet achieved sufficient stabilization, skill development, or environmental readiness to sustain recovery gains in a less intensive setting. Continued authorization at this level of care is medically necessary and consistent with evidence-based standards for the treatment of substance use disorder.`;
+    const sdName = stepDown || null;
+    const lowerCare = sdName ? `transition to ${sdName}` : 'ending the current treatment episode';
+    return `Continued authorization for additional time at ${cfg.full} is requested. Based on the clinical findings documented above, ${C_} continues to require the current level of treatment intensity, and ${lowerCare} is not yet clinically appropriate. Additional time at this level of care is needed to address the remaining needs documented above and support a safe, clinically appropriate transition when those needs have improved.`;
   }
 }
 
@@ -8056,11 +8187,26 @@ const CS_REQUIRED_37WM = [
 ];
 
 const CS_REQUIRED_37 = [
-  { get: () => state.dim1.cs37, grp: 'grp-dim1-cs-37', dim: 1, label: 'Dim 1 — Current withdrawal concerns and whether the medical condition affects them' },
-  { get: () => state.dim3.cs37, grp: 'grp-dim3-cs-37', dim: 3, label: 'Dim 3 — Current mental health/behavior concerns and whether the medical condition affects them' },
-  { get: () => state.dim4.cs37, grp: 'grp-dim4-cs-37', dim: 4, label: 'Dim 4 — Current treatment participation barriers and whether the medical condition affects them' },
-  { get: () => state.dim5.cs37, grp: 'grp-dim5-cs-37', dim: 5, label: 'Dim 5 — Current return-to-use risk and whether the medical condition makes the risk worse' },
-  { get: () => state.dim6.cs37, grp: 'grp-dim6-cs-37', dim: 6, label: 'Dim 6 — Current discharge/support barriers and whether the medical condition affects them' },
+  { get: () => state.dim1.cs35Current, grp: 'grp-dim1-cs-37-current', dim: 1, label: 'Dim 1 — Current concern' },
+  { get: () => state.dim1.cs35Example, grp: 'grp-dim1-cs-37-example', dim: 1, label: 'Dim 1 — Recent evidence/example' },
+  { get: () => state.dim1.cs35Impact, grp: 'grp-dim1-cs-37-impact', dim: 1, label: 'Dim 1 — Treatment/safety impact and current response' },
+  { get: () => state.dim1.cs35Remaining, grp: 'grp-dim1-cs-37-remaining', dim: 1, label: 'Dim 1 — Remaining need before 3.5' },
+  { get: () => state.dim3.cs35Current, grp: 'grp-dim3-cs-37-current', dim: 3, label: 'Dim 3 — Current concern' },
+  { get: () => state.dim3.cs35Example, grp: 'grp-dim3-cs-37-example', dim: 3, label: 'Dim 3 — Recent evidence/example' },
+  { get: () => state.dim3.cs35Impact, grp: 'grp-dim3-cs-37-impact', dim: 3, label: 'Dim 3 — Treatment/safety impact and current response' },
+  { get: () => state.dim3.cs35Remaining, grp: 'grp-dim3-cs-37-remaining', dim: 3, label: 'Dim 3 — Remaining need before 3.5' },
+  { get: () => state.dim4.cs35Current, grp: 'grp-dim4-cs-37-current', dim: 4, label: 'Dim 4 — Current concern' },
+  { get: () => state.dim4.cs35Example, grp: 'grp-dim4-cs-37-example', dim: 4, label: 'Dim 4 — Recent evidence/example' },
+  { get: () => state.dim4.cs35Impact, grp: 'grp-dim4-cs-37-impact', dim: 4, label: 'Dim 4 — Treatment/safety impact and current response' },
+  { get: () => state.dim4.cs35Remaining, grp: 'grp-dim4-cs-37-remaining', dim: 4, label: 'Dim 4 — Remaining need before 3.5' },
+  { get: () => state.dim5.cs35Current, grp: 'grp-dim5-cs-37-current', dim: 5, label: 'Dim 5 — Current concern' },
+  { get: () => state.dim5.cs35Example, grp: 'grp-dim5-cs-37-example', dim: 5, label: 'Dim 5 — Recent evidence/example' },
+  { get: () => state.dim5.cs35Impact, grp: 'grp-dim5-cs-37-impact', dim: 5, label: 'Dim 5 — Treatment/safety impact and current response' },
+  { get: () => state.dim5.cs35Remaining, grp: 'grp-dim5-cs-37-remaining', dim: 5, label: 'Dim 5 — Remaining need before 3.5' },
+  { get: () => state.dim6.cs35Current, grp: 'grp-dim6-cs-37-current', dim: 6, label: 'Dim 6 — Current concern' },
+  { get: () => state.dim6.cs35Example, grp: 'grp-dim6-cs-37-example', dim: 6, label: 'Dim 6 — Recent evidence/example' },
+  { get: () => state.dim6.cs35Impact, grp: 'grp-dim6-cs-37-impact', dim: 6, label: 'Dim 6 — Treatment/safety impact and current response' },
+  { get: () => state.dim6.cs35Remaining, grp: 'grp-dim6-cs-37-remaining', dim: 6, label: 'Dim 6 — Remaining need before 3.5' },
 ];
 
 const CS_REQUIRED_35 = [
@@ -13745,151 +13891,117 @@ function demoClick() {
   }
 }
 
+function loadSampleClient() {
+  // Sample Client is an in-place testing utility for the ASAM currently open.
+  // Do not reset the application, change LOC/document type, or navigate away.
+  const locSelect = document.getElementById('locSelect');
+  if (!state.loc && locSelect && locSelect.value) state.loc = locSelect.value;
+  if (!state.loc) return;
+  fillSampleClient();
+}
+
+function sampleSetControl(el, value) {
+  if (!el) return;
+  el.value = value;
+  el.dispatchEvent(new Event('input', { bubbles: true }));
+  el.dispatchEvent(new Event('change', { bubbles: true }));
+}
+
+function sampleFillRequiredGroup(item) {
+  const grp = document.getElementById(item.grp);
+  if (!grp) return;
+
+  const select = grp.querySelector('select:not([disabled])');
+  if (select) {
+    const option = Array.from(select.options).find(o => o.value && o.value !== 'resolved') ||
+                   Array.from(select.options).find(o => o.value);
+    if (option) sampleSetControl(select, option.value);
+    return;
+  }
+
+  const textControl = grp.querySelector('textarea:not([disabled]), input:not([disabled]):not([type="checkbox"]):not([type="radio"]):not([type="date"])');
+  if (textControl) {
+    const sampleValue = textControl.type === 'number' ? String(Math.max(Number(textControl.min) || 0, 5)) : 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sample documentation for testing this ASAM workflow.';
+    sampleSetControl(textControl, sampleValue);
+    return;
+  }
+
+  const pills = grp.querySelectorAll('.severity-pill');
+  if (pills.length) {
+    const preferred = Array.from(pills).find(b => !/none|n\/a|poor/i.test(b.textContent)) || pills[0];
+    preferred.click();
+  }
+}
+
+function fillSampleAsamCurrentWorkflow(today) {
+  // Sample Client is a form-testing utility, not a clinical example. Populate only
+  // what the currently selected ASAM workflow requires in order to generate.
+  sampleSetControl(document.getElementById('clientName'), 'Marcus');
+  sampleSetControl(document.getElementById('docDate'), today);
+
+  let required = [];
+  if (state.admissionType === 'discharge') {
+    required = DC_REQUIRED;
+  } else if (state.admissionType === 'continued') {
+    required = getContinuedRequired();
+  } else {
+    const cfg = LOC_CONFIG[state.loc];
+    (cfg.primary || []).forEach(dimNum => required.push(...(DIM_REQUIRED[dimNum] || [])));
+    if (!(cfg.primary || []).includes(4)) {
+      required.push(
+        { get: () => state.dim4.barriers, grp: 'grp-dim4-barriers', dim: 4 },
+        { get: () => state.dim4.locRationale, grp: 'grp-dim4-rationale', dim: 4 }
+      );
+    }
+  }
+
+  required.forEach(sampleFillRequiredGroup);
+
+  // Fill/select every visible ASAM control in the active workflow so the sample
+  // is immediately useful for testing, not only the fields currently listed in validation.
+  document.querySelectorAll('#dim-content .form-group').forEach(grp => {
+    if (grp.offsetParent === null) return;
+    const select = grp.querySelector('select:not([disabled])');
+    if (select && !select.value) {
+      const option = Array.from(select.options).find(o => o.value && o.value !== 'resolved') || Array.from(select.options).find(o => o.value);
+      if (option) sampleSetControl(select, option.value);
+    }
+    grp.querySelectorAll('textarea:not([disabled]), input:not([disabled]):not([type="checkbox"]):not([type="radio"]):not([type="date"])').forEach(el => {
+      if (!el.value) {
+        const sampleValue = el.type === 'number' ? String(Math.max(Number(el.min) || 0, 5)) : 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sample documentation for testing this ASAM workflow.';
+        sampleSetControl(el, sampleValue);
+      }
+    });
+    const radios = grp.querySelectorAll('input[type="radio"]:not([disabled])');
+    if (radios.length && !Array.from(radios).some(r => r.checked)) radios[0].click();
+    const checks = grp.querySelectorAll('input[type="checkbox"]:not([disabled])');
+    if (checks.length && !Array.from(checks).some(c => c.checked)) checks[0].click();
+    const pills = grp.querySelectorAll('.severity-pill');
+    if (pills.length && !Array.from(pills).some(p => p.classList.contains('selected'))) {
+      const preferred = Array.from(pills).find(p => !/none|n\/a|poor/i.test(p.textContent)) || pills[0];
+      preferred.click();
+    }
+  });
+
+  // Prognosis is a pill group rather than a standard input.
+  if (state.admissionType === 'discharge' && !state.dischargePrognosis) {
+    const fair = document.querySelector('#discharge-prognosis-pills .severity-pill:nth-child(2)');
+    if (fair) fair.click();
+  }
+
+  // Re-run the exact production validator. If a future required field is added,
+  // make a best-effort generic fill so the sample utility evolves with the form.
+  validate().forEach(sampleFillRequiredGroup);
+  updateDimBadges();
+  updateRequiredMarkers();
+}
+
 function fillSampleClient() {
   const today = new Date().toISOString().split('T')[0];
 
-  // ── TOOLBAR ──
-  document.getElementById('locSelect').value = '3.5';
-  state.loc = '3.5';
-  document.getElementById('noLocOverlay').style.display = 'none';
-  updateDimBadges();
-  updateRequiredMarkers();
-  document.getElementById('clientName').value = 'Marcus';
-  state.clientName = 'Marcus';
-  document.getElementById('docDate').value = today;
-  state.date = today;
-  setAdmissionType('continued');
-
-  // ── DIM 1 ──
-  state.dim1.severity = 'none';
-  document.querySelector('#dim1-sev-pills .severity-pill').classList.add('selected');
-  state.dim1.substances = 'alcohol, cocaine';
-  document.querySelectorAll('#dim-1 .form-input').forEach(el => { if (el.placeholder.includes('alcohol')) el.value = 'alcohol, cocaine'; });
-  state.dim1.lastUse = '14 days prior to admission';
-  document.querySelectorAll('#dim-1 .form-input').forEach(el => { if (el.placeholder.includes('48 hours')) el.value = '14 days prior to admission'; });
-  state.dim1.complicatedHistory = 'none';
-  document.querySelector('#dim-1 .form-select').value = 'none';
-  state.dim1.csStatus = 'ongoing';
-  document.querySelector('#grp-dim1-cs-status select').value = 'ongoing';
-  state.dim1.csProgress = 'Marcus continues to demonstrate tremors, diaphoresis, anxiety, and intermittent nausea. Symptoms have improved from admission but remain present and require ongoing assessment.';
-  state.dim1.csNeed = 'Nursing continues scheduled and PRN medication management with repeat withdrawal assessments and monitoring of vital signs. Symptoms improve after medication but recur between interventions.';
-  state.dim1.csStepdown = 'The client continues to have active withdrawal symptoms requiring medical monitoring and intervention that have not yet stabilized enough for transition out of 3.7WM.';
-  document.querySelector('#grp-dim1-cs-progress textarea').value = state.dim1.csProgress;
-
-  // ── DIM 2 ──
-  // Dimension 2 is always sourced from Nursing. Seed the nursing note with
-  // fictional clinical findings so the demo remains complete.
-  nnState.clientName = 'Marcus';
-  nnState.date = today;
-  nnState.documentationPurpose = 'routine';
-  nnState.symptoms = ['Tremors', 'Nausea'];
-  nnState.symptomDetail = 'Client reports intermittent nausea and visible hand tremors during the shift.';
-  nnState.bp = '142/88';
-  nnState.pulse = '98';
-  nnState.ciwa = '9';
-  nnState.medicalStability = ['Poor oral intake / dehydration concern'];
-  nnState.meds = ['Withdrawal protocol medication'];
-  nnState.medDetail = 'Medication administered per provider order with reassessment of response.';
-  nnState.sleepHydrationNutrition = 'Appetite remains reduced; fluids encouraged and intake monitored.';
-  document.getElementById('nn-client').value = 'Marcus';
-  document.getElementById('nn-date').value = today;
-  document.getElementById('nn-wd-type').value = 'alcohol';
-  nnState.wdType = 'alcohol';
-  document.getElementById('nn-symptom-detail').value = nnState.symptomDetail;
-  document.getElementById('nn-bp').value = nnState.bp;
-  document.getElementById('nn-pulse').value = nnState.pulse;
-  document.getElementById('nn-ciwa').value = nnState.ciwa;
-  document.getElementById('nn-med-detail').value = nnState.medDetail;
-  document.getElementById('nn-sleep').value = nnState.sleepHydrationNutrition;
-  nnUpdateDim2Pull();
-
-  // ── DIM 3 ──
-  state.dim3.severity = 'moderate';
-  const d3pills = document.querySelectorAll('#dim3-sev-pills .severity-pill');
-  d3pills.forEach(p => p.classList.remove('selected'));
-  d3pills[2].classList.add('selected');
-  state.dim3.noDx = false;
-  document.getElementById('dim3-no-dx').checked = false;
-  document.getElementById('dim3-dx-input').disabled = false;
-  document.getElementById('dim3-dx-input').value = 'Major Depressive Disorder, recurrent moderate; Generalized Anxiety Disorder';
-  state.dim3.diagnoses = document.getElementById('dim3-dx-input').value;
-  state.dim3.impact = 'Marcus\'s depressive symptoms — including persistent low mood, anhedonia, and sleep disturbance — significantly impair his capacity to engage consistently in treatment programming and apply recovery skills without daily clinical structure. His anxiety amplifies reactivity to interpersonal stressors, which have historically precipitated substance use.';
-  document.querySelector('#grp-dim3-impact textarea').value = state.dim3.impact;
-  state.dim3.csStatus = 'moderate';
-  document.querySelector('#grp-dim3-cs-status select').value = 'moderate';
-  state.dim3.csGoals = 'Ongoing withdrawal is contributing to increased anxiety, irritability, poor sleep, and difficulty concentrating. These symptoms are interfering with Marcus\'s ability to regulate emotions and remain focused during treatment activities.';
-  document.querySelector('#grp-dim3-cs-goals textarea').value = state.dim3.csGoals;
-  const dim3Sx = ['Depressed mood / anhedonia','Anxiety / panic','Passive suicidal ideation'];
-  state.dim3.symptoms = [];
-  document.querySelectorAll('#dim3-symptoms input[type="checkbox"]').forEach(cb => {
-    cb.checked = dim3Sx.includes(cb.value);
-    if (cb.checked) state.dim3.symptoms.push(cb.value);
-  });
-
-  // ── DIM 4 ──
-  document.querySelector('#grp-dim4-stage select').value = 'contemplation';
-  state.dim4.stage = 'contemplation';
-  toggleChallenge('chal-dim4-stage', false);
-  const d4pills = document.querySelectorAll('#dim4-insight-pills .severity-pill');
-  d4pills.forEach(p => p.classList.remove('selected'));
-  d4pills[1].classList.add('selected');
-  state.dim4.insight = 'fair';
-  document.querySelector('#grp-dim4-engagement select').value = 'ambivalent';
-  state.dim4.engagement = 'ambivalent';
-  toggleChallenge('chal-dim4-engagement', false);
-  state.dim4.barriers = 'Marcus demonstrates significant ambivalence regarding the severity of his substance use disorder, frequently minimizing the consequences of alcohol use while partially acknowledging cocaine use as problematic. He has been inconsistently engaged in group programming, requiring clinical redirection on multiple occasions, and continues to externalize responsibility for consequences of use.';
-  document.querySelector('#grp-dim4-barriers textarea').value = state.dim4.barriers;
-  state.dim4.locRationale = 'The degree of ambivalence and inconsistent engagement present requires the daily motivational intervention and structured accountability available only within a residential treatment environment. A less intensive setting would not provide sufficient structure to sustain treatment participation at Marcus\'s current readiness level.';
-  document.querySelector('#grp-dim4-rationale textarea').value = state.dim4.locRationale;
-  document.querySelector('#grp-dim4-cs-status select').value = 'moderate';
-  state.dim4.csStatus = 'moderate';
-  state.dim4.csGoals = 'Ongoing withdrawal-related fatigue, anxiety, and difficulty concentrating are limiting Marcus\'s ability to remain engaged in groups and process treatment material for sustained periods.';
-  document.querySelector('#grp-dim4-cs-goals textarea').value = state.dim4.csGoals;
-
-  // ── DIM 5 ──
-  const d5riskPills = document.querySelectorAll('#dim5-risk-pills .severity-pill');
-  d5riskPills.forEach(p => p.classList.remove('selected'));
-  d5riskPills[2].classList.add('selected');
-  state.dim5.risk = 'high';
-  toggleChallenge('chal-dim5-risk', false);
-  document.querySelector('#grp-dim5-priortx select').value = 'two_three';
-  state.dim5.priorTx = 'two_three';
-  const d5copingPills = document.querySelectorAll('#dim5-coping-pills .severity-pill');
-  d5copingPills.forEach(p => p.classList.remove('selected'));
-  d5copingPills[1].classList.add('selected');
-  state.dim5.coping = 'developing';
-  toggleChallenge('chal-dim5-coping', false);
-  state.dim5.notes = 'Marcus has a history of two prior treatment episodes followed by relapse within 90 days. His primary relapse pattern involves return to alcohol use during periods of occupational stress, followed by escalation to cocaine. High craving intensity was reported during weeks one and two of treatment.';
-  document.querySelector('#dim-5 .form-textarea').value = state.dim5.notes;
-  document.querySelector('#grp-dim5-cs-status select').value = 'moderate';
-  state.dim5.csStatus = 'moderate';
-  state.dim5.csProgress = 'Ongoing withdrawal-related discomfort, poor sleep, and anxiety are limiting Marcus\'s ability to focus on relapse-prevention work and practice coping strategies consistently.';
-  document.querySelector('#grp-dim5-cs-progress textarea').value = state.dim5.csProgress;
-  const dim5Triggers = ['Stress / life stressors','Emotional dysregulation','Interpersonal conflict'];
-  state.dim5.triggers = [];
-  document.querySelectorAll('#dim5-triggers input[type="checkbox"]').forEach(cb => {
-    cb.checked = dim5Triggers.includes(cb.value);
-    if (cb.checked) state.dim5.triggers.push(cb.value);
-  });
-
-  // ── DIM 6 ──
-  const d6envPills = document.querySelectorAll('#dim6-risk-pills .severity-pill');
-  d6envPills.forEach(p => p.classList.remove('selected'));
-  d6envPills[2].classList.add('selected');
-  state.dim6.envRisk = 'unsupportive';
-  toggleChallenge('chal-dim6-envrisk', false);
-  document.querySelector('#grp-dim6-living select').value = 'stable';
-  state.dim6.living = 'stable';
-  toggleChallenge('chal-dim6-living', true);
-  document.querySelector('#grp-dim6-support select').value = 'limited';
-  state.dim6.support = 'limited';
-  toggleChallenge('chal-dim6-support', false);
-  state.dim6.notes = 'Marcus lives with his partner, who does not use substances but has expressed skepticism toward treatment. His primary social network includes several active substance users. He reports limited connection to recovery community resources in his area.';
-  document.querySelector('#dim-6 .form-textarea').value = state.dim6.notes;
-  document.querySelector('#grp-dim6-cs-status select').value = 'moderate';
-  state.dim6.csStatus = 'moderate';
-  state.dim6.csProgress = 'Ongoing withdrawal-related fatigue, anxiety, and impaired concentration are limiting Marcus\'s ability to participate fully in transition planning and prepare for the next level of care.';
-  document.querySelector('#grp-dim6-cs-progress textarea').value = state.dim6.csProgress;
+  // ── ASAM ──
+  // Respect the LOC and document type that were open when Sample Client was loaded.
+  fillSampleAsamCurrentWorkflow(today);
 
   // ── ITP ──
   itpSelected['B'].add('anger');
@@ -14194,7 +14306,7 @@ function fillSampleClient() {
   document.getElementById('nn-cravings-detail').value = nnCravingsText;
   nnState.cravingsDetail = nnCravingsText;
 
-  const nnContinuedNeedText = 'CIWA-Ar score decreased from 16 on admission to 9 today; however, Marcus continues to require monitoring for residual withdrawal symptoms, sleep disturbance, and cravings. He remains medically vulnerable given his recent history of withdrawal and has not yet achieved sufficient stability for safe transition to a lower level of care. Continued 3.7-WM services remain medically necessary.';
+  const nnContinuedNeedText = 'CIWA-Ar score decreased from 16 on admission to 9 today; however, Marcus continues to require monitoring for residual withdrawal symptoms, sleep disturbance, and cravings. He remains medically vulnerable given his recent history of withdrawal and has not yet achieved sufficient stability for safe transition to a lower level of care. Continued 3.7WM services remain medically necessary.';
   document.getElementById('nn-continued-need').value = nnContinuedNeedText;
   nnState.continuedNeed = nnContinuedNeedText;
   nnUpdateProgress();
@@ -14992,8 +15104,8 @@ function nnExpandPopulated(containerId) {
 
 const NN_CLOSERS = {
   alcohol: 'Client continues to experience active alcohol withdrawal symptoms requiring medication management, nursing assessment, and monitoring. Client has not yet achieved medical stability for transition to a lower level of care.',
-  opioid: 'Client continues to experience opioid withdrawal symptoms, elevated cravings, and requires ongoing medication management and nursing monitoring. Continued 3.7-WM services remain medically necessary.',
-  benzo: 'Withdrawal symptoms continue despite scheduled taper protocol. Nursing monitoring remains necessary due to risk of seizure activity and complications associated with benzodiazepine withdrawal. Continued 3.7-WM level of care remains medically necessary.',
+  opioid: 'Client continues to experience opioid withdrawal symptoms, elevated cravings, and requires ongoing medication management and nursing monitoring. Continued 3.7WM services remain medically necessary.',
+  benzo: 'Withdrawal symptoms continue despite scheduled taper protocol. Nursing monitoring remains necessary due to risk of seizure activity and complications associated with benzodiazepine withdrawal. Continued 3.7WM level of care remains medically necessary.',
   stimulant: 'Client remains at elevated risk for relapse due to ongoing cravings and emotional instability. Client is not yet stable for transition to a lower level of care.',
   poly: 'Client continues to experience withdrawal-related symptoms requiring medication management and nursing monitoring. Client has not yet achieved sufficient stability for safe transition to a lower level of care.'
 };
@@ -15034,7 +15146,7 @@ function nnSectionsStatus() {
     { label: 'Cravings', started: (nnState.cravings !== null && nnState.cravings !== undefined) || nnState.cravingsDetail.trim() !== '' },
     { label: 'Continued Need', started: nnState.documentationPurpose === 'routine' && nnState.routineContinuedNeed.trim() !== '' },
     { label: '3.7WM Continued Stay', started: nnState.documentationPurpose === 'wm-continued' && (nnState.continuedNeed.trim() !== '' || nnState.continuedSymptoms.trim() !== '' || nnState.continuedObservations.trim() !== '' || nnState.continuedInterventions.trim() !== '' || nnState.continuedResponse.trim() !== '' || nnState.continuedUnresolved.trim() !== '') },
-    { label: '3.7 Medical Transition', started: nnState.documentationPurpose === 'medical-transition' && (nnState.medTransitionWmStable.trim() !== '' || nnState.medTransitionProblem.trim() !== '' || nnState.medTransitionMonitoring.trim() !== '' || nnState.medTransitionLowerLoc.trim() !== '' || nnState.medTransitionCriteria.trim() !== '') },
+    { label: '3.7WM to 3.7MM Transition', started: nnState.documentationPurpose === 'medical-transition' && (nnState.medTransitionWmStable.trim() !== '' || nnState.medTransitionProblem.trim() !== '' || nnState.medTransitionMonitoring.trim() !== '' || nnState.medTransitionLowerLoc.trim() !== '' || nnState.medTransitionCriteria.trim() !== '') },
   ];
 }
 
@@ -15070,7 +15182,7 @@ function nnUpdateNursingPurpose() {
     requiredHint.textContent = isWM
       ? 'All 3.7WM continued-stay fields are required.'
       : isMedicalTransition
-        ? 'All five 3.7 Medical Transition fields are required.'
+        ? 'All five 3.7WM to 3.7MM Transition fields are required.'
         : 'Blank fields are omitted from the note.';
   }
   nnUpdateProgress();
@@ -15234,7 +15346,7 @@ function nnBuildPhysicalNarrative() {
   return clauses.join(' ');
 }
 
-function nnBuildDimension2Narrative() {
+function nnBuildDimension2Narrative(separator = ' ') {
   const parts = [];
   const wdLabels = { alcohol:'alcohol', opioid:'opioid', benzo:'benzodiazepine', stimulant:'stimulant', poly:'polysubstance' };
   const wdLabel = wdLabels[nnState.wdType] || '';
@@ -15273,7 +15385,7 @@ function nnBuildDimension2Narrative() {
     if (nnState.continuedNeed) parts.push(`Continued 3.7WM need identified by nursing: ${nnState.continuedNeed}`);
   }
 
-  return parts.filter(Boolean).join(' ');
+  return parts.filter(Boolean).join(separator);
 }
 function nnUpdateDim2Pull() {
   const el = document.getElementById('dim2-nursing-pull');
@@ -15293,19 +15405,33 @@ document.addEventListener('change', function(e) {
   }
 });
 
-function nnBuildMedicalTransitionNarrative() {
-  const parts = [];
-  if (nnState.medTransitionWmStable) parts.push(`Withdrawal-management transition: ${nnState.medTransitionWmStable}`);
-  if (nnState.medTransitionProblem) parts.push(`Active medical need: ${nnState.medTransitionProblem}`);
-  if (nnState.medTransitionMonitoring) parts.push(`Required medical/nursing monitoring and treatment: ${nnState.medTransitionMonitoring}`);
-  if (nnState.medTransitionLowerLoc) parts.push(`Why 3.5 is medically insufficient at this time: ${nnState.medTransitionLowerLoc}`);
-  if (nnState.medTransitionCriteria) parts.push(`Criteria for transition to 3.5: ${nnState.medTransitionCriteria}`);
-  return parts.filter(Boolean).join(' ');
+function nnBuildMedicalTransitionNarrative(separator = '\n\n') {
+  const paragraphs = [
+    [nnState.medTransitionWmStable, nnState.medTransitionProblem],
+    [nnState.medTransitionMonitoring, nnState.medTransitionLowerLoc],
+    [nnState.medTransitionCriteria]
+  ];
+  return paragraphs
+    .map(group => group.filter(Boolean).join(' '))
+    .filter(Boolean)
+    .join(separator);
+}
+
+function nnBuildWmContinuedDim2Narrative(separator = '\n\n') {
+  const paragraphs = [
+    [nnState.continuedSymptoms, nnState.continuedObservations],
+    [nnState.continuedInterventions, nnState.continuedResponse],
+    [nnState.continuedUnresolved, nnState.continuedNeed]
+  ];
+  return paragraphs
+    .map(group => group.filter(Boolean).join(' '))
+    .filter(Boolean)
+    .join(separator);
 }
 
 function nnFormatNote() {
-  if (nnState.documentationPurpose === 'wm-continued') return nnBuildDimension2Narrative();
-  if (nnState.documentationPurpose === 'medical-transition') return nnBuildMedicalTransitionNarrative();
+  if (nnState.documentationPurpose === 'wm-continued') return `3.7WM PA DOCUMENTATION\n\n${nnBuildWmContinuedDim2Narrative()}`;
+  if (nnState.documentationPurpose === 'medical-transition') return `3.7WM TO 3.7MM TRANSITION DOCUMENTATION\n\n${nnBuildMedicalTransitionNarrative()}`;
   const wdLabels = { alcohol:'alcohol', opioid:'opioid', benzo:'benzodiazepine', stimulant:'stimulant', poly:'polysubstance' };
   const lines = [];
 
@@ -15381,7 +15507,7 @@ function nnGenerate() {
   }
   if (nnState.documentationPurpose === 'medical-transition') {
     const required = [
-      ['wm-stable', 'Why 3.7-WM is no longer needed', 'medTransitionWmStable'],
+      ['wm-stable', 'Why 3.7WM is no longer needed', 'medTransitionWmStable'],
       ['problem', 'Active medical problem requiring 3.7 care', 'medTransitionProblem'],
       ['monitoring', 'Required monitoring or treatment', 'medTransitionMonitoring'],
       ['lower-loc', 'Why 3.5 is medically insufficient', 'medTransitionLowerLoc'],
@@ -15393,7 +15519,7 @@ function nnGenerate() {
       if (el) el.style.borderColor = missing.some(([, , key]) => key === stateKey) ? '#c0392b' : '';
     });
     if (missing.length) {
-      alert('Complete all five 3.7 Medical Transition fields before generating. Missing: ' + missing.map(([, label]) => label).join('; ') + '. Document the client\'s actual findings and your clinical judgment.');
+      alert('Complete all five 3.7WM to 3.7MM Transition fields before generating. Missing: ' + missing.map(([, label]) => label).join('; ') + '. Document the client\'s actual findings and your clinical judgment.');
       const first = document.getElementById('nn-med-transition-' + missing[0][0]);
       if (first) { first.scrollIntoView({ behavior: 'smooth', block: 'center' }); first.focus(); }
       return;
@@ -16397,7 +16523,7 @@ const TUT_TOOL_STEPS = [
   // ── NURSING NOTE ──────────────────────────────────────────────────────────
   { view:'nn', sel:'#view-nn .tool-nav', section:'Nursing Note', navigate:'nn',
     title:'Nursing Note',
-    body:'The Nursing Note tool formats shift assessment documentation for nursing staff — built together with the nursing coordinator. It covers withdrawal symptoms, objective findings, medications, and, when selected, a focused 3.7-WM Continued Stay Request.' },
+    body:'The Nursing Note tool formats shift assessment documentation for nursing staff — built together with the nursing coordinator. It covers withdrawal symptoms, objective findings, medications, and, when selected, a focused 3.7WM Continued Stay Request.' },
 
   { view:'nn', sel:'.nn-jump-nav', section:'Nursing Note', navigate:'nn',
     title:'Jump navigation',
@@ -16412,7 +16538,7 @@ const TUT_TOOL_STEPS = [
     body:'Select the withdrawal type that reflects the current assessment. In the continued-stay section, describe the client’s actual findings and your own clinical judgment.' },
 
   { view:'nn', sel:'#nn-sec-continued', section:'Nursing Note', navigate:'nn',
-    title:'Continued need for 3.7-WM',
+    title:'Continued need for 3.7WM',
     body:'Describe the current findings, nursing interventions, response, and unresolved need in your own clinical language. All six continued-stay fields are required when generating this note.' },
 
   { view:'nn', sel:null, section:'Nursing Note', navigate:'nn',
@@ -17023,6 +17149,34 @@ function autosaveApply(snap) {
   autosaveSetGroupField('grp-dim6-cs-progress', state.dim6.csProgress);
   autosaveSetGroupField('grp-dim6-cs-barrier', state.dim6.csBarrier);
   autosaveSetGroupField('grp-dim6-dc-status', state.dim6.dcStatus);
+  // Restore guided Continued Stay controls. These textareas/selects intentionally
+  // share state properties across the 3.7MM and 3.5/lower-LOC render paths,
+  // so both DOM variants must be repopulated after an autosave restore.
+  autosaveSetGroupField('grp-dim1-cs-35-status', state.dim1.csStatus);
+  autosaveSetGroupField('grp-dim1-cs-35-current', state.dim1.cs35Current);
+  autosaveSetGroupField('grp-dim1-cs-35-example', state.dim1.cs35Example);
+  autosaveSetGroupField('grp-dim1-cs-35-impact', state.dim1.cs35Impact);
+  autosaveSetGroupField('grp-dim1-cs-35-remaining', state.dim1.cs35Remaining);
+  autosaveSetGroupField('grp-dim1-cs-37-current', state.dim1.cs35Current);
+  autosaveSetGroupField('grp-dim1-cs-37-example', state.dim1.cs35Example);
+  autosaveSetGroupField('grp-dim1-cs-37-impact', state.dim1.cs35Impact);
+  autosaveSetGroupField('grp-dim1-cs-37-remaining', state.dim1.cs35Remaining);
+  autosaveSetGroupField('grp-dim2-cs-35-status', state.dim2.csStatus);
+  autosaveSetGroupField('grp-dim2-cs-35-current', state.dim2.cs35Current);
+  autosaveSetGroupField('grp-dim2-cs-35-example', state.dim2.cs35Example);
+  autosaveSetGroupField('grp-dim2-cs-35-impact', state.dim2.cs35Impact);
+  autosaveSetGroupField('grp-dim2-cs-35-remaining', state.dim2.cs35Remaining);
+  for (const dim of [3,4,5,6]) {
+    autosaveSetGroupField(`grp-dim${dim}-cs-35-status`, state[`dim${dim}`].csStatus);
+    autosaveSetGroupField(`grp-dim${dim}-cs-35-current`, state[`dim${dim}`].cs35Current);
+    autosaveSetGroupField(`grp-dim${dim}-cs-35-example`, state[`dim${dim}`].cs35Example);
+    autosaveSetGroupField(`grp-dim${dim}-cs-35-impact`, state[`dim${dim}`].cs35Impact);
+    autosaveSetGroupField(`grp-dim${dim}-cs-35-remaining`, state[`dim${dim}`].cs35Remaining);
+    autosaveSetGroupField(`grp-dim${dim}-cs-37-current`, state[`dim${dim}`].cs35Current);
+    autosaveSetGroupField(`grp-dim${dim}-cs-37-example`, state[`dim${dim}`].cs35Example);
+    autosaveSetGroupField(`grp-dim${dim}-cs-37-impact`, state[`dim${dim}`].cs35Impact);
+    autosaveSetGroupField(`grp-dim${dim}-cs-37-remaining`, state[`dim${dim}`].cs35Remaining);
+  }
   document.querySelectorAll('#discharge-prognosis-pills .severity-pill').forEach(p => p.classList.remove('selected'));
   if (state.dischargePrognosis) {
     const progBtn = Array.from(document.querySelectorAll('#discharge-prognosis-pills .severity-pill')).find(p => (p.getAttribute('onclick') || '').includes(`'${state.dischargePrognosis}'`));
