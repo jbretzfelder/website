@@ -5647,14 +5647,14 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
         <div class="de-step-title"><span class="de-step-num">2</span>Intervention / Staff Involvement</div>
 
         <div id="de-bridge-required-wrap" style="margin-bottom:6px;">
-          <label class="form-label">Was The Bridge Contacted?<span class="req-star">*</span></label>
+          <label class="form-label">Was the client taken to the Bridge after all ASA interventions were attempted on the floor?<span class="req-star">*</span></label>
           <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
-            <button class="ds-pill" onclick="deSetYN('bridgeContacted','yes','de-bridge')" id="de-bridge-yes">Bridge Contacted</button>
-            <button class="ds-pill" onclick="deSetYN('bridgeContacted','no','de-bridge')" id="de-bridge-no">Bridge Not Contacted</button>
+            <button class="ds-pill" onclick="deSetYN('bridgeContacted','yes','de-bridge')" id="de-bridge-yes">Taken to the Bridge</button>
+            <button class="ds-pill" onclick="deSetYN('bridgeContacted','no','de-bridge')" id="de-bridge-no">Not Taken to the Bridge</button>
           </div>
           <div id="de-bridge-reason-wrap" style="display:none;">
-            <label class="form-label">Why Not? What Other Attempts Were Made?<span class="req-star">*</span></label>
-            <textarea class="form-textarea" id="de-bridge-reason" rows="2" placeholder="Explain why The Bridge wasn't contacted and what other intervention attempts were made…" oninput="deState.bridgeNotContactedReason=this.value;deRenderOutput()" style="min-height:55px;"></textarea>
+            <label class="form-label">Why Was the Client Not Taken to the Bridge?<span class="req-star">*</span></label>
+            <textarea class="form-textarea" id="de-bridge-reason" rows="2" placeholder="Explain why the client was not taken to the Bridge after ASA interventions were attempted on the floor…" oninput="deState.bridgeNotContactedReason=this.value;deRenderOutput()" style="min-height:55px;"></textarea>
           </div>
         </div>
 
@@ -13636,10 +13636,10 @@ function deGenerate() {
   }
   if (!isOP && s.dischargeSubtype === 'asa' && s.bridgeContacted) {
     if (s.bridgeContacted === 'yes') {
-      circumstanceLines.push('The Bridge Contacted: Yes');
+      circumstanceLines.push('Client Taken to the Bridge After Floor ASA Interventions: Yes');
     } else {
-      circumstanceLines.push('The Bridge Contacted: No');
-      if (s.bridgeNotContactedReason) circumstanceLines.push(`Reason / Other Attempts to Intervene: ${s.bridgeNotContactedReason}`);
+      circumstanceLines.push('Client Taken to the Bridge After Floor ASA Interventions: No');
+      if (s.bridgeNotContactedReason) circumstanceLines.push(`Reason Client Was Not Taken to the Bridge: ${s.bridgeNotContactedReason}`);
     }
   }
   if (s.dischargeSubtype === 'admin' || (s.dischargeSubtype === 'asa' && !isOP)) {
@@ -14215,7 +14215,7 @@ function fillSampleClient() {
   document.getElementById('de-bridge-no').classList.add('active');
   deState.bridgeContacted = 'no';
   document.getElementById('de-bridge-reason-wrap').style.display = 'block';
-  const deBridgeReasonText = 'Marcus declined contact with The Bridge and left the building before staff could complete the referral. Primary counselor and on-call clinician both attempted brief motivational conversations to encourage him to stay.';
+  const deBridgeReasonText = 'After ASA interventions were attempted on the floor, the client declined to go to the Bridge and left the building.';
   document.getElementById('de-bridge-reason').value = deBridgeReasonText;
   deState.bridgeNotContactedReason = deBridgeReasonText;
 
