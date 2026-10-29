@@ -13539,7 +13539,7 @@ function deGenerate() {
   const unitStr = s.unit || '[Unit]';
 
   if (s.eventType === 'housing') {
-    subjectOut.textContent = `HOUSING DISCHARGE ONLY - ${unitStr} - ${C} - ${dateStr}`;
+    subjectOut.textContent = `HOUSING DISCHARGE ONLY - ${unitStr} - ${dateStr}`;
     const lines = [];
     lines.push('DISCHARGE DETAILS');
     lines.push(`Client: ${C}`);
