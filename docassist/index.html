@@ -5053,6 +5053,11 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
     <button class="tool-help-btn" onclick="confirmToolTutorial('Group Notes')">Walkthrough</button>
   </div>
 
+  <div id="gn-ratio-start-banner" role="status" aria-live="polite" style="margin:12px 0 16px;padding:14px 16px;border:2px solid #b7791f;border-radius:10px;background:#fff8e7;color:#754c12;font-size:14px;line-height:1.5">
+    <strong style="display:block;font-size:16px;margin-bottom:3px">Step 1 — Enter the group ratio first</strong>
+    Enter the number of clients and staff in <strong>Group Ratio (Clients:Staff)</strong> below. Client note fields populate after you enter the client count.
+  </div>
+
   <div class="gn-layout">
 
     <!-- LEFT: GROUP SETUP -->
@@ -5066,7 +5071,7 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
             <div class="gn-ratio-box">
               <input class="gn-ratio-input" id="gn-ratio-clients" type="number" min="1" placeholder="12" oninput="gnState.ratioClients=this.value;gnSyncClientSlots()">
               <span style="font-size:13px;color:var(--text-secondary)">:</span>
-              <input class="gn-ratio-input" id="gn-ratio-staff" type="number" min="1" placeholder="2" oninput="gnState.ratioStaff=this.value;gnCheckRatio()">
+              <input class="gn-ratio-input" id="gn-ratio-staff" type="number" min="1" placeholder="2" oninput="gnState.ratioStaff=this.value;gnCheckRatio()" onblur="gnAdvanceFromRatio()">
             </div>
             <div id="gn-ratio-warning" class="gn-challenge" style="margin-top:6px">⚠ This ratio exceeds 12:1. Group sessions above a 12:1 client-to-staff ratio cannot be billed. Adjust staffing or split the group before documenting.</div>
           </div>
@@ -5075,6 +5080,46 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 
       <hr class="gn-divider">
 
+      <div>
+        <div class="gn-section-label">Group Session</div>
+        <select class="gn-input" id="gn-group-type" onchange="gnState.groupType=this.value;gnToggleGroupType()" aria-label="Group session">
+          <option value="standard">Standard Group</option>
+          <option value="process">Process Group (Mon–Fri, 9:00–11:00)</option>
+          <option value="goals">Goal Selection Group (Mon–Fri, 11:30–12:30)</option>
+          <option value="curriculum">Curriculum Group (Mon–Fri, 2:00–4:00; Sat–Sun, 9:00–11:00 or 11:30–12:30)</option>
+        </select>
+      </div>
+
+      <div id="gn-goals-section" style="display:none">
+        <div class="gn-section-label">Goals Group Activities</div>
+        <label class="gn-check-row" style="margin-bottom:7px"><input type="checkbox" id="gn-goal-rules" checked onchange="gnState.goalRules=this.checked"> Group rules reviewed</label>
+        <div style="display:flex;flex-direction:column;gap:7px">
+          <label class="gn-check-row"><input type="checkbox" id="gn-goal-selection" onchange="gnState.goalSelection=this.checked;gnRenderClients()"> Goal Selection</label>
+          <label class="gn-check-row"><input type="checkbox" id="gn-goal-reading" onchange="gnState.goalReading=this.checked;gnRenderClients()"> Daily Reading Responses</label>
+          <div style="padding-left:22px" id="gn-goal-reading-wrap"><input class="gn-input" id="gn-goal-reading-topic" placeholder="Daily reading topic…" oninput="gnState.goalReadingTopic=this.value" style="font-size:11px"></div>
+          <label class="gn-check-row"><input type="checkbox" id="gn-goal-word" onchange="gnState.goalWord=this.checked;gnRenderClients()"> Word of the Day</label>
+          <div style="padding-left:22px" id="gn-goal-word-wrap"><input class="gn-input" id="gn-goal-word-text" placeholder="Word of the day…" oninput="gnState.goalWordText=this.value" style="font-size:11px"></div>
+          <div class="gn-hint">Select only activities conducted. Document each client's actual response or select Did not respond.</div>
+          <textarea class="gn-input" id="gn-goal-extra" placeholder="Optional additional group intervention details (only what occurred)…" oninput="gnState.goalExtra=this.value" style="font-size:11px;min-height:65px;resize:vertical"></textarea>
+        </div>
+      </div>
+
+      <div id="gn-curriculum-section" style="display:none">
+        <div class="gn-section-label">Curriculum Group</div>
+        <label class="gn-check-row" style="margin-bottom:10px"><input type="checkbox" id="gn-curriculum-rules" checked onchange="gnState.curriculumRules=this.checked"> Group rules reviewed</label>
+        <div class="gn-hint" style="margin-bottom:4px">Curriculum book</div>
+        <select class="gn-input" id="gn-curriculum-book" onchange="gnState.curriculumBook=this.value;gnState.curriculumEntry='';gnUpdateCurriculumTopics();gnRenderClients()"><option value="">Select a curriculum book…</option></select>
+        <div class="gn-hint" style="margin:10px 0 4px">Facilitator’s Guide pages / topic (not client workbook pages)</div>
+        <select class="gn-input" id="gn-curriculum-topic" onchange="gnState.curriculumEntry=this.value;gnRenderClients()"><option value="">Select Facilitator’s Guide pages and topic…</option></select>
+        <div class="gn-hint" style="margin-top:8px">The selected topic loads its intervention from the supplied curriculum document. Record each client's actual response separately.</div>
+      </div>
+
+      <div id="gn-standard-setup">
+      <div id="gn-process-goal-sharing" style="display:none;margin-bottom:12px">
+        <div class="gn-section-label">Process Group — Additional Activity</div>
+        <label class="gn-check-row"><input type="checkbox" id="gn-process-goal" onchange="gnState.processGoal=this.checked;gnRenderClients()"> Goal sharing</label>
+        <div class="gn-hint">Document the goal each client selected and what they shared about it.</div>
+      </div>
       <!-- What happened in group -->
       <div id="gn-activities-section">
         <div class="gn-section-label">Group Activities</div>
@@ -5095,6 +5140,17 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
 
       <hr class="gn-divider">
 
+      <!-- Clinical Judgement defaults note -->
+      <div>
+        <div class="gn-section-label">Clinical Judgement</div>
+        <div class="gn-hint">Set prognosis per client using the Poor / Fair / Good selector in each client card. The text auto-fills based on selection and can be edited before generating.</div>
+        <div class="gn-challenge visible" style="margin-top:0">⚠ Avoid selecting "Good" unless clinically justified — payers use it to argue the client no longer needs this LOC.</div>
+      </div>
+
+      </div><!-- /gn-standard-setup -->
+
+      <hr class="gn-divider">
+
       <!-- Techniques -->
       <div id="gn-techniques-section">
         <div class="gn-section-label">Techniques Used</div>
@@ -5103,16 +5159,6 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
           <label class="gn-check-row"><input type="checkbox" id="gn-tech-cbt" onchange="gnState.techCBT=this.checked"> CBT — Cognitive Restructuring</label>
         </div>
       </div>
-
-      <hr class="gn-divider">
-
-      <!-- Clinical Judgement defaults note -->
-      <div>
-        <div class="gn-section-label">Clinical Judgement</div>
-        <div class="gn-hint">Set prognosis per client using the Poor / Fair / Good selector in each client card. The text auto-fills based on selection and can be edited before generating.</div>
-        <div class="gn-challenge visible" style="margin-top:0">⚠ Avoid selecting "Good" unless clinically justified — payers use it to argue the client no longer needs this LOC.</div>
-      </div>
-
     </div><!-- /gn-setup -->
 
     <!-- RIGHT: CLIENT INPUT AREA -->
@@ -5145,8 +5191,8 @@ select.ctrl:focus, input.ctrl:focus { border-color: var(--border-focus); }
   </div><!-- /gn-layout -->
 
   <div class="generate-bar" id="gn-generate-bar">
-    <span class="generate-bar-hint">Fill in each client card, then generate to produce copy-ready outputs.</span>
-    <button class="btn btn-primary" onclick="gnGenerateAll()">Generate</button>
+    <span class="generate-bar-hint" id="gn-generate-status" role="status" aria-live="polite">Fill in each client card, then generate to produce copy-ready outputs.</span>
+    <button class="btn btn-primary" id="gn-generate-button" onclick="gnGenerateAll()">Generate</button>
   </div>
 </div><!-- /view-group -->
 
@@ -11091,6 +11137,9 @@ let gnState = {
   counselor: '',
   ratioClients: '',
   ratioStaff: '',
+  groupType: 'standard',
+  goalSelection: false, goalReading: false, goalReadingTopic: '', goalWord: false, goalWordText: '', goalExtra: '', goalRules: true, processGoal: false,
+  curriculumBook: '', curriculumEntry: '', curriculumRules: true,
   actRules: true,
   actTopic: false,
   topic: '',
@@ -11120,6 +11169,10 @@ function gnMakeClient() {
     id: ++gnClientIdCounter,
     name: '',
     participation: 'normal', // 'normal' | 'engaged_no_discussion' | 'disengaged'
+    noResponseGoalSelection: false, noResponseGoalReading: false, noResponseGoalWord: false,
+    responseGoalSelection: '', responseGoalReading: '', responseGoalWord: '',
+    processGoalText: '', processGoalShared: '', processGoalStatus: '', noResponseProcessGoal: false,
+    curriculumResponse: '', curriculumApplication: '', noResponseCurriculum: false,
     noResponseTopic: false,
     noResponseReading: false,
     noResponseMindfulness: false,
@@ -11160,6 +11213,17 @@ function gnCheckRatio() {
   const staff = parseInt(gnState.ratioStaff, 10) || 1;
   const warning = document.getElementById('gn-ratio-warning');
   if (warning) warning.classList.toggle('visible', clients / staff > 12);
+  const startBanner = document.getElementById('gn-ratio-start-banner');
+  if (startBanner) startBanner.style.display = (clients > 0 && parseInt(gnState.ratioStaff, 10) > 0) ? 'none' : 'block';
+}
+
+// Move to session selection only after the clinician finishes entering both ratio values.
+function gnAdvanceFromRatio() {
+  const clients = parseInt(gnState.ratioClients, 10);
+  const staff = parseInt(gnState.ratioStaff, 10);
+  if (!(clients > 0 && staff > 0)) return;
+  const session = document.getElementById('gn-group-type');
+  if (session && document.activeElement === document.body) session.focus({ preventScroll: true });
 }
 
 function gnSyncClientSlots() {
@@ -11186,6 +11250,98 @@ function gnToggleMindfulness() {
   const wrap = document.getElementById('gn-mindfulness-wrap');
   wrap.style.display = gnState.actMindfulness ? 'flex' : 'none';
   gnRenderClients();
+}
+
+const GN_CURRICULUM_ENTRIES = [{"book":"First Step","pages":"11-12","topic":"The Journey; Taking the First Step, Self-will vs. Acceptance.","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to present modular content to assist clients in exploring concepts of the powerlessness that comes with SUD. Skill training activity was utilized to assist clients on the importance of accepting their powerlessness & identifying the challenges of self-will. Open-ended questions were utilized to facilitate open discussion about the difficulty of admitting their SUD problem & the importance of acceptance in sobriety. Purpose: Explore the concept of powerlessness through a series of journaling exercises that focus on substance addiction & attempts to control your SUD."},{"book":"First Step","pages":"13-14","topic":"The Web of Powerlessness, The Web","intervention":"Psychoeducation was utilized to present modular content to assist clients in exploring the concept of powerlessness of their SUD, their feelings, & attempts to control their SUD. Client was asked to identify concepts of their SUD & to draw an image of powerlessness on paper. Open-ended questions from the modular content were utilized to facilitate open discussion about the importance of recognizing the severity of the powerlessness of their SUD."},{"book":"First Step","pages":"15-16","topic":"The Web of Powerlessness, unmanageability.","intervention":"Psychoeducation was utilized to present modular content to assist clients in exploring the facts of their SUD, their feelings, & attempts to control their SUD. Clients were asked to identify who they can turn to for support of their SUD. Open-ended questions from the modular content were utilized to facilitate open discussion about the importance of recognizing the severity of the powerlessness of their SUD."},{"book":"First Step","pages":"17-21","topic":"Thinking of drinking or using, attempts to stop or control, Effects of continued use, Surrender means freedom.","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to present modular content to assist clients in exploring the concept of powerlessness of their SUD & attempts to control their SUD. Clients were asked to explain how & when their lives became unmanageable due to loss of control of their AOD use. Cl were able to explore what they must give up maintaining ongoing recovery in their lives. Open-ended questions from the modular content were utilized to facilitate open discussion about the importance of recognizing the severity of the powerlessness of their SUD & how substances took priority over responsibilities."},{"book":"First Step","pages":"22-24","topic":"My life has become unmanageable, Areas of unmanageability","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to present modular content to assist clients in exploring the concept of powerlessness of their SUD & attempts to control their SUD. Clients were asked to explain how & when they lost control of their AOD use. Cl was encouraged to explore what they must surrender to maintain ongoing recovery. Open-ended questions from modular content were utilized to facilitate open discussion about the importance of recognizing the severity of the unmanageability of their SUD."},{"book":"First Step","pages":"25-32","topic":"Areas of Unmanageability","intervention":"Psychoeducation was utilized to present modular content to assist clients in exploring the areas of their lives that have become unmanageable due to their addiction. Client was asked to identify harmful things that were against their values due to SUD. Clinician assistant explored perspective of helplessness & hopelessness connected to SUD. Open-ended questions from the modular content were utilized to facilitate open discussion about the importance of recognizing unmanageability. Cl expressed their thoughts on what barriers they have & how they can be improved to continue working on their recovery."},{"book":"Getting Started","pages":"11-12","topic":"Taking a major step & “What can I expect?”","intervention":"Psychoeducation was utilized to present modular content to assist clients with evaluating personal expectations of self-change. Skill training activity was utilized to assist clients on the importance of overcoming obstacles they may have due to AoD use. Clients were asked to identify their thoughts & feelings about being in this program. Client was asked to elaborate on what they hope to get out of this program while in Tx. Open-ended questions from the modular content were utilized to facilitate open discussion about the importance of using strategies to make positive behavior changes."},{"book":"Getting Started","pages":"13-17","topic":"Obstacles to Self-Change, My History of Substance Use, Inventory of Consequences.","intervention":"Psychoeducation was utilized to present modular content to assist clients with evaluating common challenges and solutions to self-change. Skill training activity was utilized to assist clients on the importance of recognizing the impact of consequences into self-change from AoD use. Clients were asked to identify their thoughts & feelings about what their inventory looks like in their recovery process. Open-ended questions from the modular content were utilized to facilitate open discussion about utilizing support to promote self-change and learning from substance use history."},{"book":"Getting Started","pages":"18-23","topic":"Self-evaluation of drug use continued","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to present modular content to assist clients with evaluating the consequences of AOD use. Skill training activity was utilized to assist clients on the importance of evaluating their past AOD use. Clients were asked to identify a time when AOD use affected areas of their life: physical dependence, jobs, coping with problems & their social life. Open-ended questions from the modular content were utilized to facilitate open discussion about the importance of using strategies to make positive behavior changes."},{"book":"Getting Started","pages":"24-29","topic":"Strength and Ability, Personal Values, and Motivation for Change","intervention":"Psychoeducation was utilized to present modular content to assist clients with evaluating common challenges and solutions to self-change. Skill training activity was utilized to assist clients on the importance of recognizing the impact of consequences into self-change from AoD use. Clients were asked to identify their thoughts and feelings about what their positive changes look like in their recovery process. Open-ended questions from the modular content were utilized to facilitate open discussion about utilizing support to promote self-change and learning from substance use history."},{"book":"Getting Started","pages":"30-33","topic":"Proven strategies I can use to make positive changes pages.","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to present modular content to assist clients with learning proven strategies for making behavior changes. Skill training activity was utilized to assist clients on the importance of making behavior changes & what strategies they can learn to assist them. Clients were asked to identify a time when they got involved with others to support positive change, when their feelings helped them better understand a problem & when they realized their life would be better if they changed. Open-ended questions from the modular content were utilized to facilitate open discussion about the importance of using strategies to make positive behavior changes."},{"book":"First Step","pages":"25-32","topic":"Areas of Unmanageability","intervention":"Psychoeducation was utilized to present modular content to assist clients in exploring the areas of their lives that have become unmanageable due to their addiction. Client was asked to identify harmful things that were against their values due to substance use. Clinician explored of helplessness and hopelessness connected to substance use. Open-ended questions from the modular content were utilized to facilitate open discussion about the importance of recognizing unmanageability. Cl expressed their thoughts on what barriers they have and how they can be improved to continue working on their recovery.","sourceModule":"First Step"},{"book":"Getting Started","pages":"34-40","topic":"‘On my own or ask for help; Time for Reflection; My Personal commitment statement","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to present modular content to assist clients with learning proven strategies for making behavior changes. Skills training activity was utilized to assist clients in identifying situations that would have had a better outcome if they asked for help. Clients were asked to describe a situation in the past when they attempted to solve problems on their own & recognized when asking for help would have been a better option. Clients were asked to name a person that can help them with their drug or alcohol problems and why that person would be a good resource for them. Open-ended questions from the modular content were utilized to facilitate open discussion about the benefits of asking for help."},{"book":"Anger","pages":"11-13","topic":"Anger & you; The role of anger in your life","intervention":"Psychoeducation was utilized to present modular content to assist clients in reflection of the role of anger & how they typically respond to anger. Client was asked to identify their relationship with anger with a description of problem areas of anger. Open-ended questions from the modular content were utilized to facilitate open discussion to identify client’s readiness to change how they express feelings of anger & how changes can be implemented."},{"book":"Anger","pages":"14-17","topic":"False beliefs of anger; How your body reacts to anger.","intervention":"Psychoeducation was utilized to present modular content to assist clients with exploring anger & the negative consequences they have experienced when expressing anger with unhealthy behaviors. Open ended questions were utilized to assist clients in identifying how to improve accountability & ownership of their emotions. Prompted clients to identify & create a healthier alternative with an illustration their perspective to refute distorted thoughts & unhealthy behaviors associated with experiencing anger."},{"book":"Anger","pages":"18-21","topic":"Dangerous Responses to Anger, look for the hidden ‘should’, Irrational self-talk may intensify anger.","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to present modular content to assist clients with exploring the facts about aggressive responses to anger. Skill training activity was utilized to assist clients on the understanding & utilizing the healthier responses to anger & acknowledging the warning signs of intensifying anger with “should” thinking. Clients were asked to identify a time when they have responded with unhealthy expressions of anger. Open-ended questions from the modular content were utilized to facilitate open discussion about healthier responses client can implement if they begin to think about using alcohol or other drugs as a response to anger."},{"book":"Anger","pages":"22-25","topic":"Irrational Self-Talk May Intensify Anger, Strategies for managing anger.","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to present modular content to assist clients with identifying how negative self-talk can lead to intensify feelings of anger. Skill training activity was utilized to assist clients on recognizing & identifying warning signs, situations, & healthy alternatives to managing anger. Open-ended questions from the modular content were utilized to facilitate open discussion about the challenges of recovery associated with unaddressed anger."},{"book":"Anger","pages":"25-31","topic":"Cont. Strategies for managing anger, My anger management plan","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to present modular content to assist clients with identifying healthy strategies & how to implement an anger management plan. Skill training activity was utilized to assist clients on acknowledging the warning signs of intensifying anger. Client was asked to identify a recent situation & develop an anger management plan to help manage difficult situations. Open-ended questions from the modular content were utilized to facilitate open discussion about the dangers of not having a backup strategy to assist them when in difficult situations."},{"book":"Denial","pages":"11-13","topic":"Denial & addiction; The denial dilemma; How denial grows","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to present modular content to assist clients to learn & explore how denial progresses with the disease of addiction. Clients were asked to identify patterns of denial about their use, how they adjusted their values to continue, & placing blame for consequences of their behaviors & use. Open-ended questions from the modular content were utilized to facilitate open discussion associated with denial about their addiction."},{"book":"Denial","pages":"14-15","topic":"Faulty memory keeps you in denial; Denial seeks supporters.","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to present modular content to assist clients to learn & explore how a faulty memory impacts denial during active addiction. Clients were asked to identify & discuss events where they have experienced euphoric recall, emotional memory loss, & blackouts. Open-ended questions from the modular content were utilized to facilitate open discussion to compare how they remember these events & how others remember what took place at these events."},{"book":"Denial","pages":"16-17","topic":"Defenses that make up your wall of denial.","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to present modular content to assist clients to learn & examine defenses, impact of addiction, & contributed to denial. Clients were asked to identify defenses & how they used them to justify or rationalize their SUD. Open-ended questions from the modular content were utilized to facilitate open discussion to identify how these behaviors affected themselves & those around them during active addiction."},{"book":"Denial","pages":"18-19","topic":"Johari Window.","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to present modular content to assist clients to learn to recognize their own denial. Client participated in a skill-based exercise to create a Johari Window & were asked to identify areas they believe were challenging. Client was encouraged to recognize how each area is impacted from their thoughts & behaviors during active addiction. Open-ended questions from the modular content were utilized to facilitate open discussion about their findings concerning the open, blind, & secret panes of the window."},{"book":"Denial","pages":"20-22","topic":"Unique is not what you should seek; The two faces of denial; Ask help from others; Denial sticks around.","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to present modular content to assist clients to look for similarities with people in recovery, learning when denial is working for us to protect or against us by deception. Clients were asked to identify how they have seen themselves as unique when comparing with others in recovery & how deception played a role in active addiction. Clients participated in an activity giving examples to identify how they can protect themselves from denial. Open-ended questions from the modular content were utilized to facilitate open discussion & self-reevaluation to encourage the countering process of denial."},{"book":"Denial","pages":"23-24","topic":"Self Reflection.","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to present modular content to assist clients with considering how addiction related problems were denied in active use. Skill training was used to help clients acknowledge what was denied in active addiction. Clients were asked to identify addiction related problems they encountered during active use & how they experienced denial. Open-ended questions from the modular content were utilized to facilitate open discussion about how substance abuse has influenced their life & participate in self-reflection to identify newly acquired tools they’ve gained to benefit their recovery."},{"book":"Substance Using Behaviors","pages":"11-13","topic":"The Risky Ride of SUD Problems; Evaluating my substance using behaviors.","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to present modular content to assist clients with identifying the consequences of their SUD. Skill training activity was utilized to assist clients on the importance of recognizing the highs & lows of substance abuse. Clients were asked to identify what behaviors & consequences they experienced in active addiction in association with symptoms related to SUD disorders. Open-ended questions from the modular content were utilized to facilitate open discussion about the importance of identifying the behaviors & consequences client experienced & why it is important for recovery."},{"book":"Substance Using Behaviors","pages":"14-15","topic":"Substance addiction is primary; Substance addiction can also be...","intervention":"Psychoeducation was utilized to present modular content to assist clients with understanding substance addiction & physical/behavioral consequences. Skill training activity was utilized to assist clients on identifying specific physical/behavioral consequences. Client was asked to describe how they made their SUD a priority, & in what ways are they willing to stop the progression of their substance addiction. Open-ended questions from the modular content were utilized to facilitate open discussion about specific steps they will take, what benefits they may enjoy as a result of making recovery a priority & what can they do to increase motivation."},{"book":"Substance Using Behaviors","pages":"16-21","topic":"Your Body Vs. Drugs; Alcohol’s effects on your body;","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to present modular content to assist clients with understanding the impact of substance abuse on the body. Client was encouraged to identify experiences or behaviors they exhibited while under the influence that they would not have done without the use of substances. Skill training activity was utilized to assist clients on becoming aware of the negative effects their drug & alcohol use has had on their body. Clients were asked to identify how they believe their body has responded to their SUD. Open-ended questions from the modular content were utilized to facilitate open discussion about experiences they used AoD to cope & identify healthier alternatives to promote a recovery lifestyle."},{"book":"Substance Using Behaviors","pages":"22-27","topic":"Methamphetamine; Marijuana; Cocaine; Opiates/Narcotics; Inhalants; Hallucinogens","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to present modular content to assist clients with exploring the facts, effects of different substances, & addictions. Skill training activity was utilized to assist clients on acknowledging the negative effects using substances can cause on the mental & physical well-being. Clients were asked to identify what benefits & repercussions they may experience in the future if they chose to use substances. Open-ended questions from the modular content were utilized to facilitate open discussion about the effects of substances & what new information they had taken away from the content."},{"book":"Substance Using Behaviors","pages":"28-32","topic":"Sedating pills/Prescription drugs; Synthetic drugs; Beware of Switching Addictions","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to present modular content to educate on effects of substances & assist clients with recognizing the signs of switching addictions. Skill training activity was utilized to assist clients on becoming aware of warning signs related to switching addictions. Clients were asked to identify what tools & strategies may be helpful in their efforts to fight switching addictions. Open-ended questions from the modular content were utilized to facilitate open discussion to explore challenges with switching addictions & the importance of identifying warning signs to avoiding substituting addictions."},{"book":"Coping Skills","pages":"11-13","topic":"Coping skills: building a strong foundation; Accepting feedback skills to maintain positive change","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to present modular content to assist client with recognizing the basis for coping strategies. Client participated in a skill training utilizing a readiness scale for measuring effectiveness of known coping skills. with learning to best handle temptation when presented. Open-ended questions from the modular content were utilized to facilitate open discussion with peers to receive feedback on effective coping strategies & how they can apply these skills in their recovery."},{"book":"Coping Skills","pages":"14-17","topic":"Communication/Craving escape skills to positive change.","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to present modular content to assist clients with communication skills to maintain positive change. Staff used open-ended questions from the modular content to facilitate open discussion about their ability to utilize communication skills. Modular maintain content was utilized to encourage client to identify their perspective on cravings to use AoD. Skill training activity was utilized to assist clients with gauging their ability to apply these skills in each of the above areas of communication & experiencing cravings. Staff encouraged clients to explore challenges & steps of improving these areas to promote long-term recovery."},{"book":"Coping Skills","pages":"18-21","topic":"Stress-reduction & temptation skills to maintain positive change.","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to present modular content to assist clients with identifying & implementing stress reduction skills. Staff used open-ended questions from the modular content to facilitate open discussion focusing on stress reduction & reducing temptation to use AoD. Skill training activity was utilized to assist clients with gauging their ability to apply these skills. Staff facilitated an open discussion to identify barriers of stress & temptations to use AoD. Client was encouraged to explore key points of insight into newly acquired skills."},{"book":"Coping Skills","pages":"22-25","topic":"Decision making/Anger management skills to maintain positive change.","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to present modular content to assist clients with learning to identify healthier decisions that will be conducive to a recovery lifestyle. Clinician utilized open-ended questions from the modular content to facilitate discussion about healthier decision making & anger management abilities. Skill training activity was utilized to assist clients with gauging their ability to apply these skills in Tx & long-term recovery. Client was encouraged to participate in training exercises to practice these skills & discuss challenges or improvements."},{"book":"Coping Skills","pages":"26-28","topic":"Relationship-building skills to maintain positive change; Focusing on improving coping skills.","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to present modular content to assist clients with learning to identify concepts of healthy & supportive relationships during recovery. Clinician utilized open-ended questions from the modular content to facilitate discussion to identify how to build support networks. Skill training activity was utilized to assist clients with gauging their ability to apply these skills in Tx & long-term recovery. Client was encouraged to participate in training exercise to practice these skills & discuss challenges or improvements to recognize what coping strategies they’d like to improve upon."},{"book":"Coping Skills","pages":"29-31","topic":"A coping skill I want to strengthen is.","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to present modular content with open-ended questions to identify coping skills they want to strengthen, why this skill is important, & what personal strengths they can use to improve this coping skill. Skill training activity was utilized to assist clients with identifying action steps they will take to improve this skill & the expected benefits they hope to gain from using this skill."},{"book":"Self-Worth","pages":"11-13","topic":"What is self-worth; The influence of your self-talk on your self-worth.","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to identify & explore the meaning of self-worth. Open-ended questions were facilitated from modular content to explore client’s relationship between self-worth & self-talk. Skill training activity was utilized to assist clients with identifying experiences when they’ve used negative self-talk & were prompted to recognize reframing messages to improve overall sense of self-worth."},{"book":"Self-Worth","pages":"14-15","topic":"Increase your self-worth by sticking to your values.","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to explore how behavior impacts values. Open-ended questions were facilitated from modular content to explore client’s relationship between self-worth & values. Skill training activity was utilized to assist clients with identifying what they value in recovery & steps to recognize prosocial behavior to improve their expression of these values."},{"book":"Self-Worth","pages":"16-17","topic":"Increase your self-worth by exposing secrets.","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to identify & explore the meaning of how secrets in recovery can lower self-worth. Open-ended questions were facilitated from modular content to explore client’s relationship between self-worth & secrets. Skill training activity was utilized to assist clients with identifying experiences they’ve kept secret & understanding how to identify a safe environment or support person to practice honesty in recovery."},{"book":"Self-Worth","pages":"18-19","topic":"Taking care of yourself on the outside.","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to identify & explore the meaning of self-care. Open-ended questions were facilitated from modular content to explore client’s relationship between self-worth & self-care. Skill training activity was utilized to encourage client to identify their current perspective on how they take care of themselves & explore what activities they can participate in to promote healthier self-care strategies."},{"book":"Self-Worth","pages":"20-22","topic":"Set realistic expectations; Take your time.","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to identify & explore the meaning of expectations in recovery. Open-ended questions were facilitated from modular content to identify client’s current expectations of recovery. Skill training activity was utilized to assist clients with identifying positive accomplishments they have achieved today to promote in the moment thinking patterns. Client was encouraged to explore the challenges with recognizing accomplishments & utilizing thinking in the moment strategies."},{"book":"Self-Worth","pages":"23-25","topic":"Setting goals to increase self-worth.","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to identify & explore the meaning of goal setting in recovery. Skill training activity was utilized to assist clients with creating SMART goals. Client was encouraged to share during an open discussion to identify their goal & how they plan to accomplish it."},{"book":"Self-Talk","pages":"11-13","topic":"A look at self- talk; Is self-talk working for you.","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to present modular content to assist clients with identifying concepts of self-talk & the correlation to feelings & behavior. Clinician provided examples of situations, high risk, & alternative forms of self-talk. Open-ended questions from the modular content were utilized to facilitate open discussion to prompt clients to identify examples of feelings & behaviors as a result of high-risk & alternative forms of self-talk."},{"book":"Self-Talk","pages":"14-16","topic":"Practicing self- talk instructions.","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to explore how behavior impacts values. Open-ended questions were facilitated from modular content to explore client’s relationship between self-worth & values. Skill training activity was utilized to assist clients with identifying what they value in recovery & steps to recognize prosocial behavior to improve their expression of these values.","sourceModule":"Self-worth"},{"book":"Self-Talk","pages":"17-19","topic":"Identifying my risky self-talk; Expecting Rewards.","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to present modular content to assist clients with understanding risky self-talk with examples from content. Clients were asked to identify situations when they expected rewards from using alcohol or other drugs. Skill training was utilized to increase insight of risky self-talk utilizing a self-evaluation scale. Client was encouraged to identify why changing this risky self-talk is important to them. Open-ended questions from the modular content were utilized to facilitate open discussion about measuring their progress of risky self-talk throughout Tx."},{"book":"Self-Talk","pages":"20-23","topic":"Seeking relief; Justifying Use.","intervention":"Psychoeducation was utilized to present modular content to assist clients with learning to challenge & change common types of self-talk that can increase their risk of experiencing negative outcomes. Clients were asked to identify self-talk that may challenge thoughts of using alcohol or drugs as a solution to uncomfortable feelings & why changing the risky self-talk pattern is important to them in their recovery. Open-ended questions from the modular content were utilized to facilitate open discussion to explore examples of AoD justification. Skill training was implemented to increase awareness into current level of confidence in changing risky self-talk to reduce patterns of justifying use of AoD."},{"book":"Self-Talk","pages":"24-27","topic":"Emphasizing the negative; Blaming.","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to present modular content to assist clients with learning to replace risky self-talk with positive self-talk. Clients were asked to identify examples of when they overlooked positive aspects of situations & focused only on negative details. Skill training was utilized to increase insight of risky self-talk. Open-ended questions from the modular content were utilized to facilitate open discussion about the importance of self-accountability & ownership of behaviors during active addiction. Evaluation scale was implemented to increase awareness into situations when blame was placed on others for consequences of using AoD."},{"book":"Self-Talk","pages":"28-31","topic":"Using all or nothing self-talk; Practicing self-talk strategies.","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to present modular content to assist clients with all or nothing thinking patterns. Clients were asked to identify examples of when they often used all or nothing self-talk. Skill training was utilized to increase insight of frequency of risky self-talk & strategies they can implement to promote long-term recovery. Open-ended questions from the modular content were utilized to facilitate open discussion about what self-talk statements can be utilized to reframe risky self-talk statements & what positive messages they plan to use."},{"book":"Family & Other Relationships","pages":"11-13","topic":"Types of Relationships; Unhealthy vs. Healthy relationships.","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to present modular content to assist clients with identifying their current relationships. Staff used open-ended questions to encourage clients to explore unhealthy & healthy relationships they believe will contribute & hinder their recovery. Client participted in a team building activity with his peers."},{"book":"Family & Other Relationships","pages":"14-16","topic":"My Relationship Diagram; SUD problems affect relationships","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to present a skill training activity to assist clients on identifying healthy relationship & unhealthy relationships. Staff prompted clients to complete an eco-map to assist clients with identifying supportive & unsupportive relationships in their life. Modular content was utilized to assist clients with recognizing the difference between healthy & unhealthy relationships. Staff used open-ended questions to encourage clients with exploring ways supportive relationships can build their positive values & behaviors. Client was encouraged to identify how SUD affected their relationships."},{"book":"Family & Other Relationships","pages":"17-19","topic":"SUD Problems Create Unhealthy Families; Looking at healthy family relationships.","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to present modular content to assist clients with learning how substance abuse has affected relationships. Skill training activity was utilized to assist clients on creating the opportunity for clients to become aware of the relationships affected by their SUD. Open-ended questions from the modular content were utilized to facilitate open discussion about how their new awareness in their relationships can bring about change in their view of accountability."},{"book":"Family & Other Relationships","pages":"20-23","topic":"Ripple effects on your relationships; Effective communication nurtures healthy relationships","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to present modular content to assist clients with learning how their SUD has affected their relationships. Clients were asked to identify action steps they can use to improve these relationships. Open-ended questions from the modular content were utilized to facilitate open discussion to identify healthy communication styles. Skill training was facilitated to encourage self-evaluation to identify the style of communication used most often & what steps they can take to improve."},{"book":"Family & Other Relationships","pages":"24-25","topic":"Do no harm; Four principles to strengthen your relationships","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to present modular content to assist clients with learning to communicate effectively to reduce harm to relationships. Client was encouraged to identify action steps they are willing to start to promote healthy relationships. Open-ended questions from the modular content were utilized to facilitate open discussion about principles of strengthening relationships."},{"book":"Family & Other Relationships","pages":"26-31","topic":"Four principles to strengthen your relationships; Begin communication by writing a letter","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to present modular content to assist clients with learning to utilize principles of strengthening relationships. Client was encouraged to identify ways they could better use the four principles in important relationships. Open-ended questions from the modular content were utilized to facilitate open discussion about writing a letter to begin communication with a relationship they want to improve."},{"book":"Feelings","pages":"11-12","topic":"Feelings & addictive behaviors; The role of feelings on behavior.","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to present modular content to assist clients in connecting feelings & behaviors. Clients were asked to identify what they were feeling as the entered treatment. Open-ended questions from the modular content were utilized to facilitate open discussion to explore uncomfortable feelings & the problem behaviors they exhibited."},{"book":"Feelings","pages":"13-15","topic":"Where do feelings come from; Your self-talk can change the way you feel.","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to present modular content to assist clients in defining & identifying where feelings originate. Skill training activity was utilized to educate clts on false assumptions about where feelings come from, examine self-talk, & the connection it has to the way they feel after an event. Open-ended questions from the modular content were utilized to facilitate open discussion about their current emotional state in Tx. CBT techniques were utilized to identify situations that contribute to distorted thought process & recognizing the correlation of events, self-talk, & feelings."},{"book":"Feelings","pages":"16-17","topic":"Changing your self-talk; Putting it all together.","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to present modular content to assist clients in discovering how their self-talk impacts their feelings. Skill training activity was utilized to educate client on changing their self-talk. Client was educated on CBT techniques to change negative self-talk into positive self-talk & describe how this tool can hinder or improve their recovery. Open-ended questions from the modular content were utilized to facilitate open discussion about the importance self-talk, & how that leads to the way they feel."},{"book":"Feelings","pages":"18-21","topic":"Three other facts about your feelings; High-risk feelings that can affect your behaviors.","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to present modular content to assist clients in discovering how their feelings may be experienced in combination of on another. Facilitator educated on the difference between thought vs. Feeling. Skill training activity was utilized to educate client on identifying high-risk emotions by encouraged client to draw their perception of high-risk feelings. Open-ended questions from the modular content were utilized to facilitate open discussion to process high-risk feelings."},{"book":"Feelings","pages":"22-25","topic":"My most difficult feelings; Four proven strategies for coping with feelings.","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to present modular content to assist clients in identifying difficult feelings. Staff encouraged client to identify how often they experiences these feelings, common warning signs, & behavior associated Skill-training activity was utilized to create a coping strategy for difficult feelings. Open-ended questions from the modular content utilized to facilitate open discussion about proven methods to help manage uncomfortable emotions."},{"book":"Feelings","pages":"26-31","topic":"Four Proven Strategies for Coping with Feelings; Applying my coping skills, practice, practice, practice.","intervention":"Interactive check-in was facilitated to assist clients in building rapport & processing daily challenges/accomplishments. Psychoeducation was utilized to present modular content to assist clients in learning new strategies for coping with feelings. Clients were asked to identify supportive people that may help them when they have uncomfortable feelings. Clinician assistant utilized open-discussion format to reflect on a time in active addiction when their perception was distorted to challenge negative self-talk & find healthy alternatives. Open-ended questions from the modular content were utilized to facilitate open discussion about how to apply these coping skills in the future. Skill training activity was implemented to create a chart to improve ability to challenge distorted thinking during difficult events & emotions."}];
+
+function gnInitCurriculumBooks() {
+  const select = document.getElementById('gn-curriculum-book');
+  if (!select) return;
+  [...new Set(GN_CURRICULUM_ENTRIES.map(e => e.book))].forEach(book => {
+    const option = document.createElement('option');
+    option.value = book;
+    option.textContent = book;
+    select.appendChild(option);
+  });
+}
+function gnUpdateCurriculumTopics() {
+  const select = document.getElementById('gn-curriculum-topic');
+  select.replaceChildren(new Option('Select Facilitator’s Guide pages and topic…', ''));
+  GN_CURRICULUM_ENTRIES.forEach((entry, i) => {
+    if (entry.book !== gnState.curriculumBook) return;
+    const label = `Facilitator’s Guide pp. ${entry.pages} — ${entry.topic}` + (entry.sourceModule ? ` (document labels module: ${entry.sourceModule})` : '');
+    select.add(new Option(label, String(i)));
+  });
+  select.value = gnState.curriculumEntry === undefined ? '' : String(gnState.curriculumEntry);
+}
+function gnSelectedCurriculumEntry() {
+  if (gnState.curriculumEntry === '' || gnState.curriculumEntry == null) return null;
+  const entry = GN_CURRICULUM_ENTRIES[Number(gnState.curriculumEntry)];
+  return entry && entry.book === gnState.curriculumBook ? entry : null;
+}
+function gnBuildCurriculumIntervention() {
+  const s = gnState;
+  const lines = [`- Group Ratio (Clients:Staff): ${s.ratioClients || '?'}:${s.ratioStaff || '?'}`];
+  if (s.curriculumRules) lines.push('- Clinician reviewed group rules to set foundation for group session and set expectations for group members.');
+  const entry = gnSelectedCurriculumEntry();
+  if (entry) {
+    lines.push(`- Curriculum: The Change Companies; ${entry.book}; Facilitator’s Guide pages ${entry.pages}; topic: ${entry.topic}.`);
+    lines.push(`- ${entry.intervention.replace(/\b[Cc]ounselor\b/g, 'Clinician')}`);
+  }
+  gnAppendTechniqueIntervention(lines, s);
+  return lines.join('\n');
+}
+function gnBuildCurriculumResponse(client) {
+  const name = client.name && client.name.trim() ? client.name.trim() : 'Client';
+  const lines = [];
+  if (client.participation === 'disengaged') {
+    lines.push(`- ${name} was disengaged during group and did not meaningfully participate in group activities.`);
+    lines.push(`- Clinical Judgement: ${gnCJDisengaged(name)}`);
+    return lines.join('\n');
+  }
+  if (gnState.curriculumRules) lines.push(`- ${name} reviewed group rules.`);
+  const entry = gnSelectedCurriculumEntry();
+  if (entry) {
+    if (client.noResponseCurriculum || client.participation === 'engaged_no_discussion') {
+      lines.push(`- ${name} did not provide a verbal response during the curriculum discussion of ${entry.topic}.`);
+    } else if (client.curriculumResponse && client.curriculumResponse.trim()) {
+      lines.push(`- During the curriculum discussion of ${entry.topic}, ${name} shared: ${client.curriculumResponse.trim()}`);
+      if (client.curriculumApplication && client.curriculumApplication.trim()) lines.push(`- ${name} identified the following application to recovery: ${client.curriculumApplication.trim()}`);
+    }
+  }
+  gnAppendTechniqueResponse(lines, gnState, name);
+  const cj = (client.cjText || '').trim();
+  if (cj) lines.push(`- Clinical Judgement: ${cj}`);
+  return lines.join('\n');
+}
+
+function gnToggleGroupType() {
+  const goals = gnState.groupType === 'goals';
+  document.getElementById('gn-goals-section').style.display = goals ? 'block' : 'none';
+  document.getElementById('gn-standard-setup').style.display = (goals || gnState.groupType === 'curriculum') ? 'none' : 'block';
+  document.getElementById('gn-curriculum-section').style.display = gnState.groupType === 'curriculum' ? 'block' : 'none';
+  document.getElementById('gn-process-goal-sharing').style.display = gnState.groupType === 'process' ? 'block' : 'none';
+  gnRenderClients();
+}
+
+function gnGoalResponseField(label, prompt, value, onInput, noResponse, onNoResponse) {
+  const field = gnMakeRespField(label, prompt, value, onInput, noResponse, onNoResponse);
+  const cbLabel = field.querySelector('label span');
+  if (cbLabel) cbLabel.textContent = 'Did not respond';
+  return field;
+}
+
+function gnGoalActivityResponses(client, wrap) {
+  const name = client.name && client.name.trim() ? client.name.trim() : 'Client';
+  if (gnState.goalSelection) wrap.appendChild(gnGoalResponseField('Goal Selection — specific goal and why/how it will benefit the client',
+    `- ${name} identified a goal for the next day and explained its anticipated benefit:`,
+    client.responseGoalSelection, v => { client.responseGoalSelection = v; }, client.noResponseGoalSelection, v => { client.noResponseGoalSelection = v; }));
+  if (gnState.goalReading) wrap.appendChild(gnGoalResponseField('Daily Reading Responses — connection to personal experience',
+    `- ${name} connected the reading to their personal experience:`,
+    client.responseGoalReading, v => { client.responseGoalReading = v; }, client.noResponseGoalReading, v => { client.noResponseGoalReading = v; }));
+  if (gnState.goalWord) wrap.appendChild(gnGoalResponseField('Word of the Day — connection to recovery',
+    `- ${name} related the word to their recovery:`,
+    client.responseGoalWord, v => { client.responseGoalWord = v; }, client.noResponseGoalWord, v => { client.noResponseGoalWord = v; }));
 }
 
 function gnRenderClients() {
@@ -11312,7 +11468,7 @@ function gnRenderClients() {
     }
 
     // ── Context-aware response fields ──────────────────
-    const hasAnyActivity = gnState.actTopic || gnState.actReading || gnState.actMindfulness;
+    const hasAnyActivity = gnState.groupType === 'curriculum' ? !!gnSelectedCurriculumEntry() : (gnState.groupType === 'goals' ? (gnState.goalSelection || gnState.goalReading || gnState.goalWord) : (gnState.actTopic || gnState.actReading || gnState.actMindfulness || (gnState.groupType === 'process' && gnState.processGoal)));
     const showRespSection = client.participation !== 'disengaged'
       && (hasAnyActivity || client.participation === 'engaged_no_discussion');
 
@@ -11325,7 +11481,7 @@ function gnRenderClients() {
 
       const respHintGlobal = document.createElement('div');
       respHintGlobal.className = 'gn-hint';
-      respHintGlobal.textContent = 'Write in complete sentences — pasted verbatim into output.';
+      respHintGlobal.textContent = 'The text shown above each entry is what comes before your words in the generated note. Your entry is inserted verbatim.';
       body.appendChild(respHintGlobal);
 
       if (client.participation === 'engaged_no_discussion') {
@@ -11338,34 +11494,117 @@ function gnRenderClients() {
       const respWrap = document.createElement('div');
       respWrap.style.cssText = 'display:flex;flex-direction:column;gap:10px;';
 
-      if (gnState.actTopic && client.participation === 'normal') {
+      if (gnState.groupType === 'goals') {
+        gnGoalActivityResponses(client, respWrap);
+      }
+      if (gnState.groupType === 'curriculum') {
+        const entry = gnSelectedCurriculumEntry();
+        if (entry) respWrap.appendChild(gnGoalResponseField(`Curriculum response — pages ${entry.pages}: ${entry.topic}`,
+          `- During the curriculum discussion of ${entry.topic}, ${client.name && client.name.trim() ? client.name.trim() : 'Client'} shared:`, client.curriculumResponse,
+          v => { client.curriculumResponse = v; }, client.noResponseCurriculum,
+          v => { client.noResponseCurriculum = v; }));
+        if (!client.noResponseCurriculum) {
+          const application = document.createElement('div');
+          const label = document.createElement('div');
+          label.className = 'gn-resp-activity-label';
+          label.textContent = 'Application to recovery / skill demonstrated (optional; document only what was observed or shared)';
+          const field = document.createElement('textarea');
+          field.className = 'gn-input';
+          field.style.cssText = 'font-size:11px;min-height:60px;resize:vertical';
+          field.value = client.curriculumApplication || '';
+          field.placeholder = 'Specific insight, practiced skill, or intended recovery application…';
+          field.oninput = () => { client.curriculumApplication = field.value; };
+          const prefix = document.createElement('div');
+          prefix.className = 'gn-sent-prefix';
+          prefix.textContent = `- ${client.name && client.name.trim() ? client.name.trim() : 'Client'} identified the following application to recovery:`;
+          application.appendChild(label); application.appendChild(prefix); application.appendChild(field); respWrap.appendChild(application);
+        }
+      }
+
+      if (gnState.groupType === 'process' && gnState.processGoal && client.participation === 'normal') {
+        const goalField = gnGoalResponseField('Goal sharing — client’s selected goal',
+          `- ${client.name && client.name.trim() ? client.name.trim() : 'Client'} identified the following goal:`, client.processGoalText,
+          v => { client.processGoalText = v; }, client.noResponseProcessGoal,
+          v => { client.noResponseProcessGoal = v; gnRenderClients(); });
+        respWrap.appendChild(goalField);
+        if (!client.noResponseProcessGoal) {
+          const statusWrap = document.createElement('div');
+          statusWrap.className = 'gn-resp-activity';
+          const statusLabel = document.createElement('div');
+          statusLabel.className = 'gn-resp-activity-label';
+          statusLabel.textContent = 'Progress on goal';
+          statusWrap.appendChild(statusLabel);
+          const statusSelect = document.createElement('select');
+          statusSelect.className = 'gn-input';
+          [['', 'Select goal progress…'], ['completed', 'Completed goal'], ['progress', 'Made progress — more work needed'], ['none', 'Did not work on goal']].forEach(([value, label]) => {
+            const opt = document.createElement('option'); opt.value = value; opt.textContent = label; statusSelect.appendChild(opt);
+          });
+          statusSelect.value = client.processGoalStatus || '';
+          statusSelect.onchange = () => { client.processGoalStatus = statusSelect.value; gnRenderClients(); };
+          statusWrap.appendChild(statusSelect);
+          if (client.processGoalStatus === 'none') {
+            const reminder = document.createElement('div');
+            reminder.className = 'gn-hint';
+            reminder.style.cssText = 'margin-top:6px;color:#b45309';
+            reminder.textContent = 'Review clinical judgment: poor prognosis may be appropriate. The prognosis is not changed automatically.';
+            statusWrap.appendChild(reminder);
+          }
+          respWrap.appendChild(statusWrap);
+          if (client.processGoalStatus && client.processGoalStatus !== 'none') {
+            const sharedField = document.createElement('div');
+            const sharedLabel = document.createElement('div');
+            sharedLabel.className = 'gn-section-label';
+            sharedLabel.textContent = client.processGoalStatus === 'completed' ? 'What the client completed' : 'What the client has done or still needs to work on';
+            const sharedInput = document.createElement('textarea');
+            sharedInput.className = 'gn-input';
+            sharedInput.placeholder = 'Document what the client actually shared…';
+            sharedInput.style.cssText = 'font-size:11px;min-height:65px;resize:vertical';
+            sharedInput.value = client.processGoalShared || '';
+            sharedInput.oninput = () => { client.processGoalShared = sharedInput.value; };
+            const sharedPrefix = document.createElement('div');
+            sharedPrefix.className = 'gn-sent-prefix';
+            const name = client.name && client.name.trim() ? client.name.trim() : 'Client';
+            sharedPrefix.textContent = client.processGoalStatus === 'completed'
+              ? `- ${name} reported completing their goal and shared the following about their accomplishment:`
+              : `- ${name} reported making progress toward their goal and identified the following completed steps or remaining work:`;
+            sharedField.appendChild(sharedLabel);
+            sharedField.appendChild(sharedPrefix);
+            sharedField.appendChild(sharedInput);
+            respWrap.appendChild(sharedField);
+          }
+        }
+      }
+
+
+      if (gnState.groupType !== 'goals' && gnState.groupType !== 'curriculum' && gnState.actTopic && client.participation === 'normal') {
         const topicLabel = gnState.topic && gnState.topic.trim()
           ? `Topic discussion — "${gnState.topic.trim()}"`
           : 'Topic discussion';
         const name = client.name && client.name.trim() ? client.name.trim() : '[Client]';
         const topic = gnState.topic && gnState.topic.trim() ? gnState.topic.trim() : '[topic]';
-        const topicPrefix = `- ${name} was engaged in topic discussion of "${topic}" AEB answering the questions when prompted and responding to group discussion. ${name} shared that`;
+        const topicPrefix = `${name} shared during the discussion of "${topic}":`;
         const topicField = gnMakeRespField(topicLabel, topicPrefix, client.responseTopic, v => { client.responseTopic = v; }, client.noResponseTopic, checked => { client.noResponseTopic = checked; });
         respWrap.appendChild(topicField);
       }
 
-      if (gnState.actReading) {
+      if (gnState.groupType !== 'goals' && gnState.groupType !== 'curriculum' && gnState.actReading) {
         const name = client.name && client.name.trim() ? client.name.trim() : '[Client]';
-        const readingPrefix = `- ${name} was receptive to the daily reading and participated in group reflection on their sobriety. ${name} shared that`;
+        const readingPrefix = `- During the daily reading and reflection, ${name} shared:`;
         const readingField = gnMakeRespField('Daily reading / reflection', readingPrefix, client.responseReading, v => { client.responseReading = v; }, client.noResponseReading, checked => { client.noResponseReading = checked; });
         respWrap.appendChild(readingField);
       }
 
-      if (gnState.actMindfulness) {
+      if (gnState.groupType !== 'goals' && gnState.groupType !== 'curriculum' && gnState.actMindfulness) {
         const name = client.name && client.name.trim() ? client.name.trim() : '[Client]';
         const actText = gnState.mindfulnessActivity && gnState.mindfulnessActivity.trim() ? gnState.mindfulnessActivity.trim() : 'activity';
         const mLabel = gnState.mindfulnessActivity && gnState.mindfulnessActivity.trim()
           ? `Activity — ${gnState.mindfulnessActivity.trim()}`
           : 'Activity';
-        const mindfulPrefix = `- ${name} participated in the ${actText} and demonstrated willingness to practice skills to manage stress related to addiction and recovery. ${name} shared that`;
+        const mindfulPrefix = `- During the ${actText}, ${name} shared:`;
         const mindfulField = gnMakeRespField(mLabel, mindfulPrefix, client.responseMindfulness, v => { client.responseMindfulness = v; }, client.noResponseMindfulness, checked => { client.noResponseMindfulness = checked; });
         respWrap.appendChild(mindfulField);
       }
+
 
       if (respWrap.children.length) body.appendChild(respWrap);
     }
@@ -11429,6 +11668,10 @@ function gnRenderClients() {
 
       body.appendChild(progPills);
       body.appendChild(cjChallenge);
+      const cjPrefix = document.createElement('div');
+      cjPrefix.className = 'gn-sent-prefix';
+      cjPrefix.textContent = '- Clinical Judgement:';
+      body.appendChild(cjPrefix);
       body.appendChild(cjTA);
     }
 
@@ -11452,6 +11695,7 @@ function gnMakeRespField(activityLabel, prefix, value, onInput, noResponseChecke
   const prefixEl = document.createElement('div');
   prefixEl.className = 'gn-sent-prefix';
   prefixEl.textContent = prefix;
+  prefixEl.title = 'Your entry appears immediately after this wording in the generated note.';
   sentWrap.appendChild(prefixEl);
 
   const ta = document.createElement('textarea');
@@ -11505,35 +11749,9 @@ function gnCJDefaults(prognosis, name) {
   return fn ? fn(name) : '';
 }
 
-function gnBuildIntervention() {
-  const s = gnState;
-  const ratio = `${s.ratioClients || '?'}:${s.ratioStaff || '?'}`;
-  const lines = [];
-
-  lines.push(`- Group Ratio (Clients:Staff): ${ratio}`);
-
-  if (s.actRules) {
-    lines.push('- Counselor reviewed group rules to set foundation for group session and set expectations for group members.');
-  }
-
-  if (s.actTopic && s.topic && s.topic.trim()) {
-    lines.push(`- Counselor facilitated discussion based on the topic of ${s.topic.trim()}.`);
-  } else if (s.actTopic) {
-    lines.push('- Counselor facilitated discussion based on the topic of [topic not specified].');
-  }
-
-  if (s.actReading) {
-    lines.push('- Counselor facilitated discussion based on a daily reading used to reflect on the client\'s sobriety.');
-  }
-
-  if (s.actMindfulness) {
-    const actText = (s.mindfulnessActivity && s.mindfulnessActivity.trim()) ? s.mindfulnessActivity.trim() : 'activity';
-    const benefitText = (s.mindfulnessBenefit && s.mindfulnessBenefit.trim()) ? s.mindfulnessBenefit.trim() : 'help the client manage stress related to addiction and recovery';
-    lines.push(`- Counselor facilitated interactive ${actText} to ${benefitText}.`);
-  }
-
+function gnAppendTechniqueIntervention(lines, s) {
   if (s.techMI || s.techCBT) {
-    let techLine = '- Counselor ';
+    let techLine = '- Clinician ';
     if (s.techMI && s.techCBT) {
       techLine += 'utilized MI techniques by working with clients on reframing strengths and weaknesses and how those strengths can be used in relapse prevention and utilized CBT techniques by assisting clients in identifying unhealthy thought patterns and how these affect their behavior.';
     } else if (s.techMI) {
@@ -11544,10 +11762,92 @@ function gnBuildIntervention() {
     lines.push(techLine);
   }
 
+}
+
+function gnBuildGoalsIntervention() {
+  const s = gnState;
+  const lines = [`- Group Ratio (Clients:Staff): ${s.ratioClients || '?'}:${s.ratioStaff || '?'}`];
+  if (s.goalRules) lines.push('- Clinician reviewed group rules to set foundation for group session and set expectations for group members.');
+  if (s.goalSelection) lines.push('- Clinician facilitated goal selection, inviting clients to identify individual goals to work on over the next day and prepare to present their goals during the following day’s 9:00–11:00 process group.');
+  if (s.goalReading) lines.push(`- Clinician facilitated a daily reading and reflection focused on ${s.goalReadingTopic.trim()}, inviting clients to connect the reading to their personal experiences.`);
+  if (s.goalWord) lines.push(`- Clinician facilitated a Word of the Day reflection focused on ${s.goalWordText.trim()}, inviting clients to explore its relevance to their recovery.`);
+  if (s.goalExtra.trim()) lines.push(`- ${s.goalExtra.trim()}`);
+  gnAppendTechniqueIntervention(lines, s);
+  return lines.join('\n');
+}
+
+function gnBuildIntervention() {
+  if (gnState.groupType === 'curriculum') return gnBuildCurriculumIntervention();
+  if (gnState.groupType === 'goals') return gnBuildGoalsIntervention();
+  const s = gnState;
+  const ratio = `${s.ratioClients || '?'}:${s.ratioStaff || '?'}`;
+  const lines = [];
+
+  lines.push(`- Group Ratio (Clients:Staff): ${ratio}`);
+
+  if (s.actRules) {
+    lines.push('- Clinician reviewed group rules to set foundation for group session and set expectations for group members.');
+  }
+
+  if (s.groupType === 'process' && s.processGoal) {
+    lines.push('- Clinician facilitated goal sharing, inviting clients to discuss the goals they selected and their experiences working toward those goals.');
+  }
+
+  if (s.actTopic && s.topic && s.topic.trim()) {
+    lines.push(`- Clinician facilitated discussion based on the topic of ${s.topic.trim()}.`);
+  } else if (s.actTopic) {
+    // Topic selection must be completed before generation.
+  }
+
+  if (s.actReading) {
+    lines.push('- Clinician facilitated discussion based on a daily reading used to reflect on the client\'s sobriety.');
+  }
+
+  if (s.actMindfulness) {
+    const actText = (s.mindfulnessActivity && s.mindfulnessActivity.trim()) ? s.mindfulnessActivity.trim() : 'activity';
+    const benefitText = (s.mindfulnessBenefit && s.mindfulnessBenefit.trim()) ? s.mindfulnessBenefit.trim() : 'help the client manage stress related to addiction and recovery';
+    lines.push(`- Clinician facilitated interactive ${actText} to ${benefitText}.`);
+  }
+
+  gnAppendTechniqueIntervention(lines, s);
+
+  return lines.join('\n');
+}
+
+function gnAppendTechniqueResponse(lines, s, name) {
+  // Technique selection documents clinician intervention only; individual receptiveness
+  // must be supported by the client's documented response, not inferred automatically.
+}
+
+function gnBuildGoalsResponse(client) {
+  const name = client.name && client.name.trim() ? client.name.trim() : 'Client';
+  const lines = [];
+  if (client.participation === 'disengaged') {
+    lines.push(`- ${name} was disengaged during group and did not meaningfully participate in group activities.`);
+    lines.push(`- Clinical Judgement: ${gnCJDisengaged(name)}`);
+    return lines.join('\n');
+  }
+  if (gnState.goalRules) lines.push(`- ${name} reviewed group rules.`);
+  const activities = [
+    [gnState.goalSelection, 'Goal Selection', client.noResponseGoalSelection, client.responseGoalSelection, 'identified a goal for the next day and explained its anticipated benefit'],
+    [gnState.goalReading, 'Daily Reading Responses', client.noResponseGoalReading, client.responseGoalReading, 'connected the reading to their personal experience'],
+    [gnState.goalWord, 'Word of the Day', client.noResponseGoalWord, client.responseGoalWord, 'related the word to their recovery'],
+  ];
+  activities.forEach(([selected, label, noResponse, response, action]) => {
+    if (!selected) return;
+    if (noResponse) lines.push(`- ${name} did not respond during ${label}.`);
+    else if (response && response.trim()) lines.push(`- ${name} ${action}: ${response.trim()}`);
+    // Missing responses are addressed by validation before generation.
+  });
+  gnAppendTechniqueResponse(lines, gnState, name);
+  const cj = (client.cjText || '').trim();
+  if (cj) lines.push(`- Clinical Judgement: ${cj}`);
   return lines.join('\n');
 }
 
 function gnBuildResponse(client) {
+  if (gnState.groupType === 'curriculum') return gnBuildCurriculumResponse(client);
+  if (gnState.groupType === 'goals') return gnBuildGoalsResponse(client);
   const s = gnState;
   const name = client.name && client.name.trim() ? client.name.trim() : 'Client';
   const lines = [];
@@ -11564,19 +11864,36 @@ function gnBuildResponse(client) {
     lines.push(`- ${name} reviewed group rules.`);
   }
 
+  if (s.groupType === 'process' && s.processGoal) {
+    if (client.noResponseProcessGoal) {
+      lines.push(`- ${name} did not respond during goal sharing.`);
+    } else {
+      if (client.processGoalText.trim()) lines.push(`- ${name} identified the following goal: ${client.processGoalText.trim()}.`);
+      if (client.processGoalStatus === 'completed' && client.processGoalShared.trim()) {
+        lines.push(`- ${name} reported completing their goal and shared the following about their accomplishment: ${client.processGoalShared.trim()}`);
+      } else if (client.processGoalStatus === 'progress' && client.processGoalShared.trim()) {
+        lines.push(`- ${name} reported making progress toward their goal and identified the following completed steps or remaining work: ${client.processGoalShared.trim()}`);
+      } else if (client.processGoalStatus === 'none') {
+        lines.push(`- ${name} reported not making progress toward their goal.`);
+      }
+    }
+  }
+
+
   if (client.participation === 'engaged_no_discussion') {
     lines.push(`- ${name} was engaged in group AEB maintaining eye contact with facilitators and peers. However, ${name} did not participate in the discussion.`);
   } else if (s.actTopic) {
-    const topic = s.topic && s.topic.trim() ? s.topic.trim() : '[topic]';
+    const topic = (s.topic || '').trim();
     if (client.noResponseTopic) {
       lines.push(`- ${name} was present for topic discussion of "${topic}" but did not provide a response.`);
     } else {
       const shared = client.responseTopic && client.responseTopic.trim()
         ? client.responseTopic.trim()
-        : '[client response not documented]';
-      lines.push(`- ${name} was engaged in topic discussion of "${topic}" AEB answering the questions when prompted and responding to group discussion. ${name} shared that ${shared}`);
+        : ''; 
+      lines.push(`${name} shared during the discussion of "${topic}": ${shared}`);
     }
   }
+
 
   if (s.actReading) {
     if (client.noResponseReading) {
@@ -11585,7 +11902,7 @@ function gnBuildResponse(client) {
       const readingResp = client.responseReading && client.responseReading.trim()
         ? ` ${name} shared that ${client.responseReading.trim()}`
         : '';
-      lines.push(`- ${name} was receptive to the daily reading and participated in group reflection on their sobriety.${readingResp}`);
+      lines.push(`- During the daily reading and reflection, ${name}${readingResp ? " shared:" + readingResp.replace(/^ .*? shared that /, " ") : " participated without a documented verbal response"}.`);
     }
   }
 
@@ -11597,32 +11914,20 @@ function gnBuildResponse(client) {
       const mindfulResp = client.responseMindfulness && client.responseMindfulness.trim()
         ? ` ${name} shared that ${client.responseMindfulness.trim()}`
         : '';
-      lines.push(`- ${name} participated in the ${actText} and demonstrated willingness to practice skills to manage stress related to addiction and recovery.${mindfulResp}`);
+      lines.push(`- During the ${actText}, ${name}${mindfulResp ? " shared:" + mindfulResp.replace(/^ .*? shared that /, " ") : " participated without a documented verbal response"}.`);
     }
   }
 
-  if (s.techMI || s.techCBT) {
-    let techLine = `- ${name} was receptive to `;
-    if (s.techMI && s.techCBT) {
-      techLine += 'MI and CBT techniques AEB identifying how they can stay motivated to change their behavior and recognizing unhealthy thought patterns that contribute to addictive behaviors.';
-    } else if (s.techMI) {
-      techLine += 'MI techniques AEB identifying how they can stay motivated to change their behavior.';
-    } else {
-      techLine += 'CBT techniques AEB identifying unhealthy thought patterns and how these affect their behavior.';
-    }
-    lines.push(techLine);
-  }
+  gnAppendTechniqueResponse(lines, s, name);
 
-  const cj = client.cjText && client.cjText.trim()
-    ? client.cjText.trim()
-    : gnCJDefaults('fair', name);
-
-  lines.push(`- Clinical Judgement: ${cj}`);
+  const cj = (client.cjText || '').trim();
+  if (cj) lines.push(`- Clinical Judgement: ${cj}`);
 
   return lines.join('\n');
 }
 
 function gnCopyIntervention(btn) {
+  if (!gnCheckCopyReady()) return;
   doCopy(gnState.interventionOutput || '', btn);
 }
 
@@ -11658,6 +11963,7 @@ function gnRenderOutputView() {
   intCopyBtn.onmouseover = () => { intCopyBtn.style.background = '#1e4d38'; };
   intCopyBtn.onmouseout = () => { intCopyBtn.style.background = '#2a5c42'; };
   intCopyBtn.onclick = () => {
+    if (!gnCheckCopyReady()) return;
     doCopy(gnState.interventionOutput, intCopyBtn);
   };
   intLabelRow.appendChild(intTitle);
@@ -11709,7 +12015,10 @@ function gnRenderOutputView() {
     const copyBtn = document.createElement('button');
     copyBtn.className = 'gn-out-copy-btn';
     copyBtn.textContent = 'Copy Response';
-    copyBtn.onclick = () => doCopy(client.responseOutput, copyBtn);
+    copyBtn.onclick = () => {
+      if (!gnCheckCopyReady()) return;
+      doCopy(client.responseOutput, copyBtn);
+    };
 
     hdr.appendChild(nameWrap);
     hdr.appendChild(copyBtn);
@@ -11724,27 +12033,143 @@ function gnRenderOutputView() {
   });
 }
 
+function gnGroupValidationIssues() {
+  const issues = [];
+  const s = gnState;
+  if (!String(s.ratioClients || '').trim() || !String(s.ratioStaff || '').trim()) issues.push('Enter the group client-to-staff ratio.');
+  if (s.groupType === 'curriculum' && !gnSelectedCurriculumEntry()) issues.push('Select a curriculum book and Facilitator’s Guide topic.');
+  if (s.groupType === 'goals') {
+    if (!s.goalSelection && !s.goalReading && !s.goalWord) issues.push('Select at least one Goals Group activity.');
+    if (s.goalReading && !s.goalReadingTopic.trim()) issues.push('Enter the daily reading topic.');
+    if (s.goalWord && !s.goalWordText.trim()) issues.push('Enter the Word of the Day.');
+  }
+  if (s.groupType !== 'goals' && s.groupType !== 'curriculum' && s.actTopic && !s.topic.trim()) issues.push('Enter the discussion topic.');
+  gnClients.forEach((c, i) => {
+    const label = `Client ${i + 1}`;
+    if (c.participation === 'disengaged') return; // Existing disengagement pathway retained.
+    if (!c.cjPrognosis || !(c.cjText || '').trim()) issues.push(`${label}: select and review clinical judgment.`);
+    if (s.groupType === 'curriculum' && !c.noResponseCurriculum && !(c.curriculumResponse || '').trim()) issues.push(`${label}: document the curriculum response or select Did not respond.`);
+    if (s.groupType === 'goals') {
+      [['goalSelection','responseGoalSelection','noResponseGoalSelection','goal selection'],['goalReading','responseGoalReading','noResponseGoalReading','reading'],['goalWord','responseGoalWord','noResponseGoalWord','word of the day']].forEach(([enabled, response, noResponse, title]) => {
+        if (s[enabled] && !c[noResponse] && !(c[response] || '').trim()) issues.push(`${label}: document ${title} response or select Did not respond.`);
+      });
+    }
+    if (s.groupType === 'process' && s.processGoal && c.participation === 'normal' && !c.noResponseProcessGoal) {
+      if (!(c.processGoalText || '').trim()) issues.push(`${label}: enter the selected goal or select Did not respond.`);
+      if (!['completed', 'progress', 'none'].includes(c.processGoalStatus)) issues.push(`${label}: select goal progress status.`);
+      if (['completed', 'progress'].includes(c.processGoalStatus) && !(c.processGoalShared || '').trim()) issues.push(`${label}: document what the client shared about goal progress.`);
+    }
+    if (s.groupType !== 'curriculum' && s.groupType !== 'goals' && c.participation === 'normal' && s.actTopic && !c.noResponseTopic && !(c.responseTopic || '').trim()) issues.push(`${label}: document topic response or select No response.`);
+    if (s.groupType !== 'curriculum' && s.groupType !== 'goals' && s.actReading && !c.noResponseReading && !(c.responseReading || '').trim()) issues.push(`${label}: document reading response or select No response.`);
+    if (s.groupType !== 'curriculum' && s.groupType !== 'goals' && s.actMindfulness && !c.noResponseMindfulness && !(c.responseMindfulness || '').trim()) issues.push(`${label}: document activity response or select No response.`);
+  });
+  return issues;
+}
+
+// Track changes to source documentation, never generated output or card presentation state.
+let gnGeneratedSnapshot = null;
+function gnSourceSnapshot() {
+  const { interventionOutput, ...groupInputs } = gnState;
+  return JSON.stringify({ groupInputs, clients: gnClients.map(({ responseOutput, interventionOutput, hasOutput, isOpen, ...inputs }) => inputs) });
+}
+function gnOutputsAreCurrent() {
+  return gnGeneratedSnapshot !== null && gnGeneratedSnapshot === gnSourceSnapshot();
+}
+function gnUpdateGenerateStatus() {
+  const status = document.getElementById('gn-generate-status');
+  const button = document.getElementById('gn-generate-button');
+  if (!status) return;
+  const stale = gnGeneratedSnapshot !== null && !gnOutputsAreCurrent();
+  const missing = gnGroupValidationIssues().length;
+  if (stale) {
+    status.textContent = 'Regenerate Required — information changed since the last generation. Regenerate before copying.';
+    status.style.color = '#b45309';
+    if (button) button.textContent = 'Regenerate';
+  } else if (missing) {
+    status.textContent = `Missing Information — ${missing} item${missing === 1 ? '' : 's'} to complete before generating.`;
+    status.style.color = '#b45309';
+    if (button) button.textContent = 'Generate';
+  } else if (gnGeneratedSnapshot !== null) {
+    status.textContent = 'Notes are current and ready to copy.';
+    status.style.color = '';
+    if (button) button.textContent = 'Regenerate';
+  } else {
+    status.textContent = 'Ready to Generate — all required information is complete.';
+    status.style.color = '';
+    if (button) button.textContent = 'Generate';
+  }
+}
+function gnShowValidationIssues(issues) {
+  let panel = document.getElementById('gn-validation-feedback');
+  if (!panel) {
+    panel = document.createElement('div');
+    panel.id = 'gn-validation-feedback';
+    panel.setAttribute('role', 'alert');
+    panel.style.cssText = 'margin:10px 14px;padding:12px 14px;border:1px solid #d6a05a;border-radius:6px;background:var(--warning-bg,#fff8e8);color:var(--text);font-size:12px;line-height:1.6;max-height:210px;overflow:auto;';
+    document.getElementById('gn-generate-bar').insertAdjacentElement('beforebegin', panel);
+  }
+  panel.replaceChildren();
+  if (!issues.length) { panel.style.display = 'none'; return; }
+  panel.style.display = 'block';
+  const heading = document.createElement('strong');
+  heading.textContent = `Complete ${issues.length} item${issues.length === 1 ? '' : 's'} before generating:`;
+  panel.appendChild(heading);
+  const list = document.createElement('ul');
+  list.style.cssText = 'margin:5px 0 0;padding-left:20px;';
+  issues.forEach(issue => { const li = document.createElement('li'); li.textContent = issue; list.appendChild(li); });
+  panel.appendChild(list);
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+function gnCheckCopyReady() {
+  if (!gnOutputsAreCurrent()) {
+    gnUpdateGenerateStatus();
+    alert('Group documentation has changed since these notes were generated. Regenerate before copying.');
+    return false;
+  }
+  const issues = gnGroupValidationIssues();
+  if (issues.length) { gnShowValidationIssues(issues); return false; }
+  return true;
+}
 function gnGenerateAll() {
+  const issues = gnGroupValidationIssues();
+  if (issues.length) {
+    gnShowValidationIssues(issues);
+    document.getElementById('gn-output-area').style.display = 'none';
+    document.getElementById('gn-clients-area').style.display = 'flex';
+    return;
+  }
+  gnShowValidationIssues([]);
   gnState.interventionOutput = gnBuildIntervention();
   gnClients.forEach(client => {
     client.responseOutput = gnBuildResponse(client);
     client.hasOutput = true;
   });
 
+  gnGeneratedSnapshot = gnSourceSnapshot();
+  gnUpdateGenerateStatus();
   gnRenderOutputView();
 
   // Switch to output view
   document.getElementById('gn-clients-area').style.display = 'none';
   document.getElementById('gn-output-area').style.display = 'flex';
   fadeInPane(document.getElementById('gn-output-area'));
+  // Start at the intervention, followed by the individual client responses.
+  document.getElementById('gn-output-list').scrollTop = 0;
+  document.getElementById('gn-output-area').scrollTop = 0;
 }
 
 function gnReset() {
+  gnGeneratedSnapshot = null;
+  gnShowValidationIssues([]);
+  gnUpdateGenerateStatus();
   gnState = {
     date: new Date().toISOString().split('T')[0],
     counselor: '',
     ratioClients: '',
     ratioStaff: '',
+    groupType: 'standard',
+    goalSelection: false, goalReading: false, goalReadingTopic: '', goalWord: false, goalWordText: '', goalExtra: '', goalRules: true, processGoal: false,
+  curriculumBook: '', curriculumEntry: '', curriculumRules: true,
     actRules: true,
     actTopic: false,
     topic: '',
@@ -11777,6 +12202,17 @@ function gnReset() {
     const el = document.getElementById(id);
     if (el) el.checked = id === 'gn-act-rules';
   });
+  document.getElementById('gn-group-type').value = 'standard';
+  ['gn-goal-selection','gn-goal-reading','gn-goal-word','gn-process-goal'].forEach(id => { document.getElementById(id).checked = false; });
+  ['gn-goal-reading-topic','gn-goal-word-text','gn-goal-extra'].forEach(id => { document.getElementById(id).value = ''; });
+  document.getElementById('gn-goal-rules').checked = true;
+  document.getElementById('gn-curriculum-rules').checked = true;
+  document.getElementById('gn-curriculum-book').value = '';
+  gnUpdateCurriculumTopics();
+  document.getElementById('gn-curriculum-section').style.display = 'none';
+  document.getElementById('gn-process-goal-sharing').style.display = 'none';
+  document.getElementById('gn-goals-section').style.display = 'none';
+  document.getElementById('gn-standard-setup').style.display = 'block';
   document.getElementById('gn-topic-wrap').style.display = 'none';
   document.getElementById('gn-mindfulness-wrap').style.display = 'none';
   const topicEl = document.getElementById('gn-topic');
@@ -11792,7 +12228,19 @@ function gnReset() {
 document.addEventListener('DOMContentLoaded', function() {
   const dateEl = document.getElementById('gn-date');
   if (dateEl) dateEl.value = gnState.date;
+  gnInitCurriculumBooks();
   gnInitClients(0);
+  gnUpdateGenerateStatus();
+  // Capture edits after inline handlers have synchronized the group/client state.
+  const groupView = document.getElementById('view-group');
+  if (groupView) {
+    const onEdit = () => queueMicrotask(gnUpdateGenerateStatus);
+    groupView.addEventListener('input', onEdit);
+    groupView.addEventListener('change', onEdit);
+    groupView.addEventListener('click', event => {
+      if (event.target.closest('.gn-prog-pill, .gn-client-remove, .gn-participation-btn, .gn-client-add')) onEdit();
+    });
+  }
 });
 
 // ═══════════════════════════════════════════════════
@@ -16956,7 +17404,7 @@ function autosaveHasContent() {
   // Quick check so we don't save/prompt-restore an entirely empty session
   if (state.clientName || state.loc) return true;
   if (snState.clientName || snState.describe || snState.progress) return true;
-  if (gnState.counselor || gnClients.some(c => c.name || c.responseTopic || c.responseReading || c.responseMindfulness || c.cjText)) return true;
+  if (gnState.counselor || gnClients.some(c => c.name || c.responseTopic || c.responseReading || c.responseMindfulness || c.responseGoalSelection || c.responseGoalReading || c.responseGoalWord || c.processGoalText || c.processGoalShared || c.curriculumResponse || c.cjText)) return true;
   if (dsState.clientName) return true;
   if (deState.clientName || deState.dischargeType || deState.dischargeSubtype || deState.dischargeDate ||
       deState.unsuccessfulReason || deState.adminDirectorApproved || deState.transitionCalendar || deState.transitionCalendarNoReason || deState.staffInvolved || deState.staffNone || deState.additionalInfo) return true;
@@ -17248,6 +17696,16 @@ function autosaveApply(snap) {
   gnClientIdCounter = snap.gnClientIdCounter || gnClientIdCounter;
   const gnDateEl = document.getElementById('gn-date');
   if (gnDateEl) gnDateEl.value = gnState.date || '';
+  document.getElementById('gn-group-type').value = gnState.groupType || 'standard';
+  [['gn-goal-selection','goalSelection'],['gn-goal-reading','goalReading'],['gn-goal-word','goalWord'],['gn-goal-rules','goalRules'],['gn-process-goal','processGoal']].forEach(([id,key]) => { document.getElementById(id).checked = !!gnState[key]; });
+  [['gn-goal-reading-topic','goalReadingTopic'],['gn-goal-word-text','goalWordText'],['gn-goal-extra','goalExtra']].forEach(([id,key]) => { document.getElementById(id).value = gnState[key] || ''; });
+  document.getElementById('gn-process-goal-sharing').style.display = gnState.groupType === 'process' ? 'block' : 'none';
+  document.getElementById('gn-goals-section').style.display = gnState.groupType === 'goals' ? 'block' : 'none';
+  document.getElementById('gn-standard-setup').style.display = ['goals','curriculum'].includes(gnState.groupType) ? 'none' : 'block';
+  document.getElementById('gn-curriculum-section').style.display = gnState.groupType === 'curriculum' ? 'block' : 'none';
+  document.getElementById('gn-curriculum-book').value = gnState.curriculumBook || '';
+  document.getElementById('gn-curriculum-rules').checked = gnState.curriculumRules !== false;
+  gnUpdateCurriculumTopics();
   gnRenderClients();
   gnCheckRatio();
 
